@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trops — 글로벌 수출 업무를 완성하는 운영 파트너</title>
+  <meta name="description" content="사내 전문 인력이 없어도 괜찮습니다. 복잡한 해외 계약 검토와 결제 안전을 이메일 워크플로우 안에서 빈틈없이 관리하는 수출 운영 파트너, Trops.">
+  <style>
+    :root {
+      --navy: #0a1f44;
+      --navy-2: #12305f;
+      --accent: #2f81f7;
+      --accent-soft: #e8f1ff;
+      --ink: #1a2233;
+      --muted: #5b6577;
+      --line: #e6e9f0;
+      --bg: #ffffff;
+      --card: #ffffff;
+      --shadow: 0 8px 30px rgba(10, 31, 68, 0.08);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+        "Malgun Gothic", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    .container {
+      width: 100%;
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ===== Header ===== */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: saturate(180%) blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: -0.3px;
+      color: var(--navy);
+    }
+    .brand .dot {
+      width: 12px; height: 12px;
+      border-radius: 4px;
+      background: linear-gradient(135deg, var(--accent), #17c0a8);
+    }
+    .nav-cta {
+      display: inline-block;
+      padding: 9px 18px;
+      border-radius: 999px;
+      background: var(--navy);
+      color: #fff;
+      font-weight: 600;
+      font-size: 14px;
+      transition: transform .15s ease, background .15s ease;
+    }
+    .nav-cta:hover { background: var(--navy-2); transform: translateY(-1px); }
+
+    /* ===== Hero ===== */
+    .hero {
+      position: relative;
+      padding: 96px 0 88px;
+      background:
+        radial-gradient(1200px 500px at 80% -10%, rgba(47,129,247,0.14), transparent 60%),
+        linear-gradient(180deg, #f7faff 0%, #ffffff 100%);
+      overflow: hidden;
+    }
+    .hero .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--navy-2);
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: clamp(34px, 6vw, 60px);
+      line-height: 1.12;
+      letter-spacing: -1.2px;
+      color: var(--navy);
+      font-weight: 900;
+    }
+    .hero h1 .grad {
+      background: linear-gradient(120deg, var(--accent), #17c0a8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p.lead {
+      margin-top: 22px;
+      font-size: clamp(17px, 2.4vw, 21px);
+      color: var(--muted);
+      max-width: 720px;
+    }
+    .hero-actions {
+      margin-top: 36px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 15px 28px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 16px;
+      transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #1f6fe0);
+      color: #fff;
+      box-shadow: 0 10px 24px rgba(47,129,247,0.35);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(47,129,247,0.45); }
+    .btn-ghost {
+      background: #fff;
+      color: var(--navy);
+      border: 1px solid var(--line);
+    }
+    .btn-ghost:hover { transform: translateY(-2px); border-color: var(--accent); }
+
+    .hero-stats {
+      margin-top: 56px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+    }
+    .stat .num {
+      font-size: 30px;
+      font-weight: 900;
+      color: var(--navy);
+      letter-spacing: -0.5px;
+    }
+    .stat .lbl { font-size: 14px; color: var(--muted); }
+
+    /* ===== Section ===== */
+    section.block { padding: 84px 0; }
+    .section-head { text-align: center; max-width: 640px; margin: 0 auto 52px; }
+    .section-head .eyebrow {
+      color: var(--accent);
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .section-head h2 {
+      margin-top: 10px;
+      font-size: clamp(26px, 4vw, 38px);
+      color: var(--navy);
+      letter-spacing: -0.6px;
+      font-weight: 900;
+    }
+    .section-head p { margin-top: 14px; color: var(--muted); font-size: 17px; }
+
+    /* ===== Cards ===== */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 22px;
+    }
+    .card {
+      position: relative;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 30px 26px;
+      box-shadow: var(--shadow);
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 18px 44px rgba(10,31,68,0.14);
+      border-color: rgba(47,129,247,0.4);
+    }
+    .card .icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      background: var(--accent-soft);
+      margin-bottom: 18px;
+    }
+    .card h3 {
+      font-size: 19px;
+      color: var(--navy);
+      font-weight: 800;
+      letter-spacing: -0.3px;
+    }
+    .card p { margin-top: 10px; color: var(--muted); font-size: 15px; }
+    .card .tag {
+      position: absolute;
+      top: 26px; right: 24px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #17a589;
+      background: #e3f8f2;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    /* ===== CTA ===== */
+    .cta {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
+      border-radius: 26px;
+      padding: 60px 40px;
+      text-align: center;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(600px 260px at 20% 0%, rgba(47,129,247,0.4), transparent 60%);
+    }
+    .cta > * { position: relative; z-index: 1; }
+    .cta h2 {
+      font-size: clamp(26px, 4vw, 36px);
+      font-weight: 900;
+      letter-spacing: -0.6px;
+    }
+    .cta p { margin-top: 14px; color: #c6d2e8; font-size: 17px; }
+    .cta .btn-primary {
+      margin-top: 30px;
+      background: #fff;
+      color: var(--navy);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+    }
+    .cta .email {
+      margin-top: 18px;
+      font-size: 15px;
+      color: #a9bbdb;
+    }
+    .cta .email a { color: #fff; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.4); }
+
+    /* ===== Footer ===== */
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 34px 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    footer .brand { justify-content: center; margin-bottom: 8px; font-size: 17px; }
+
+    @media (max-width: 640px) {
+      .hero { padding: 72px 0 64px; }
+      .hero-stats { gap: 28px; }
+      section.block { padding: 60px 0; }
+      .cta { padding: 44px 24px; }
+      .btn { width: 100%; }
+      .hero-actions { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="container nav">
+      <div class="brand"><span class="dot"></span>Trops</div>
+      <a href="#contact" class="nav-cta">수출 업무 효율화 시작</a>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <span class="badge">🤝 Trade Risk Ops · 당신의 수출 운영 파트너</span>
+      <h1>해외 영업의 시작부터 끝까지,<br><span class="grad">Trops</span>가 당신의 수출 파트너가 됩니다.</h1>
+      <p class="lead">
+        사내 전문 인력이 없어도 괜찮습니다. 복잡한 해외 계약 검토와 결제 안전을
+        이메일 워크플로우 안에서 빈틈없이 관리하세요.
+      </p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn btn-primary">우리 회사 수출 업무 효율화 시작하기 →</a>
+        <a href="#services" class="btn btn-ghost">서비스 살펴보기</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><div class="num">인력 걱정 ↓</div><div class="lbl">전담자 없이도 빈틈없는 운영</div></div>
+        <div class="stat"><div class="num">실시간</div><div class="lbl">송금 사기(BEC) 징후 차단</div></div>
+        <div class="stat"><div class="num">프라이빗</div><div class="lbl">외부 학습 없는 데이터 보호</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="block" id="services">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Our Services</span>
+        <h2>수출 업무, Trops가 옆에서 완성합니다</h2>
+        <p>워크플로우 최적화부터 계약 조건, 결제 안전, 데이터 보호, 전문가 리포트까지 한 번에.</p>
+      </div>
+
+      <div class="cards">
+        <div class="card">
+          <div class="icon">📧</div>
+          <h3>이메일 기반 워크플로우 최적화</h3>
+          <p>별도 툴을 새로 배울 필요 없이, 늘 쓰던 메일함 안에서 바로 수출 업무를 시작하세요.</p>
+        </div>
+
+        <div class="card">
+          <div class="icon">📝</div>
+          <h3>영문 계약 조건 최적화</h3>
+          <p>불리한 독소조항을 찾아내고, 우리 회사에 유리한 비즈니스 협상 가이드를 제시합니다.</p>
+        </div>
+
+        <div class="card">
+          <div class="icon">🛡️</div>
+          <h3>안전한 결제 시스템 구축</h3>
+          <p>송금 사기(BEC) 징후를 실시간으로 감지해 결제 전에 위험을 차단합니다.</p>
+        </div>
+
+        <div class="card">
+          <div class="icon">🔒</div>
+          <h3>기업 데이터 자산 보호</h3>
+          <p>외부 학습에 절대 활용하지 않는, 철저한 프라이빗 보안 환경에서 데이터를 처리합니다.</p>
+        </div>
+
+        <div class="card">
+          <div class="icon">🧭</div>
+          <h3>운영 전문가의 검토 리포트</h3>
+          <p>AI의 속도와 전문가의 통찰이 결합된, 우리 회사 상황에 맞춘 맞춤형 운영 가이드를 제공합니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="block" id="contact">
+    <div class="container">
+      <div class="cta">
+        <h2>지금, 우리 회사 수출 업무를 효율화하세요</h2>
+        <p>이메일 한 통이면 충분합니다. Trops가 계약 검토부터 결제 안전까지 함께 챙기겠습니다.</p>
+        <a href="mailto:contact@theo-ne.com?subject=Trops%20수출%20업무%20효율화%20문의" class="btn btn-primary">수출 업무 효율화 시작하기</a>
+        <div class="email">또는 직접 메일 주세요 · <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="brand"><span class="dot"></span>Trops</div>
+      <div style="max-width:640px; margin:0 auto; line-height:1.7;">
+        Trops의 운영 로직은 크로스 보더 비즈니스 전문가의 실무 노하우를 바탕으로 설계되었습니다.
+        인력 고민은 줄이고, 수출의 속도와 안전은 Trops와 함께 높이세요.
+      </div>
+      <div style="margin-top:10px;">© 2026 Trops · Trade Risk Ops. All rights reserved.</div>
+    </div>
+  </footer>
+
+</body>
+</html>
