@@ -81,6 +81,8 @@
     border-bottom: 1px solid var(--line);
   }
   .nav-inner { height: 64px; display: flex; align-items: center; gap: 40px; }
+  /* 앵커 이동 시 sticky .nav(64px)에 목표 지점이 가리지 않도록 */
+  #how, #stages, #start, #interest { scroll-margin-top: 84px; }
   .wordmark {
     font-size: 19px;
     font-weight: 700;
@@ -161,7 +163,54 @@
     max-width: 36ch;
     color: var(--ink-64);
   }
-  .cta-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 36px; }
+  /* ---------- Hero HS lookup (block 1 · 통합 조회줄) ---------- */
+  .hs-box { margin-top: 30px; max-width: 468px; }
+  .hs-box-label {
+    margin: 0 0 10px;
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: .01em;
+    color: var(--ink);
+  }
+  .hs-group {
+    display: flex;
+    align-items: stretch;
+    padding: 5px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--bg);
+  }
+  .hs-group:focus-within { border-color: var(--muted); }
+  .hs-country {
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    margin-right: 5px;
+    border-right: 1px solid var(--line);
+    font-size: 15.5px;
+    font-weight: 500;
+    color: var(--ink-70);
+    white-space: nowrap;
+  }
+  .hs-group input {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 42px;
+    border: 0;
+    background: transparent;
+    padding: 0 6px;
+    font: inherit;
+    font-size: 16px;
+    color: var(--ink);
+  }
+  .hs-group input:focus { outline: none; }
+  .hs-group input::placeholder { color: var(--muted); }
+  .hs-group .btn { flex: 0 0 auto; height: 42px; padding: 0 20px; }
+  .hs-meta { margin: 10px 0 0; font-size: 13.5px; line-height: 1.65; color: var(--muted); }
+  .hs-second { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 26px; }
+  .hs-second-note { font-size: 13.5px; color: var(--muted); }
+
+  .cta-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
 
   /* ---------- Hero workflow panel ---------- */
   .wf-panel {
@@ -283,6 +332,46 @@
   .tl-num { font-size: 14px; font-weight: 600; color: var(--muted); line-height: 1.85; }
   .tl-desc { margin: 0; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); max-width: 44ch; }
 
+  /* ---------- Roadmap (block 2 · 표 대체) ---------- */
+  #stages { border-top: 0; }  /* .band already draws the divider above */
+  .how-inner-tight { padding-block: clamp(44px, 5vw, 68px) clamp(56px, 7vw, 96px); }
+  .rm-h2 {
+    margin: 0;
+    font-size: clamp(25px, 2.6vw, 32px);
+    line-height: 1.3;
+    letter-spacing: -0.028em;
+    font-weight: 700;
+    max-width: 26ch;
+  }
+  .rm { margin-top: clamp(28px, 4vw, 40px); max-width: 860px; }
+  .rm-row {
+    display: grid;
+    grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+    gap: 6px clamp(24px, 4vw, 48px);
+    padding: 26px 4px;
+    border-bottom: 1px solid var(--line);
+    align-items: baseline;
+    color: inherit;
+    text-decoration: none;
+  }
+  .rm-row:first-child { border-top: 1px solid var(--line); }
+  .rm-name {
+    margin: 0;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .rm-num { font-size: 13px; font-weight: 600; color: var(--muted); }
+  .rm-desc { margin: 0; font-size: 16.5px; line-height: 1.7; color: var(--ink-62); max-width: 44ch; }
+  .rm-meta { margin: 2px 0 0; grid-column: 1; font-size: 13.5px; line-height: 1.6; color: var(--muted); }
+  a.rm-row:hover { background: var(--surface); }
+  a.rm-row:hover .rm-name { color: var(--ink); }
+
   /* ---------- Emphasis band ---------- */
   .band {
     background: var(--surface);
@@ -340,7 +429,7 @@
     padding: 0 14px;
     border: 1px solid var(--line);
     border-radius: 6px;
-    background: var(--bg);
+    background-color: var(--bg);
     color: var(--ink);
   }
   .interest-submit { margin-top: 4px; }
@@ -370,6 +459,18 @@
   @media (max-width: 640px) {
     .nav-links { display: none; }
     .hero-lead { white-space: normal; }
+    .hs-box { max-width: none; }
+    .hs-group { flex-wrap: wrap; }
+    .hs-country {
+      width: 100%;
+      margin: 0 0 5px;
+      padding: 6px 8px;
+      border-right: 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .hs-group input { flex: 1 1 110px; padding-left: 8px; }
+    .rm-row { grid-template-columns: 1fr; gap: 6px; padding: 22px 2px; }
+    .rm-meta { grid-column: auto; }
     .cta-row .btn { flex: 1 1 auto; }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -379,7 +480,7 @@
 </style>
 </head>
 <body>
-  <a href="#hero-cta" class="skip">본문으로 건너뛰기</a>
+  <a href="#hs-input" class="skip">본문으로 건너뛰기</a>
 
   <!-- ===== Nav ===== -->
   <nav class="nav">
@@ -387,8 +488,8 @@
       <a href="/" class="wordmark" aria-label="TROPS 홈">TROPS</a>
       <div class="nav-links">
         <a href="#how">작동 방식</a>
-        <a href="#flow">거래 흐름</a>
-        <a href="#start">문의</a>
+        <a href="#stages">이용 단계</a>
+        <a href="#interest">문의</a>
       </div>
       <div class="nav-right">
         <a class="btn btn-primary btn-nav" href="https://app.trops.kr/" target="_self">수출 시작하기</a>
@@ -404,20 +505,40 @@
         <h1>수출 거래를<br>끝까지 운영합니다.</h1>
         <p class="hero-lead">바이어 확인부터 계약, 수출 절차, 대금 회수까지.</p>
         <p class="hero-sub">흩어진 거래 정보와 업무를 하나의 거래 흐름으로 연결하여, 거래 진행을 한눈에 관리합니다.</p>
-        <div class="cta-row">
-          <a id="hero-cta" class="btn btn-primary" href="https://app.trops.kr/" target="_self">수출 시작하기</a>
-          <a class="btn btn-secondary" href="#interest">관심 등록하기</a>
+
+        <div class="hs-box">
+          <p class="hs-box-label">HS 코드로 협정 세율 조회</p>
+          <form class="hs-group" action="/uae" method="get">
+            <span class="hs-country">아랍에미리트</span>
+            <input id="hs-input" type="text" name="hs" inputmode="numeric" pattern="[0-9]{8}" maxlength="8"
+                   placeholder="HS 8단위 입력" aria-label="HS 코드 8단위"
+                   title="HS 코드 8자리 숫자를 입력하세요" required>
+            <button class="btn btn-primary" type="submit">확인</button>
+          </form>
+          <p class="hs-meta">아랍에미리트 · 한-UAE CEPA 기준 · 무료 · 로그인 없이 조회</p>
+        </div>
+
+        <div class="hs-second">
+          <a id="hero-cta" class="btn btn-secondary" href="https://app.trops.kr/" target="_self">수출 시작하기</a>
+          <span class="hs-second-note">거래 등록 · 시범 운영</span>
         </div>
       </div>
 
       <div class="wf-panel" aria-label="거래 하나의 진행 상태 예시">
         <div class="wf-head">
-          <span class="wf-txn">거래 TR-2026-0412 · 프랑스</span>
+          <span class="wf-txn">거래 TR-2026-0412 · 아랍에미리트</span>
           <span class="wf-live"><span class="wf-live-dot" aria-hidden="true"></span>AI 운영 중</span>
         </div>
         <div class="wf-row">
           <div class="wf-rail">
             <div class="wf-line wf-line-first" aria-hidden="true"></div>
+            <div class="wf-dot wf-dot-done" aria-hidden="true"></div>
+          </div>
+          <div class="wf-item"><span class="wf-label">조건 확인</span></div>
+        </div>
+        <div class="wf-row">
+          <div class="wf-rail">
+            <div class="wf-line" aria-hidden="true"></div>
             <div class="wf-dot wf-dot-done" aria-hidden="true"></div>
           </div>
           <div class="wf-item"><span class="wf-label">거래 생성</span></div>
@@ -544,6 +665,32 @@
     <section class="band">
       <div class="container band-inner">
         <p>흩어진 거래 정보와 업무를 하나의 거래 화면으로 연결하여, <br>완료 될 때까지 거래 진행과 필요한 업무를 관리합니다.</p>
+      </div>
+    </section>
+
+    <!-- ===== Stage table ===== -->
+    <section class="how" id="stages" aria-label="단계별 안내">
+      <div class="container how-inner how-inner-tight">
+        <p class="kicker">STEP BY STEP</p>
+        <h2 class="rm-h2">지금 이용할 수 있는 것</h2>
+
+        <div class="rm">
+          <a class="rm-row" href="/uae">
+            <p class="rm-name"><span class="rm-num">01</span>협정 세율 조회</p>
+            <p class="rm-desc">HS 8단위로 관세 철폐 트랙과 연도별 세율을 조회합니다</p>
+            <p class="rm-meta">무료 · 지금 이용 가능</p>
+          </a>
+          <div class="rm-row">
+            <p class="rm-name"><span class="rm-num">02</span>확인 항목 진단서</p>
+            <p class="rm-desc">품목별 확인 항목을 근거와 함께 문서로 정리해 드립니다</p>
+            <p class="rm-meta">99,000원 · 9월 오픈 예정</p>
+          </div>
+          <div class="rm-row">
+            <p class="rm-name"><span class="rm-num">03</span>거래 운영</p>
+            <p class="rm-desc">거래 단위로 절차를 관리합니다</p>
+            <p class="rm-meta">문의 · 시범 운영 중</p>
+          </div>
+        </div>
       </div>
     </section>
 
