@@ -67,14 +67,34 @@ module.exports = async (req, res) => {
   const url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-  // 환경변수가 없으면 조용히 건너뜁니다. 조회 화면은 이 응답을 기다리지 않습니다.
+  // 저장을 못 하더라도 항상 200을 돌려줍니다 — 로그 실패가 사용자 조회를 막으면 안 됩니다.
+  // 다만 "설정을 안 한 것"과 "설정이 잘못된 것"은 구분합니다.
+  // 전자는 의도된 상태라 조용히 건너뛰고, 후자는 원인을 로그와 응답에 남깁니다.
+  if (!url && !key) {
+    res.status(200).json({ ok: true, stored: false, reason: 'not-configured' });
+    return;
+  }
   if (!url || !key) {
-    res.status(200).json({ ok: true, stored: false });
+    const missing = !url ? 'SUPABASE_URL' : 'SUPABASE_SERVICE_ROLE_KEY';
+    console.error('lookup-log config error: ' + missing + ' 가 비어 있습니다. ' +
+      '두 변수를 같은 환경(Production/Preview)에 함께 설정해야 저장됩니다.');
+    res.status(200).json({ ok: true, stored: false, reason: 'incomplete-config' });
+    return;
+  }
+
+  const endpoint = buildEndpoint(url);
+  if (!endpoint.ok) {
+    // SUPABASE_URL 은 자격증명이 아니라 프로젝트 URL이므로 값을 그대로 남겨 진단할 수 있게 합니다.
+    // (SUPABASE_SERVICE_ROLE_KEY 는 어떤 경우에도 로그에 남기지 않습니다.)
+    console.error('lookup-log config error: SUPABASE_URL 형식 오류 — ' + endpoint.error +
+      ' | 현재값: ' + JSON.stringify(url) +
+      ' | 예: "https://<project-ref>.supabase.co"');
+    res.status(200).json({ ok: true, stored: false, reason: 'invalid-supabase-url' });
     return;
   }
 
   try {
-    const response = await fetch(url.replace(/\/+$/, '') + '/rest/v1/lookup_log', {
+    const response = await fetch(endpoint.value, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -92,17 +112,39 @@ module.exports = async (req, res) => {
     });
 
     if (!response.ok) {
-      console.error('lookup-log supabase error', response.status, await safeText(response));
-      res.status(200).json({ ok: true, stored: false });
+      // 테이블 미생성(404)·권한(401/403)·스키마 불일치(400) 등이 여기로 옵니다.
+      console.error('lookup-log supabase error: HTTP ' + response.status +
+        ' | 응답: ' + (await safeText(response)).slice(0, 300) +
+        ' | 테이블이 없으면 api/lookup-log.js 상단 주석의 SQL 을 먼저 실행하십시오.');
+      res.status(200).json({ ok: true, stored: false, reason: 'supabase-http-' + response.status });
       return;
     }
 
     res.status(200).json({ ok: true, stored: true });
   } catch (err) {
-    console.error('lookup-log handler error', err);
-    res.status(200).json({ ok: true, stored: false });
+    console.error('lookup-log request failed:', err && err.message ? err.message : err);
+    res.status(200).json({ ok: true, stored: false, reason: 'request-failed' });
   }
 };
+
+// SUPABASE_URL 을 검증해 REST 엔드포인트를 만듭니다.
+// 스킴 누락(프로젝트 ref만 입력한 경우)처럼 흔한 실수를 fetch 이전에 잡아냅니다.
+function buildEndpoint(rawUrl) {
+  const trimmed = String(rawUrl).trim().replace(/\/+$/, '');
+  if (!/^https?:\/\//i.test(trimmed)) {
+    return { ok: false, error: '스킴(https://)이 없습니다' };
+  }
+  let parsed;
+  try {
+    parsed = new URL(trimmed);
+  } catch (e) {
+    return { ok: false, error: 'URL 로 해석되지 않습니다' };
+  }
+  if (!parsed.hostname || parsed.hostname.indexOf('.') === -1) {
+    return { ok: false, error: '호스트명이 올바르지 않습니다' };
+  }
+  return { ok: true, value: trimmed + '/rest/v1/lookup_log' };
+}
 
 function parseBody(raw) {
   if (!raw) return {};
