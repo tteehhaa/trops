@@ -573,7 +573,7 @@
   }
 
   /* ---------- 결과 렌더 ---------- */
-  function renderResult(record, psr, provisions, trackItems) {
+  function renderResult(record, psr, provisions, trackItems, chapterNames) {
     const parts = hsParts(record.hs8);
     const conc = record.concession;
     const stage = UAE_CONFIG.staging[conc] || null;
@@ -595,8 +595,14 @@
     head.appendChild(el('p', 'uae-hs-note',
       'HS 8단위 · 6단위 ' + parts.hs6 + ' · 제' + parts.hs4 + '호'));
     head.appendChild(el('h1', 'uae-item-name', cleanName(record.name)));
-    const chapterName = psr && psr.chapterName ? ' · ' + psr.chapterName : '';
-    head.appendChild(el('p', 'uae-item-parent', '제' + chapterNo(parts.chapter) + '류' + chapterName));
+    // 류 이름은 data/chapter_names.json 에서 옵니다.
+    // 관세청 속견표 기준 약칭이며(일부는 협정문 원문 정식 명칭), 어느 류인지 알아보게 돕는
+    // 안내용 표기입니다. 법적 인용이나 품목분류 근거로 쓸 수 있는 문구가 아닙니다.
+    // 이름이 없는 류(예: 제98류)는 "제N류"만 표시하고 지어내지 않습니다.
+    const chapterName = (chapterNames && chapterNames[parts.chapter]) ||
+      (psr && psr.chapterName) || '';
+    head.appendChild(el('p', 'uae-item-parent',
+      '제' + chapterNo(parts.chapter) + '류' + (chapterName ? ' · ' + chapterName : '')));
 
     const badges = el('div', 'uae-badge-row');
     badges.appendChild(badge(record.trackLabel, conc === 'PH' ? 'uae-badge-warning' : null));
@@ -889,11 +895,13 @@
       fetchJson('/data/psr.json', {}),
       fetchJson('/data/general-provisions.json', []),
       fetchJson('/data/check-items-by-track.json', {}),
+      fetchJson('/data/chapter_names.json', {}),
     ]).then(function (res) {
       const rows = res[0];
       const psrAll = res[1] || {};
       const provisions = res[2] || [];
       const trackItems = res[3] || {};
+      const chapterNames = res[4] || {};
 
       if (!Array.isArray(rows)) { renderNotFound(hs8, []); return; }
 
@@ -910,7 +918,7 @@
         return;
       }
 
-      renderResult(record, psrAll[chapter] || null, provisions, trackItems);
+      renderResult(record, psrAll[chapter] || null, provisions, trackItems, chapterNames);
     }).catch(function () {
       renderForm('조회 데이터를 불러오지 못했습니다. 잠시 후 다시 시도해 주십시오.');
     });
