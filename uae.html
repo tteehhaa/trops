@@ -207,7 +207,7 @@
 .uae-main{display:block}
 
 /* --- 다시 조회 --- */
-.uae-topbar{padding-block:20px 0}
+.uae-topbar{padding-block:20px 0;display:flex;flex-wrap:wrap;align-items:center;gap:20px}
 .uae-back{display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:500;color:var(--ink-62)}
 .uae-back:hover{color:var(--ink)}
 .uae-back-mark{font-size:15px;line-height:1}
@@ -457,13 +457,20 @@
   /* ---------- 공통 조각 ---------- */
   function topbar() {
     const wrap = el('div', 'container uae-topbar');
-    const a = el('a', 'uae-back');
-    a.href = '/uae';
+
+    const back = el('a', 'uae-back');
+    back.href = '/uae';
     const mark = el('span', 'uae-back-mark', '←');
     mark.setAttribute('aria-hidden', 'true');
-    a.appendChild(mark);
-    a.appendChild(document.createTextNode('다시 조회'));
-    wrap.appendChild(a);
+    back.appendChild(mark);
+    back.appendChild(document.createTextNode('다시 조회'));
+    wrap.appendChild(back);
+
+    // nav 워드마크만으로는 홈 경로가 잘 읽히지 않아 텍스트 링크를 함께 둡니다.
+    const home = el('a', 'uae-back', '홈');
+    home.href = '/';
+    wrap.appendChild(home);
+
     return wrap;
   }
 
