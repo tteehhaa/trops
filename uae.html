@@ -279,6 +279,9 @@
 .uae-check-item{display:grid;grid-template-columns:20px minmax(0,1fr);gap:8px;align-items:baseline;font-size:15px}
 .uae-check-num{font-size:12.5px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
 .uae-check-cta{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:28px}
+/* 진단서 신청 오픈 전 비활성 상태 — 새 색 없이 면(--surface)·선(--line)·--muted 로만 */
+.uae-check-cta .btn:disabled{background:var(--surface);border:1px solid var(--line);
+  color:var(--muted);cursor:not-allowed}
 .uae-check-cta-note{font-size:13.5px;line-height:1.6;color:var(--muted);max-width:34ch}
 
 /* --- 6. 면책 문구 — 하단 고정 --- */
@@ -367,6 +370,10 @@
   ];
 
   const DIAGNOSIS_PRICE = '99,000원';
+  // 진단서 신청 플로우 오픈 전까지 비활성 문구를 씁니다.
+  // 오픈 시 '진단서 신청 · ' + DIAGNOSIS_PRICE 로 되돌리고 disabled 를 해제하면 됩니다.
+  const DIAGNOSIS_CTA_LABEL = '진단서 신청 · 9월 오픈 예정';
+  const DIAGNOSIS_CTA_NOTE = '품목별 원문 확인 후, 확인 항목별 근거와 함께 문서로 발급합니다. 준비 중입니다.';
   const PSR_PENDING_TEXT = '원문 확인 중 — 정확한 기준은 담당 관세사에게 문의하십시오';
 
   /* 허용치(제3.7조)는 세번변경기준을 전제한 항목입니다.
@@ -735,11 +742,13 @@
     checkSec.appendChild(list);
 
     const cta = el('div', 'uae-check-cta');
-    const ctaLink = el('a', 'btn btn-primary', '진단서 신청 · ' + DIAGNOSIS_PRICE);
-    ctaLink.href = '/uae/diagnosis?hs=' + encodeURIComponent(parts.hs8);
-    cta.appendChild(ctaLink);
-    cta.appendChild(el('p', 'uae-check-cta-note',
-      '품목별 원문 확인 후, 확인 항목별 근거와 함께 문서로 발급합니다.'));
+    // 진단서 신청 플로우(/uae/diagnosis)가 아직 없어 임시 비활성화 상태입니다.
+    // 오픈 시 <a class="btn btn-primary" href="/uae/diagnosis?hs=…">로 되돌립니다.
+    const ctaBtn = el('button', 'btn', DIAGNOSIS_CTA_LABEL);
+    ctaBtn.type = 'button';
+    ctaBtn.disabled = true;
+    cta.appendChild(ctaBtn);
+    cta.appendChild(el('p', 'uae-check-cta-note', DIAGNOSIS_CTA_NOTE));
     checkSec.appendChild(cta);
     frag.appendChild(checkSec);
 
