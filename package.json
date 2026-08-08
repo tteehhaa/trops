@@ -4,7 +4,8 @@
   "scripts": {
     "test": "node --test test/",
     "cleanup:preview": "node --env-file=.env.local scripts/cleanup-expired.js",
-    "cleanup:apply": "node --env-file=.env.local scripts/cleanup-expired.js --apply"
+    "cleanup:apply": "node --env-file=.env.local scripts/cleanup-expired.js --apply",
+    "deliver": "node --env-file=.env.local scripts/deliver.js"
   },
   "dependencies": {
     "resend": "^4.0.1"

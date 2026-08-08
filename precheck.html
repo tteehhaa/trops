@@ -1197,6 +1197,12 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
           addRow(box, '보내신 파일', r.body.fileCount + '개');
           // 무엇을 기준으로 대조하는지가 이 서비스의 약속입니다. 접수 확인에서도 밝힙니다.
           addRow(box, '대조 기준', r.body.ownForm ? '보내주신 자사 서식' : '국제표준(ICC) 18개 항목');
+          // 자료를 보낸 시각은 환불규정 §02 의 기준선입니다("링크를 보내드린
+          // 시점을 전달 시점으로 봅니다"). 이용자가 자기 건이 전액 환불 구간인지
+          // 직접 확인할 수 있도록 화면에 밝힙니다.
+          if (r.body.deliveredAt) {
+            addRow(box, '자료 전달', formatDate(r.body.deliveredAt));
+          }
           if (r.body.path === 'paid') {
             addRow(box, '결제 금액', formatWon(r.body.amount));
             addRow(box, '결제 상태', paymentLabel(r.body.paymentStatus));
@@ -1454,11 +1460,16 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
       box.appendChild(p2);
     }
 
+    // ⚠️ 상태 라벨은 실제로 일어난 일보다 앞서 말하면 안 됩니다.
+    //    in_progress 는 예전에 '측정 · 대조 중' 이었는데, 이 상태는 접수만 되고
+    //    사람이 아직 손을 대지 않은 건에도 붙습니다. 아무도 안 보고 있는데
+    //    "대조 중" 이라고 말하면 그건 사실이 아닙니다.
+    //    확정형("…중")을 피하고, 착수 여부를 주장하지 않는 말로 둡니다.
     function statusLabel(status) {
       return {
         awaiting_payment: '결제 대기',
         received:         '접수됨',
-        in_progress:      '측정 · 대조 중',
+        in_progress:      '접수 완료 · 준비 중',
         delivered:        '자료 전달 완료',
         cancelled:        '취소됨'
       }[status] || status;
