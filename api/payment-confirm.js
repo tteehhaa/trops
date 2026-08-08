@@ -153,6 +153,10 @@ module.exports = async (req, res) => {
     // 목록에 두 번 나오지 않도록 여기서 걷어내고 대조 기준으로만 넘깁니다.
     fileNames: (row.file_paths || []).filter((p) => p !== row.own_form_path).map(basename),
     ownFormName: row.own_form_path ? basename(row.own_form_path) : null,
+    // 유료 건도 무상 건과 같은 확인메일을 받습니다. 접수 때 거래 정보를 넣으셨다면
+    // 여기서도 협정 세율 항목이 붙어야 합니다 — 넘기지 않으면 결제한 쪽만 빠집니다.
+    targetCountry: row.target_country || null,
+    hsCode: row.hs_code || null,
     consentTraining: row.consent_training === true,
     receivedAt: row.received_at,
     intakeId: row.id,
@@ -177,7 +181,7 @@ module.exports = async (req, res) => {
 
 async function findOrder(config, orderId) {
   const select = 'id,email,file_count,file_paths,own_form_path,consent_training,received_at,' +
-    'access_token,status,amount,payment_status,payment_key';
+    'access_token,status,amount,payment_status,payment_key,target_country,hs_code';
   const response = await fetch(
     config.restUrl + '/intake?order_id=eq.' + encodeURIComponent(orderId) + '&select=' + select,
     { headers: config.headers }

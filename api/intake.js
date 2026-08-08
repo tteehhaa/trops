@@ -10,11 +10,18 @@
  * POST /api/intake
  *   body: { email, consentTerms, consentTraining, path,
  *           files:   [{ name, type, size, data(base64) }],   필수 · 바이어가 보낸 서류
- *           ownForm:  { name, type, size, data(base64) } }   선택 · 이용자의 자사 NDA 서식
+ *           ownForm:  { name, type, size, data(base64) },    선택 · 이용자의 자사 NDA 서식
+ *           targetCountry: 'AE',                             선택 · 거래 상대국(ISO 2자리)
+ *           hsCode:        '09011100' }                      선택 · HS 8단위
  *
  *   기준 우선순위(PRD-62 §3-3): 자사 서식이 오면 그것이 1순위 기준입니다.
  *   오지 않으면 뒷단이 ICC 를 2순위 대체 기준으로 씁니다.
  *   여기서는 어느 기준을 쓸지 기록만 합니다 — 대조도 판정도 하지 않습니다.
+ *
+ *   targetCountry·hsCode 는 NDA 대조와 무관한 부속 항목입니다. 둘 다 있으면
+ *   접수 확인 화면과 확인메일에 해당국 협정 세율을 함께 보여 줍니다.
+ *   ⚠️ 선택으로 유지하십시오 — NDA 를 보내려는 사람에게 HS 코드를 요구하면
+ *   부속 항목 하나 때문에 접수 자체를 잃습니다.
  *
  *   path='free' (기본) — 선착 20건 무상 실증
  *     슬롯을 원자적으로 점유하고 바로 접수 확정(status='received') · 확인메일 발송
@@ -52,6 +59,7 @@ const crypto = require('crypto');
 const { readConfig, safeText } = require('./_supabase.js');
 const { PRICE, ORDER_NAME, makeOrderId } = require('./_payment.js');
 const { buildMagicLink, sendIntakeMails, RETENTION_DAYS } = require('./_notify.js');
+const { agreementFor, normalizeHsCode } = require('./_agreements.js');
 
 const STORAGE_BUCKET = 'intake';
 
@@ -129,6 +137,16 @@ async function handleIntake(req, res) {
   }
   const ownForm = parsedOwnForm.file;
 
+  // 거래 정보는 선택입니다. 비워 보내는 것이 정상이고 더 흔합니다.
+  // 다만 "보냈는데 형식이 틀린" 경우는 조용히 버리지 않고 알려 줍니다 —
+  // 조용히 버리면 이용자는 세율이 나올 줄 알고 기다립니다.
+  const parsedTrade = parseTradeInfo(body);
+  if (!parsedTrade.ok) {
+    res.status(400).json({ error: 'invalid input', field: parsedTrade.field, detail: parsedTrade.error });
+    return;
+  }
+  const trade = parsedTrade.trade;
+
   const config = readConfig();
   if (!config.ok) {
     console.error('intake config error: ' + config.error);
@@ -177,6 +195,9 @@ async function handleIntake(req, res) {
       file_paths: allPaths,
       file_count: allPaths.length,
       own_form_path: ownFormPath,
+      // 선택 항목이라 대부분 null 입니다. 둘 다 있을 때만 세율을 함께 보여 줍니다.
+      target_country: trade.country,
+      hs_code: trade.hsCode,
       consent_terms: true,
       consent_training: consentTraining,
       consent_at: receivedAt.toISOString(),
@@ -223,6 +244,9 @@ async function handleIntake(req, res) {
     fileNames: files.map((f) => f.name),
     // 운영자가 무엇과 대조해야 하는지 메일 본문에서 바로 보이도록 넘깁니다.
     ownFormName: ownForm ? ownForm.name : null,
+    // 둘 다 있을 때만 확인메일에 협정 세율 항목이 붙습니다(api/_notify.js).
+    targetCountry: trade.country,
+    hsCode: trade.hsCode,
     slotNo: claim.slotNo,
     consentTraining: consentTraining,
     receivedAt: receivedAt,
@@ -262,7 +286,7 @@ async function handleReceipt(req, res) {
 
   try {
     const select = 'status,received_at,file_count,slot_no,delete_after,intake_path,amount,payment_status,paid_at,' +
-      'erasure_requested_at,own_form_path';
+      'erasure_requested_at,own_form_path,target_country,hs_code';
     const response = await fetch(
       config.restUrl + '/intake?access_token=eq.' + encodeURIComponent(token) + '&select=' + select,
       { headers: config.headers }
@@ -289,6 +313,9 @@ async function handleReceipt(req, res) {
       fileCount: row.file_count,
       // 자사 서식을 받았는지만 알려 줍니다(1순위 기준). 저장소 경로는 내보내지 않습니다.
       ownForm: row.own_form_path != null,
+      // 접수 때 골라 넣으신 거래 정보. 화면은 둘 다 있을 때만 세율 섹션을 그립니다.
+      targetCountry: row.target_country || null,
+      hsCode: row.hs_code || null,
       slotNo: row.slot_no,
       deleteAfter: row.delete_after,
       path: row.intake_path,
@@ -418,6 +445,53 @@ function parseOwnForm(raw, bytesSoFar) {
 
   return { ok: true, file: parsed.file };
 }
+
+/* ──────────────────────────────────────────────────────────────
+ * 거래 정보 (선택)
+ * ────────────────────────────────────────────────────────────── */
+
+// 거래 상대국·HS 코드는 접수 성립과 무관합니다. 비어 있으면 둘 다 null 이고,
+// 그 상태가 정상입니다 — 화면과 메일은 세율 섹션을 아예 그리지 않습니다.
+//
+// 한쪽만 채워 보내는 것도 오류가 아닙니다. 조회는 못 하지만, 어느 나라로
+// 나가는 건인지는 운영자에게 쓸모가 있으므로 받은 대로 남깁니다.
+//
+// ⚠️ 형식이 틀린 값은 조용히 버리지 않습니다. 버리면 이용자는 세율이 나올 줄
+//    알고 기다리다가 아무것도 없는 화면을 보게 됩니다.
+function parseTradeInfo(body) {
+  const rawCountry = body.targetCountry;
+  const rawHs = body.hsCode;
+
+  let country = null;
+  if (rawCountry != null && rawCountry !== '') {
+    if (typeof rawCountry !== 'string') {
+      return { ok: false, field: 'targetCountry', error: 'bad-country' };
+    }
+    const agreement = agreementFor(rawCountry);
+    if (!agreement) {
+      // 화면의 선택 상자에 없는 나라입니다. 협정문 확인이 끝난 나라만 받습니다.
+      return { ok: false, field: 'targetCountry', error: 'unsupported-country' };
+    }
+    country = agreement.code;
+  }
+
+  let hsCode = null;
+  if (rawHs != null && rawHs !== '') {
+    if (typeof rawHs !== 'string') {
+      return { ok: false, field: 'hsCode', error: 'bad-hs-code' };
+    }
+    hsCode = normalizeHsCode(rawHs);
+    if (!hsCode) {
+      return { ok: false, field: 'hsCode', error: 'not-8-digits' };
+    }
+  }
+
+  return { ok: true, trade: { country: country, hsCode: hsCode } };
+}
+
+/* ──────────────────────────────────────────────────────────────
+ * 파일 (이어서)
+ * ────────────────────────────────────────────────────────────── */
 
 function parseOneFile(item) {
   const raw = item || {};
