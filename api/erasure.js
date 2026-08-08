@@ -18,6 +18,7 @@
  * ── 무엇을 지우고 무엇을 남기는가 ───────────────────────────────────────────
  *   지금 지움 : Storage 의 접수 파일 전부 (되돌릴 수 없습니다 — 재발급 불가)
  *   지금 표시 : erasure_requested_at · files_deleted_at · file_paths=[] · file_count=0
+ *              own_form_path=null (자사 서식도 file_paths 에 들어 있어 함께 지워집니다)
  *              delete_after=now() → 접수 행 자체는 정리 배치가 다음 실행에서 지웁니다
  *   남김     : email · 결제 기록 — 행이 지워질 때까지만. 환불을 함께 신청한 건의
  *              환불 처리에 필요하고, 법정 보존 대상인 결제 기록은 결제대행사에 남습니다.
@@ -121,6 +122,9 @@ module.exports = async (req, res) => {
     await patchByToken(config, token, {
       file_paths: [],
       file_count: 0,
+      // 파일이 사라졌으므로 자사 서식 경로도 비웁니다 —
+      // 지워진 파일을 가리키는 경로를 남겨 두면 "무엇과 대조했는지" 를 잘못 읽습니다.
+      own_form_path: null,
       status: statusAfter,
       erasure_requested_at: now,
       files_deleted_at: now,

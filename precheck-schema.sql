@@ -80,6 +80,21 @@
 --     where erasure_requested_at is not null;
 
 
+-- ── 0-C. 자사 서식 컬럼 — 기준 우선순위 (2026-08-08) ─────────────────────────
+--
+-- 고객이 보유한 자사 서식이 1순위 기준입니다(PRD-62 §3-3).
+-- 있으면 무조건 그것과 대조하고, 없을 때만 ICC 를 2순위 대체 기준으로 씁니다.
+-- 이 컬럼은 "이 건을 무엇과 대조해야 하는가" 를 뒷단·운영자에게 알려 줍니다.
+--
+-- 가산 변경만 합니다 — 기존 컬럼을 지우거나 형을 바꾸지 않습니다.
+--
+--   alter table public.intake
+--     add column if not exists own_form_path text;
+--
+--   create index if not exists intake_own_form_idx on public.intake (own_form_path)
+--     where own_form_path is not null;
+
+
 -- ── 1. 접수 ──────────────────────────────────────────────────────────────────
 --
 -- 이 테이블에는 판정 결과를 두지 않습니다. 접수 사실만 기록합니다.
@@ -90,6 +105,15 @@ create table public.intake (
   email             text        not null,
   file_paths        text[]      not null default '{}',
   file_count        smallint    not null default 0,
+
+  -- ── 대조 기준 (2026-08-08 추가 · PRD-62 §3-3) ─────────────────────────────
+  -- 이용자가 함께 올린 자사 NDA 서식의 저장 경로. 선택 항목이라 null 이 정상입니다.
+  --   null 아님 → 이 서식이 1순위 기준. 무조건 이것과 대조합니다.
+  --   null      → 자사 서식을 받지 못한 건. ICC 18항목을 2순위 대체 기준으로 씁니다.
+  -- ⚠️ 이 경로는 file_paths 에도 함께 들어갑니다. 삭제 경로(api/erasure.js ·
+  --    scripts/cleanup-expired.js)가 file_paths 만 훑기 때문입니다 —
+  --    여기에만 두면 30일 삭제와 즉시 삭제가 이 파일을 지나칩니다.
+  own_form_path     text,
 
   -- 동의 1 [필수] 서비스 이용약관 및 문서 대조 요청 동의
   consent_terms     boolean     not null,
@@ -148,6 +172,8 @@ create index intake_delete_after_idx on public.intake (delete_after);
 create index intake_payment_idx      on public.intake (payment_status) where intake_path = 'paid';
 create index intake_erasure_idx      on public.intake (erasure_requested_at)
   where erasure_requested_at is not null;
+create index intake_own_form_idx     on public.intake (own_form_path)
+  where own_form_path is not null;
 
 -- service role 로만 읽고 씁니다. anon/authenticated 접근은 막습니다.
 -- (정책을 만들지 않으면 service role 외 모든 접근이 차단됩니다.)

@@ -149,7 +149,10 @@ module.exports = async (req, res) => {
     email: row.email,
     magicLink: buildMagicLink(row.access_token),
     fileCount: row.file_count,
-    fileNames: (row.file_paths || []).map(basename),
+    // 자사 서식은 file_paths 에도 들어 있습니다(삭제 경로가 그것만 훑기 때문).
+    // 목록에 두 번 나오지 않도록 여기서 걷어내고 대조 기준으로만 넘깁니다.
+    fileNames: (row.file_paths || []).filter((p) => p !== row.own_form_path).map(basename),
+    ownFormName: row.own_form_path ? basename(row.own_form_path) : null,
     consentTraining: row.consent_training === true,
     receivedAt: row.received_at,
     intakeId: row.id,
@@ -173,7 +176,7 @@ module.exports = async (req, res) => {
 /* ────────────────────────────────────────────────────────────── */
 
 async function findOrder(config, orderId) {
-  const select = 'id,email,file_count,file_paths,consent_training,received_at,' +
+  const select = 'id,email,file_count,file_paths,own_form_path,consent_training,received_at,' +
     'access_token,status,amount,payment_status,payment_key';
   const response = await fetch(
     config.restUrl + '/intake?order_id=eq.' + encodeURIComponent(orderId) + '&select=' + select,

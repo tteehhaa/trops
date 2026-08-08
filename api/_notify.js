@@ -50,6 +50,13 @@ async function sendIntakeMails(info) {
     : '무상 ' + String(info.slotNo).padStart(2, '0') + '/20';
   const bucket = info.storageBucket || 'intake';
 
+  // 대조 기준(PRD-62 §3-3) — 자사 서식이 1순위, ICC 는 자사 서식이 없을 때만 씁니다.
+  // 운영자가 무엇과 대조할지 메일에서 바로 알 수 있어야 합니다.
+  const ownFormName = typeof info.ownFormName === 'string' ? info.ownFormName : '';
+  const basis = ownFormName
+    ? '자사 서식 — ' + ownFormName
+    : '자사 서식 없음 → 국제표준(ICC) 18항목';
+
   try {
     const { error } = await resend.emails.send({
       from: `TROPS 사전 확인 접수 <${CONTACT_ADDRESS}>`,
@@ -66,6 +73,7 @@ async function sendIntakeMails(info) {
         ${paid ? `<p><strong>결제수단:</strong> ${escapeHtml(info.method || '-')}</p>` : ''}
         <p><strong>이메일:</strong> ${escapeHtml(info.email)}</p>
         <p><strong>파일 ${info.fileCount}건:</strong> ${escapeHtml((info.fileNames || []).join(', ') || '-')}</p>
+        <p><strong>대조 기준:</strong> ${escapeHtml(basis)}</p>
         <p><strong>동의 2(비식별 데이터 활용):</strong> ${info.consentTraining ? '동의' : '미동의'}</p>
         <p><strong>접수 시각:</strong> ${escapeHtml(toIso(info.receivedAt))}</p>
         <p>파일은 Supabase Storage <code>${escapeHtml(bucket)}/${escapeHtml(info.intakeId)}/</code> 에 있습니다.</p>
@@ -86,7 +94,9 @@ async function sendIntakeMails(info) {
         ${paid
           ? `<p><strong>${escapeHtml(formatWon(info.amount))}</strong> 결제가 승인되었습니다. 주문번호 ${escapeHtml(info.orderId || '-')}</p>`
           : ''}
-        <p>18개 항목을 측정해 대조한 뒤, 당일 안에 요약 자료를 정돈해 아래 주소로 올려 드립니다.</p>
+        <p>${ownFormName
+          ? '함께 보내주신 자사 서식을 기준으로 대조한 뒤, 당일 안에 요약 자료를 정돈해 아래 주소로 올려 드립니다.'
+          : '자사 서식을 함께 받지 못했으므로 국제표준(ICC) 18개 항목을 기준으로 대조한 뒤, 당일 안에 요약 자료를 정돈해 아래 주소로 올려 드립니다.'}</p>
         <p><a href="${escapeHtml(info.magicLink)}">접수 내용 확인하기</a></p>
         <p style="color:#64748B;font-size:13px">
           이 링크는 접수하신 분만 여실 수 있습니다. 다른 사람에게 전달하지 마십시오.<br>

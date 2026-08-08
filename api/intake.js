@@ -8,7 +8,13 @@
  *   이 파일이 하는 일은 "접수됐다"를 기록하고 알리는 것까지입니다.
  *
  * POST /api/intake
- *   body: { email, consentTerms, consentTraining, path, files: [{ name, type, size, data(base64) }] }
+ *   body: { email, consentTerms, consentTraining, path,
+ *           files:   [{ name, type, size, data(base64) }],   필수 · 바이어가 보낸 서류
+ *           ownForm:  { name, type, size, data(base64) } }   선택 · 이용자의 자사 NDA 서식
+ *
+ *   기준 우선순위(PRD-62 §3-3): 자사 서식이 오면 그것이 1순위 기준입니다.
+ *   오지 않으면 뒷단이 ICC 를 2순위 대체 기준으로 씁니다.
+ *   여기서는 어느 기준을 쓸지 기록만 합니다 — 대조도 판정도 하지 않습니다.
  *
  *   path='free' (기본) — 선착 20건 무상 실증
  *     슬롯을 원자적으로 점유하고 바로 접수 확정(status='received') · 확인메일 발송
@@ -113,6 +119,16 @@ async function handleIntake(req, res) {
   }
   const files = parsed.files;
 
+  // 자사 서식은 선택입니다. 없으면 ownForm 이 null 로 남고, 뒷단이 ICC 를 씁니다.
+  // 합계 용량은 바이어 서류와 같은 20MB 한도를 함께 씁니다 — 선택 항목이라고
+  // 한도를 늘려 주면 요청 본문만 커집니다.
+  const parsedOwnForm = parseOwnForm(body.ownForm, parsed.totalBytes);
+  if (!parsedOwnForm.ok) {
+    res.status(400).json({ error: 'invalid input', field: 'ownForm', detail: parsedOwnForm.error });
+    return;
+  }
+  const ownForm = parsedOwnForm.file;
+
   const config = readConfig();
   if (!config.ok) {
     console.error('intake config error: ' + config.error);
@@ -149,11 +165,18 @@ async function handleIntake(req, res) {
   try {
     const uploaded = await uploadFiles(config, intakeId, files);
 
+    // 자사 서식도 file_paths 에 넣습니다. 삭제 경로(api/erasure.js ·
+    // scripts/cleanup-expired.js)가 file_paths 만 훑으므로, own_form_path 에만
+    // 두면 30일 삭제와 즉시 삭제가 이 파일을 지나칩니다.
+    const ownFormPath = ownForm ? await uploadOwnForm(config, intakeId, ownForm) : null;
+    const allPaths = ownFormPath ? uploaded.concat([ownFormPath]) : uploaded;
+
     await insertIntake(config, {
       id: intakeId,
       email: email,
-      file_paths: uploaded,
-      file_count: uploaded.length,
+      file_paths: allPaths,
+      file_count: allPaths.length,
+      own_form_path: ownFormPath,
       consent_terms: true,
       consent_training: consentTraining,
       consent_at: receivedAt.toISOString(),
@@ -196,8 +219,10 @@ async function handleIntake(req, res) {
   const mail = await sendIntakeMails({
     email: email,
     magicLink: buildMagicLink(token),
-    fileCount: files.length,
+    fileCount: files.length + (ownForm ? 1 : 0),
     fileNames: files.map((f) => f.name),
+    // 운영자가 무엇과 대조해야 하는지 메일 본문에서 바로 보이도록 넘깁니다.
+    ownFormName: ownForm ? ownForm.name : null,
     slotNo: claim.slotNo,
     consentTraining: consentTraining,
     receivedAt: receivedAt,
@@ -237,7 +262,7 @@ async function handleReceipt(req, res) {
 
   try {
     const select = 'status,received_at,file_count,slot_no,delete_after,intake_path,amount,payment_status,paid_at,' +
-      'erasure_requested_at';
+      'erasure_requested_at,own_form_path';
     const response = await fetch(
       config.restUrl + '/intake?access_token=eq.' + encodeURIComponent(token) + '&select=' + select,
       { headers: config.headers }
@@ -262,6 +287,8 @@ async function handleReceipt(req, res) {
       status: row.status,
       receivedAt: row.received_at,
       fileCount: row.file_count,
+      // 자사 서식을 받았는지만 알려 줍니다(1순위 기준). 저장소 경로는 내보내지 않습니다.
+      ownForm: row.own_form_path != null,
       slotNo: row.slot_no,
       deleteAfter: row.delete_after,
       path: row.intake_path,
@@ -356,53 +383,85 @@ function parseFiles(raw) {
   let total = 0;
 
   for (let i = 0; i < raw.length; i += 1) {
-    const item = raw[i] || {};
-    const rawName = typeof item.name === 'string' ? item.name.trim() : '';
-    if (!rawName || rawName.length > MAX_NAME_LEN) {
-      return { ok: false, error: 'bad-name' };
-    }
+    const parsed = parseOneFile(raw[i]);
+    if (!parsed.ok) return parsed;
 
-    const ext = rawName.split('.').pop().toLowerCase();
-    if (ALLOWED_EXTENSIONS.indexOf(ext) === -1) {
-      return { ok: false, error: 'unsupported-type' };
-    }
-
-    const data = typeof item.data === 'string' ? item.data : '';
-    // 클라이언트가 data:...;base64, 접두사를 붙여 보낼 수 있습니다.
-    const base64 = data.indexOf(',') !== -1 && data.slice(0, 5) === 'data:'
-      ? data.slice(data.indexOf(',') + 1)
-      : data;
-    if (!base64) {
-      return { ok: false, error: 'empty-file' };
-    }
-
-    let buffer;
-    try {
-      buffer = Buffer.from(base64, 'base64');
-    } catch (e) {
-      return { ok: false, error: 'bad-encoding' };
-    }
-    if (buffer.length === 0) {
-      return { ok: false, error: 'empty-file' };
-    }
-    if (buffer.length > MAX_FILE_BYTES) {
-      return { ok: false, error: 'file-too-large' };
-    }
-
-    total += buffer.length;
+    total += parsed.file.buffer.length;
     if (total > MAX_TOTAL_BYTES) {
       return { ok: false, error: 'total-too-large' };
     }
 
-    files.push({
+    files.push(parsed.file);
+  }
+
+  return { ok: true, files: files, totalBytes: total };
+}
+
+// 자사 서식은 1개만 받습니다. 없으면 file 이 null 이고, 그 자체가 정상입니다 —
+// 뒷단은 null 을 보고 ICC 를 대체 기준으로 씁니다.
+// 검사는 바이어 서류와 똑같이 합니다. 선택 항목이라고 느슨하게 두면
+// 확장자·용량 한도를 우회하는 경로가 하나 더 생깁니다.
+function parseOwnForm(raw, bytesSoFar) {
+  if (raw == null || raw === '') {
+    return { ok: true, file: null };
+  }
+  if (typeof raw !== 'object' || Array.isArray(raw)) {
+    return { ok: false, error: 'bad-own-form' };
+  }
+
+  const parsed = parseOneFile(raw);
+  if (!parsed.ok) return parsed;
+
+  if ((bytesSoFar || 0) + parsed.file.buffer.length > MAX_TOTAL_BYTES) {
+    return { ok: false, error: 'total-too-large' };
+  }
+
+  return { ok: true, file: parsed.file };
+}
+
+function parseOneFile(item) {
+  const raw = item || {};
+  const rawName = typeof raw.name === 'string' ? raw.name.trim() : '';
+  if (!rawName || rawName.length > MAX_NAME_LEN) {
+    return { ok: false, error: 'bad-name' };
+  }
+
+  const ext = rawName.split('.').pop().toLowerCase();
+  if (ALLOWED_EXTENSIONS.indexOf(ext) === -1) {
+    return { ok: false, error: 'unsupported-type' };
+  }
+
+  const data = typeof raw.data === 'string' ? raw.data : '';
+  // 클라이언트가 data:...;base64, 접두사를 붙여 보낼 수 있습니다.
+  const base64 = data.indexOf(',') !== -1 && data.slice(0, 5) === 'data:'
+    ? data.slice(data.indexOf(',') + 1)
+    : data;
+  if (!base64) {
+    return { ok: false, error: 'empty-file' };
+  }
+
+  let buffer;
+  try {
+    buffer = Buffer.from(base64, 'base64');
+  } catch (e) {
+    return { ok: false, error: 'bad-encoding' };
+  }
+  if (buffer.length === 0) {
+    return { ok: false, error: 'empty-file' };
+  }
+  if (buffer.length > MAX_FILE_BYTES) {
+    return { ok: false, error: 'file-too-large' };
+  }
+
+  return {
+    ok: true,
+    file: {
       name: rawName,
       safeName: safeFileName(rawName, ext),
       mime: MIME_BY_EXTENSION[ext] || 'application/octet-stream',
       buffer: buffer,
-    });
-  }
-
-  return { ok: true, files: files };
+    },
+  };
 }
 
 // 저장소 경로에는 원래 파일명을 쓰지 않습니다.
@@ -421,30 +480,40 @@ async function uploadFiles(config, intakeId, files) {
   for (let i = 0; i < files.length; i += 1) {
     const file = files[i];
     const path = intakeId + '/' + String(i + 1).padStart(2, '0') + '-' + file.safeName;
-    const response = await fetch(
-      config.storageUrl + '/object/' + STORAGE_BUCKET + '/' + encodeURI(path),
-      {
-        method: 'POST',
-        headers: {
-          apikey: config.key,
-          Authorization: 'Bearer ' + config.key,
-          'Content-Type': file.mime,
-          'x-upsert': 'false',
-        },
-        body: file.buffer,
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error('storage upload HTTP ' + response.status +
-        ' | ' + (await safeText(response)).slice(0, 300) +
-        ' | 버킷("' + STORAGE_BUCKET + '")이 없으면 precheck-schema.sql 을 먼저 실행하십시오.');
-    }
-
-    paths.push(STORAGE_BUCKET + '/' + path);
+    paths.push(await uploadOne(config, path, file));
   }
 
   return paths;
+}
+
+// 자사 서식은 이름으로 구분되게 올립니다. 운영자가 저장소만 보고도
+// 어느 파일이 대조 기준인지 알아야 하기 때문입니다.
+async function uploadOwnForm(config, intakeId, file) {
+  return uploadOne(config, intakeId + '/own-form-' + file.safeName, file);
+}
+
+async function uploadOne(config, path, file) {
+  const response = await fetch(
+    config.storageUrl + '/object/' + STORAGE_BUCKET + '/' + encodeURI(path),
+    {
+      method: 'POST',
+      headers: {
+        apikey: config.key,
+        Authorization: 'Bearer ' + config.key,
+        'Content-Type': file.mime,
+        'x-upsert': 'false',
+      },
+      body: file.buffer,
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error('storage upload HTTP ' + response.status +
+      ' | ' + (await safeText(response)).slice(0, 300) +
+      ' | 버킷("' + STORAGE_BUCKET + '")이 없으면 precheck-schema.sql 을 먼저 실행하십시오.');
+  }
+
+  return STORAGE_BUCKET + '/' + path;
 }
 
 /* ──────────────────────────────────────────────────────────────

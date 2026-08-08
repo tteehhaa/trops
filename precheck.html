@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>바이어 서류 사전 확인 — TROPS</title>
-<meta name="description" content="바이어가 보낸 NDA, 우리 기준과 뭐가 다른지 한눈에 안 보이실 때. AI가 18개 항목을 측정해 대조하고, 당일 요약 자료로 정돈해 드립니다.">
+<meta name="description" content="바이어가 보낸 NDA, 우리 회사 기준과 뭐가 다른지 한눈에 안 보이실 때. 자사 서식이 있으면 그대로 대조하고, 없으면 국제표준(ICC) 18개 항목으로 대조해 당일 요약 자료로 정돈해 드립니다.">
 <link rel="canonical" href="https://trops.kr/precheck">
 <meta property="og:title" content="바이어 서류 사전 확인 — TROPS">
-<meta property="og:description" content="AI가 18개 항목을 측정해 대조하고, 당일 요약 자료로 정돈해 드립니다.">
+<meta property="og:description" content="자사 서식이 있으면 그대로 대조하고, 없으면 국제표준(ICC) 18개 항목으로 대조해 당일 요약 자료로 정돈해 드립니다.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://trops.kr/precheck">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
@@ -246,6 +246,7 @@
   .field { display: flex; flex-direction: column; gap: 8px; }
   .field > label { font-size: 14.5px; font-weight: 600; }
   .field .req { color: var(--accent); }
+  .field .optional { color: var(--muted); font-weight: 400; }
   .field-hint { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--muted); }
   .field input[type="email"] {
     font: inherit; font-size: 16px; height: 48px; padding: 0 14px;
@@ -429,8 +430,8 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
       <!-- ===== Hero ===== -->
       <section class="container narrow hero">
         <p class="eyebrow">바이어 서류 사전 확인</p>
-        <h1>바이어가 보낸 NDA, 우리 기준과 뭐가 다른지 한눈에 안 보이실 때.</h1>
-        <p class="hero-lead">AI가 18개 항목을 측정해 대조하고, 당일 요약 자료로 정돈해 드립니다.</p>
+        <h1>바이어가 보낸 NDA, 우리 회사 기준과 뭐가 다른지 한눈에 안 보이실 때.</h1>
+        <p class="hero-lead">자사 서식이 있으면 그대로 대조하고, 없으면 국제표준(ICC) 18개 항목으로 대조해 당일 요약 자료로 정돈해 드립니다.</p>
 
         <p class="slots" id="slots-badge" role="status" aria-live="polite">
           <span class="slots-mark" id="slots-mark" aria-hidden="true"></span>
@@ -452,11 +453,11 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
           <div class="steps">
             <div class="step">
               <h3><span class="step-num" aria-hidden="true">01</span><span>보내기</span></h3>
-              <p>이메일 주소와 바이어가 보낸 서류를 올려 주십시오. 로그인은 필요 없습니다.</p>
+              <p>이메일 주소와 바이어가 보낸 서류를 올려 주십시오. 쓰시는 자사 NDA 서식이 있으면 함께 올려 주십시오. 로그인은 필요 없습니다.</p>
             </div>
             <div class="step">
-              <h3><span class="step-num" aria-hidden="true">02</span><span>측정 · 대조</span></h3>
-              <p>18개 항목을 기준 문안과 나란히 놓고, 서로 다른 지점을 표시합니다.</p>
+              <h3><span class="step-num" aria-hidden="true">02</span><span>기준과 대조</span></h3>
+              <p>보내주신 자사 서식이 기준입니다. 그것과 바이어 문안을 나란히 놓고 서로 다른 지점을 표시합니다. 자사 서식이 없으시면 국제표준(ICC) 18개 항목을 기준으로 씁니다.</p>
             </div>
             <div class="step">
               <h3><span class="step-num" aria-hidden="true">03</span><span>당일 전달</span></h3>
@@ -470,14 +471,14 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
       <section class="section" id="deliver">
         <div class="container narrow section-inner">
           <p class="kicker">WHAT YOU GET</p>
-          <h2>18개 항목이 어디서 갈라지는지 표시해 드립니다.</h2>
+          <h2>우리 회사 기준과 어디서 갈라지는지 표시해 드립니다.</h2>
           <p class="section-sub">읽어야 할 자리를 좁혀 드리는 자료입니다. 무엇을 받아들일지는 이용자가 정합니다.</p>
 
           <ul class="deliver-list">
-            <li><span class="deliver-num" aria-hidden="true">01</span><span>18개 항목별 대조 결과 — 기준 문안과 바이어 문안을 나란히</span></li>
+            <li><span class="deliver-num" aria-hidden="true">01</span><span>항목별 대조 결과 — 기준 문안과 바이어 문안을 나란히</span></li>
             <li><span class="deliver-num" aria-hidden="true">02</span><span>차이가 큰 순서로 정돈한 목록</span></li>
             <li><span class="deliver-num" aria-hidden="true">03</span><span>각 항목이 서류 원문 어디에 있는지 인용 위치</span></li>
-            <li><span class="deliver-num" aria-hidden="true">04</span><span>측정에 쓰인 기준과 측정 시각</span></li>
+            <li><span class="deliver-num" aria-hidden="true">04</span><span>대조에 쓰인 기준 — 자사 서식이면 그 파일명, 없으면 국제표준(ICC) 18개 항목 — 과 측정 시각</span></li>
           </ul>
         </div>
       </section>
@@ -540,6 +541,20 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
               <ul class="filelist" id="intake-filelist"></ul>
             </div>
 
+            <!-- 자사 서식 = 1순위 기준 (PRD-62 §3-3).
+                 선택 항목이지만 "없으면 ICC" 를 반드시 함께 안내해야 합니다 —
+                 무엇을 기준으로 대조하는지가 이 서비스의 약속입니다. -->
+            <div class="field">
+              <label for="intake-own-form">자사 NDA 서식 <span class="optional">(선택)</span></label>
+              <input type="file" id="intake-own-form" name="ownForm"
+                     accept=".pdf,.doc,.docx,.hwp,.hwpx,.txt,.rtf,.png,.jpg,.jpeg">
+              <p class="field-hint">
+                올려주시면 <strong>이 서식을 기준으로</strong> 대조해 드립니다.
+                없으시면 국제표준(ICC) 18개 항목을 기준으로 대조합니다. · 1개 · 10MB
+              </p>
+              <ul class="filelist" id="intake-own-form-list"></ul>
+            </div>
+
             <div class="consents">
               <div class="consent">
                 <input type="checkbox" id="consent-terms" name="consentTerms" required>
@@ -548,7 +563,11 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
                     <span class="consent-tag">필수</span>
                     <span>서비스 이용약관 및 문서 대조 요청 동의</span>
                   </label>
-                  <p class="consent-body">바이어 서류의 18개 항목 측정 및 당일 자료 전달을 위한 최소한의 데이터 처리에 동의합니다.</p>
+                  <!-- ⚠️ 동의 범위 변경 (2026-08-08 · 창업자 승인 대기)
+                       자사 서식 업로드가 생기면서 처리 대상이 "바이어 서류" 하나가 아니게
+                       되었습니다. 기존 문구는 자사 서식 처리를 덮지 못하므로 범위를 넓혔습니다.
+                       "18개 항목"은 자사 서식이 있으면 그 기준을 쓰므로 조건부가 되어 뺐습니다. -->
+                  <p class="consent-body">보내주신 바이어 서류와 자사 서식의 대조 및 당일 자료 전달을 위한 최소한의 데이터 처리에 동의합니다.</p>
                 </div>
               </div>
 
@@ -662,6 +681,8 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
     var submitBtn  = document.getElementById('intake-submit');
     var fileInput  = document.getElementById('intake-files');
     var fileList   = document.getElementById('intake-filelist');
+    var ownInput   = document.getElementById('intake-own-form');
+    var ownList    = document.getElementById('intake-own-form-list');
     var closedBox  = document.getElementById('closed-notice');
     var payArea    = document.getElementById('pay-area');
     var freeRadio  = document.getElementById('plan-free');
@@ -678,6 +699,7 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
     loadPayConfig();
 
     fileInput.addEventListener('change', renderFileList);
+    ownInput.addEventListener('change', renderOwnFormList);
     form.addEventListener('submit', onSubmit);
     freeRadio.addEventListener('change', onPlanChange);
     paidRadio.addEventListener('change', onPlanChange);
@@ -810,8 +832,15 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
     /* ---------- 파일 ---------- */
 
     function renderFileList() {
-      fileList.innerHTML = '';
-      var files = fileInput.files;
+      renderInto(fileList, fileInput.files);
+    }
+
+    function renderOwnFormList() {
+      renderInto(ownList, ownInput.files);
+    }
+
+    function renderInto(target, files) {
+      target.innerHTML = '';
       for (var i = 0; i < files.length; i += 1) {
         var li = document.createElement('li');
         var name = document.createElement('span');
@@ -820,7 +849,7 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
         size.textContent = formatBytes(files[i].size);
         li.appendChild(name);
         li.appendChild(size);
-        fileList.appendChild(li);
+        target.appendChild(li);
       }
     }
 
@@ -828,6 +857,12 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
       if (bytes < 1024) return bytes + ' B';
       if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + ' KB';
       return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+
+    function toPayload(file) {
+      return readAsBase64(file).then(function (data) {
+        return { name: file.name, type: file.type, size: file.size, data: data };
+      });
     }
 
     function readAsBase64(file) {
@@ -853,6 +888,8 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
       var consentTerms = document.getElementById('consent-terms').checked;
       var consentTraining = document.getElementById('consent-training').checked;
       var files = Array.prototype.slice.call(fileInput.files);
+      // 자사 서식은 선택입니다. 없으면 ownFile 이 null 이고 서버가 ICC 기준으로 표시합니다.
+      var ownFile = ownInput.files.length > 0 ? ownInput.files[0] : null;
 
       if (plan === 'free' && !freeAvailable) {
         return fail('무상 실증 자리가 모두 찼습니다. 런칭가로 신청해 주십시오.');
@@ -874,6 +911,13 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
         }
         total += files[i].size;
       }
+      // 자사 서식도 같은 한도를 함께 씁니다 — 서버 검사와 어긋나지 않게 맞춥니다.
+      if (ownFile) {
+        if (ownFile.size > MAX_FILE_BYTES) {
+          return fail('자사 서식 "' + ownFile.name + '" 이 10MB를 넘습니다.');
+        }
+        total += ownFile.size;
+      }
       if (total > MAX_TOTAL_BYTES) {
         return fail('파일 합계가 20MB를 넘습니다.');
       }
@@ -886,12 +930,11 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
 
       setBusy(true, plan === 'paid' ? '접수 내용을 저장하는 중입니다…' : '보내는 중입니다…');
 
-      Promise.all(files.map(function (file) {
-        return readAsBase64(file).then(function (data) {
-          return { name: file.name, type: file.type, size: file.size, data: data };
-        });
-      }))
-        .then(function (payload) {
+      Promise.all([
+        Promise.all(files.map(toPayload)),
+        ownFile ? toPayload(ownFile) : Promise.resolve(null)
+      ])
+        .then(function (read) {
           return fetch(INTAKE_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -900,7 +943,9 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
               email: email,
               consentTerms: consentTerms,
               consentTraining: consentTraining,
-              files: payload
+              files: read[0],
+              // null 이면 서버가 ICC 를 대체 기준으로 씁니다(PRD-62 §3-3).
+              ownForm: read[1]
             })
           });
         })
@@ -940,6 +985,7 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
     function onAccepted(body) {
       form.reset();
       fileList.innerHTML = '';
+      ownList.innerHTML = '';
       setBusy(true);
       msg.classList.remove('is-error');
       msg.textContent = '접수되었습니다 (' + body.slotNo + '/20). ' +
@@ -1052,6 +1098,8 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
           addRow(box, '접수 상태', statusLabel(r.body.status));
           addRow(box, '접수 시각', formatDate(r.body.receivedAt));
           addRow(box, '보내신 파일', r.body.fileCount + '개');
+          // 무엇을 기준으로 대조하는지가 이 서비스의 약속입니다. 접수 확인에서도 밝힙니다.
+          addRow(box, '대조 기준', r.body.ownForm ? '보내주신 자사 서식' : '국제표준(ICC) 18개 항목');
           if (r.body.path === 'paid') {
             addRow(box, '결제 금액', formatWon(r.body.amount));
             addRow(box, '결제 상태', paymentLabel(r.body.paymentStatus));
