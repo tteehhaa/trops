@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TROPS — 수출 중소기업을 위한 AI 거래 운영 서비스</title>
-<meta name="description" content="바이어 확인부터 계약, 수출 절차, 대금 회수까지. 흩어진 거래 정보와 업무를 하나의 거래 흐름으로 연결하여, 거래 진행을 한눈에 관리합니다.">
+<title>TROPS — 바이어 NDA, 우리 회사 기준으로 확인하세요</title>
+<meta name="description" content="바이어가 보낸 NDA를 고객사 자사 서식과 대조합니다. 자사 서식이 없을 때만 국제표준(ICC)을 대체 기준으로 씁니다. 로그인 없이 파일 업로드.">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
 <style>
   :root {
@@ -48,11 +48,6 @@
     outline-offset: 2px;
   }
 
-  @keyframes trops-pulse {
-    0%, 100% { opacity: 1; }
-    50%      { opacity: .45; }
-  }
-
   .container { max-width: 1200px; margin: 0 auto; padding-inline: clamp(24px, 5vw, 64px); }
 
   /* ---------- Skip link ---------- */
@@ -82,7 +77,7 @@
   }
   .nav-inner { height: 64px; display: flex; align-items: center; gap: 40px; }
   /* 앵커 이동 시 sticky .nav(64px)에 목표 지점이 가리지 않도록 */
-  #how, #stages, #start, #interest { scroll-margin-top: 84px; }
+  #how, #next, #interest { scroll-margin-top: 84px; }
   .wordmark {
     font-size: 19px;
     font-weight: 700;
@@ -125,15 +120,12 @@
   }
   .btn-secondary:hover { border-color: var(--muted); color: var(--ink); }
   .btn-nav { height: 36px; padding: 0 16px; font-size: 14.5px; }
+  /* nav 우측: 앱은 아직 메인 CTA가 아니므로 버튼이 아닌 저채도 텍스트 링크로 둔다 */
+  .nav-quiet { font-size: 14px; font-weight: 500; color: var(--muted); }
+  .nav-quiet:hover { color: var(--ink-64); }
 
   /* ---------- Hero ---------- */
-  .hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
-    gap: clamp(40px, 6vw, 88px);
-    align-items: center;
-    padding-block: clamp(56px, 8vw, 104px) clamp(64px, 8vw, 112px);
-  }
+  .hero { padding-block: clamp(60px, 8vw, 108px) clamp(60px, 8vw, 104px); }
   .eyebrow {
     margin: 0 0 20px;
     font-size: 13.5px;
@@ -143,35 +135,23 @@
   }
   .hero h1 {
     margin: 0;
-    font-size: clamp(38px, 4.6vw, 58px);
-    line-height: 1.16;
+    font-size: clamp(36px, 4.4vw, 56px);
+    line-height: 1.18;
     letter-spacing: -0.035em;
     font-weight: 700;
+    max-width: 21ch;
   }
   .hero-lead {
-    margin: 24px 0 0;
+    margin: 26px 0 0;
     font-size: 17.5px;
     line-height: 1.72;
     font-weight: 500;
     color: var(--ink);
-    white-space: nowrap;
+    max-width: 38ch;
   }
-  .hero-sub {
-    margin: 14px 0 0;
-    font-size: 16.5px;
-    line-height: 1.76;
-    max-width: 36ch;
-    color: var(--ink-64);
-  }
-  /* ---------- Hero HS lookup (block 1 · 통합 조회줄) ---------- */
-  .hs-box { margin-top: 30px; max-width: 468px; }
-  .hs-box-label {
-    margin: 0 0 10px;
-    font-size: 13.5px;
-    font-weight: 600;
-    letter-spacing: .01em;
-    color: var(--ink);
-  }
+
+  /* ---------- HS lookup (협정 세율 · NDA 흐름의 보조 단계) ---------- */
+  .hs-box { max-width: 468px; }
   .hs-group {
     display: flex;
     align-items: stretch;
@@ -207,70 +187,9 @@
   .hs-group input::placeholder { color: var(--muted); }
   .hs-group .btn { flex: 0 0 auto; height: 42px; padding: 0 20px; }
   .hs-meta { margin: 10px 0 0; font-size: 13.5px; line-height: 1.65; color: var(--muted); }
-  .hs-second { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 26px; }
-  .hs-second-note { font-size: 13.5px; color: var(--muted); }
 
-  .cta-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
-
-  /* ---------- Hero workflow panel ---------- */
-  .wf-panel {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 28px clamp(24px, 3vw, 36px) 30px;
-  }
-  .wf-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding-bottom: 18px;
-    margin-bottom: 22px;
-    border-bottom: 1px solid var(--line);
-  }
-  .wf-txn { font-size: 13px; font-weight: 600; letter-spacing: .01em; color: var(--ink-70); }
-  .wf-live {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--accent);
-  }
-  .wf-live-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
-    animation: trops-pulse 2.2s ease-in-out infinite;
-  }
-  .wf-row { display: grid; grid-template-columns: 16px minmax(0, 1fr); gap: 16px; }
-  .wf-rail { position: relative; display: flex; justify-content: center; align-self: stretch; }
-  .wf-line { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--line); }
-  .wf-line-first { top: 10.5px; }
-  .wf-line-last { bottom: auto; height: 10.5px; }
-  .wf-dot { position: relative; width: 7px; height: 7px; margin-top: 7px; border-radius: 50%; }
-  .wf-dot-done { background: var(--muted); }
-  .wf-dot-todo { background: var(--surface); border: 1.5px solid var(--line); }
-  .wf-dot-active {
-    width: 11px;
-    height: 11px;
-    margin-top: 5px;
-    background: var(--accent);
-    outline: 4px solid rgba(15, 23, 42, .12);
-  }
-  .wf-item { display: flex; align-items: center; gap: 10px; padding-bottom: 20px; min-height: 22px; }
-  .wf-label { font-size: 15.5px; font-weight: 500; letter-spacing: -0.01em; color: var(--muted); }
-  .wf-label-active { font-weight: 600; color: var(--accent); }
-  .wf-badge {
-    font-size: 11.5px;
-    font-weight: 600;
-    line-height: 1.4;
-    color: var(--accent);
-    border: 1px solid rgba(15, 23, 42, .28);
-    border-radius: 4px;
-    padding: 2px 7px;
-  }
+  .cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 30px; }
+  .cta-row-note { font-size: 13.5px; color: var(--muted); }
 
   /* ---------- How it works ---------- */
   .how { border-top: 1px solid var(--line); }
@@ -290,50 +209,33 @@
     font-weight: 700;
     max-width: 24ch;
   }
-  .timeline { margin-top: clamp(44px, 5vw, 64px); }
-  .tl-row { display: grid; grid-template-columns: 16px minmax(0, 1fr); gap: clamp(20px, 3vw, 32px); }
-  .tl-rail { position: relative; display: flex; justify-content: center; align-self: stretch; }
-  .tl-line { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--line); }
-  .tl-line-first { top: 6.5px; }
-  .tl-line-last { bottom: auto; height: 38.5px; }
-  .tl-end-dot { position: relative; width: 9px; height: 9px; margin-top: 2px; border-radius: 50%; background: var(--accent); }
-  .tl-end-dot-last { margin-top: 34px; }
-  .tl-step-dot {
-    position: relative;
-    width: 7px;
-    height: 7px;
-    margin-top: 11px;
-    border-radius: 50%;
-    background: var(--surface);
-    border: 1.5px solid var(--muted);
-  }
-  .tl-step-dot-mid { margin-top: 51px; }
-  .tl-endpoint { margin: 0; font-size: 14px; font-weight: 700; letter-spacing: .1em; color: var(--accent); }
-  .tl-endpoint-start { padding-bottom: 24px; }
-  .tl-endpoint-end { padding-top: 30px; }
-  .tl-body {
-    padding: 40px 0;
-    border-bottom: 1px solid var(--line);
+  /* ---------- NDA 확인 흐름 (3단계 · 세율조회는 3단계의 보조 항목) ---------- */
+  .flow { margin-top: clamp(36px, 4.5vw, 56px); max-width: 880px; }
+  .flow-row {
     display: grid;
-    grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
     gap: 8px clamp(24px, 4vw, 64px);
+    padding: 30px 0;
+    border-bottom: 1px solid var(--line);
     align-items: baseline;
   }
-  .tl-body-first { padding-top: 0; }
-  .tl-body h3 {
+  .flow-row:first-of-type { border-top: 1px solid var(--line); }
+  .flow-name {
     margin: 0;
-    font-size: 21px;
-    line-height: 1.4;
-    letter-spacing: -0.02em;
-    font-weight: 700;
     display: flex;
     gap: 14px;
+    font-size: 20px;
+    line-height: 1.45;
+    letter-spacing: -0.02em;
+    font-weight: 700;
   }
-  .tl-num { font-size: 14px; font-weight: 600; color: var(--muted); line-height: 1.85; }
-  .tl-desc { margin: 0; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); max-width: 44ch; }
+  .flow-num { font-size: 13px; font-weight: 600; color: var(--muted); line-height: 1.95; }
+  .flow-desc { margin: 0; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); max-width: 46ch; }
+  .flow-extra { grid-column: 2; margin-top: 20px; }
+  .flow-extra-label { margin: 0 0 12px; font-size: 14.5px; line-height: 1.7; color: var(--ink-64); max-width: 46ch; }
 
-  /* ---------- Roadmap (block 2 · 표 대체) ---------- */
-  #stages { border-top: 0; }  /* .band already draws the divider above */
+  /* ---------- Roadmap (예정 항목) ---------- */
+  #next { border-top: 0; }  /* .band already draws the divider above */
   .how-inner-tight { padding-block: clamp(44px, 5vw, 68px) clamp(56px, 7vw, 96px); }
   .rm-h2 {
     margin: 0;
@@ -343,6 +245,7 @@
     font-weight: 700;
     max-width: 26ch;
   }
+  .rm-lead { margin: 16px 0 0; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); max-width: 42ch; }
   .rm { margin-top: clamp(28px, 4vw, 40px); max-width: 860px; }
   .rm-row {
     display: grid;
@@ -388,18 +291,6 @@
     max-width: 36ch;
   }
 
-  /* ---------- CTA ---------- */
-  .cta-inner { padding-block: clamp(72px, 9vw, 120px); }
-  .cta h2 {
-    margin: 0;
-    font-size: clamp(30px, 3.6vw, 46px);
-    line-height: 1.24;
-    letter-spacing: -0.035em;
-    font-weight: 700;
-  }
-  .cta-sub { margin: 20px 0 0; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); max-width: 38ch; }
-  .cta .cta-row { margin-top: 32px; }
-
   /* ---------- Interest form ---------- */
   .interest { border-top: 1px solid var(--line); }
   .interest-inner { padding-block: clamp(64px, 8vw, 104px); }
@@ -409,11 +300,11 @@
     line-height: 1.28;
     letter-spacing: -0.03em;
     font-weight: 700;
+    max-width: 24ch;
   }
-  .interest-sub { margin: 14px 0 0; font-size: 16.5px; color: var(--ink-64); max-width: 38ch; }
   .interest-form {
     max-width: 440px;
-    margin-top: 36px;
+    margin-top: 32px;
     display: flex;
     flex-direction: column;
     gap: 18px;
@@ -455,6 +346,8 @@
      "주식회사 테오네"를 "(주)테오네"로 줄여 쓰지 마십시오. */
   .footer-links { margin: 18px 0 0; display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; }
   .footer-links a { color: var(--ink-64); }
+  /* KAIST OverEdge 참여 표기 — 정책 링크와 사업자정보 사이, 회색 톤 */
+  .footer-credit { margin: 14px 0 0; font-size: 12.5px; line-height: 1.7; color: var(--muted); }
   .footer-biz { margin: 16px 0 0; display: grid; gap: 3px; font-size: 12.5px; line-height: 1.7; color: var(--muted); }
   .footer-biz > div { display: flex; flex-wrap: wrap; gap: 4px 10px; }
   .footer-biz dt { flex: 0 0 auto; min-width: 116px; margin: 0; }
@@ -462,12 +355,11 @@
 
   /* ---------- Responsive ---------- */
   @media (max-width: 900px) {
-    .hero { grid-template-columns: 1fr; align-items: start; }
-    .tl-body { grid-template-columns: 1fr; }
+    .flow-row { grid-template-columns: 1fr; }
+    .flow-extra { grid-column: auto; }
   }
   @media (max-width: 640px) {
     .nav-links { display: none; }
-    .hero-lead { white-space: normal; }
     .hs-box { max-width: none; }
     .hs-group { flex-wrap: wrap; }
     .hs-country {
@@ -480,251 +372,133 @@
     .hs-group input { flex: 1 1 110px; padding-left: 8px; }
     .rm-row { grid-template-columns: 1fr; gap: 6px; padding: 22px 2px; }
     .rm-meta { grid-column: auto; }
-    .cta-row .btn { flex: 1 1 auto; }
+    .cta-row { flex-direction: column; align-items: stretch; gap: 12px; }
+    .cta-row .btn { width: 100%; }
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
-    .wf-live-dot { animation: none; }
   }
 </style>
 </head>
 <body>
-  <a href="#hs-input" class="skip">본문으로 건너뛰기</a>
+  <a href="#main" class="skip">본문으로 건너뛰기</a>
 
-  <!-- ===== Nav ===== -->
+  <!-- ===== Nav =====
+       메인 CTA는 랜딩 전체에서 [내 NDA 확인 받기](/precheck) 하나뿐입니다.
+       app.trops.kr 진입은 아직 메인 CTA 자리를 차지하지 않도록 저채도 텍스트 링크로만 둡니다. -->
   <nav class="nav">
     <div class="container nav-inner">
       <a href="/" class="wordmark" aria-label="TROPS 홈">TROPS</a>
       <div class="nav-links">
-        <a href="#how">작동 방식</a>
-        <a href="#stages">이용 단계</a>
+        <a href="#how">확인 방법</a>
+        <a href="#next">준비 중인 것</a>
         <a href="#interest">문의</a>
       </div>
       <div class="nav-right">
-        <a class="btn btn-primary btn-nav" href="https://app.trops.kr/" target="_self">수출 시작하기</a>
+        <a class="nav-quiet" href="https://app.trops.kr/" target="_self">트롭스 앱 살펴보기(준비중)</a>
       </div>
     </div>
   </nav>
 
-  <main>
-    <!-- ===== Hero ===== -->
+  <main id="main">
+    <!-- ===== Hero =====
+         기준 우선순위(PRD-62 §3-3): 고객 보유 자사 서식이 1순위, ICC는 자사 서식이
+         없을 때만 쓰는 2순위 대체 기준입니다. 이 순서를 뒤집어 쓰지 마십시오.
+         거래 8단계 타임라인 카드는 제거했습니다 — 실체 없는 단계를 미리 보여주면
+         "이미 완성된 서비스인가?"라는 오해를 키웁니다. 거래 운영 기능이 실제로
+         나올 때 다시 넣으십시오. -->
     <section class="container hero">
-      <div>
-        <p class="eyebrow">수출 중소기업을 위한 AI 거래 운영 서비스</p>
-        <h1>수출 거래를<br>끝까지 운영합니다.</h1>
-        <p class="hero-lead">바이어 확인부터 계약, 수출 절차, 대금 회수까지.</p>
-        <p class="hero-sub">흩어진 거래 정보와 업무를 하나의 거래 흐름으로 연결하여, 거래 진행을 한눈에 관리합니다.</p>
-
-        <div class="hs-box">
-          <p class="hs-box-label">HS 코드로 협정 세율 조회</p>
-          <form class="hs-group" action="/uae" method="get">
-            <span class="hs-country">아랍에미리트</span>
-            <input id="hs-input" type="text" name="hs" inputmode="numeric" pattern="[0-9]{8}" maxlength="8"
-                   placeholder="HS 8단위 입력" aria-label="HS 코드 8단위"
-                   title="HS 코드 8자리 숫자를 입력하세요" required>
-            <button class="btn btn-primary" type="submit">확인</button>
-          </form>
-          <p class="hs-meta">아랍에미리트 · 한-UAE CEPA 기준 · 무료 · 로그인 없이 조회</p>
-        </div>
-
-        <div class="hs-second">
-          <a id="hero-cta" class="btn btn-secondary" href="https://app.trops.kr/" target="_self">수출 시작하기</a>
-          <span class="hs-second-note">거래 등록 · 시범 운영</span>
-        </div>
-      </div>
-
-      <div class="wf-panel" aria-label="거래 하나의 진행 상태 예시">
-        <div class="wf-head">
-          <span class="wf-txn">거래 TR-2026-0412 · 아랍에미리트</span>
-          <span class="wf-live"><span class="wf-live-dot" aria-hidden="true"></span>AI 운영 중</span>
-        </div>
-        <div class="wf-row">
-          <div class="wf-rail">
-            <div class="wf-line wf-line-first" aria-hidden="true"></div>
-            <div class="wf-dot wf-dot-done" aria-hidden="true"></div>
-          </div>
-          <div class="wf-item"><span class="wf-label">조건 확인</span></div>
-        </div>
-        <div class="wf-row">
-          <div class="wf-rail">
-            <div class="wf-line" aria-hidden="true"></div>
-            <div class="wf-dot wf-dot-done" aria-hidden="true"></div>
-          </div>
-          <div class="wf-item"><span class="wf-label">거래 생성</span></div>
-        </div>
-        <div class="wf-row">
-          <div class="wf-rail">
-            <div class="wf-line" aria-hidden="true"></div>
-            <div class="wf-dot wf-dot-done" aria-hidden="true"></div>
-          </div>
-          <div class="wf-item"><span class="wf-label">바이어 확인</span></div>
-        </div>
-        <div class="wf-row">
-          <div class="wf-rail">
-            <div class="wf-line" aria-hidden="true"></div>
-            <div class="wf-dot wf-dot-done" aria-hidden="true"></div>
-          </div>
-          <div class="wf-item"><span class="wf-label">계약</span></div>
-        </div>
-        <div class="wf-row">
-          <div class="wf-rail">
-            <div class="wf-line" aria-hidden="true"></div>
-            <div class="wf-dot wf-dot-active" aria-hidden="true"></div>
-          </div>
-          <div class="wf-item">
-            <span class="wf-label wf-label-active">수출 절차</span>
-            <span class="wf-badge">진행 중</span>
-          </div>
-        </div>
-        <div class="wf-row">
-          <div class="wf-rail">
-            <div class="wf-line" aria-hidden="true"></div>
-            <div class="wf-dot wf-dot-todo" aria-hidden="true"></div>
-          </div>
-          <div class="wf-item"><span class="wf-label">진행 추적</span></div>
-        </div>
-        <div class="wf-row">
-          <div class="wf-rail">
-            <div class="wf-line" aria-hidden="true"></div>
-            <div class="wf-dot wf-dot-todo" aria-hidden="true"></div>
-          </div>
-          <div class="wf-item"><span class="wf-label">대금 회수</span></div>
-        </div>
-        <div class="wf-row">
-          <div class="wf-rail">
-            <div class="wf-line wf-line-last" aria-hidden="true"></div>
-            <div class="wf-dot wf-dot-todo" aria-hidden="true"></div>
-          </div>
-          <div class="wf-item"><span class="wf-label">완료</span></div>
-        </div>
+      <p class="eyebrow">바이어 서류 사전 확인 · 지금 이용 가능</p>
+      <h1>바이어 NDA, 우리 회사 기준으로 확인하세요.</h1>
+      <p class="hero-lead">자사 서식이 있으면 그대로 대조하고,<br>없으면 국제표준(ICC)으로 대조해 드립니다.</p>
+      <div class="cta-row">
+        <a id="hero-cta" class="btn btn-primary" href="/precheck">내 NDA 확인 받기</a>
+        <span class="cta-row-note">선착 20건 무상 · 로그인 없이 파일 업로드</span>
       </div>
     </section>
 
-    <!-- ===== How it works ===== -->
+    <!-- ===== How it works (지금 파는 것: NDA 사전확인 v1) =====
+         협정 세율 조회(/uae)는 병렬 상품이 아니라 3단계의 보조 항목으로만 노출합니다. -->
     <section class="how" id="how">
       <div class="container how-inner">
         <p class="kicker">HOW IT WORKS</p>
-        <h2>거래가 시작되면 TROPS도 시작됩니다.</h2>
+        <h2>어떻게 확인하나요</h2>
 
-        <div class="timeline" id="flow">
-          <div class="tl-row">
-            <div class="tl-rail">
-              <div class="tl-line tl-line-first" aria-hidden="true"></div>
-              <div class="tl-end-dot" aria-hidden="true"></div>
-            </div>
-            <p class="tl-endpoint tl-endpoint-start">거래 시작</p>
+        <div class="flow">
+          <div class="flow-row">
+            <p class="flow-name"><span class="flow-num" aria-hidden="true">01</span><span>NDA 접수</span></p>
+            <p class="flow-desc">바이어가 보낸 NDA 파일을 올려주세요. 로그인은 없습니다.</p>
           </div>
 
-          <div class="tl-row">
-            <div class="tl-rail">
-              <div class="tl-line" aria-hidden="true"></div>
-              <div class="tl-step-dot" aria-hidden="true"></div>
-            </div>
-            <div class="tl-body tl-body-first">
-              <h3><span class="tl-num" aria-hidden="true">01</span><span>업무 생성</span></h3>
-              <p class="tl-desc">거래에 필요한 업무를 정리합니다.</p>
-            </div>
+          <div class="flow-row">
+            <p class="flow-name"><span class="flow-num" aria-hidden="true">02</span><span>기준과 대조</span></p>
+            <p class="flow-desc">쓰시는 자사 서식이 있으면 그것과 대조합니다. 없을 때만 국제표준(ICC)을 대체 기준으로 씁니다.</p>
           </div>
 
-          <div class="tl-row">
-            <div class="tl-rail">
-              <div class="tl-line" aria-hidden="true"></div>
-              <div class="tl-step-dot tl-step-dot-mid" aria-hidden="true"></div>
-            </div>
-            <div class="tl-body">
-              <h3><span class="tl-num" aria-hidden="true">02</span><span>진행 추적</span></h3>
-              <p class="tl-desc">거래 진행 상황을 단계별로 추적합니다.</p>
-            </div>
-          </div>
+          <div class="flow-row">
+            <p class="flow-name"><span class="flow-num" aria-hidden="true">03</span><span>결과지 전달</span></p>
+            <p class="flow-desc">항목별 대조 결과지와, 필요하면 전문가에게 그대로 보낼 수 있는 질문서를 함께 드립니다.</p>
 
-          <div class="tl-row">
-            <div class="tl-rail">
-              <div class="tl-line" aria-hidden="true"></div>
-              <div class="tl-step-dot tl-step-dot-mid" aria-hidden="true"></div>
-            </div>
-            <div class="tl-body">
-              <h3><span class="tl-num" aria-hidden="true">03</span><span>위험 확인</span></h3>
-              <p class="tl-desc">거래 진행 중 확인이 필요한 위험 요소를 알려드립니다.</p>
+            <div class="flow-extra">
+              <p class="flow-extra-label">거래 대상국이 있으면, 해당국 협정 세율도 함께 확인해 드립니다.</p>
+              <div class="hs-box">
+                <form class="hs-group" action="/uae" method="get">
+                  <span class="hs-country">아랍에미리트</span>
+                  <input id="hs-input" type="text" name="hs" inputmode="numeric" pattern="[0-9]{8}" maxlength="8"
+                         placeholder="HS 8단위 입력" aria-label="HS 코드 8단위"
+                         title="HS 코드 8자리 숫자를 입력하세요" required>
+                  <button class="btn btn-secondary" type="submit">조회</button>
+                </form>
+                <p class="hs-meta">아랍에미리트 · 한-UAE CEPA 기준 · 무료 · 로그인 없이 조회</p>
+              </div>
             </div>
           </div>
+        </div>
 
-          <div class="tl-row">
-            <div class="tl-rail">
-              <div class="tl-line" aria-hidden="true"></div>
-              <div class="tl-step-dot tl-step-dot-mid" aria-hidden="true"></div>
-            </div>
-            <div class="tl-body">
-              <h3><span class="tl-num" aria-hidden="true">04</span><span>전문가 연결</span></h3>
-              <p class="tl-desc">필요할 때 관세사·물류·금융 전문가와 연계할 수 있도록 안내합니다.</p>
-            </div>
-          </div>
-
-          <div class="tl-row">
-            <div class="tl-rail">
-              <div class="tl-line tl-line-last" aria-hidden="true"></div>
-              <div class="tl-end-dot tl-end-dot-last" aria-hidden="true"></div>
-            </div>
-            <p class="tl-endpoint tl-endpoint-end">거래 완료</p>
-          </div>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="/precheck">내 NDA 확인 받기</a>
+          <span class="cta-row-note">선착 20건 무상 · 지금 신청 가능</span>
         </div>
       </div>
     </section>
 
-    <!-- ===== Emphasis band ===== -->
+    <!-- ===== Emphasis band (회사 정의 §2-3: 기준을 우리가 만들지 않는다) ===== -->
     <section class="band">
       <div class="container band-inner">
-        <p>흩어진 거래 정보와 업무를 하나의 거래 화면으로 연결하여, <br>완료 될 때까지 거래 진행과 필요한 업무를 관리합니다.</p>
+        <p>기준은 우리가 만들지 않습니다.<br>고객사가 쓰는 서식이 기준이고,<br>그것이 없을 때만 국제표준(ICC)을 대신 씁니다.</p>
       </div>
     </section>
 
-    <!-- ===== Stage table ===== -->
-    <section class="how" id="stages" aria-label="단계별 안내">
+    <!-- ===== 예정 항목 =====
+         지금 파는 것(NDA 사전확인)과 섞이지 않도록 별도 섹션으로 분리합니다.
+         표기 방식은 가격 + 오픈일 병기를 유지하십시오. -->
+    <section class="how" id="next" aria-label="준비 중인 것">
       <div class="container how-inner how-inner-tight">
-        <p class="kicker">STEP BY STEP</p>
-        <h2 class="rm-h2">지금 이용할 수 있는 것</h2>
+        <p class="kicker">WHAT'S NEXT</p>
+        <h2 class="rm-h2">준비 중인 것</h2>
+        <p class="rm-lead">아래는 아직 이용할 수 없습니다. 오픈 시점과 가격을 함께 적어둡니다.</p>
 
         <div class="rm">
-          <a class="rm-row" href="/uae">
-            <p class="rm-name"><span class="rm-num">01</span>협정 세율 조회</p>
-            <p class="rm-desc">HS 8단위로 관세 철폐 트랙과 연도별 세율을 조회합니다</p>
-            <p class="rm-meta">무료 · 지금 이용 가능</p>
-          </a>
-          <a class="rm-row" href="/precheck">
-            <p class="rm-name"><span class="rm-num">02</span>바이어 서류 사전 확인</p>
-            <p class="rm-desc">바이어가 보낸 NDA를 우리 기준과 18개 항목으로 대조해 당일 요약 자료로 정돈해 드립니다</p>
-            <p class="rm-meta">선착 20건 무상 · 지금 신청 가능</p>
-          </a>
           <div class="rm-row">
-            <p class="rm-name"><span class="rm-num">03</span>확인 항목 진단서</p>
+            <p class="rm-name"><span class="rm-num">01</span>확인 항목 진단서</p>
             <p class="rm-desc">품목별 확인 항목을 근거와 함께 문서로 정리해 드립니다</p>
             <p class="rm-meta">99,000원 · 9월 오픈 예정</p>
           </div>
           <div class="rm-row">
-            <p class="rm-name"><span class="rm-num">04</span>거래 운영</p>
-            <p class="rm-desc">거래 단위로 절차를 관리합니다</p>
-            <p class="rm-meta">문의 · 시범 운영 중</p>
+            <p class="rm-name"><span class="rm-num">02</span>거래 운영</p>
+            <p class="rm-desc">계약이 성사된 뒤 통관·대금회수까지 거래 단위로 이어서 관리합니다</p>
+            <p class="rm-meta">가격 미정 · 준비중</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ===== CTA ===== -->
-    <section class="cta" id="start">
-      <div class="container cta-inner">
-        <h2>TROPS, 먼저 만나보시겠어요?</h2>
-        <p class="cta-sub">진행 중인 수출 거래 하나를 등록하면, 남은 단계와 필요한 업무를 정리해 보여드립니다.</p>
-        <div class="cta-row">
-          <a class="btn btn-primary" href="https://app.trops.kr/" target="_self">수출 시작하기</a>
-          <a class="btn btn-secondary" href="#interest">관심 등록하기</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== Interest form ===== -->
+    <!-- ===== Interest form =====
+         랜딩 하단은 약한 버전입니다. 강한 버전("먼저 써보고 싶어요")은
+         precheck 결과지 페이지 하단 몫이므로 여기에 끌어오지 마십시오. -->
     <section class="interest" id="interest">
       <div class="container interest-inner">
-        <h2>관심 등록하기</h2>
-        <p class="interest-sub">이름과 이메일만 남겨주시면, 준비되는 대로 안내해 드립니다.</p>
+        <h2>트롭스 앱, 준비되는 대로 가장 먼저 안내해 드립니다.</h2>
         <form class="interest-form" id="interest-form" novalidate>
           <div class="form-row">
             <label for="interest-name">이름 <span class="req" aria-hidden="true">*</span></label>
@@ -750,12 +524,14 @@
     <div class="container footer-inner">
       <div class="footer-row">
         <span class="footer-mark">TROPS</span>
-        <span class="footer-meta">수출 거래 운영 · contact@theo-ne.com</span>
+        <span class="footer-meta">바이어 서류 사전 확인 · contact@theo-ne.com</span>
       </div>
       <nav class="footer-links" aria-label="정책">
         <a href="/precheck">바이어 서류 사전 확인</a>
         <a href="/refund">환불규정</a>
       </nav>
+
+      <p class="footer-credit">KAIST OverEdge(오버엣지) — AI Agent 1인 창업지원 사업 참여 · 2026</p>
 
       <dl class="footer-biz" aria-label="사업자정보">
         <div><dt>상호명</dt><dd>주식회사 테오네</dd></div>
