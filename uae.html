@@ -284,6 +284,23 @@
   color:var(--muted);cursor:not-allowed}
 .uae-check-cta-note{font-size:13.5px;line-height:1.6;color:var(--muted);max-width:34ch}
 
+/* --- 7. Footer · 사업자정보 (전 페이지 공통) ---
+   6개 항목의 표기는 사업자등록증·통신판매업신고증 원문과 글자 그대로 일치해야 합니다.
+   "주식회사 테오네"를 "(주)테오네"로 줄여 쓰지 마십시오. */
+.footer{border-top:1px solid var(--line)}
+.footer-inner{padding-block:32px 28px}
+.footer-row{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+.footer-mark{font-size:14px;font-weight:600;letter-spacing:-0.01em}
+.footer-meta{font-size:13.5px;color:var(--muted)}
+.footer-links{margin:18px 0 0;display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px}
+.footer-links a{color:var(--ink-64)}
+.footer-biz{margin:16px 0 0;display:grid;gap:3px;font-size:12.5px;line-height:1.7;color:var(--muted)}
+.footer-biz>div{display:flex;flex-wrap:wrap;gap:4px 10px}
+.footer-biz dt{flex:0 0 auto;min-width:116px;margin:0}
+.footer-biz dd{margin:0}
+.footer-legal{margin:18px 0 0;font-size:12.5px;line-height:1.7;color:var(--muted)}
+.footer-legal p{margin:0}
+
 /* --- 6. 면책 문구 — 하단 고정 --- */
 .uae-disclaimer{position:sticky;bottom:0;z-index:10;background:var(--surface);border-top:1px solid var(--line)}
 .uae-disclaimer-inner{padding-block:20px 22px}
@@ -339,6 +356,38 @@
     </div>
   </div>
 
+  <!-- footer 는 .uae-page 밖에 둡니다.
+       안에 두면 sticky 인 .uae-disclaimer 가 화면 아래에 붙은 채 footer 를 덮습니다.
+       밖으로 빼면 .uae-page 가 끝나는 지점에서 sticky 가 풀려 footer 가 온전히 보입니다. -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-row">
+        <span class="footer-mark">TROPS</span>
+        <span class="footer-meta">수출 거래 운영 · contact@theo-ne.com</span>
+      </div>
+
+      <nav class="footer-links" aria-label="정책">
+        <a href="/precheck">바이어 서류 사전 확인</a>
+        <a href="/refund">환불규정</a>
+      </nav>
+
+      <dl class="footer-biz" aria-label="사업자정보">
+        <div><dt>상호명</dt><dd>주식회사 테오네</dd></div>
+        <div><dt>대표자명</dt><dd>범하나</dd></div>
+        <div><dt>사업자등록번호</dt><dd>625-81-04032</dd></div>
+        <!-- 통신판매업신고 신청 중. 신고번호 확정 시 "신청 중"을 번호로 교체하십시오. -->
+        <div><dt>통신판매업신고번호</dt><dd>신청 중</dd></div>
+        <div><dt>사업장주소</dt><dd>서울특별시 강남구 봉은사로 524, B층 269-11호(삼성동)</dd></div>
+        <div><dt>전화번호</dt><dd>010-2605-5238</dd></div>
+      </dl>
+
+      <div class="footer-legal">
+        <p>TROPS · 주식회사 테오네 — ※ 법률 자문 서비스가 아닙니다.</p>
+        <p>© 2026 TROPS · 주식회사 테오네. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
 <script>
 (function () {
   'use strict';
@@ -370,10 +419,14 @@
   ];
 
   const DIAGNOSIS_PRICE = '99,000원';
-  // 진단서 신청 플로우 오픈 전까지 비활성 문구를 씁니다.
-  // 오픈 시 '진단서 신청 · ' + DIAGNOSIS_PRICE 로 되돌리고 disabled 를 해제하면 됩니다.
-  const DIAGNOSIS_CTA_LABEL = '진단서 신청 · 9월 오픈 예정';
-  const DIAGNOSIS_CTA_NOTE = '품목별 원문 확인 후, 확인 항목별 근거와 함께 문서로 발급합니다. 준비 중입니다.';
+  // 진단서(품목별 확인 항목 문서) 발급 플로우는 아직 열지 않았습니다.
+  // 그때까지 비활성 버튼으로 세워두는 대신, 지금 실제로 신청할 수 있는
+  // /precheck(바이어 서류 사전 확인)로 보냅니다.
+  // 진단서 오픈 시 LABEL 을 '진단서 신청 · ' + DIAGNOSIS_PRICE 로,
+  // HREF 를 '/uae/diagnosis?hs=…' 로 되돌리면 됩니다.
+  const DIAGNOSIS_CTA_HREF = '/precheck';
+  const DIAGNOSIS_CTA_LABEL = '바이어 서류 사전 확인 신청';
+  const DIAGNOSIS_CTA_NOTE = '진단서는 준비 중입니다. 바이어가 보낸 서류의 19개 항목 대조는 지금 신청하실 수 있습니다.';
   const PSR_PENDING_TEXT = '원문 확인 중 — 정확한 기준은 담당 관세사에게 문의하십시오';
 
   /* 허용치(제3.7조)는 세번변경기준을 전제한 항목입니다.
@@ -755,11 +808,10 @@
     checkSec.appendChild(list);
 
     const cta = el('div', 'uae-check-cta');
-    // 진단서 신청 플로우(/uae/diagnosis)가 아직 없어 임시 비활성화 상태입니다.
-    // 오픈 시 <a class="btn btn-primary" href="/uae/diagnosis?hs=…">로 되돌립니다.
-    const ctaBtn = el('button', 'btn', DIAGNOSIS_CTA_LABEL);
-    ctaBtn.type = 'button';
-    ctaBtn.disabled = true;
+    // 진단서 신청 플로우(/uae/diagnosis)는 아직 없습니다.
+    // 그동안 이 자리는 지금 신청 가능한 /precheck 로 연결합니다.
+    const ctaBtn = el('a', 'btn btn-primary', DIAGNOSIS_CTA_LABEL);
+    ctaBtn.href = DIAGNOSIS_CTA_HREF;
     cta.appendChild(ctaBtn);
     cta.appendChild(el('p', 'uae-check-cta-note', DIAGNOSIS_CTA_NOTE));
     checkSec.appendChild(cta);

@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>바이어 서류 사전 확인 — TROPS</title>
+<meta name="description" content="바이어가 보낸 NDA, 우리 기준과 뭐가 다른지 한눈에 안 보이실 때. AI가 19개 항목을 측정해 대조하고, 당일 요약 자료로 정돈해 드립니다.">
+<link rel="canonical" href="https://trops.kr/precheck">
+<meta property="og:title" content="바이어 서류 사전 확인 — TROPS">
+<meta property="og:description" content="AI가 19개 항목을 측정해 대조하고, 당일 요약 자료로 정돈해 드립니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://trops.kr/precheck">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<!-- 토스페이먼츠 결제위젯 SDK (v2).
+     결제수단 목록의 순서(신용·체크카드 최우선)는 SDK 가 아니라 토스 상점관리자의
+     결제위젯 설정에서 정합니다. 코드로 바꿀 수 없으므로 관리자에서 확인하십시오. -->
+<script src="https://js.tosspayments.com/v2/standard"></script>
+<style>
+  :root {
+    --ink:          #0F172A;
+    --ink-70:       rgba(15, 23, 42, .7);
+    --ink-64:       rgba(15, 23, 42, .64);
+    --ink-62:       rgba(15, 23, 42, .62);
+    --accent:       #0F172A;
+    --accent-press: #1E293B;
+    --muted:        #94A3B8;
+    --line:         #E2E8F0;
+    --surface:      #F8FAFC;
+    --bg:           #FFFFFF;
+    --warning:      #DC2626;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.75;
+    word-break: keep-all;
+    text-wrap: pretty;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--ink); }
+
+  ::selection { background: rgba(15, 23, 42, .14); }
+
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  [hidden] { display: none !important; }
+
+  /* Magic Link 로 들어오면 접수 화면이 잠깐 비쳤다 사라지는 일이 없도록
+     스크립트가 돌기 전에 미리 감춥니다. (head 의 한 줄 스크립트가 클래스를 붙입니다) */
+  .is-receipt #offer { display: none !important; }
+
+  .container { max-width: 1200px; margin: 0 auto; padding-inline: clamp(24px, 5vw, 64px); }
+  .narrow { max-width: 860px; }
+
+  /* ---------- Skip link ---------- */
+  .skip {
+    position: absolute; left: 16px; top: 16px;
+    transform: translateY(-160%);
+    background: var(--ink); color: #FFFFFF;
+    padding: 10px 16px; border-radius: 6px;
+    font-size: 14px; font-weight: 600; z-index: 100;
+    transition: transform .15s ease;
+  }
+  .skip:focus { transform: translateY(0); color: #FFFFFF; }
+
+  /* ---------- Nav ---------- */
+  .nav {
+    position: sticky; top: 0; z-index: 20;
+    background: var(--bg); border-bottom: 1px solid var(--line);
+  }
+  .nav-inner { height: 64px; display: flex; align-items: center; gap: 40px; }
+  .wordmark { font-size: 19px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); }
+  .nav-links { display: flex; gap: 28px; }
+  .nav-links a { font-size: 14.5px; font-weight: 500; color: var(--ink-62); transition: color .14s ease; }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+
+  #how, #deliver, #intake { scroll-margin-top: 84px; }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    height: 46px; padding: 0 22px;
+    border-radius: 6px; border: 0;
+    font: inherit; font-size: 15.5px; font-weight: 600; line-height: 1;
+    cursor: pointer; white-space: nowrap;
+    transition: background-color .14s ease, border-color .14s ease;
+  }
+  .btn-primary { background: var(--accent); color: #FFFFFF; }
+  .btn-primary:hover { background: var(--accent-press); color: #FFFFFF; }
+  .btn-secondary { background: transparent; border: 1px solid var(--line); color: var(--ink); }
+  .btn-secondary:hover { border-color: var(--muted); color: var(--ink); }
+  .btn-nav { height: 36px; padding: 0 16px; font-size: 14.5px; }
+  .btn-block { width: 100%; height: 52px; font-size: 16.5px; }
+  .btn:disabled,
+  .btn[aria-disabled="true"] {
+    background: var(--surface); border: 1px solid var(--line);
+    color: var(--muted); cursor: not-allowed;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero { padding-block: clamp(56px, 8vw, 100px) clamp(48px, 6vw, 80px); }
+  .eyebrow { margin: 0 0 20px; font-size: 13.5px; font-weight: 600; letter-spacing: .02em; color: var(--accent); }
+  .hero h1 {
+    margin: 0;
+    font-size: clamp(31px, 3.9vw, 47px);
+    line-height: 1.32;
+    letter-spacing: -0.033em;
+    font-weight: 700;
+    max-width: 22ch;
+  }
+  .hero-lead {
+    margin: 26px 0 0;
+    font-size: 18.5px; line-height: 1.75; font-weight: 500;
+    color: var(--ink-70); max-width: 34ch;
+  }
+  .hero-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-top: 36px; }
+  .hero-note { font-size: 13.5px; line-height: 1.6; color: var(--muted); }
+
+  /* ---------- Slot counter ---------- */
+  .slots {
+    display: inline-flex; align-items: center; gap: 10px;
+    margin-top: 28px; padding: 9px 16px;
+    border: 1px solid var(--line); border-radius: 999px;
+    background: var(--surface);
+    font-size: 14px; font-weight: 600; letter-spacing: -0.005em;
+    color: var(--ink-70);
+  }
+  .slots-mark { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex: 0 0 auto; }
+  .slots-mark-off { background: transparent; border: 1.5px solid var(--muted); }
+  .slots-off { color: var(--muted); }
+
+  /* ---------- Sections ---------- */
+  .band { background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .section { border-top: 1px solid var(--line); }
+  .section-inner { padding-block: clamp(56px, 7vw, 92px); }
+  .kicker { margin: 0 0 18px; font-size: 12.5px; font-weight: 700; letter-spacing: .14em; color: var(--muted); }
+  .section h2 {
+    margin: 0;
+    font-size: clamp(26px, 3vw, 36px);
+    line-height: 1.32; letter-spacing: -0.03em; font-weight: 700;
+    max-width: 24ch;
+  }
+  .section-sub { margin: 16px 0 0; font-size: 17px; line-height: 1.75; color: var(--ink-64); max-width: 44ch; }
+
+  /* ---------- Steps ---------- */
+  .steps { margin-top: clamp(36px, 4vw, 52px); }
+  .step {
+    display: grid;
+    grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
+    gap: 8px clamp(24px, 4vw, 56px);
+    padding: 28px 0;
+    border-bottom: 1px solid var(--line);
+    align-items: baseline;
+  }
+  .step:first-child { border-top: 1px solid var(--line); }
+  .step h3 {
+    margin: 0; display: flex; gap: 14px;
+    font-size: 19.5px; line-height: 1.5; letter-spacing: -0.02em; font-weight: 700;
+  }
+  .step-num { font-size: 13px; font-weight: 600; color: var(--muted); line-height: 1.9; }
+  .step p { margin: 0; font-size: 17px; line-height: 1.75; color: var(--ink-62); max-width: 46ch; }
+
+  /* ---------- Deliverable list ---------- */
+  .deliver-list { margin: clamp(30px, 4vw, 44px) 0 0; padding: 0; list-style: none; max-width: 720px; }
+  .deliver-list li {
+    display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 12px;
+    padding: 15px 0; border-bottom: 1px solid var(--line);
+    font-size: 17px; line-height: 1.75;
+  }
+  .deliver-list li:first-child { border-top: 1px solid var(--line); }
+  .deliver-num { font-size: 12.5px; font-weight: 600; color: var(--muted); font-variant-numeric: tabular-nums; line-height: 2.4; }
+
+  /* ---------- Plans (무상 실증 · 건별 결제) ---------- */
+  .plans { margin-top: clamp(28px, 3.5vw, 40px); display: grid; gap: 12px; max-width: 560px; }
+  .plan {
+    display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 14px;
+    padding: 20px 22px;
+    border: 1px solid var(--line); border-radius: 8px;
+    background: var(--bg); cursor: pointer;
+    transition: border-color .14s ease, background-color .14s ease;
+  }
+  .plan:hover { border-color: var(--muted); }
+  /* JS 가 붙이는 .plan-on 을 기준으로 삼습니다 — :has() 를 못 쓰는 환경에서도 선택 표시가 남습니다. */
+  .plan-on { border-color: var(--accent); background: var(--surface); }
+  .plan input[type="radio"] { width: 18px; height: 18px; margin: 5px 0 0; accent-color: var(--accent); }
+  .plan-tag {
+    display: inline-block;
+    font-size: 11.5px; font-weight: 700; line-height: 1.5; letter-spacing: .02em;
+    padding: 2px 7px; border-radius: 4px;
+    border: 1px solid rgba(15, 23, 42, .28); color: var(--accent);
+  }
+  .plan-tag-quiet { border-color: var(--line); color: var(--muted); }
+  .plan-name { margin: 9px 0 0; font-size: 16.5px; font-weight: 700; letter-spacing: -0.015em; }
+  .plan-price {
+    margin: 6px 0 0;
+    font-size: 23px; font-weight: 700; letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+  .plan-price s {
+    font-size: 15px; font-weight: 500; margin-right: 9px;
+    color: var(--muted); text-decoration-thickness: 1px;
+  }
+  .plan-desc { margin: 9px 0 0; font-size: 14.5px; line-height: 1.7; color: var(--ink-62); }
+  .plan-off { opacity: .48; cursor: not-allowed; }
+  .plan-off:hover { border-color: var(--line); }
+
+  /* ---------- 결제 (토스 결제위젯) ---------- */
+  .pay-area { border-top: 1px solid var(--line); padding-top: 24px; }
+  .pay-head { margin: 0; font-size: 14.5px; font-weight: 600; }
+  .pay-note { margin: 8px 0 16px; font-size: 13.5px; line-height: 1.65; color: var(--muted); }
+  .pay-mode {
+    margin: 0 0 16px; padding: 11px 14px;
+    border: 1px solid var(--line); border-radius: 6px; background: var(--surface);
+    font-size: 13.5px; line-height: 1.65; color: var(--ink-64);
+  }
+  .pay-summary {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 20px;
+    margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line);
+  }
+  .pay-summary-label { font-size: 15.5px; font-weight: 600; }
+  .pay-summary-value {
+    font-size: 27px; font-weight: 700; letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+  .pay-summary-value s {
+    font-size: 15px; font-weight: 500; margin-right: 9px;
+    color: var(--muted); text-decoration-thickness: 1px;
+  }
+  .pay-refund { margin: 14px 0 0; font-size: 13.5px; line-height: 1.7; color: var(--muted); }
+  .pay-refund a { color: var(--ink-64); text-decoration: underline; text-underline-offset: 2px; }
+
+  /* ---------- Form ---------- */
+  .form { max-width: 520px; margin-top: clamp(32px, 4vw, 44px); display: flex; flex-direction: column; gap: 26px; }
+  .field { display: flex; flex-direction: column; gap: 8px; }
+  .field > label { font-size: 14.5px; font-weight: 600; }
+  .field .req { color: var(--accent); }
+  .field-hint { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--muted); }
+  .field input[type="email"] {
+    font: inherit; font-size: 16px; height: 48px; padding: 0 14px;
+    border: 1px solid var(--line); border-radius: 6px;
+    background-color: var(--bg); color: var(--ink);
+  }
+  .field input[type="file"] {
+    font: inherit; font-size: 14.5px;
+    padding: 14px; border: 1px dashed var(--line); border-radius: 6px;
+    background-color: var(--bg); color: var(--ink-64);
+  }
+  .field input[type="file"]::file-selector-button {
+    font: inherit; font-size: 14px; font-weight: 600;
+    margin-right: 12px; padding: 8px 14px;
+    border: 1px solid var(--line); border-radius: 6px;
+    background: var(--surface); color: var(--ink); cursor: pointer;
+  }
+  .filelist { margin: 0; padding: 0; list-style: none; font-size: 13.5px; line-height: 1.7; color: var(--ink-64); }
+  .filelist li { display: flex; justify-content: space-between; gap: 16px; font-variant-numeric: tabular-nums; }
+
+  /* ---------- Consent ---------- */
+  .consents { display: flex; flex-direction: column; gap: 14px; }
+  .consent {
+    display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 14px;
+    padding: 18px 20px;
+    border: 1px solid var(--line); border-radius: 8px;
+    background: var(--bg);
+  }
+  .consent input[type="checkbox"] { width: 18px; height: 18px; margin: 4px 0 0; accent-color: var(--accent); }
+  .consent-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; font-size: 15px; font-weight: 600; }
+  .consent-tag {
+    font-size: 11.5px; font-weight: 700; line-height: 1.5; letter-spacing: .02em;
+    padding: 2px 7px; border-radius: 4px; border: 1px solid rgba(15, 23, 42, .28); color: var(--accent);
+  }
+  .consent-tag-optional { border-color: var(--line); color: var(--muted); }
+  .consent-body { margin: 8px 0 0; font-size: 14.5px; line-height: 1.7; color: var(--ink-62); }
+
+  .form-msg { min-height: 24px; margin: 0; font-size: 14.5px; line-height: 1.7; color: var(--ink-64); }
+  .form-msg.is-error { color: var(--warning); }
+
+  /* ---------- Closed notice ---------- */
+  .closed {
+    max-width: 520px; margin-top: clamp(32px, 4vw, 44px);
+    border: 1px solid var(--line); border-radius: 8px;
+    background: var(--surface); padding: 26px clamp(22px, 3vw, 30px);
+  }
+  .closed h3 { margin: 0; font-size: 19px; line-height: 1.5; letter-spacing: -0.02em; font-weight: 700; }
+  .closed p { margin: 12px 0 0; font-size: 15.5px; line-height: 1.72; color: var(--ink-64); }
+  .closed .btn { margin-top: 20px; }
+
+  /* ---------- Receipt (Magic Link) ---------- */
+  .receipt-inner { padding-block: clamp(64px, 8vw, 104px); }
+  .receipt-card {
+    max-width: 560px; margin-top: 30px;
+    border: 1px solid var(--line); border-radius: 8px;
+    background: var(--surface); padding: 28px clamp(22px, 3vw, 32px);
+  }
+  .receipt-row {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 20px;
+    padding: 10px 0; border-bottom: 1px solid var(--line);
+    font-size: 15.5px;
+  }
+  .receipt-row:last-child { border-bottom: 0; }
+  .receipt-key { color: var(--ink-64); }
+  .receipt-val { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  /* ---------- 자료 즉시 삭제 (환불규정 05) ---------- */
+  .erase {
+    max-width: 560px; margin-top: 22px;
+    border: 1px solid var(--line); border-radius: 8px;
+    background: var(--bg); padding: 24px clamp(22px, 3vw, 30px);
+  }
+  .erase h2 { margin: 0; font-size: 16.5px; line-height: 1.5; letter-spacing: -0.02em; font-weight: 700; }
+  .erase p { margin: 10px 0 0; font-size: 14.5px; line-height: 1.72; color: var(--ink-62); }
+  .erase .consent { margin-top: 18px; background: var(--surface); }
+  .erase .consent-body a { color: var(--ink-64); text-decoration: underline; text-underline-offset: 2px; }
+  .erase .btn { margin-top: 18px; }
+  .erase .form-msg { margin-top: 10px; }
+
+  /* ---------- Disclaimer ---------- */
+  .disclaimer { background: var(--surface); border-top: 1px solid var(--line); }
+  .disclaimer-inner { padding-block: 26px 28px; }
+  .disclaimer p { margin: 0; font-size: 13.5px; line-height: 1.78; color: var(--ink-64); max-width: 80ch; }
+
+  /* ---------- Footer ---------- */
+  .footer { border-top: 1px solid var(--line); }
+  .footer-inner { padding-block: 32px 28px; }
+  .footer-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; }
+  .footer-mark { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
+  .footer-meta { font-size: 13.5px; color: var(--muted); }
+  .footer-legal { margin: 18px 0 0; font-size: 12.5px; line-height: 1.7; color: var(--muted); }
+  .footer-legal p { margin: 0; }
+  /* ---------- 사업자정보 (전 페이지 공통) ----------
+     6개 항목의 표기는 사업자등록증·통신판매업신고증 원문과 글자 그대로 일치해야 합니다.
+     "주식회사 테오네"를 "(주)테오네"로 줄여 쓰지 마십시오. */
+  .footer-links { margin: 18px 0 0; display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; }
+  .footer-links a { color: var(--ink-64); }
+  .footer-biz { margin: 16px 0 0; display: grid; gap: 3px; font-size: 12.5px; line-height: 1.7; color: var(--muted); }
+  .footer-biz > div { display: flex; flex-wrap: wrap; gap: 4px 10px; }
+  .footer-biz dt { flex: 0 0 auto; min-width: 116px; margin: 0; }
+  .footer-biz dd { margin: 0; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 640px) {
+    .nav-links { display: none; }
+    .step { grid-template-columns: 1fr; gap: 6px; }
+    .hero-cta .btn { flex: 1 1 auto; }
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+<script>
+/* Magic Link·결제 복귀로 들어오면 접수 화면이 잠깐 비쳤다 사라지는 일이 없도록
+   스크립트가 돌기 전에 미리 감춥니다. */
+if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElement.className = 'is-receipt';
+</script>
+</head>
+<body>
+  <a href="#intake" class="skip">접수 폼으로 건너뛰기</a>
+
+  <!-- ===== Nav ===== -->
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="/" class="wordmark" aria-label="TROPS 홈">TROPS</a>
+      <div class="nav-links">
+        <a href="#how">진행 방식</a>
+        <a href="#deliver">받으시는 것</a>
+        <a href="/uae">협정 세율 조회</a>
+      </div>
+      <div class="nav-right">
+        <a class="btn btn-primary btn-nav" href="#intake">서류 보내기</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- ===== 접수 확인 (Magic Link 로 들어온 경우에만) ===== -->
+    <section class="container receipt-inner" id="receipt" hidden aria-labelledby="receipt-title">
+      <p class="eyebrow" id="receipt-eyebrow">접수 확인</p>
+      <h1 id="receipt-title" style="margin:0;font-size:clamp(28px,3.4vw,40px);line-height:1.3;letter-spacing:-0.032em;font-weight:700">
+        접수 내용입니다.
+      </h1>
+      <div class="receipt-card" id="receipt-card">
+        <p class="form-msg" id="receipt-msg" role="status" aria-live="polite">불러오는 중입니다…</p>
+      </div>
+      <!-- 자료 즉시 삭제 (환불규정 05 · 2026-08-08 승인 ③)
+           보관 중인 파일이 남아 있는 건에서만 보입니다.
+           되돌릴 수 없는 일이므로 재발급 불가 동의 없이는 버튼이 눌리지 않습니다.
+           선택하지 않으면 접수일 +30일 삭제 원칙이 그대로 유지됩니다. -->
+      <section class="erase" id="erase" hidden aria-labelledby="erase-title">
+        <h2 id="erase-title">자료 즉시 삭제</h2>
+        <p>
+          30일을 기다리지 않고 지금 지우실 수 있습니다.
+          보내주신 파일을 그 자리에서 삭제하고, 접수 기록도 함께 지웁니다.
+        </p>
+        <div class="consent">
+          <input type="checkbox" id="erase-consent">
+          <div>
+            <label class="consent-head" for="erase-consent">
+              <span class="consent-tag">확인</span>
+              <span>같은 건의 자료를 다시 만들어 드릴 수 없다는 점에 동의합니다.</span>
+            </label>
+            <p class="consent-body">
+              요약 자료를 아직 받지 못하셨다면, 삭제를 요청하는 순간 이 건은 진행이 중단됩니다.
+              삭제는 환불이 아닙니다 — 환불은 <a href="/refund">환불규정</a>에 따라
+              contact@theo-ne.com 으로 따로 신청해 주십시오.
+            </p>
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary" id="erase-btn" disabled>자료 즉시 삭제</button>
+        <p class="form-msg" id="erase-msg" role="status" aria-live="polite"></p>
+      </section>
+
+      <p class="hero-note" style="margin-top:20px" id="retention-note">
+        삭제를 요청하지 않으시면, 보내주신 파일은 접수일로부터 30일 후 삭제됩니다.
+      </p>
+      <p style="margin-top:24px"><a class="btn btn-secondary" href="/">TROPS 홈으로</a></p>
+    </section>
+
+    <!-- ===== 이하 접수 화면 (Magic Link 조회 시 숨김) ===== -->
+    <div id="offer">
+      <!-- ===== Hero ===== -->
+      <section class="container narrow hero">
+        <p class="eyebrow">바이어 서류 사전 확인</p>
+        <h1>바이어가 보낸 NDA, 우리 기준과 뭐가 다른지 한눈에 안 보이실 때.</h1>
+        <p class="hero-lead">AI가 19개 항목을 측정해 대조하고, 당일 요약 자료로 정돈해 드립니다.</p>
+
+        <p class="slots" id="slots-badge" role="status" aria-live="polite">
+          <span class="slots-mark" id="slots-mark" aria-hidden="true"></span>
+          <span id="slots-text">남은 자리를 확인하는 중입니다…</span>
+        </p>
+
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#intake">서류 보내기</a>
+          <span class="hero-note">로그인 없음 · 이메일과 파일만</span>
+        </div>
+      </section>
+
+      <!-- ===== 진행 방식 ===== -->
+      <section class="section" id="how">
+        <div class="container narrow section-inner">
+          <p class="kicker">HOW IT WORKS</p>
+          <h2>보내주시면, 당일에 돌려드립니다.</h2>
+
+          <div class="steps">
+            <div class="step">
+              <h3><span class="step-num" aria-hidden="true">01</span><span>보내기</span></h3>
+              <p>이메일 주소와 바이어가 보낸 서류를 올려 주십시오. 로그인은 필요 없습니다.</p>
+            </div>
+            <div class="step">
+              <h3><span class="step-num" aria-hidden="true">02</span><span>측정 · 대조</span></h3>
+              <p>19개 항목을 기준 문안과 나란히 놓고, 서로 다른 지점을 표시합니다.</p>
+            </div>
+            <div class="step">
+              <h3><span class="step-num" aria-hidden="true">03</span><span>당일 전달</span></h3>
+              <p>정돈된 요약 자료를 당일 안에 보내드립니다. 메일에는 링크만 담기며, 파일은 첨부하지 않습니다.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 받으시는 것 ===== -->
+      <section class="section" id="deliver">
+        <div class="container narrow section-inner">
+          <p class="kicker">WHAT YOU GET</p>
+          <h2>19개 항목이 어디서 갈라지는지 표시해 드립니다.</h2>
+          <p class="section-sub">읽어야 할 자리를 좁혀 드리는 자료입니다. 무엇을 받아들일지는 이용자가 정합니다.</p>
+
+          <ul class="deliver-list">
+            <li><span class="deliver-num" aria-hidden="true">01</span><span>19개 항목별 대조 결과 — 기준 문안과 바이어 문안을 나란히</span></li>
+            <li><span class="deliver-num" aria-hidden="true">02</span><span>차이가 큰 순서로 정돈한 목록</span></li>
+            <li><span class="deliver-num" aria-hidden="true">03</span><span>각 항목이 서류 원문 어디에 있는지 인용 위치</span></li>
+            <li><span class="deliver-num" aria-hidden="true">04</span><span>측정에 쓰인 기준과 측정 시각</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ===== 접수 ===== -->
+      <section class="section" id="intake">
+        <div class="container narrow section-inner">
+          <p class="kicker">START</p>
+          <h2>서류 보내기</h2>
+
+          <!-- 이용 방식 — 무상 실증(선착 20건)과 건별 결제 두 가지입니다.
+               자리가 모두 차면 무상 쪽이 잠기고 건별 결제만 남습니다. -->
+          <div class="plans" id="plans" role="radiogroup" aria-label="이용 방식">
+            <label class="plan plan-on" id="plan-free-card">
+              <input type="radio" name="plan" value="free" id="plan-free" checked>
+              <div>
+                <span class="plan-tag" id="plan-free-tag">선착 20건</span>
+                <p class="plan-name">무상 실증</p>
+                <p class="plan-price">₩0</p>
+                <p class="plan-desc" id="plan-free-desc">
+                  자리가 남아 있을 때 신청하실 수 있습니다. 카드 정보를 받지 않으며, 결제 절차도 없습니다.
+                </p>
+              </div>
+            </label>
+
+            <label class="plan" id="plan-paid-card">
+              <input type="radio" name="plan" value="paid" id="plan-paid">
+              <div>
+                <span class="plan-tag plan-tag-quiet">바로 신청</span>
+                <p class="plan-name">바이어 서류 사전 확인</p>
+                <p class="plan-price"><s>₩290,000</s>₩99,000</p>
+                <p class="plan-desc">
+                  남은 자리와 관계없이 오늘 접수됩니다. 신용·체크카드로 건별 1회 결제하며, 정기결제가 아닙니다.
+                </p>
+              </div>
+            </label>
+          </div>
+
+          <!-- 무상 자리가 없을 때만 나옵니다. 유료 경로는 그대로 열려 있으므로 폼을 막지 않습니다. -->
+          <div class="closed" id="closed-notice" hidden>
+            <h3 id="closed-title">선착 20건이 모두 찼습니다.</h3>
+            <p id="closed-body">무상 실증 자리가 모두 나갔습니다. 지금은 런칭가 ₩99,000으로 신청하실 수 있습니다.</p>
+            <a class="btn btn-secondary" href="/#interest">다음 회차 알림 받기</a>
+          </div>
+
+          <!-- 폼 -->
+          <form class="form" id="intake-form" novalidate>
+            <div class="field">
+              <label for="intake-email">이메일 <span class="req" aria-hidden="true">*</span></label>
+              <input type="email" id="intake-email" name="email" autocomplete="email"
+                     inputmode="email" maxlength="254" required>
+              <p class="field-hint">이 주소로 당일 요약 자료의 링크를 보내드립니다.</p>
+            </div>
+
+            <div class="field">
+              <label for="intake-files">바이어가 보낸 서류 <span class="req" aria-hidden="true">*</span></label>
+              <input type="file" id="intake-files" name="files" multiple
+                     accept=".pdf,.doc,.docx,.hwp,.hwpx,.txt,.rtf,.png,.jpg,.jpeg" required>
+              <p class="field-hint">PDF · DOC · DOCX · HWP · 이미지 · 최대 5개 · 개당 10MB</p>
+              <ul class="filelist" id="intake-filelist"></ul>
+            </div>
+
+            <div class="consents">
+              <div class="consent">
+                <input type="checkbox" id="consent-terms" name="consentTerms" required>
+                <div>
+                  <label class="consent-head" for="consent-terms">
+                    <span class="consent-tag">필수</span>
+                    <span>서비스 이용약관 및 문서 대조 요청 동의</span>
+                  </label>
+                  <p class="consent-body">바이어 서류의 19개 항목 측정 및 당일 자료 전달을 위한 최소한의 데이터 처리에 동의합니다.</p>
+                </div>
+              </div>
+
+              <div class="consent">
+                <input type="checkbox" id="consent-training" name="consentTraining">
+                <div>
+                  <label class="consent-head" for="consent-training">
+                    <span class="consent-tag consent-tag-optional">선택</span>
+                    <span>AI 성능 고도화를 위한 비식별 데이터 활용 동의</span>
+                  </label>
+                  <p class="consent-body">거부하셔도 대조 및 당일 자료 전달 서비스는 동일하게 이용 가능합니다.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 결제 — 건별 결제를 고르셨을 때만 보입니다.
+                 위젯은 컨테이너가 화면에 보인 뒤에 그립니다(숨긴 채 그리면 높이가 0으로 잡힙니다). -->
+            <div class="pay-area" id="pay-area" hidden>
+              <p class="pay-head">결제수단</p>
+              <p class="pay-note">신용·체크카드로 결제하시면 됩니다. 로그인이나 회원가입은 필요 없습니다.</p>
+              <p class="pay-mode" id="pay-mode" hidden></p>
+              <div id="payment-method"></div>
+              <div id="agreement"></div>
+              <div class="pay-summary">
+                <span class="pay-summary-label">결제 금액</span>
+                <span class="pay-summary-value"><s>₩290,000</s>₩99,000</span>
+              </div>
+              <p class="pay-refund">
+                요약 자료를 받으시기 전에는 전액 환불해 드립니다. <a href="/refund">환불규정 보기</a>
+              </p>
+            </div>
+
+            <div>
+              <button type="submit" class="btn btn-primary btn-block" id="intake-submit">₩0으로 보내기</button>
+              <p class="form-msg" id="intake-msg" role="status" aria-live="polite"></p>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ===== 면책 ===== -->
+      <section class="disclaimer">
+        <div class="container narrow disclaimer-inner">
+          <p>
+            TROPS는 법률 자문 서비스가 아닙니다. 전달해 드리는 자료는 서류의 항목별 차이를 표시한 참고 자료이며, 그 자체로 법적 효력을 갖지 않습니다.
+            최종 결정은 이용자와 이용자가 선임한 전문가의 몫입니다.
+            보내주신 파일은 접수일로부터 30일 후 삭제됩니다.
+          </p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-row">
+        <span class="footer-mark">TROPS</span>
+        <span class="footer-meta">수출 거래 운영 · contact@theo-ne.com</span>
+      </div>
+      <nav class="footer-links" aria-label="정책">
+        <a href="/refund">환불규정</a>
+        <a href="/">TROPS 홈</a>
+      </nav>
+
+      <dl class="footer-biz" aria-label="사업자정보">
+        <div><dt>상호명</dt><dd>주식회사 테오네</dd></div>
+        <div><dt>대표자명</dt><dd>범하나</dd></div>
+        <div><dt>사업자등록번호</dt><dd>625-81-04032</dd></div>
+        <!-- 통신판매업신고 신청 중. 신고번호 확정 시 "신청 중"을 번호로 교체하십시오. -->
+        <div><dt>통신판매업신고번호</dt><dd>신청 중</dd></div>
+        <div><dt>사업장주소</dt><dd>서울특별시 강남구 봉은사로 524, B층 269-11호(삼성동)</dd></div>
+        <div><dt>전화번호</dt><dd>010-2605-5238</dd></div>
+      </dl>
+
+      <div class="footer-legal">
+        <p>TROPS · 주식회사 테오네 — ※ 법률 자문 서비스가 아닙니다.</p>
+        <p>© 2026 TROPS · 주식회사 테오네. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+  <script>
+  (function () {
+    'use strict';
+
+    var SLOTS_URL   = '/api/slots';
+    var INTAKE_URL  = '/api/intake';
+    var PAY_CONFIG_URL  = '/api/payment-config';
+    var PAY_CONFIRM_URL = '/api/payment-confirm';
+    var ERASURE_URL     = '/api/erasure';
+
+    var MAX_FILES       = 5;
+    var MAX_FILE_BYTES  = 10 * 1024 * 1024;
+    var MAX_TOTAL_BYTES = 20 * 1024 * 1024;
+
+    var params = readParams();
+
+    /* 들어온 경로를 먼저 가릅니다.
+       결제 복귀(paymentKey) → 승인 → 접수 확인
+       결제 실패(pay=fail)   → 실패 안내
+       Magic Link(r)         → 접수 확인
+       그 외                  → 접수 화면                                   */
+    if (params.paymentKey && params.orderId) { confirmPayment(); return; }
+    if (params.pay === 'fail')               { showPayFailure(); return; }
+    if (params.r)                            { showReceipt(params.r); return; }
+
+    /* ---------- 접수 화면 ---------- */
+
+    var form       = document.getElementById('intake-form');
+    var msg        = document.getElementById('intake-msg');
+    var submitBtn  = document.getElementById('intake-submit');
+    var fileInput  = document.getElementById('intake-files');
+    var fileList   = document.getElementById('intake-filelist');
+    var closedBox  = document.getElementById('closed-notice');
+    var payArea    = document.getElementById('pay-area');
+    var freeRadio  = document.getElementById('plan-free');
+    var paidRadio  = document.getElementById('plan-paid');
+    var freeCard   = document.getElementById('plan-free-card');
+    var paidCard   = document.getElementById('plan-paid-card');
+
+    var payConfig    = null;   // /api/payment-config 응답
+    var widgets      = null;   // 토스 결제위젯 인스턴스
+    var widgetsReady = false;
+    var freeAvailable = true;
+
+    loadSlots();
+    loadPayConfig();
+
+    fileInput.addEventListener('change', renderFileList);
+    form.addEventListener('submit', onSubmit);
+    freeRadio.addEventListener('change', onPlanChange);
+    paidRadio.addEventListener('change', onPlanChange);
+
+    /* ---------- 슬롯 ---------- */
+
+    function loadSlots() {
+      fetch(SLOTS_URL, { headers: { Accept: 'application/json' } })
+        .then(function (res) { return res.json(); })
+        .then(applySlots)
+        .catch(function () {
+          // 잔여 수량을 못 읽으면 수량을 말하지 않습니다. 접수 자체는 서버가 다시 확인합니다.
+          setSlotText('선착 20건 · 무상 실증', false);
+        });
+    }
+
+    function applySlots(state) {
+      if (!state || state.ok !== true) {
+        // 저장소 자체가 준비되지 않은 상태입니다 — 유료 건도 받을 수 없으므로 폼을 닫습니다.
+        setSlotText('지금은 접수를 준비 중입니다', true);
+        blockEverything();
+        return;
+      }
+      if (!state.open) {
+        setSlotText('선착 ' + state.limit + '건 마감 · 런칭가로 신청 가능', true);
+        lockFreePlan();
+        return;
+      }
+      setSlotText('선착 ' + state.limit + '건 중 ' + state.remaining + '자리 남았습니다', false);
+    }
+
+    function setSlotText(text, off) {
+      document.getElementById('slots-text').textContent = text;
+      document.getElementById('slots-badge').classList.toggle('slots-off', !!off);
+      document.getElementById('slots-mark').classList.toggle('slots-mark-off', !!off);
+    }
+
+    // 무상 자리만 잠급니다. 유료 경로는 그대로 두고 그쪽으로 옮겨 놓습니다.
+    function lockFreePlan() {
+      freeAvailable = false;
+      freeRadio.disabled = true;
+      freeCard.classList.add('plan-off');
+      document.getElementById('plan-free-tag').textContent = '마감';
+      document.getElementById('plan-free-desc').textContent =
+        '선착 20건이 모두 찼습니다. 다음 회차가 열리면 알려드립니다.';
+      closedBox.hidden = false;
+      paidRadio.checked = true;
+      onPlanChange();
+    }
+
+    // Supabase 미설정·장애 — 어느 경로로도 접수를 저장할 수 없는 상태입니다.
+    function blockEverything() {
+      document.getElementById('closed-title').textContent = '지금은 접수를 준비 중입니다.';
+      document.getElementById('closed-body').textContent =
+        '잠시 후 다시 시도해 주십시오. 계속 같은 화면이면 contact@theo-ne.com 으로 알려 주시면 확인하겠습니다.';
+      closedBox.hidden = false;
+      document.getElementById('plans').hidden = true;
+      form.hidden = true;
+    }
+
+    /* ---------- 이용 방식 ---------- */
+
+    function selectedPlan() {
+      return paidRadio.checked ? 'paid' : 'free';
+    }
+
+    function onPlanChange() {
+      var paid = selectedPlan() === 'paid';
+
+      freeCard.classList.toggle('plan-on', !paid);
+      paidCard.classList.toggle('plan-on', paid);
+
+      payArea.hidden = !paid;
+      submitBtn.textContent = paid ? '₩99,000 결제하고 보내기' : '₩0으로 보내기';
+
+      // 위젯은 컨테이너가 보인 뒤에 그립니다. 숨긴 채 그리면 높이가 0으로 잡힙니다.
+      if (paid) renderWidgets();
+    }
+
+    /* ---------- 결제위젯 ---------- */
+
+    function loadPayConfig() {
+      fetch(PAY_CONFIG_URL, { headers: { Accept: 'application/json' } })
+        .then(function (res) { return res.json(); })
+        .then(function (cfg) {
+          if (!cfg || cfg.ok !== true) return;
+          payConfig = cfg;
+          if (cfg.mode !== 'live') {
+            var note = document.getElementById('pay-mode');
+            note.textContent = '테스트 결제로 동작 중입니다. 실제로 청구되지 않습니다.';
+            note.hidden = false;
+          }
+          if (selectedPlan() === 'paid') renderWidgets();
+        })
+        .catch(function () { /* 결제하기를 누를 때 다시 안내합니다. */ });
+    }
+
+    function renderWidgets() {
+      if (widgetsReady || !payConfig || typeof window.TossPayments !== 'function') return;
+      widgetsReady = true;   // 두 번 그리지 않도록 먼저 세웁니다.
+
+      try {
+        var toss = window.TossPayments(payConfig.clientKey);
+        // 비회원 결제 — 로그인이 없으므로 ANONYMOUS 를 씁니다.
+        widgets = toss.widgets({ customerKey: window.TossPayments.ANONYMOUS });
+      } catch (e) {
+        widgetsReady = false;
+        console.error('toss widgets init failed', e);
+        return;
+      }
+
+      widgets.setAmount({ currency: 'KRW', value: payConfig.amount })
+        .then(function () {
+          // 결제수단과 약관을 따로 그립니다 — 약관 렌더링이 실패해도 결제수단은 남아야 합니다.
+          return widgets.renderPaymentMethods({
+            selector: '#payment-method',
+            variantKey: 'DEFAULT'
+          });
+        })
+        .then(function () {
+          return widgets.renderAgreement({ selector: '#agreement', variantKey: 'AGREEMENT' })
+            .catch(function (e) { console.error('toss agreement render failed', e); });
+        })
+        .catch(function (e) {
+          widgetsReady = false;
+          console.error('toss widget render failed', e);
+        });
+    }
+
+    /* ---------- 파일 ---------- */
+
+    function renderFileList() {
+      fileList.innerHTML = '';
+      var files = fileInput.files;
+      for (var i = 0; i < files.length; i += 1) {
+        var li = document.createElement('li');
+        var name = document.createElement('span');
+        name.textContent = files[i].name;
+        var size = document.createElement('span');
+        size.textContent = formatBytes(files[i].size);
+        li.appendChild(name);
+        li.appendChild(size);
+        fileList.appendChild(li);
+      }
+    }
+
+    function formatBytes(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+
+    function readAsBase64(file) {
+      return new Promise(function (resolve, reject) {
+        var reader = new FileReader();
+        reader.onerror = function () { reject(new Error('read failed')); };
+        reader.onload = function () {
+          var result = String(reader.result || '');
+          var comma = result.indexOf(',');
+          resolve(comma === -1 ? result : result.slice(comma + 1));
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    /* ---------- 접수 ---------- */
+
+    function onSubmit(e) {
+      e.preventDefault();
+
+      var plan = selectedPlan();
+      var email = document.getElementById('intake-email').value.trim();
+      var consentTerms = document.getElementById('consent-terms').checked;
+      var consentTraining = document.getElementById('consent-training').checked;
+      var files = Array.prototype.slice.call(fileInput.files);
+
+      if (plan === 'free' && !freeAvailable) {
+        return fail('무상 실증 자리가 모두 찼습니다. 런칭가로 신청해 주십시오.');
+      }
+      if (!email || email.indexOf('@') === -1) {
+        return fail('이메일 주소를 확인해 주십시오.');
+      }
+      if (files.length === 0) {
+        return fail('바이어가 보낸 서류를 한 개 이상 올려 주십시오.');
+      }
+      if (files.length > MAX_FILES) {
+        return fail('파일은 최대 ' + MAX_FILES + '개까지 보내실 수 있습니다.');
+      }
+
+      var total = 0;
+      for (var i = 0; i < files.length; i += 1) {
+        if (files[i].size > MAX_FILE_BYTES) {
+          return fail('"' + files[i].name + '" 이 10MB를 넘습니다.');
+        }
+        total += files[i].size;
+      }
+      if (total > MAX_TOTAL_BYTES) {
+        return fail('파일 합계가 20MB를 넘습니다.');
+      }
+      if (!consentTerms) {
+        return fail('필수 동의 항목에 동의해 주셔야 접수됩니다.');
+      }
+      if (plan === 'paid' && (!widgets || !widgetsReady)) {
+        return fail('결제 화면을 아직 불러오지 못했습니다. 잠시 후 다시 시도해 주십시오.');
+      }
+
+      setBusy(true, plan === 'paid' ? '접수 내용을 저장하는 중입니다…' : '보내는 중입니다…');
+
+      Promise.all(files.map(function (file) {
+        return readAsBase64(file).then(function (data) {
+          return { name: file.name, type: file.type, size: file.size, data: data };
+        });
+      }))
+        .then(function (payload) {
+          return fetch(INTAKE_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              path: plan,
+              email: email,
+              consentTerms: consentTerms,
+              consentTraining: consentTraining,
+              files: payload
+            })
+          });
+        })
+        .then(readJson)
+        .then(function (r) {
+          if (r.status === 409) return onExhausted();
+          if (r.status !== 201 || !r.body.ok) throw new Error(r.body.error || 'request failed');
+          if (plan === 'paid') return openPaymentWindow(r.body, email);
+          return onAccepted(r.body);
+        })
+        .catch(function (err) {
+          setBusy(false);
+          // 결제창을 이용자가 닫은 경우는 오류가 아닙니다.
+          if (err && err.code === 'USER_CANCEL') {
+            msg.classList.remove('is-error');
+            msg.textContent = '결제를 취소하셨습니다. 접수는 아직 완료되지 않았습니다.';
+            return;
+          }
+          fail('보내지 못했습니다. 잠시 후 다시 시도해 주십시오. 계속 같은 화면이면 contact@theo-ne.com 으로 알려 주십시오.');
+        });
+    }
+
+    // 접수 레코드를 먼저 만든 뒤 결제창을 엽니다.
+    // 파일은 이 시점에 이미 저장돼 있어야 합니다 — 결제창에 다녀오면 File 객체가 사라집니다.
+    function openPaymentWindow(body, email) {
+      setBusy(true, '결제창을 여는 중입니다…');
+      var origin = window.location.origin;
+      return widgets.requestPayment({
+        orderId: body.orderId,
+        orderName: body.orderName,
+        successUrl: origin + '/precheck?pay=success',
+        failUrl: origin + '/precheck?pay=fail',
+        customerEmail: email
+      });
+    }
+
+    function onAccepted(body) {
+      form.reset();
+      fileList.innerHTML = '';
+      setBusy(true);
+      msg.classList.remove('is-error');
+      msg.textContent = '접수되었습니다 (' + body.slotNo + '/20). ' +
+        (body.mailed === false
+          ? '확인메일 발송이 지연되고 있습니다. 접수는 정상적으로 기록되었습니다.'
+          : '확인메일을 보내드렸습니다. 메일의 링크에서 접수 내용을 확인하실 수 있습니다.');
+      submitBtn.textContent = '접수 완료';
+    }
+
+    function onExhausted() {
+      setBusy(false);
+      lockFreePlan();
+      fail('접수하시는 사이에 선착 20건이 모두 찼습니다. 런칭가로 신청해 주십시오.');
+    }
+
+    function setBusy(busy, text) {
+      submitBtn.disabled = !!busy;
+      if (text) {
+        msg.classList.remove('is-error');
+        msg.textContent = text;
+      }
+    }
+
+    function fail(text) {
+      msg.textContent = text;
+      msg.classList.add('is-error');
+      submitBtn.disabled = false;
+    }
+
+    /* ---------- 결제 승인 (successUrl 복귀) ---------- */
+
+    function confirmPayment() {
+      var box = openStatusPanel('결제 확인', '결제를 확인하고 있습니다.');
+      var note = document.getElementById('receipt-msg');
+      note.textContent = '잠시만 기다려 주십시오. 이 화면을 닫지 마십시오…';
+
+      fetch(PAY_CONFIRM_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          paymentKey: params.paymentKey,
+          orderId: params.orderId,
+          amount: Number(params.amount)
+        })
+      })
+        .then(readJson)
+        .then(function (r) {
+          if (r.status === 200 && r.body.ok) {
+            // 주소창에서 결제 파라미터를 지우고 접수 확인으로 넘어갑니다.
+            try {
+              window.history.replaceState(null, '', '/precheck?r=' + encodeURIComponent(r.body.token));
+            } catch (e) { /* 주소만 못 바꿀 뿐이라 그대로 진행합니다. */ }
+            showReceipt(r.body.token);
+            return;
+          }
+          note.classList.add('is-error');
+          note.textContent = r.body && r.body.message
+            ? '결제가 승인되지 않았습니다. ' + r.body.message
+            : '결제를 확인하지 못했습니다. 카드 승인 여부를 확인한 뒤 contact@theo-ne.com 으로 알려 주십시오.';
+        })
+        .catch(function () {
+          note.classList.add('is-error');
+          note.textContent = '결제를 확인하지 못했습니다. 카드 승인 여부를 확인한 뒤 contact@theo-ne.com 으로 알려 주십시오.';
+        });
+    }
+
+    function showPayFailure() {
+      openStatusPanel('결제 실패', '결제가 완료되지 않았습니다.');
+      var note = document.getElementById('receipt-msg');
+      note.classList.add('is-error');
+      note.textContent = params.message
+        ? params.message + ' (' + (params.code || '-') + ')'
+        : '결제가 취소되었거나 승인되지 않았습니다.';
+
+      var box = document.getElementById('receipt-card');
+      var again = document.createElement('p');
+      again.style.margin = '16px 0 0';
+      again.style.fontSize = '15.5px';
+      again.textContent = '접수는 완료되지 않았습니다. 다시 신청하시면 됩니다.';
+      box.appendChild(again);
+    }
+
+    // 접수 확인·결제 확인·결제 실패가 같은 패널을 씁니다.
+    function openStatusPanel(eyebrow, title) {
+      document.getElementById('offer').hidden = true;
+      document.getElementById('receipt').hidden = false;
+      document.getElementById('receipt-eyebrow').textContent = eyebrow;
+      document.getElementById('receipt-title').textContent = title;
+      return document.getElementById('receipt-card');
+    }
+
+    /* ---------- 접수 확인 ---------- */
+
+    function showReceipt(t) {
+      var box = openStatusPanel('접수 확인', '접수 내용입니다.');
+      box.innerHTML = '<p class="form-msg" id="receipt-msg" role="status" aria-live="polite">불러오는 중입니다…</p>';
+      var note = document.getElementById('receipt-msg');
+
+      fetch(INTAKE_URL + '?r=' + encodeURIComponent(t), { headers: { Accept: 'application/json' } })
+        .then(readJson)
+        .then(function (r) {
+          if (r.status !== 200 || !r.body.ok) {
+            note.textContent = r.status === 404
+              ? '이 링크로는 접수 내용을 찾을 수 없습니다. 메일의 링크를 다시 확인해 주십시오.'
+              : '접수 내용을 불러오지 못했습니다. 잠시 후 다시 시도해 주십시오.';
+            note.classList.add('is-error');
+            return;
+          }
+          box.innerHTML = '';
+          addRow(box, '접수 상태', statusLabel(r.body.status));
+          addRow(box, '접수 시각', formatDate(r.body.receivedAt));
+          addRow(box, '보내신 파일', r.body.fileCount + '개');
+          if (r.body.path === 'paid') {
+            addRow(box, '결제 금액', formatWon(r.body.amount));
+            addRow(box, '결제 상태', paymentLabel(r.body.paymentStatus));
+          } else if (r.body.slotNo) {
+            addRow(box, '실증 순번', r.body.slotNo + ' / 20');
+          }
+          if (r.body.erasedAt) {
+            addRow(box, '자료 삭제', formatDate(r.body.erasedAt) + ' 완료');
+          } else {
+            addRow(box, '삭제 예정', formatDate(r.body.deleteAfter));
+          }
+          setupErase(t, r.body);
+        })
+        .catch(function () {
+          note.textContent = '접수 내용을 불러오지 못했습니다. 잠시 후 다시 시도해 주십시오.';
+          note.classList.add('is-error');
+        });
+    }
+
+    function addRow(box, key, value) {
+      var row = document.createElement('div');
+      row.className = 'receipt-row';
+      var k = document.createElement('span');
+      k.className = 'receipt-key';
+      k.textContent = key;
+      var v = document.createElement('span');
+      v.className = 'receipt-val';
+      v.textContent = value;
+      row.appendChild(k);
+      row.appendChild(v);
+      box.appendChild(row);
+    }
+
+    /* ---------- 자료 즉시 삭제 (환불규정 05) ---------- */
+
+    function setupErase(token, receipt) {
+      var box = document.getElementById('erase');
+      if (!box) return;
+
+      // 이미 지운 건은 요청 화면을 띄우지 않습니다.
+      if (receipt.erasedAt) { showErased(box, receipt.erasedAt, null); return; }
+      // 남은 파일이 없으면 지울 것이 없습니다(30일 정리 배치가 이미 지운 경우).
+      if (!receipt.fileCount) return;
+
+      var check = document.getElementById('erase-consent');
+      var btn   = document.getElementById('erase-btn');
+      var note  = document.getElementById('erase-msg');
+
+      box.hidden = false;
+      check.checked = false;
+      btn.disabled = true;
+
+      check.addEventListener('change', function () { btn.disabled = !check.checked; });
+      btn.addEventListener('click', function () { requestErase(token, check, btn, note); });
+    }
+
+    function requestErase(token, check, btn, note) {
+      // 동의 없이는 보내지 않습니다. 서버도 같은 조건을 다시 확인합니다.
+      if (!check.checked) return;
+
+      btn.disabled = true;
+      check.disabled = true;
+      note.classList.remove('is-error');
+      note.textContent = '삭제하고 있습니다…';
+
+      fetch(ERASURE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: token, confirmNoReissue: true })
+      })
+        .then(readJson)
+        .then(function (r) {
+          if (r.status === 200 && r.body.ok) {
+            showErased(document.getElementById('erase'),
+              r.body.erasureRequestedAt, r.body.filesDeleted);
+            return;
+          }
+          eraseFailed(check, btn, note);
+        })
+        .catch(function () { eraseFailed(check, btn, note); });
+    }
+
+    function eraseFailed(check, btn, note) {
+      note.classList.add('is-error');
+      note.textContent = '삭제하지 못했습니다. 잠시 후 다시 시도하시거나 ' +
+        'contact@theo-ne.com 으로 알려 주십시오.';
+      check.disabled = false;
+      btn.disabled = !check.checked;
+    }
+
+    // 요청 화면을 결과로 갈아 끼웁니다. 되돌릴 수 없으므로 버튼을 남기지 않습니다.
+    function showErased(box, at, count) {
+      var when = formatDate(at);
+      box.hidden = false;
+      box.innerHTML = '';
+
+      // 30일 안내는 이제 맞지 않습니다 — 이미 지웠습니다.
+      var retention = document.getElementById('retention-note');
+      if (retention) retention.hidden = true;
+
+      var h = document.createElement('h2');
+      h.id = 'erase-title';
+      h.textContent = '자료를 삭제했습니다';
+
+      var p = document.createElement('p');
+      p.textContent = '요청하신 대로 ' +
+        (count != null ? '파일 ' + count + '건을 ' : '보내주신 파일을 ') + '삭제했습니다' +
+        (when !== '-' ? ' (' + when + ')' : '') + '. ' +
+        '접수 기록도 곧 함께 지워집니다.';
+
+      var p2 = document.createElement('p');
+      p2.textContent = '같은 건의 자료는 다시 만들어 드릴 수 없습니다. ' +
+        '삭제는 환불이 아닙니다 — 환불은 contact@theo-ne.com 으로 따로 신청해 주십시오.';
+
+      box.appendChild(h);
+      box.appendChild(p);
+      box.appendChild(p2);
+    }
+
+    function statusLabel(status) {
+      return {
+        awaiting_payment: '결제 대기',
+        received:         '접수됨',
+        in_progress:      '측정 · 대조 중',
+        delivered:        '자료 전달 완료',
+        cancelled:        '취소됨'
+      }[status] || status;
+    }
+
+    function paymentLabel(status) {
+      return {
+        none:     '-',
+        pending:  '결제 대기',
+        paid:     '결제 완료',
+        failed:   '결제 실패',
+        refunded: '환불 완료'
+      }[status] || status;
+    }
+
+    function formatWon(amount) {
+      return '₩' + Number(amount || 0).toLocaleString('ko-KR');
+    }
+
+    function formatDate(iso) {
+      var d = new Date(iso);
+      if (isNaN(d.getTime())) return '-';
+      return d.getFullYear() + '. ' + (d.getMonth() + 1) + '. ' + d.getDate() + '. ' +
+        String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+    }
+
+    /* ---------- 공용 ---------- */
+
+    function readParams() {
+      try {
+        var q = (new URL(window.location.href)).searchParams;
+        return {
+          r: q.get('r') || '',
+          pay: q.get('pay') || '',
+          paymentKey: q.get('paymentKey') || '',
+          orderId: q.get('orderId') || '',
+          amount: q.get('amount') || '',
+          code: q.get('code') || '',
+          message: q.get('message') || ''
+        };
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function readJson(res) {
+      return res.json()
+        .catch(function () { return {}; })
+        .then(function (body) { return { status: res.status, body: body }; });
+    }
+  })();
+  </script>
+</body>
+</html>

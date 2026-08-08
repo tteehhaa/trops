@@ -1,6 +1,11 @@
 {
   "name": "trops-landing",
   "private": true,
+  "scripts": {
+    "test": "node --test test/",
+    "cleanup:preview": "node --env-file=.env.local scripts/cleanup-expired.js",
+    "cleanup:apply": "node --env-file=.env.local scripts/cleanup-expired.js --apply"
+  },
   "dependencies": {
     "resend": "^4.0.1"
   }

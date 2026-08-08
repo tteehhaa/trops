@@ -1,0 +1,476 @@
+/*
+ * /precheck 접수 수신 · 저장 · 확인메일
+ *
+ * ⚠️ 경계 (반드시 지킬 것)
+ *   이 폴더(main_web_page)는 접수·저장·알림만 담당합니다.
+ *   LLM 호출·상태 판정·계약서 파싱·서류 대조 로직을 여기에 두지 않습니다.
+ *   측정과 대조는 뒷단(trops_a)에서, 처리는 사람이 손으로 합니다.
+ *   이 파일이 하는 일은 "접수됐다"를 기록하고 알리는 것까지입니다.
+ *
+ * POST /api/intake
+ *   body: { email, consentTerms, consentTraining, path, files: [{ name, type, size, data(base64) }] }
+ *
+ *   path='free' (기본) — 선착 20건 무상 실증
+ *     슬롯을 원자적으로 점유하고 바로 접수 확정(status='received') · 확인메일 발송
+ *     → 201 { ok:true, path:'free', token, slotNo, remaining }
+ *     → 409 { error:'slots-exhausted' }   20건 소진
+ *
+ *   path='paid' — 런칭가 99,000원 건별 결제
+ *     슬롯을 쓰지 않습니다. 결제 전이므로 status='awaiting_payment' 로만 남기고
+ *     확인메일도 보내지 않습니다 — 접수 확정은 api/payment-confirm.js 가 합니다.
+ *     → 201 { ok:true, path:'paid', token, orderId, amount, orderName }
+ *
+ *   → 400 { error:'invalid input', field }
+ *   → 503 { error:'not-configured' }    카운터/저장소 미설정 (fail-safe closed)
+ *
+ * GET /api/intake?r=<token>          Magic Link 조회
+ *   → 200 { ok:true, status, receivedAt, fileCount, slotNo, deleteAfter, erasedAt }
+ *   → 404 { error:'not-found' }
+ *
+ * 같은 토큰으로 자료를 즉시 지우는 경로는 api/erasure.js 입니다(환불규정 05).
+ *
+ * 확인메일에 PDF 를 첨부하지 않습니다.
+ *   회수·정정이 불가능하고, 30일 삭제 정책이 적용되지 않으며, 열람을 측정할 수 없습니다.
+ *   메일에는 Magic Link 만 담습니다.
+ *
+ * 필요한 Vercel 환경변수:
+ *   INTAKE_SUPABASE_URL                  (앞단 전용 신규 프로젝트)
+ *   INTAKE_SUPABASE_SERVICE_ROLE_KEY     (서버에서만 사용)
+ *   RESEND_API_KEY                       (기존 재사용)
+ *   PRECHECK_ORIGIN                      (선택 · Magic Link 기준 주소. 기본 https://trops.kr)
+ *
+ * 스키마는 저장소 루트 precheck-schema.sql 을 Supabase SQL Editor 에 실행하십시오.
+ */
+
+const crypto = require('crypto');
+const { readConfig, safeText } = require('./_supabase.js');
+const { PRICE, ORDER_NAME, makeOrderId } = require('./_payment.js');
+const { buildMagicLink, sendIntakeMails, RETENTION_DAYS } = require('./_notify.js');
+
+const STORAGE_BUCKET = 'intake';
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const TOKEN_RE = /^[A-Za-z0-9_-]{22,64}$/;
+
+const MAX_EMAIL_LEN = 254;
+const MAX_FILES = 5;
+const MAX_FILE_BYTES = 10 * 1024 * 1024;   // 파일 1개당 10MB
+const MAX_TOTAL_BYTES = 20 * 1024 * 1024;  // 합계 20MB
+const MAX_NAME_LEN = 180;
+
+// 바이어가 보내오는 서류의 실제 형식만 받습니다.
+const ALLOWED_EXTENSIONS = ['pdf', 'doc', 'docx', 'hwp', 'hwpx', 'txt', 'rtf', 'png', 'jpg', 'jpeg'];
+const MIME_BY_EXTENSION = {
+  pdf: 'application/pdf',
+  doc: 'application/msword',
+  docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  hwp: 'application/x-hwp',
+  hwpx: 'application/hwp+zip',
+  txt: 'text/plain',
+  rtf: 'application/rtf',
+  png: 'image/png',
+  jpg: 'image/jpeg',
+  jpeg: 'image/jpeg',
+};
+
+module.exports = async (req, res) => {
+  res.setHeader('Cache-Control', 'no-store');
+
+  if (req.method === 'GET') return handleReceipt(req, res);
+  if (req.method === 'POST') return handleIntake(req, res);
+
+  res.status(405).json({ error: 'method not allowed' });
+};
+
+/* ──────────────────────────────────────────────────────────────
+ * 접수
+ * ────────────────────────────────────────────────────────────── */
+
+async function handleIntake(req, res) {
+  const body = parseBody(req.body);
+
+  const email = typeof body.email === 'string' ? body.email.trim() : '';
+  if (!email || email.length > MAX_EMAIL_LEN || !EMAIL_RE.test(email)) {
+    res.status(400).json({ error: 'invalid input', field: 'email' });
+    return;
+  }
+
+  // 동의 1 은 필수입니다. 없으면 접수 자체가 성립하지 않습니다.
+  if (body.consentTerms !== true) {
+    res.status(400).json({ error: 'invalid input', field: 'consentTerms' });
+    return;
+  }
+  const consentTraining = body.consentTraining === true;
+
+  // 무상 실증(free)과 건별 결제(paid)는 접수 시점이 다릅니다.
+  // free 는 여기서 접수가 끝나고, paid 는 결제 승인까지 가야 끝납니다.
+  const path = body.path === 'paid' ? 'paid' : 'free';
+
+  const parsed = parseFiles(body.files);
+  if (!parsed.ok) {
+    res.status(400).json({ error: 'invalid input', field: 'files', detail: parsed.error });
+    return;
+  }
+  const files = parsed.files;
+
+  const config = readConfig();
+  if (!config.ok) {
+    console.error('intake config error: ' + config.error);
+    res.status(503).json({ error: 'not-configured' });
+    return;
+  }
+
+  const intakeId = crypto.randomUUID();
+  const token = crypto.randomBytes(24).toString('base64url');
+  const receivedAt = new Date();
+  const deleteAfter = new Date(receivedAt.getTime() + RETENTION_DAYS * 24 * 60 * 60 * 1000);
+
+  // 1) free 만 슬롯을 점유합니다. 유료 건은 한도와 무관하게 언제든 받습니다.
+  //    점유를 업로드·저장보다 앞에 두어야 동시 접수가 20건을 넘기지 않습니다.
+  let claim = null;
+  if (path === 'free') {
+    try {
+      claim = await claimSlot(config);
+    } catch (err) {
+      console.error('intake claim_slot failed:', err && err.message ? err.message : err);
+      res.status(502).json({ error: 'claim failed' });
+      return;
+    }
+    if (claim.exhausted) {
+      res.status(409).json({ error: 'slots-exhausted', limit: claim.limit, remaining: 0 });
+      return;
+    }
+  }
+
+  const orderId = path === 'paid' ? makeOrderId() : null;
+
+  // 점유 이후 어느 단계에서 실패하든 슬롯을 반드시 돌려놓습니다.
+  // 돌려놓지 않으면 아무도 쓰지 않은 슬롯이 소진된 것으로 남습니다.
+  try {
+    const uploaded = await uploadFiles(config, intakeId, files);
+
+    await insertIntake(config, {
+      id: intakeId,
+      email: email,
+      file_paths: uploaded,
+      file_count: uploaded.length,
+      consent_terms: true,
+      consent_training: consentTraining,
+      consent_at: receivedAt.toISOString(),
+      slot_no: claim ? claim.slotNo : null,
+      access_token: token,
+      // 유료 건은 결제가 끝나야 접수입니다. 그 전에는 처리 대기열에 올리지 않습니다.
+      status: path === 'paid' ? 'awaiting_payment' : 'received',
+      received_at: receivedAt.toISOString(),
+      delete_after: deleteAfter.toISOString(),
+      intake_path: path,
+      order_id: orderId,
+      // 금액은 서버 상수만 씁니다. 클라이언트가 보낸 금액은 쓰지 않습니다.
+      amount: path === 'paid' ? PRICE : 0,
+      payment_status: path === 'paid' ? 'pending' : 'none',
+    });
+  } catch (err) {
+    console.error('intake store failed:', err && err.message ? err.message : err);
+    if (claim) await releaseSlot(config);
+    res.status(502).json({ error: 'store failed' });
+    return;
+  }
+
+  // 2) 유료 건은 여기서 멈춥니다.
+  //    확인메일은 결제가 승인된 뒤 api/payment-confirm.js 가 보냅니다 —
+  //    결제 전에 "접수되었습니다" 를 보내면 결제를 그만둔 사람에게도 가버립니다.
+  if (path === 'paid') {
+    res.status(201).json({
+      ok: true,
+      path: 'paid',
+      token: token,
+      orderId: orderId,
+      amount: PRICE,
+      orderName: ORDER_NAME,
+    });
+    return;
+  }
+
+  // 3) 무상 건 알림. 여기서부터는 실패해도 접수를 취소하지 않습니다 —
+  //    레코드는 이미 남았고, 메일은 사람이 다시 보낼 수 있습니다.
+  const mail = await sendIntakeMails({
+    email: email,
+    magicLink: buildMagicLink(token),
+    fileCount: files.length,
+    fileNames: files.map((f) => f.name),
+    slotNo: claim.slotNo,
+    consentTraining: consentTraining,
+    receivedAt: receivedAt,
+    intakeId: intakeId,
+    storageBucket: STORAGE_BUCKET,
+    path: 'free',
+    amount: 0,
+  });
+
+  res.status(201).json({
+    ok: true,
+    path: 'free',
+    token: token,
+    slotNo: claim.slotNo,
+    remaining: claim.remaining,
+    mailed: mail.confirmationSent,
+  });
+}
+
+/* ──────────────────────────────────────────────────────────────
+ * Magic Link 조회
+ * ────────────────────────────────────────────────────────────── */
+
+async function handleReceipt(req, res) {
+  const token = readToken(req);
+  if (!TOKEN_RE.test(token)) {
+    res.status(400).json({ error: 'invalid token' });
+    return;
+  }
+
+  const config = readConfig();
+  if (!config.ok) {
+    console.error('intake config error: ' + config.error);
+    res.status(503).json({ error: 'not-configured' });
+    return;
+  }
+
+  try {
+    const select = 'status,received_at,file_count,slot_no,delete_after,intake_path,amount,payment_status,paid_at,' +
+      'erasure_requested_at';
+    const response = await fetch(
+      config.restUrl + '/intake?access_token=eq.' + encodeURIComponent(token) + '&select=' + select,
+      { headers: config.headers }
+    );
+
+    if (!response.ok) {
+      console.error('intake receipt supabase error: HTTP ' + response.status +
+        ' | 응답: ' + (await safeText(response)).slice(0, 300));
+      res.status(502).json({ error: 'lookup failed' });
+      return;
+    }
+
+    const rows = await response.json();
+    const row = Array.isArray(rows) ? rows[0] : null;
+    if (!row) {
+      res.status(404).json({ error: 'not-found' });
+      return;
+    }
+
+    res.status(200).json({
+      ok: true,
+      status: row.status,
+      receivedAt: row.received_at,
+      fileCount: row.file_count,
+      slotNo: row.slot_no,
+      deleteAfter: row.delete_after,
+      path: row.intake_path,
+      amount: row.amount,
+      paymentStatus: row.payment_status,
+      paidAt: row.paid_at,
+      // 자료 즉시 삭제(환불규정 05)를 이미 요청한 건인지. 화면은 이 값으로
+      // 삭제 요청 항목을 감추고 "삭제 완료" 를 표시합니다.
+      erasedAt: row.erasure_requested_at,
+    });
+  } catch (err) {
+    console.error('intake receipt request failed:', err && err.message ? err.message : err);
+    res.status(502).json({ error: 'lookup failed' });
+  }
+}
+
+function readToken(req) {
+  if (req.query && typeof req.query.r === 'string') return req.query.r.trim();
+  try {
+    const url = new URL(req.url, 'http://localhost');
+    return (url.searchParams.get('r') || '').trim();
+  } catch (e) {
+    return '';
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────
+ * 슬롯
+ * ────────────────────────────────────────────────────────────── */
+
+// claim_slot() 은 단일 UPDATE 안에서 한도를 확인하고 증가시킵니다.
+// 두 요청이 동시에 들어와도 행 잠금 때문에 순서가 갈리므로 20건을 넘지 않습니다.
+async function claimSlot(config) {
+  const response = await fetch(config.restUrl + '/rpc/claim_slot', {
+    method: 'POST',
+    headers: config.headers,
+    body: '{}',
+  });
+
+  if (!response.ok) {
+    throw new Error('HTTP ' + response.status + ' | ' + (await safeText(response)).slice(0, 300) +
+      ' | 함수가 없으면 precheck-schema.sql 을 먼저 실행하십시오.');
+  }
+
+  const rows = await response.json();
+  const row = Array.isArray(rows) ? rows[0] : rows;
+
+  // 한도에 도달하면 claimed=false 로 돌아옵니다.
+  // slots 행 자체가 없어도 여기로 옵니다 — 카운터를 못 세면 접수를 닫는 쪽이 맞습니다.
+  if (!row || row.claimed !== true) {
+    const limit = row && row.slot_limit != null ? Number(row.slot_limit) : null;
+    return { exhausted: true, limit: limit };
+  }
+
+  const used = Number(row.used);
+  const limit = Number(row.slot_limit);
+  return { exhausted: false, slotNo: used, limit: limit, remaining: Math.max(0, limit - used) };
+}
+
+async function releaseSlot(config) {
+  try {
+    const response = await fetch(config.restUrl + '/rpc/release_slot', {
+      method: 'POST',
+      headers: config.headers,
+      body: '{}',
+    });
+    if (!response.ok) {
+      // 여기서 실패하면 슬롯 하나가 잠긴 채 남습니다. 사람이 되돌릴 수 있도록 크게 남깁니다.
+      console.error('intake release_slot failed: HTTP ' + response.status +
+        ' | 응답: ' + (await safeText(response)).slice(0, 300) +
+        ' | slots.used 를 수동으로 1 줄여야 합니다.');
+    }
+  } catch (err) {
+    console.error('intake release_slot exception:', err && err.message ? err.message : err,
+      '| slots.used 를 수동으로 1 줄여야 합니다.');
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────
+ * 파일
+ * ────────────────────────────────────────────────────────────── */
+
+function parseFiles(raw) {
+  if (!Array.isArray(raw) || raw.length === 0) {
+    return { ok: false, error: 'no-files' };
+  }
+  if (raw.length > MAX_FILES) {
+    return { ok: false, error: 'too-many-files' };
+  }
+
+  const files = [];
+  let total = 0;
+
+  for (let i = 0; i < raw.length; i += 1) {
+    const item = raw[i] || {};
+    const rawName = typeof item.name === 'string' ? item.name.trim() : '';
+    if (!rawName || rawName.length > MAX_NAME_LEN) {
+      return { ok: false, error: 'bad-name' };
+    }
+
+    const ext = rawName.split('.').pop().toLowerCase();
+    if (ALLOWED_EXTENSIONS.indexOf(ext) === -1) {
+      return { ok: false, error: 'unsupported-type' };
+    }
+
+    const data = typeof item.data === 'string' ? item.data : '';
+    // 클라이언트가 data:...;base64, 접두사를 붙여 보낼 수 있습니다.
+    const base64 = data.indexOf(',') !== -1 && data.slice(0, 5) === 'data:'
+      ? data.slice(data.indexOf(',') + 1)
+      : data;
+    if (!base64) {
+      return { ok: false, error: 'empty-file' };
+    }
+
+    let buffer;
+    try {
+      buffer = Buffer.from(base64, 'base64');
+    } catch (e) {
+      return { ok: false, error: 'bad-encoding' };
+    }
+    if (buffer.length === 0) {
+      return { ok: false, error: 'empty-file' };
+    }
+    if (buffer.length > MAX_FILE_BYTES) {
+      return { ok: false, error: 'file-too-large' };
+    }
+
+    total += buffer.length;
+    if (total > MAX_TOTAL_BYTES) {
+      return { ok: false, error: 'total-too-large' };
+    }
+
+    files.push({
+      name: rawName,
+      safeName: safeFileName(rawName, ext),
+      mime: MIME_BY_EXTENSION[ext] || 'application/octet-stream',
+      buffer: buffer,
+    });
+  }
+
+  return { ok: true, files: files };
+}
+
+// 저장소 경로에는 원래 파일명을 쓰지 않습니다.
+// 한글·공백·슬래시가 섞인 이름은 경로를 깨뜨리고, 원본 이름은 DB 가 아니라 메일로 전달합니다.
+function safeFileName(name, ext) {
+  const base = name.slice(0, name.length - ext.length - 1)
+    .replace(/[^A-Za-z0-9._-]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 48);
+  return (base || 'file') + '.' + ext;
+}
+
+async function uploadFiles(config, intakeId, files) {
+  const paths = [];
+
+  for (let i = 0; i < files.length; i += 1) {
+    const file = files[i];
+    const path = intakeId + '/' + String(i + 1).padStart(2, '0') + '-' + file.safeName;
+    const response = await fetch(
+      config.storageUrl + '/object/' + STORAGE_BUCKET + '/' + encodeURI(path),
+      {
+        method: 'POST',
+        headers: {
+          apikey: config.key,
+          Authorization: 'Bearer ' + config.key,
+          'Content-Type': file.mime,
+          'x-upsert': 'false',
+        },
+        body: file.buffer,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('storage upload HTTP ' + response.status +
+        ' | ' + (await safeText(response)).slice(0, 300) +
+        ' | 버킷("' + STORAGE_BUCKET + '")이 없으면 precheck-schema.sql 을 먼저 실행하십시오.');
+    }
+
+    paths.push(STORAGE_BUCKET + '/' + path);
+  }
+
+  return paths;
+}
+
+/* ──────────────────────────────────────────────────────────────
+ * 저장
+ * ────────────────────────────────────────────────────────────── */
+
+async function insertIntake(config, row) {
+  const response = await fetch(config.restUrl + '/intake', {
+    method: 'POST',
+    headers: Object.assign({}, config.headers, { Prefer: 'return=minimal' }),
+    body: JSON.stringify(row),
+  });
+
+  if (!response.ok) {
+    throw new Error('intake insert HTTP ' + response.status +
+      ' | ' + (await safeText(response)).slice(0, 300) +
+      ' | 테이블이 없으면 precheck-schema.sql 을 먼저 실행하십시오.');
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────
+ * 공용
+ * ────────────────────────────────────────────────────────────── */
+
+function parseBody(raw) {
+  if (!raw) return {};
+  if (typeof raw === 'object') return raw;
+  try { return JSON.parse(raw); } catch (e) { return {}; }
+}

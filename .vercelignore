@@ -1,3 +1,6 @@
 design_handoff_trops_landing/
 dd-now/
 .bkit/
+precheck-schema.sql
+scripts/
+test/
