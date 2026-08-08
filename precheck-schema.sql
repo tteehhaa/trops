@@ -106,13 +106,24 @@
 --
 -- 가산 변경만 합니다 — 기존 컬럼을 지우거나 형을 바꾸지 않습니다.
 --
+-- ⚠️ 이 절만 따로 실행하십시오. 파일 전체를 붙여넣으면 아래 1번의
+--    create table public.intake 에서 42P07 (relation "intake" already exists)
+--    로 멈춥니다. 이미 만들어 둔 프로젝트에 두 번 만들려 하기 때문입니다.
+--
+-- 제약조건에는 add constraint if not exists 가 없습니다(Postgres 문법에 없음).
+-- 그래서 drop constraint if exists 를 앞에 붙여 몇 번을 실행해도 같은 결과가
+-- 되게 합니다 — 0-A 의 intake_status_allowed 와 같은 방식입니다.
+--
 --   alter table public.intake
 --     add column if not exists target_country text,
 --     add column if not exists hs_code        text;
 --
---   alter table public.intake add constraint intake_target_country_shape
+--   alter table public.intake drop constraint if exists intake_target_country_shape;
+--   alter table public.intake add  constraint intake_target_country_shape
 --     check (target_country is null or target_country ~ '^[A-Z]{2}$');
---   alter table public.intake add constraint intake_hs_code_shape
+--
+--   alter table public.intake drop constraint if exists intake_hs_code_shape;
+--   alter table public.intake add  constraint intake_hs_code_shape
 --     check (hs_code is null or hs_code ~ '^[0-9]{8}$');
 --
 --   create index if not exists intake_hs_code_idx on public.intake (hs_code)
