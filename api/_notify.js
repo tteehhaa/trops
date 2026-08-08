@@ -86,7 +86,7 @@ async function sendIntakeMails(info) {
         ${paid
           ? `<p><strong>${escapeHtml(formatWon(info.amount))}</strong> 결제가 승인되었습니다. 주문번호 ${escapeHtml(info.orderId || '-')}</p>`
           : ''}
-        <p>19개 항목을 측정해 대조한 뒤, 당일 안에 요약 자료를 정돈해 아래 주소로 올려 드립니다.</p>
+        <p>18개 항목을 측정해 대조한 뒤, 당일 안에 요약 자료를 정돈해 아래 주소로 올려 드립니다.</p>
         <p><a href="${escapeHtml(info.magicLink)}">접수 내용 확인하기</a></p>
         <p style="color:#64748B;font-size:13px">
           이 링크는 접수하신 분만 여실 수 있습니다. 다른 사람에게 전달하지 마십시오.<br>
