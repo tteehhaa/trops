@@ -19,6 +19,9 @@
  */
 
 const { Resend } = require('resend');
+const {
+  agreementFor, fetchTariffRecord, lookupUrl, tariffDisclaimer,
+} = require('./_agreements.js');
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -57,6 +60,10 @@ async function sendIntakeMails(info) {
     ? '자사 서식 — ' + ownFormName
     : '자사 서식 없음 → 국제표준(ICC) 18항목';
 
+  // 거래 정보(선택)를 넣으신 건에만 붙습니다. 없으면 trade 가 null 이고,
+  // 아래 두 메일 모두 해당 문단을 만들지 않습니다 — 빈 항목을 남기지 않습니다.
+  const trade = await describeTrade(info.targetCountry, info.hsCode);
+
   try {
     const { error } = await resend.emails.send({
       from: `TROPS 사전 확인 접수 <${CONTACT_ADDRESS}>`,
@@ -74,6 +81,7 @@ async function sendIntakeMails(info) {
         <p><strong>이메일:</strong> ${escapeHtml(info.email)}</p>
         <p><strong>파일 ${info.fileCount}건:</strong> ${escapeHtml((info.fileNames || []).join(', ') || '-')}</p>
         <p><strong>대조 기준:</strong> ${escapeHtml(basis)}</p>
+        ${trade ? `<p><strong>거래 정보:</strong> ${escapeHtml(trade.operatorLine)}</p>` : ''}
         <p><strong>동의 2(비식별 데이터 활용):</strong> ${info.consentTraining ? '동의' : '미동의'}</p>
         <p><strong>접수 시각:</strong> ${escapeHtml(toIso(info.receivedAt))}</p>
         <p>파일은 Supabase Storage <code>${escapeHtml(bucket)}/${escapeHtml(info.intakeId)}/</code> 에 있습니다.</p>
@@ -98,6 +106,7 @@ async function sendIntakeMails(info) {
           ? '함께 보내주신 자사 서식을 기준으로 대조한 뒤, 당일 안에 요약 자료를 정돈해 아래 주소로 올려 드립니다.'
           : '자사 서식을 함께 받지 못했으므로 국제표준(ICC) 18개 항목을 기준으로 대조한 뒤, 당일 안에 요약 자료를 정돈해 아래 주소로 올려 드립니다.'}</p>
         <p><a href="${escapeHtml(info.magicLink)}">접수 내용 확인하기</a></p>
+        ${trade ? trade.html : ''}
         <p style="color:#64748B;font-size:13px">
           이 링크는 접수하신 분만 여실 수 있습니다. 다른 사람에게 전달하지 마십시오.<br>
           보내주신 파일은 접수일로부터 ${RETENTION_DAYS}일 후 삭제됩니다.
@@ -201,6 +210,82 @@ async function sendErasureMails(info) {
   }
 
   return { confirmationSent: confirmationSent };
+}
+
+/* ──────────────────────────────────────────────────────────────
+ * 거래 정보 · 협정 세율 (선택 항목)
+ * ────────────────────────────────────────────────────────────── */
+
+/**
+ * 접수 때 골라 넣으신 거래 상대국·HS 코드로 양허표 한 줄을 읽어 메일 문단을 만듭니다.
+ *
+ * 둘 중 하나라도 없으면 null 입니다 — 부르는 쪽은 문단 자체를 만들지 않습니다.
+ * 빈 표를 띄우느니 항목이 없는 편이 낫습니다.
+ *
+ * ⚠️ 여기서 세율을 계산하지 않습니다. 양허표에 문자 그대로 적힌 값만 옮깁니다.
+ *    연도별 단계 인하 계산은 /uae 한 곳에만 두고, 메일은 그리로 보냅니다 —
+ *    두 곳에서 계산하면 언젠가 서로 다른 "현재 세율" 을 말하게 됩니다.
+ */
+async function describeTrade(countryCode, hsCode) {
+  const agreement = agreementFor(countryCode);
+  if (!agreement || !hsCode) return null;
+
+  const url = lookupUrl(origin(), agreement.code, hsCode);
+  if (!url) return null;
+
+  const lookup = await fetchTariffRecord(origin(), agreement.code, hsCode);
+  const record = lookup.record;
+
+  const head = agreement.name + ' · ' + agreement.agreement + ' · HS ' + hsCode;
+
+  // 표를 못 읽었습니다. "그런 코드는 없다" 고 말하지 않습니다 —
+  // 멀쩡한 코드를 의심하게 만드는 것이 더 나쁩니다. 조회 화면으로 보냅니다.
+  if (!lookup.ok) {
+    return {
+      operatorLine: head + ' — 양허표를 읽지 못함',
+      html: `
+        <hr>
+        <p><strong>거래 상대국 협정 세율</strong></p>
+        <p>${escapeHtml(head)}</p>
+        <p>지금은 양허표를 불러오지 못했습니다.
+          <a href="${escapeHtml(url)}">협정 세율 조회</a>에서 직접 확인해 주십시오.</p>
+      `,
+    };
+  }
+
+  // 표에 없는 코드입니다. 지어내지 않고 못 찾았다고 그대로 말합니다.
+  if (!record) {
+    return {
+      operatorLine: head + ' — 양허표에 없는 코드',
+      html: `
+        <hr>
+        <p><strong>거래 상대국 협정 세율</strong></p>
+        <p>${escapeHtml(head)}</p>
+        <p>이 코드는 ${escapeHtml(agreement.agreement)} 양허표에서 찾지 못했습니다.
+          코드를 다시 확인하신 뒤 <a href="${escapeHtml(url)}">협정 세율 조회</a>에서
+          같은 호(4단위)의 다른 품목을 보실 수 있습니다.</p>
+      `,
+    };
+  }
+
+  const itemName = String(record.name || '').replace(/^[-\s]+/, '').trim();
+
+  return {
+    operatorLine: head + ' · ' + record.trackLabel + ' (양허유형 ' + record.concession + ')',
+    html: `
+      <hr>
+      <p><strong>거래 상대국 협정 세율</strong></p>
+      <p>${escapeHtml(head)}<br>
+        ${itemName ? escapeHtml(itemName) + '<br>' : ''}
+        기준세율 ${escapeHtml(record.baseRateRaw)} ·
+        ${escapeHtml(record.trackLabel)} ·
+        무관세 도달 ${escapeHtml(record.zeroDate)}</p>
+      <p><a href="${escapeHtml(url)}">연도별 세율과 원산지 결정기준(PSR) 보기</a></p>
+      <p style="color:#64748B;font-size:13px">
+        ${tariffDisclaimer(agreement.code).map(escapeHtml).join('<br>')}
+      </p>
+    `,
+  };
 }
 
 function toIso(value) {

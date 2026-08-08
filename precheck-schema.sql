@@ -95,6 +95,41 @@
 --     where own_form_path is not null;
 
 
+-- ── 0-D. 거래 정보 컬럼 — 협정 세율 함께 보기 (2026-08-09) ───────────────────
+--
+-- 접수 시 거래 상대국·HS 코드를 "선택" 으로 받습니다.
+-- 두 값이 모두 있으면 접수 확인 화면과 확인메일에 해당국 협정 세율을 함께 보여 줍니다.
+--
+-- ⚠️ 반드시 null 을 허용해야 합니다. 이 두 칸은 NDA 대조와 아무 상관이 없습니다 —
+--    필수로 만드는 순간 "NDA 하나 보내려는데 HS 코드를 왜 묻지" 가 되어
+--    접수 자체를 잃습니다. 그래서 not null 도, 기본값도 두지 않습니다.
+--
+-- 가산 변경만 합니다 — 기존 컬럼을 지우거나 형을 바꾸지 않습니다.
+--
+-- ⚠️ 이 절만 따로 실행하십시오. 파일 전체를 붙여넣으면 아래 1번의
+--    create table public.intake 에서 42P07 (relation "intake" already exists)
+--    로 멈춥니다. 이미 만들어 둔 프로젝트에 두 번 만들려 하기 때문입니다.
+--
+-- 제약조건에는 add constraint if not exists 가 없습니다(Postgres 문법에 없음).
+-- 그래서 drop constraint if exists 를 앞에 붙여 몇 번을 실행해도 같은 결과가
+-- 되게 합니다 — 0-A 의 intake_status_allowed 와 같은 방식입니다.
+--
+--   alter table public.intake
+--     add column if not exists target_country text,
+--     add column if not exists hs_code        text;
+--
+--   alter table public.intake drop constraint if exists intake_target_country_shape;
+--   alter table public.intake add  constraint intake_target_country_shape
+--     check (target_country is null or target_country ~ '^[A-Z]{2}$');
+--
+--   alter table public.intake drop constraint if exists intake_hs_code_shape;
+--   alter table public.intake add  constraint intake_hs_code_shape
+--     check (hs_code is null or hs_code ~ '^[0-9]{8}$');
+--
+--   create index if not exists intake_hs_code_idx on public.intake (hs_code)
+--     where hs_code is not null;
+
+
 -- ── 1. 접수 ──────────────────────────────────────────────────────────────────
 --
 -- 이 테이블에는 판정 결과를 두지 않습니다. 접수 사실만 기록합니다.
@@ -114,6 +149,16 @@ create table public.intake (
   --    scripts/cleanup-expired.js)가 file_paths 만 훑기 때문입니다 —
   --    여기에만 두면 30일 삭제와 즉시 삭제가 이 파일을 지나칩니다.
   own_form_path     text,
+
+  -- ── 거래 정보 (2026-08-09 추가 · 선택) ────────────────────────────────────
+  -- 접수 시 이용자가 골라 넣은 거래 상대국(ISO 2자리)과 HS 8단위입니다.
+  -- NDA 대조와는 무관한 부속 항목이라 둘 다 null 이 정상이고, 그 편이 더 흔합니다.
+  --   둘 다 있음 → 접수 확인 화면·확인메일에 해당국 협정 세율을 함께 보여 줍니다.
+  --   하나라도 없음 → 세율 섹션을 아예 그리지 않습니다(빈 섹션을 띄우지 않습니다).
+  -- ⚠️ 여기에 세율이나 판정 결과를 저장하지 않습니다. 양허표는 data/tariff/ 의
+  --    정적 파일이 원본이며, 값을 복사해 두면 표가 개정될 때 조용히 어긋납니다.
+  target_country    text,
+  hs_code           text,
 
   -- 동의 1 [필수] 서비스 이용약관 및 문서 대조 요청 동의
   consent_terms     boolean     not null,
@@ -163,7 +208,13 @@ create table public.intake (
   constraint intake_free_is_zero
     check (intake_path <> 'free' or (amount = 0 and order_id is null and payment_status = 'none')),
   constraint intake_paid_has_order
-    check (intake_path <> 'paid' or (amount > 0 and order_id is not null))
+    check (intake_path <> 'paid' or (amount > 0 and order_id is not null)),
+  -- 선택 항목이지만 형식은 느슨하게 두지 않습니다. 서버(api/intake.js)가 이미
+  -- 같은 조건으로 거르며, 여기서 한 번 더 막아 손으로 넣은 행도 어긋나지 않게 합니다.
+  constraint intake_target_country_shape
+    check (target_country is null or target_country ~ '^[A-Z]{2}$'),
+  constraint intake_hs_code_shape
+    check (hs_code is null or hs_code ~ '^[0-9]{8}$')
 );
 
 create index intake_received_at_idx  on public.intake (received_at desc);
@@ -174,6 +225,10 @@ create index intake_erasure_idx      on public.intake (erasure_requested_at)
   where erasure_requested_at is not null;
 create index intake_own_form_idx     on public.intake (own_form_path)
   where own_form_path is not null;
+-- 어떤 품목으로 들어오는지 세어 보기 위한 색인입니다. 대부분의 행이 null 이므로
+-- 부분 색인으로 둡니다.
+create index intake_hs_code_idx      on public.intake (hs_code)
+  where hs_code is not null;
 
 -- service role 로만 읽고 씁니다. anon/authenticated 접근은 막습니다.
 -- (정책을 만들지 않으면 service role 외 모든 접근이 차단됩니다.)

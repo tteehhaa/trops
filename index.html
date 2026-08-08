@@ -290,6 +290,16 @@
     font-weight: 600;
     max-width: 36ch;
   }
+  /* 머리문장 아래 받침 문장 — "법률적 판단을 하지 않는다"는 약속을 여기서 밝힙니다. */
+  .band p.band-sub {
+    margin-top: 18px;
+    font-size: 16.5px;
+    line-height: 1.76;
+    letter-spacing: normal;
+    font-weight: 400;
+    color: var(--ink-64);
+    max-width: 46ch;
+  }
 
   /* ---------- Interest form ---------- */
   .interest { border-top: 1px solid var(--line); }
@@ -390,7 +400,7 @@
     <div class="container nav-inner">
       <a href="/" class="wordmark" aria-label="TROPS 홈">TROPS</a>
       <div class="nav-links">
-        <a href="#how">확인 방법</a>
+        <a href="#how">대조 방법</a>
         <a href="#next">준비 중인 것</a>
         <a href="#interest">문의</a>
       </div>
@@ -409,11 +419,11 @@
          나올 때 다시 넣으십시오. -->
     <section class="container hero">
       <p class="eyebrow">바이어 서류 사전 확인 · 지금 이용 가능</p>
-      <h1>바이어 NDA, 우리 회사 기준으로 확인하세요.</h1>
-      <p class="hero-lead">자사 서식이 있으면 그대로 대조하고,<br>없으면 국제표준(ICC)으로 대조해 드립니다.</p>
+      <h1>해외 바이어 NDA 대조, 파일만 올리면 당일 완성</h1>
+      <p class="hero-lead">자사 양식이나 국제표준(ICC) 기준으로 1:1 대조해 드립니다.<br>회원가입 없이 파일 업로드만으로 대조 리포트를 받아보세요.</p>
       <div class="cta-row">
-        <a id="hero-cta" class="btn btn-primary" href="/precheck">내 NDA 확인 받기</a>
-        <span class="cta-row-note">선착 20건 무상 · 로그인 없이 파일 업로드</span>
+        <a id="hero-cta" class="btn btn-primary" href="/precheck">내 NDA 대조하기</a>
+        <span class="cta-row-note">선착순 20건 무료 · 로그인 없이 즉시 이용</span>
       </div>
     </section>
 
@@ -422,22 +432,22 @@
     <section class="how" id="how">
       <div class="container how-inner">
         <p class="kicker">HOW IT WORKS</p>
-        <h2>어떻게 확인하나요</h2>
+        <h2>어떻게 대조하나요</h2>
 
         <div class="flow">
           <div class="flow-row">
-            <p class="flow-name"><span class="flow-num" aria-hidden="true">01</span><span>NDA 접수</span></p>
-            <p class="flow-desc">바이어가 보낸 NDA 파일을 올려주세요. 로그인은 없습니다.</p>
+            <p class="flow-name"><span class="flow-num" aria-hidden="true">01</span><span>NDA 파일 등록</span></p>
+            <p class="flow-desc">수신한 바이어 NDA 파일을 올려주세요. 회원가입이나 로그인 없이 즉시 접수됩니다.</p>
           </div>
 
           <div class="flow-row">
-            <p class="flow-name"><span class="flow-num" aria-hidden="true">02</span><span>기준과 대조</span></p>
-            <p class="flow-desc">쓰시는 자사 서식이 있으면 그것과 대조합니다. 없을 때만 국제표준(ICC)을 대체 기준으로 씁니다.</p>
+            <p class="flow-name"><span class="flow-num" aria-hidden="true">02</span><span>양식 기준 1:1 대조</span></p>
+            <p class="flow-desc">귀사의 기존 NDA 양식을 우선 기준으로 대조하며, 별도 양식이 없는 경우 국제표준(ICC) 서식을 대조 기준으로 적용합니다.</p>
           </div>
 
           <div class="flow-row">
-            <p class="flow-name"><span class="flow-num" aria-hidden="true">03</span><span>결과지 전달</span></p>
-            <p class="flow-desc">항목별 대조 결과지와, 필요하면 전문가에게 그대로 보낼 수 있는 질문서를 함께 드립니다.</p>
+            <p class="flow-name"><span class="flow-num" aria-hidden="true">03</span><span>대조 리포트 발송</span></p>
+            <p class="flow-desc">항목별 차이점을 한눈에 비교하는 대조 리포트와 공유용 요약 노트를 전달해 드립니다.</p>
 
             <div class="flow-extra">
               <p class="flow-extra-label">거래 대상국이 있으면, 해당국 협정 세율도 함께 확인해 드립니다.</p>
@@ -456,8 +466,8 @@
         </div>
 
         <div class="cta-row">
-          <a class="btn btn-primary" href="/precheck">내 NDA 확인 받기</a>
-          <span class="cta-row-note">선착 20건 무상 · 지금 신청 가능</span>
+          <a class="btn btn-primary" href="/precheck">내 NDA 대조하기</a>
+          <span class="cta-row-note">선착순 20건 무료 · 지금 신청 가능</span>
         </div>
       </div>
     </section>
@@ -465,7 +475,8 @@
     <!-- ===== Emphasis band (회사 정의 §2-3: 기준을 우리가 만들지 않는다) ===== -->
     <section class="band">
       <div class="container band-inner">
-        <p>기준은 우리가 만들지 않습니다.<br>고객사가 쓰는 서식이 기준이고,<br>그것이 없을 때만 국제표준(ICC)을 대신 씁니다.</p>
+        <p>대조 기준은 귀사의 무역 양식을 그대로 따릅니다.</p>
+        <p class="band-sub">트롭스는 별도의 법률적 판단을 내리지 않습니다. 귀사가 보유한 양식을 최우선 기준으로 하여 차이점만 정확히 대조·비교해 드립니다.</p>
       </div>
     </section>
 
@@ -498,7 +509,7 @@
          precheck 결과지 페이지 하단 몫이므로 여기에 끌어오지 마십시오. -->
     <section class="interest" id="interest">
       <div class="container interest-inner">
-        <h2>트롭스 앱, 준비되는 대로 가장 먼저 안내해 드립니다.</h2>
+        <h2>트롭스 무역 관리 서비스 출시 알림 받기</h2>
         <form class="interest-form" id="interest-form" novalidate>
           <div class="form-row">
             <label for="interest-name">이름 <span class="req" aria-hidden="true">*</span></label>
@@ -512,7 +523,7 @@
             <label for="interest-company">회사명 <span class="optional">(선택)</span></label>
             <input type="text" id="interest-company" name="company" autocomplete="organization">
           </div>
-          <button type="submit" class="btn btn-primary interest-submit">관심 등록하기</button>
+          <button type="submit" class="btn btn-primary interest-submit">사전 등록하기</button>
           <p class="interest-msg" id="interest-msg" role="status" aria-live="polite"></p>
         </form>
       </div>
@@ -544,7 +555,10 @@
       </dl>
 
       <div class="footer-legal">
-        <p>TROPS · 주식회사 테오네 — ※ 법률 자문 서비스가 아닙니다. 판단이 필요한 사안은 파트너 전문가로 연결됩니다.</p>
+        <!-- "판단이 필요한 사안은 파트너 전문가로 연결됩니다" 는 뺐습니다(2026-08-09 승인).
+             아직 연결해 드릴 파트너 망이 없는 상태에서 약속으로 읽히는 문장이었습니다. -->
+        <p>TROPS · 주식회사 테오네</p>
+        <p>※ TROPS는 무역 서류 대조 및 수출 데이터 관리를 지원하는 B2B 무역 서비스이며, 법률 자문이나 법률 대리 서비스를 제공하지 않습니다.</p>
         <p>© 2026 TROPS · 주식회사 테오네. All rights reserved.</p>
       </div>
     </div>
