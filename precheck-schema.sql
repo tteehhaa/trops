@@ -130,6 +130,35 @@
 --     where hs_code is not null;
 
 
+-- ── 0-E. 전달 시점 컬럼 — 환불 기준선 (2026-08-09) ───────────────────────────
+--
+-- 환불규정 §02 가 기준 시점을 이렇게 정의합니다:
+--   "자료는 이메일로 보내드리는 링크를 통해 전달됩니다.
+--    링크를 보내드린 시점을 전달 시점으로 봅니다."
+--
+-- 그 시점을 담는 자리가 없었습니다. 규정은 전달 전/후로 환불을 가르는데
+-- 코드에는 "전달했다" 는 기록 자체가 없어, 모든 접수가 영원히 received 로
+-- 남아 있었습니다. 분쟁이 나면 회사가 아무것도 제시하지 못합니다.
+--
+-- delivered_at 은 "요약 자료 링크 메일을 실제로 보내는 데 성공한 시각" 입니다.
+-- 사람이 착수한 시각도, 자료를 다 만든 시각도 아닙니다 — 규정 문언이
+-- 가리키는 것이 발송 시점이므로 그것만 담습니다.
+--
+-- ⚠️ 한 번 들어간 값을 덮어쓰지 마십시오. 덮어쓰면 환불 기준선이 뒤로 밀립니다.
+--    scripts/deliver.js 는 이미 값이 있으면 발송 자체를 거절합니다.
+--
+-- ⚠️ 이 절만 따로 실행하십시오(0-D 와 같습니다). 파일 전체를 붙여넣으면
+--    아래 1번의 create table public.intake 에서 42P07 로 멈춥니다.
+--
+-- 가산 변경만 합니다 — 기존 컬럼을 지우거나 형을 바꾸지 않습니다.
+--
+--   alter table public.intake
+--     add column if not exists delivered_at timestamptz;
+--
+--   create index if not exists intake_delivered_idx on public.intake (delivered_at)
+--     where delivered_at is not null;
+
+
 -- ── 1. 접수 ──────────────────────────────────────────────────────────────────
 --
 -- 이 테이블에는 판정 결과를 두지 않습니다. 접수 사실만 기록합니다.
@@ -188,6 +217,13 @@ create table public.intake (
   erasure_requested_at timestamptz,
   files_deleted_at     timestamptz,
 
+  -- ── 전달 시점 (2026-08-09 추가 · 환불규정 §02 기준선) ─────────────────────
+  -- 요약 자료 링크 메일을 실제로 보내는 데 성공한 시각. 규정 문언이
+  -- "링크를 보내드린 시점을 전달 시점으로 봅니다" 이므로 발송 시점만 담습니다.
+  -- null 이면 아직 전달 전 = 전액 환불 구간입니다.
+  -- ⚠️ 덮어쓰지 마십시오. 덮어쓰면 환불 기준선이 뒤로 밀립니다.
+  delivered_at      timestamptz,
+
   received_at       timestamptz not null default now(),
   -- 30일 보관 후 삭제. 확인메일에 PDF 를 첨부하지 않는 이유이기도 합니다
   -- (첨부한 파일에는 이 삭제 정책을 적용할 수 없습니다).
@@ -229,6 +265,10 @@ create index intake_own_form_idx     on public.intake (own_form_path)
 -- 부분 색인으로 둡니다.
 create index intake_hs_code_idx      on public.intake (hs_code)
   where hs_code is not null;
+-- 환불 문의가 오면 "언제 보냈는가" 를 먼저 봅니다. 대부분의 행이 null 이므로
+-- 부분 색인으로 둡니다.
+create index intake_delivered_idx    on public.intake (delivered_at)
+  where delivered_at is not null;
 
 -- service role 로만 읽고 씁니다. anon/authenticated 접근은 막습니다.
 -- (정책을 만들지 않으면 service role 외 모든 접근이 차단됩니다.)

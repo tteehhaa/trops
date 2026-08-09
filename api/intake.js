@@ -286,7 +286,7 @@ async function handleReceipt(req, res) {
 
   try {
     const select = 'status,received_at,file_count,slot_no,delete_after,intake_path,amount,payment_status,paid_at,' +
-      'erasure_requested_at,own_form_path,target_country,hs_code';
+      'erasure_requested_at,own_form_path,target_country,hs_code,delivered_at';
     const response = await fetch(
       config.restUrl + '/intake?access_token=eq.' + encodeURIComponent(token) + '&select=' + select,
       { headers: config.headers }
@@ -322,6 +322,9 @@ async function handleReceipt(req, res) {
       amount: row.amount,
       paymentStatus: row.payment_status,
       paidAt: row.paid_at,
+      // 요약 자료 링크를 보낸 시각. 환불규정 §02 의 기준선이라 화면에도 밝힙니다 —
+      // 이용자가 자기 건이 전액 환불 구간인지 직접 확인할 수 있어야 합니다.
+      deliveredAt: row.delivered_at,
       // 자료 즉시 삭제(환불규정 05)를 이미 요청한 건인지. 화면은 이 값으로
       // 삭제 요청 항목을 감추고 "삭제 완료" 를 표시합니다.
       erasedAt: row.erasure_requested_at,

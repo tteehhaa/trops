@@ -212,6 +212,97 @@ async function sendErasureMails(info) {
   return { confirmationSent: confirmationSent };
 }
 
+/**
+ * 요약 자료 전달 메일 (환불규정 §02 기준선).
+ *
+ * ⚠️ 이 메일의 발송 성공 시각이 곧 delivered_at 입니다.
+ *    규정 문언이 "링크를 보내드린 시점을 전달 시점으로 봅니다" 이기 때문입니다.
+ *    그래서 여기만은 다른 알림과 달리 성공/실패를 정확히 돌려줘야 합니다 —
+ *    부르는 쪽(api/_delivery.js)이 이 값을 보고 전달 기록을 남길지 정합니다.
+ *    실패를 삼키면 보내지도 않은 건이 "전달 완료" 가 되고, 그 순간
+ *    이용자는 환불받을 수 있는 구간에서 밀려납니다.
+ *
+ * 이용자 메일이 먼저입니다. 이용자에게 못 갔으면 전달이 아니므로,
+ * 운영자 알림이 성공했는지는 판단에 넣지 않습니다.
+ *
+ * @returns {Promise<{sent: boolean, error: string|null}>}
+ */
+async function sendDeliveryMail(info) {
+  const paid = info.path === 'paid';
+  const summaryUrl = String(info.summaryUrl || '');
+
+  let sent = false;
+  let failure = null;
+
+  try {
+    const { error } = await resend.emails.send({
+      from: `TROPS <${CONTACT_ADDRESS}>`,
+      to: [info.email],
+      subject: '[TROPS] 요청하신 요약 자료를 보내드립니다',
+      html: `
+        <p>보내주신 서류의 대조를 마쳤습니다. 아래 링크에서 요약 자료를 보실 수 있습니다.</p>
+        <p><a href="${escapeHtml(summaryUrl)}">요약 자료 보기</a></p>
+        <p>${info.ownFormName
+          ? '함께 보내주신 자사 서식 <strong>' + escapeHtml(info.ownFormName) + '</strong> 을 기준으로 대조했습니다.'
+          : '자사 서식을 받지 못했으므로 국제표준(ICC) 18개 항목을 기준으로 대조했습니다.'}</p>
+        <p style="color:#64748B;font-size:13px">
+          접수 번호 ${escapeHtml(info.intakeId)}<br>
+          접수 내용은 <a href="${escapeHtml(info.magicLink)}">여기</a>에서 확인하실 수 있습니다.<br>
+          보내주신 파일은 접수일로부터 ${RETENTION_DAYS}일 후 삭제됩니다.
+        </p>
+        ${paid
+          ? `<p style="color:#64748B;font-size:13px">이 메일을 보내드린 시점이 환불규정의 전달 시점입니다.
+             환불규정은 <a href="${escapeHtml(origin())}/refund">${escapeHtml(origin().replace(/^https?:\/\//, ''))}/refund</a> 에서 보실 수 있습니다.</p>`
+          : ''}
+        <p style="color:#64748B;font-size:13px">
+          TROPS는 법률 자문 서비스가 아닙니다. 전달해 드리는 자료는 서류의 항목별 차이를 표시한
+          참고 자료이며, 그 자체로 법적 효력을 갖지 않습니다. 최종 결정은 이용자와 이용자가
+          선임한 전문가의 몫입니다.
+        </p>
+      `,
+    });
+    if (error) {
+      failure = String(error.message || error);
+      console.error('delivery email error', error);
+    } else {
+      sent = true;
+    }
+  } catch (err) {
+    failure = err && err.message ? err.message : String(err);
+    console.error('delivery email exception', err);
+  }
+
+  // 이용자에게 못 갔으면 운영자 알림도 보내지 않습니다 — 전달이 아니기 때문입니다.
+  if (!sent) return { sent: false, error: failure };
+
+  try {
+    const { error } = await resend.emails.send({
+      from: `TROPS 자료 전달 <${CONTACT_ADDRESS}>`,
+      to: [CONTACT_ADDRESS],
+      replyTo: info.email,
+      subject: `[TROPS] 요약 자료 전달 완료 - ${info.email}`,
+      html: `
+        <p><strong>접수 번호:</strong> ${escapeHtml(info.intakeId)}</p>
+        <p><strong>이메일:</strong> ${escapeHtml(info.email)}</p>
+        <p><strong>보낸 링크:</strong> ${escapeHtml(summaryUrl)}</p>
+        <p><strong>경로:</strong> ${paid
+          ? '건별 결제 ' + escapeHtml(formatWon(info.amount)) + ' · 주문번호 ' + escapeHtml(info.orderId || '-')
+          : '무료 접수'}</p>
+        <p><strong>전달 시각:</strong> ${escapeHtml(toIso(info.deliveredAt))}</p>
+        <p style="color:#64748B;font-size:13px">
+          이 시각부터 환불규정 §02 의 "요약 자료 전달 후" 구간입니다.
+          다만 §03(당일 미전달 등)에 해당하면 전달 후에도 전액 환불입니다.
+        </p>
+      `,
+    });
+    if (error) console.error('delivery operator email error', error);
+  } catch (err) {
+    console.error('delivery operator email exception', err);
+  }
+
+  return { sent: true, error: null };
+}
+
 /* ──────────────────────────────────────────────────────────────
  * 거래 정보 · 협정 세율 (선택 항목)
  * ────────────────────────────────────────────────────────────── */
@@ -314,6 +405,7 @@ module.exports = {
   buildMagicLink: buildMagicLink,
   sendIntakeMails: sendIntakeMails,
   sendErasureMails: sendErasureMails,
+  sendDeliveryMail: sendDeliveryMail,
   formatWon: formatWon,
   escapeHtml: escapeHtml,
 };
