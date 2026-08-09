@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "test": "node --test test/",
+    "keys:verify": "node --env-file=.env.local scripts/verify-supabase-keys.js",
     "cleanup:preview": "node --env-file=.env.local scripts/cleanup-expired.js",
     "cleanup:apply": "node --env-file=.env.local scripts/cleanup-expired.js --apply",
     "deliver": "node --env-file=.env.local scripts/deliver.js"
