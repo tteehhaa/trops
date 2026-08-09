@@ -4,10 +4,17 @@
  * 개인정보를 받지 않습니다. IP·User-Agent·식별자를 저장하지 않습니다.
  * 저장 실패는 사용자 조회를 막지 않습니다 — 클라이언트는 fire-and-forget으로 호출합니다.
  *
- * 필요한 Vercel 환경변수:
- *   SUPABASE_URL
- *   SUPABASE_SERVICE_ROLE_KEY   (service role — 서버에서만 사용)
+ * 필요한 Vercel 환경변수 — 이 쌍은 **trops(prod) 프로젝트**를 봅니다.
+ * 앞단 접수용 INTAKE_* 쌍(api/_supabase.js)과는 **다른 프로젝트**이며 폴백 관계가 아닙니다.
+ *   UAE_LOG_SUPABASE_URL              ← 신규 이름 (구 이름 SUPABASE_URL 폴백)
+ *   UAE_LOG_SUPABASE_SECRET_KEY       ← 신규 체계(sb_secret_…) · 서버에서만 사용
+ *                                       (구 이름 SUPABASE_SERVICE_ROLE_KEY 폴백)
  * 둘 중 하나라도 없으면 저장을 건너뛰고 200을 반환합니다.
+ *
+ * ⚠️ 설정이 잘못돼도 화면에는 아무 증상이 없습니다 — 응답이 항상 200 이기 때문입니다.
+ *    회전 후에는 scripts/verify-supabase-keys.js 로 이 쌍을 반드시 따로 확인하십시오.
+ *
+ * 이름 해석은 api/_supabase-keys.js 한 곳에서만 합니다.
  *
  * ── Supabase 테이블 스키마 (직접 실행) ─────────────────────────────
  *
@@ -33,6 +40,10 @@
  *
  * ────────────────────────────────────────────────────────────────
  */
+
+const KEYS = require('./_supabase-keys.js');
+
+const NAMES = KEYS.UAE_LOG_ENV_NAMES;
 
 const HS8_RE = /^[0-9]{8}$/;
 const ALLOWED_TRACKS = ['A', 'B', 'C', 'X', 'PH', 'SG'];
@@ -64,8 +75,10 @@ module.exports = async (req, res) => {
     ? new Date().toISOString()
     : new Date(timestamp).toISOString();
 
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const resolvedUrl = KEYS.resolveKey(NAMES.url);
+  const resolvedKey = KEYS.resolveKey(NAMES.key);
+  const url = resolvedUrl.value;
+  const key = resolvedKey.value;
 
   // 저장을 못 하더라도 항상 200을 돌려줍니다 — 로그 실패가 사용자 조회를 막으면 안 됩니다.
   // 다만 "설정을 안 한 것"과 "설정이 잘못된 것"은 구분합니다.
@@ -75,18 +88,32 @@ module.exports = async (req, res) => {
     return;
   }
   if (!url || !key) {
-    const missing = !url ? 'SUPABASE_URL' : 'SUPABASE_SERVICE_ROLE_KEY';
+    const missing = !url ? KEYS.describeNames(NAMES.url) : KEYS.describeNames(NAMES.key);
     console.error('lookup-log config error: ' + missing + ' 가 비어 있습니다. ' +
       '두 변수를 같은 환경(Production/Preview)에 함께 설정해야 저장됩니다.');
     res.status(200).json({ ok: true, stored: false, reason: 'incomplete-config' });
     return;
   }
 
+  // 공개 키는 이 저장소에서 쓸 일이 없습니다 — 비밀 자리에 있으면 설정 사고입니다.
+  if (KEYS.isPublishable(resolvedKey.scheme)) {
+    console.error('lookup-log config error: ' + resolvedKey.source +
+      ' 에 공개(publishable) 키가 들어 있습니다. 비밀 키(' + KEYS.NEW_KEY_PREFIX + '…)를 넣어야 합니다.');
+    res.status(200).json({ ok: true, stored: false, reason: 'publishable-key-in-secret-slot' });
+    return;
+  }
+
+  // 이름은 신규인데 값이 레거시인 경우 — 레거시가 살아 있는 동안은 저장이 성공하므로
+  // 여기서 적어 두지 않으면 레거시 비활성 시점에야 알게 됩니다.
+  if (resolvedKey.warning) {
+    console.error('lookup-log config warning: ' + resolvedKey.warning);
+  }
+
   const endpoint = buildEndpoint(url);
   if (!endpoint.ok) {
-    // SUPABASE_URL 은 자격증명이 아니라 프로젝트 URL이므로 값을 그대로 남겨 진단할 수 있게 합니다.
-    // (SUPABASE_SERVICE_ROLE_KEY 는 어떤 경우에도 로그에 남기지 않습니다.)
-    console.error('lookup-log config error: SUPABASE_URL 형식 오류 — ' + endpoint.error +
+    // URL 은 자격증명이 아니라 프로젝트 URL이므로 값을 그대로 남겨 진단할 수 있게 합니다.
+    // (비밀 키는 어떤 경우에도 로그에 남기지 않습니다.)
+    console.error('lookup-log config error: ' + resolvedUrl.source + ' 형식 오류 — ' + endpoint.error +
       ' | 현재값: ' + JSON.stringify(url) +
       ' | 예: "https://<project-ref>.supabase.co"');
     res.status(200).json({ ok: true, stored: false, reason: 'invalid-supabase-url' });
@@ -127,7 +154,7 @@ module.exports = async (req, res) => {
   }
 };
 
-// SUPABASE_URL 을 검증해 REST 엔드포인트를 만듭니다.
+// 프로젝트 URL 을 검증해 REST 엔드포인트를 만듭니다.
 // 스킴 누락(프로젝트 ref만 입력한 경우)처럼 흔한 실수를 fetch 이전에 잡아냅니다.
 function buildEndpoint(rawUrl) {
   const trimmed = String(rawUrl).trim().replace(/\/+$/, '');

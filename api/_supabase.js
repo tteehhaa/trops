@@ -7,22 +7,31 @@
  * 파일명이 밑줄로 시작하므로 Vercel 은 이 파일을 엔드포인트로 만들지 않습니다.
  * api/slots.js · api/intake.js 가 공용으로 require 합니다.
  *
- * 필요한 Vercel 환경변수 — 앞단 전용 신규 Supabase 프로젝트 (뒷단 trops_a 프로젝트와 분리):
+ * 필요한 Vercel 환경변수 — 앞단 전용 Supabase 프로젝트 trops-precheck (뒷단 trops_a 프로젝트와 분리):
  *   INTAKE_SUPABASE_URL
- *   INTAKE_SUPABASE_SERVICE_ROLE_KEY
+ *   INTAKE_SUPABASE_SECRET_KEY              ← 신규 체계(sb_secret_…)
+ *   INTAKE_SUPABASE_SERVICE_ROLE_KEY        ← 구 이름 · 폴백(회전 끝나면 지웁니다)
  *
- * 기존 SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY(=/uae 조회 로그용)와 이름을 일부러 다르게 둡니다.
+ * /uae 조회 로그용 쌍(api/lookup-log.js)과 이름을 일부러 다르게 둡니다.
  * 같은 이름을 쓰면 나중에 한쪽 값만 바꿔도 다른 쪽이 조용히 따라 움직여 경계가 무너집니다.
+ * 그 쌍은 **다른 Supabase 프로젝트**(trops prod)를 봅니다 — 폴백 관계가 아닙니다.
+ *
+ * 이름 해석은 api/_supabase-keys.js 한 곳에서만 합니다.
  *
  * 스키마는 저장소 루트 precheck-schema.sql 을 Supabase SQL Editor 에 붙여넣어 실행하십시오.
  */
 
+const KEYS = require('./_supabase-keys.js');
+
+const NAMES = KEYS.INTAKE_ENV_NAMES;
+
 function readConfig() {
-  const url = process.env.INTAKE_SUPABASE_URL;
-  const key = process.env.INTAKE_SUPABASE_SERVICE_ROLE_KEY;
+  const url = process.env[NAMES.url.current];
+  const resolved = KEYS.resolveKey(NAMES.key);
+  const key = resolved.value;
 
   if (!url || !key) {
-    const missing = [!url && 'INTAKE_SUPABASE_URL', !key && 'INTAKE_SUPABASE_SERVICE_ROLE_KEY']
+    const missing = [!url && NAMES.url.current, !key && KEYS.describeNames(NAMES.key)]
       .filter(Boolean).join(', ');
     return {
       ok: false,
@@ -32,10 +41,26 @@ function readConfig() {
     };
   }
 
+  // 공개 키는 이 저장소에서 쓸 일이 없습니다(브라우저는 api/ 만 부릅니다).
+  // 비밀 자리에 들어와 있다면 선택이 아니라 사고이므로 여기서 세웁니다.
+  if (KEYS.isPublishable(resolved.scheme)) {
+    return {
+      ok: false,
+      reason: 'publishable-key-in-secret-slot',
+      error: resolved.source + ' 에 공개(publishable) 키가 들어 있습니다. ' +
+        '비밀 키(' + KEYS.NEW_KEY_PREFIX + '…)를 넣어야 합니다.',
+    };
+  }
+
+  // 이름은 신규인데 값이 레거시인 경우 — 연결 검사는 전부 통과하므로 여기서만 드러납니다.
+  if (resolved.warning) {
+    console.error('supabase config warning: ' + resolved.warning);
+  }
+
   const trimmed = String(url).trim().replace(/\/+$/, '');
 
   // URL 은 자격증명이 아니므로 진단을 위해 값을 그대로 남깁니다.
-  // (INTAKE_SUPABASE_SERVICE_ROLE_KEY 는 어떤 경우에도 로그에 남기지 않습니다.)
+  // (비밀 키는 어떤 경우에도 로그에 남기지 않습니다 — 이름과 체계만 남깁니다.)
   if (!/^https?:\/\//i.test(trimmed)) {
     return invalidUrl('스킴(https://)이 없습니다', url);
   }
@@ -56,6 +81,10 @@ function readConfig() {
     restUrl: trimmed + '/rest/v1',
     storageUrl: trimmed + '/storage/v1',
     key: key,
+    // 회전 상태 — scripts/verify-supabase-keys.js 가 읽습니다. 키 값은 담지 않습니다.
+    keyScheme: resolved.scheme,
+    keySource: resolved.source,
+    legacyStillSet: resolved.legacyStillSet,
     headers: {
       apikey: key,
       Authorization: 'Bearer ' + key,
@@ -68,7 +97,7 @@ function invalidUrl(what, rawValue) {
   return {
     ok: false,
     reason: 'invalid-supabase-url',
-    error: 'INTAKE_SUPABASE_URL 형식 오류 — ' + what +
+    error: NAMES.url.current + ' 형식 오류 — ' + what +
       ' | 현재값: ' + JSON.stringify(rawValue) +
       ' | 예: "https://<project-ref>.supabase.co"',
   };
