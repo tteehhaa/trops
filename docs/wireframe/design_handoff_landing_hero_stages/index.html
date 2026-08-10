@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TROPS — 수출 중소기업을 위한 AI 거래 운영 서비스</title>
+<meta name="description" content="바이어 확인부터 계약, 수출 절차, 대금 회수까지. 흩어진 거래 정보와 업무를 하나의 거래 흐름으로 연결하여, 거래 진행을 한눈에 관리합니다.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<style>
+  :root {
+    --ink:          #0F172A;
+    --ink-70:       rgba(15, 23, 42, .7);
+    --ink-64:       rgba(15, 23, 42, .64);
+    --ink-62:       rgba(15, 23, 42, .62);
+    --accent:       #0F172A;
+    --accent-press: #1E293B;
+    --muted:        #94A3B8;
+    --line:         #E2E8F0;
+    --surface:      #F8FAFC;
+    --bg:           #FFFFFF;
+    --warning:      #DC2626;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-size: 16.5px;
+    line-height: 1.76;
+    word-break: keep-all;
+    text-wrap: pretty;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: var(--ink); }
+
+  ::selection { background: rgba(15, 23, 42, .14); }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  @keyframes trops-pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: .45; }
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; padding-inline: clamp(24px, 5vw, 64px); }
+
+  /* ---------- Skip link ---------- */
+  .skip {
+    position: absolute;
+    left: 16px;
+    top: 16px;
+    transform: translateY(-160%);
+    background: var(--ink);
+    color: #FFFFFF;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 100;
+    transition: transform .15s ease;
+  }
+  .skip:focus { transform: translateY(0); color: #FFFFFF; }
+
+  /* ---------- Nav ---------- */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner { height: 64px; display: flex; align-items: center; gap: 40px; }
+  .wordmark {
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .nav-links { display: flex; gap: 28px; }
+  .nav-links a {
+    font-size: 14.5px;
+    font-weight: 500;
+    color: var(--ink-62);
+    transition: color .14s ease;
+  }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 46px;
+    padding: 0 22px;
+    border-radius: 6px;
+    border: 0;
+    font: inherit;
+    font-size: 15.5px;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color .14s ease, border-color .14s ease;
+  }
+  .btn-primary { background: var(--accent); color: #FFFFFF; }
+  .btn-primary:hover { background: var(--accent-press); color: #FFFFFF; }
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink);
+  }
+  .btn-secondary:hover { border-color: var(--muted); color: var(--ink); }
+  .btn-nav { height: 36px; padding: 0 16px; font-size: 14.5px; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+    gap: clamp(40px, 6vw, 88px);
+    align-items: center;
+    padding-block: clamp(56px, 8vw, 104px) clamp(64px, 8vw, 112px);
+  }
+  .eyebrow {
+    margin: 0 0 20px;
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: .02em;
+    color: var(--accent);
+  }
+  .hero h1 {
+    margin: 0;
+    font-size: clamp(38px, 4.6vw, 58px);
+    line-height: 1.16;
+    letter-spacing: -0.035em;
+    font-weight: 700;
+  }
+  .hero-lead {
+    margin: 24px 0 0;
+    font-size: 17.5px;
+    line-height: 1.72;
+    font-weight: 500;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .hero-sub {
+    margin: 14px 0 0;
+    font-size: 16.5px;
+    line-height: 1.76;
+    max-width: 36ch;
+    color: var(--ink-64);
+  }
+  /* ---------- Hero HS lookup (block 1 · 통합 조회줄) ---------- */
+  .hs-box { margin-top: 30px; max-width: 468px; }
+  .hs-box-label {
+    margin: 0 0 10px;
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: .01em;
+    color: var(--ink);
+  }
+  .hs-group {
+    display: flex;
+    align-items: stretch;
+    padding: 5px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--bg);
+  }
+  .hs-group:focus-within { border-color: var(--muted); }
+  .hs-country {
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    margin-right: 5px;
+    border-right: 1px solid var(--line);
+    font-size: 15.5px;
+    font-weight: 500;
+    color: var(--ink-70);
+    white-space: nowrap;
+  }
+  .hs-group input {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 42px;
+    border: 0;
+    background: transparent;
+    padding: 0 6px;
+    font: inherit;
+    font-size: 16px;
+    color: var(--ink);
+  }
+  .hs-group input:focus { outline: none; }
+  .hs-group input::placeholder { color: var(--muted); }
+  .hs-group .btn { flex: 0 0 auto; height: 42px; padding: 0 20px; }
+  .hs-meta { margin: 10px 0 0; font-size: 13.5px; line-height: 1.65; color: var(--muted); }
+  .hs-second { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 26px; }
+  .hs-second-note { font-size: 13.5px; color: var(--muted); }
+
+  .cta-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+
+  /* ---------- Hero workflow panel ---------- */
+  .wf-panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 28px clamp(24px, 3vw, 36px) 30px;
+  }
+  .wf-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 18px;
+    margin-bottom: 22px;
+    border-bottom: 1px solid var(--line);
+  }
+  .wf-txn { font-size: 13px; font-weight: 600; letter-spacing: .01em; color: var(--ink-70); }
+  .wf-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .wf-live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: trops-pulse 2.2s ease-in-out infinite;
+  }
+  .wf-row { display: grid; grid-template-columns: 16px minmax(0, 1fr); gap: 16px; }
+  .wf-rail { position: relative; display: flex; justify-content: center; align-self: stretch; }
+  .wf-line { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--line); }
+  .wf-line-first { top: 10.5px; }
+  .wf-line-last { bottom: auto; height: 10.5px; }
+  .wf-dot { position: relative; width: 7px; height: 7px; margin-top: 7px; border-radius: 50%; }
+  .wf-dot-done { background: var(--muted); }
+  .wf-dot-todo { background: var(--surface); border: 1.5px solid var(--line); }
+  .wf-dot-active {
+    width: 11px;
+    height: 11px;
+    margin-top: 5px;
+    background: var(--accent);
+    outline: 4px solid rgba(15, 23, 42, .12);
+  }
+  .wf-item { display: flex; align-items: center; gap: 10px; padding-bottom: 20px; min-height: 22px; }
+  .wf-label { font-size: 15.5px; font-weight: 500; letter-spacing: -0.01em; color: var(--muted); }
+  .wf-label-active { font-weight: 600; color: var(--accent); }
+  .wf-badge {
+    font-size: 11.5px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--accent);
+    border: 1px solid rgba(15, 23, 42, .28);
+    border-radius: 4px;
+    padding: 2px 7px;
+  }
+
+  /* ---------- How it works ---------- */
+  .how { border-top: 1px solid var(--line); }
+  .how-inner { padding-block: clamp(64px, 8vw, 112px) clamp(56px, 7vw, 96px); }
+  .kicker {
+    margin: 0 0 18px;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    color: var(--muted);
+  }
+  .how h2 {
+    margin: 0;
+    font-size: clamp(28px, 3.2vw, 40px);
+    line-height: 1.28;
+    letter-spacing: -0.03em;
+    font-weight: 700;
+    max-width: 24ch;
+  }
+  .timeline { margin-top: clamp(44px, 5vw, 64px); }
+  .tl-row { display: grid; grid-template-columns: 16px minmax(0, 1fr); gap: clamp(20px, 3vw, 32px); }
+  .tl-rail { position: relative; display: flex; justify-content: center; align-self: stretch; }
+  .tl-line { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--line); }
+  .tl-line-first { top: 6.5px; }
+  .tl-line-last { bottom: auto; height: 38.5px; }
+  .tl-end-dot { position: relative; width: 9px; height: 9px; margin-top: 2px; border-radius: 50%; background: var(--accent); }
+  .tl-end-dot-last { margin-top: 34px; }
+  .tl-step-dot {
+    position: relative;
+    width: 7px;
+    height: 7px;
+    margin-top: 11px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1.5px solid var(--muted);
+  }
+  .tl-step-dot-mid { margin-top: 51px; }
+  .tl-endpoint { margin: 0; font-size: 14px; font-weight: 700; letter-spacing: .1em; color: var(--accent); }
+  .tl-endpoint-start { padding-bottom: 24px; }
+  .tl-endpoint-end { padding-top: 30px; }
+  .tl-body {
+    padding: 40px 0;
+    border-bottom: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+    gap: 8px clamp(24px, 4vw, 64px);
+    align-items: baseline;
+  }
+  .tl-body-first { padding-top: 0; }
+  .tl-body h3 {
+    margin: 0;
+    font-size: 21px;
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+    display: flex;
+    gap: 14px;
+  }
+  .tl-num { font-size: 14px; font-weight: 600; color: var(--muted); line-height: 1.85; }
+  .tl-desc { margin: 0; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); max-width: 44ch; }
+
+  /* ---------- Roadmap (block 2 · 표 대체) ---------- */
+  #stages { border-top: 0; }  /* .band already draws the divider above */
+  .how-inner-tight { padding-block: clamp(44px, 5vw, 68px) clamp(56px, 7vw, 96px); }
+  .rm-h2 {
+    margin: 0;
+    font-size: clamp(25px, 2.6vw, 32px);
+    line-height: 1.3;
+    letter-spacing: -0.028em;
+    font-weight: 700;
+    max-width: 26ch;
+  }
+  .rm-lead { margin: 16px 0 0; font-size: 16.5px; line-height: 1.76; color: var(--ink-62); max-width: 54ch; }
+  .rm { margin-top: clamp(28px, 4vw, 40px); max-width: 860px; }
+  .rm-row {
+    display: grid;
+    grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+    gap: 6px clamp(24px, 4vw, 48px);
+    padding: 26px 4px;
+    border-bottom: 1px solid var(--line);
+    align-items: baseline;
+    color: inherit;
+    text-decoration: none;
+  }
+  .rm-row:first-child { border-top: 1px solid var(--line); }
+  .rm-name {
+    margin: 0;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .rm-num { font-size: 13px; font-weight: 600; color: var(--muted); }
+  .rm-desc { margin: 0; font-size: 16.5px; line-height: 1.7; color: var(--ink-62); max-width: 44ch; }
+  .rm-meta { margin: 2px 0 0; grid-column: 1; font-size: 13.5px; line-height: 1.6; color: var(--muted); }
+  a.rm-row:hover { background: var(--surface); }
+  a.rm-row:hover .rm-name { color: var(--ink); }
+
+  /* ---------- Emphasis band ---------- */
+  .band {
+    background: var(--surface);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .band-inner { padding-block: clamp(56px, 7vw, 88px); }
+  .band p {
+    margin: 0;
+    font-size: clamp(21px, 2.5vw, 30px);
+    line-height: 1.58;
+    letter-spacing: -0.025em;
+    font-weight: 600;
+    max-width: 36ch;
+  }
+
+  /* ---------- CTA ---------- */
+  .cta-inner { padding-block: clamp(72px, 9vw, 120px); }
+  .cta h2 {
+    margin: 0;
+    font-size: clamp(30px, 3.6vw, 46px);
+    line-height: 1.24;
+    letter-spacing: -0.035em;
+    font-weight: 700;
+  }
+  .cta-sub { margin: 20px 0 0; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); max-width: 38ch; }
+  .cta .cta-row { margin-top: 32px; }
+
+  /* ---------- Interest form ---------- */
+  .interest { border-top: 1px solid var(--line); }
+  .interest-inner { padding-block: clamp(64px, 8vw, 104px); }
+  .interest h2 {
+    margin: 0;
+    font-size: clamp(28px, 3.2vw, 40px);
+    line-height: 1.28;
+    letter-spacing: -0.03em;
+    font-weight: 700;
+  }
+  .interest-sub { margin: 14px 0 0; font-size: 16.5px; color: var(--ink-64); max-width: 38ch; }
+  .interest-form {
+    max-width: 440px;
+    margin-top: 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .form-row { display: flex; flex-direction: column; gap: 6px; }
+  .form-row label { font-size: 14px; font-weight: 600; }
+  .form-row .req { color: var(--accent); }
+  .form-row .optional { color: var(--muted); font-weight: 400; }
+  .form-row input, .hs-group input {
+    font: inherit;
+    font-size: 16px;
+    height: 46px;
+    padding: 0 14px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background-color: var(--bg);
+    color: var(--ink);
+  }
+  .interest-submit { margin-top: 4px; }
+  .interest-msg { min-height: 22px; font-size: 14px; color: var(--ink-64); margin: 0; }
+  .interest-msg.is-error { color: var(--warning); }
+
+  /* ---------- Footer ---------- */
+  .footer { border-top: 1px solid var(--line); }
+  .footer-inner { padding-block: 32px 28px; }
+  .footer-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .footer-mark { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
+  .footer-meta { font-size: 13.5px; color: var(--muted); }
+  .footer-legal { margin: 18px 0 0; font-size: 12.5px; line-height: 1.7; color: var(--muted); }
+  .footer-legal p { margin: 0; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; align-items: start; }
+    .tl-body { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .nav-links { display: none; }
+    .hero-lead { white-space: normal; }
+    .hs-box { max-width: none; }
+    .hs-group { flex-wrap: wrap; }
+    .hs-country {
+      width: 100%;
+      margin: 0 0 5px;
+      padding: 6px 8px;
+      border-right: 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .hs-group input { flex: 1 1 110px; padding-left: 8px; }
+    .rm-row { grid-template-columns: 1fr; gap: 6px; padding: 22px 2px; }
+    .rm-meta { grid-column: auto; }
+    .cta-row .btn { flex: 1 1 auto; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .wf-live-dot { animation: none; }
+  }
+</style>
+</head>
+<body>
+  <a href="#hero-cta" class="skip">본문으로 건너뛰기</a>
+
+  <!-- ===== Nav ===== -->
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="/" class="wordmark" aria-label="TROPS 홈">TROPS</a>
+      <div class="nav-links">
+        <a href="#how">작동 방식</a>
+        <a href="#flow">거래 흐름</a>
+        <a href="#start">문의</a>
+      </div>
+      <div class="nav-right">
+        <a class="btn btn-primary btn-nav" href="https://app.trops.kr/" target="_self">수출 시작하기</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- ===== Hero ===== -->
+    <section class="container hero">
+      <div>
+        <p class="eyebrow">수출 중소기업을 위한 AI 거래 운영 서비스</p>
+        <h1>수출 거래를<br>끝까지 운영합니다.</h1>
+        <p class="hero-lead">바이어 확인부터 계약, 수출 절차, 대금 회수까지.</p>
+        <p class="hero-sub">흩어진 거래 정보와 업무를 하나의 거래 흐름으로 연결하여, 거래 진행을 한눈에 관리합니다.</p>
+
+        <div class="hs-box">
+          <p class="hs-box-label">HS 코드로 협정 세율 조회</p>
+          <form class="hs-group" action="/uae" method="get">
+            <span class="hs-country">아랍에미리트</span>
+            <input type="text" name="hs" inputmode="numeric" pattern="[0-9]{8}" maxlength="8"
+                   placeholder="HS 8단위 입력" aria-label="HS 코드 8단위"
+                   title="HS 코드 8자리 숫자를 입력하세요" required>
+            <button class="btn btn-primary" type="submit">확인</button>
+          </form>
+          <p class="hs-meta">아랍에미리트 · 한-UAE CEPA 기준 · 무료 · 로그인 없이 조회</p>
+        </div>
+
+        <div class="hs-second">
+          <a id="hero-cta" class="btn btn-secondary" href="https://app.trops.kr/" target="_self">수출 시작하기</a>
+          <span class="hs-second-note">거래 등록 · 시범 운영</span>
+        </div>
+      </div>
+
+      <div class="wf-panel" aria-label="거래 하나의 진행 상태 예시">
+        <div class="wf-head">
+          <span class="wf-txn">거래 TR-2026-0412 · 아랍에미리트</span>
+          <span class="wf-live"><span class="wf-live-dot" aria-hidden="true"></span>AI 운영 중</span>
+        </div>
+        <div class="wf-row">
+          <div class="wf-rail">
+            <div class="wf-line wf-line-first" aria-hidden="true"></div>
+            <div class="wf-dot wf-dot-done" aria-hidden="true"></div>
+          </div>
+          <div class="wf-item"><span class="wf-label">조건 확인</span></div>
+        </div>
+        <div class="wf-row">
+          <div class="wf-rail">
+            <div class="wf-line" aria-hidden="true"></div>
+            <div class="wf-dot wf-dot-done" aria-hidden="true"></div>
+          </div>
+          <div class="wf-item"><span class="wf-label">거래 생성</span></div>
+        </div>
+        <div class="wf-row">
+          <div class="wf-rail">
+            <div class="wf-line" aria-hidden="true"></div>
+            <div class="wf-dot wf-dot-done" aria-hidden="true"></div>
+          </div>
+          <div class="wf-item"><span class="wf-label">바이어 확인</span></div>
+        </div>
+        <div class="wf-row">
+          <div class="wf-rail">
+            <div class="wf-line" aria-hidden="true"></div>
+            <div class="wf-dot wf-dot-done" aria-hidden="true"></div>
+          </div>
+          <div class="wf-item"><span class="wf-label">계약</span></div>
+        </div>
+        <div class="wf-row">
+          <div class="wf-rail">
+            <div class="wf-line" aria-hidden="true"></div>
+            <div class="wf-dot wf-dot-active" aria-hidden="true"></div>
+          </div>
+          <div class="wf-item">
+            <span class="wf-label wf-label-active">수출 절차</span>
+            <span class="wf-badge">진행 중</span>
+          </div>
+        </div>
+        <div class="wf-row">
+          <div class="wf-rail">
+            <div class="wf-line" aria-hidden="true"></div>
+            <div class="wf-dot wf-dot-todo" aria-hidden="true"></div>
+          </div>
+          <div class="wf-item"><span class="wf-label">진행 추적</span></div>
+        </div>
+        <div class="wf-row">
+          <div class="wf-rail">
+            <div class="wf-line" aria-hidden="true"></div>
+            <div class="wf-dot wf-dot-todo" aria-hidden="true"></div>
+          </div>
+          <div class="wf-item"><span class="wf-label">대금 회수</span></div>
+        </div>
+        <div class="wf-row">
+          <div class="wf-rail">
+            <div class="wf-line wf-line-last" aria-hidden="true"></div>
+            <div class="wf-dot wf-dot-todo" aria-hidden="true"></div>
+          </div>
+          <div class="wf-item"><span class="wf-label">완료</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== How it works ===== -->
+    <section class="how" id="how">
+      <div class="container how-inner">
+        <p class="kicker">HOW IT WORKS</p>
+        <h2>거래가 시작되면 TROPS도 시작됩니다.</h2>
+
+        <div class="timeline" id="flow">
+          <div class="tl-row">
+            <div class="tl-rail">
+              <div class="tl-line tl-line-first" aria-hidden="true"></div>
+              <div class="tl-end-dot" aria-hidden="true"></div>
+            </div>
+            <p class="tl-endpoint tl-endpoint-start">거래 시작</p>
+          </div>
+
+          <div class="tl-row">
+            <div class="tl-rail">
+              <div class="tl-line" aria-hidden="true"></div>
+              <div class="tl-step-dot" aria-hidden="true"></div>
+            </div>
+            <div class="tl-body tl-body-first">
+              <h3><span class="tl-num" aria-hidden="true">01</span><span>업무 생성</span></h3>
+              <p class="tl-desc">거래에 필요한 업무를 정리합니다.</p>
+            </div>
+          </div>
+
+          <div class="tl-row">
+            <div class="tl-rail">
+              <div class="tl-line" aria-hidden="true"></div>
+              <div class="tl-step-dot tl-step-dot-mid" aria-hidden="true"></div>
+            </div>
+            <div class="tl-body">
+              <h3><span class="tl-num" aria-hidden="true">02</span><span>진행 추적</span></h3>
+              <p class="tl-desc">거래 진행 상황을 단계별로 추적합니다.</p>
+            </div>
+          </div>
+
+          <div class="tl-row">
+            <div class="tl-rail">
+              <div class="tl-line" aria-hidden="true"></div>
+              <div class="tl-step-dot tl-step-dot-mid" aria-hidden="true"></div>
+            </div>
+            <div class="tl-body">
+              <h3><span class="tl-num" aria-hidden="true">03</span><span>위험 확인</span></h3>
+              <p class="tl-desc">거래 진행 중 확인이 필요한 위험 요소를 알려드립니다.</p>
+            </div>
+          </div>
+
+          <div class="tl-row">
+            <div class="tl-rail">
+              <div class="tl-line" aria-hidden="true"></div>
+              <div class="tl-step-dot tl-step-dot-mid" aria-hidden="true"></div>
+            </div>
+            <div class="tl-body">
+              <h3><span class="tl-num" aria-hidden="true">04</span><span>전문가 연결</span></h3>
+              <p class="tl-desc">필요할 때 관세사·물류·금융 전문가와 연계할 수 있도록 안내합니다.</p>
+            </div>
+          </div>
+
+          <div class="tl-row">
+            <div class="tl-rail">
+              <div class="tl-line tl-line-last" aria-hidden="true"></div>
+              <div class="tl-end-dot tl-end-dot-last" aria-hidden="true"></div>
+            </div>
+            <p class="tl-endpoint tl-endpoint-end">거래 완료</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Emphasis band ===== -->
+    <section class="band">
+      <div class="container band-inner">
+        <p>흩어진 거래 정보와 업무를 하나의 거래 화면으로 연결하여, <br>완료 될 때까지 거래 진행과 필요한 업무를 관리합니다.</p>
+      </div>
+    </section>
+
+    <!-- ===== Stage table ===== -->
+    <section class="how" id="stages" aria-label="단계별 안내">
+      <div class="container how-inner how-inner-tight">
+        <p class="kicker">STEP BY STEP</p>
+        <h2 class="rm-h2">순서대로 열고 있습니다</h2>
+        <p class="rm-lead">세 단계로 나누어 열고 있고, 첫 단계인 협정 세율 조회는 지금 바로 쓰실 수 있습니다.</p>
+
+        <div class="rm">
+          <a class="rm-row" href="/uae">
+            <p class="rm-name"><span class="rm-num">01</span>협정 세율 조회</p>
+            <p class="rm-desc">HS 8단위로 관세 철폐 트랙과 연도별 세율을 조회합니다</p>
+            <p class="rm-meta">무료 · 지금 이용 가능</p>
+          </a>
+          <div class="rm-row">
+            <p class="rm-name"><span class="rm-num">02</span>확인 항목 진단서</p>
+            <p class="rm-desc">품목별 확인 항목을 근거와 함께 문서로 정리해 드립니다</p>
+            <p class="rm-meta">99,000원 · 9월 오픈 예정</p>
+          </div>
+          <div class="rm-row">
+            <p class="rm-name"><span class="rm-num">03</span>거래 운영</p>
+            <p class="rm-desc">거래 단위로 절차를 관리합니다</p>
+            <p class="rm-meta">문의 · 시범 운영 중</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CTA ===== -->
+    <section class="cta" id="start">
+      <div class="container cta-inner">
+        <h2>TROPS, 먼저 만나보시겠어요?</h2>
+        <p class="cta-sub">진행 중인 수출 거래 하나를 등록하면, 남은 단계와 필요한 업무를 정리해 보여드립니다.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="https://app.trops.kr/" target="_self">수출 시작하기</a>
+          <a class="btn btn-secondary" href="#interest">관심 등록하기</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Interest form ===== -->
+    <section class="interest" id="interest">
+      <div class="container interest-inner">
+        <h2>관심 등록하기</h2>
+        <p class="interest-sub">이름과 이메일만 남겨주시면, 준비되는 대로 안내해 드립니다.</p>
+        <form class="interest-form" id="interest-form" novalidate>
+          <div class="form-row">
+            <label for="interest-name">이름 <span class="req" aria-hidden="true">*</span></label>
+            <input type="text" id="interest-name" name="name" autocomplete="name" required>
+          </div>
+          <div class="form-row">
+            <label for="interest-email">이메일 <span class="req" aria-hidden="true">*</span></label>
+            <input type="email" id="interest-email" name="email" autocomplete="email" required>
+          </div>
+          <div class="form-row">
+            <label for="interest-company">회사명 <span class="optional">(선택)</span></label>
+            <input type="text" id="interest-company" name="company" autocomplete="organization">
+          </div>
+          <button type="submit" class="btn btn-primary interest-submit">관심 등록하기</button>
+          <p class="interest-msg" id="interest-msg" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-row">
+        <span class="footer-mark">TROPS</span>
+        <span class="footer-meta">수출 거래 운영 · contact@theo-ne.com</span>
+      </div>
+      <div class="footer-legal">
+        <p>TROPS · (주)테오네 — ※ 법률 자문 서비스가 아닙니다. 판단이 필요한 사안은 파트너 전문가로 연결됩니다.</p>
+        <p>© 2026 TROPS · (주)테오네. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  (function () {
+    var API_URL = '/api/leads';
+    var form = document.getElementById('interest-form');
+    var msg = document.getElementById('interest-msg');
+    if (!form) return;
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var name = document.getElementById('interest-name').value.trim();
+      var email = document.getElementById('interest-email').value.trim();
+      var company = document.getElementById('interest-company').value.trim();
+
+      msg.classList.remove('is-error');
+
+      if (!name || !email) {
+        msg.textContent = '이름과 이메일을 입력해 주세요.';
+        msg.classList.add('is-error');
+        return;
+      }
+
+      var submitBtn = form.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      msg.textContent = '등록 중입니다...';
+
+      fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name, email: email, company: company })
+      })
+        .then(function (res) {
+          if (!res.ok) throw new Error('request failed');
+          return res.json();
+        })
+        .then(function () {
+          msg.textContent = '등록이 완료되었습니다. 곧 연락드리겠습니다.';
+          form.reset();
+        })
+        .catch(function () {
+          msg.textContent = '등록에 실패했습니다. 잠시 후 다시 시도해 주세요.';
+          msg.classList.add('is-error');
+        })
+        .finally(function () {
+          submitBtn.disabled = false;
+        });
+    });
+  })();
+  </script>
+</body>
+</html>
