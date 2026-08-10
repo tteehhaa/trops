@@ -1,5 +1,11 @@
-design_handoff_trops_landing/
+# ⚠️ docs/ 는 배포에서 반드시 빠져야 합니다.
+#    정본·확정본·와이어프레임에는 가격(9월 오픈 99,000원) · 미결 법무 항목 ·
+#    마케팅팀 내부 일정 · 금지어 목록이 그대로 들어 있습니다.
+#    이 줄을 지우면 trops.kr/docs/... 로 전부 공개됩니다.
+#    (dd-now/ 는 2026-08-11 docs/wireframe/ 으로 옮겼습니다. 아래 줄은 예전 경로입니다)
+docs/
 dd-now/
+design_handoff_trops_landing/
 .bkit/
 precheck-schema.sql
 scripts/

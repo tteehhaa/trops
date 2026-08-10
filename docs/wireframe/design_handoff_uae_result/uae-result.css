@@ -1,0 +1,104 @@
+/* ============================================================
+   /uae 조회 결과 — 신규 CSS
+   index.html <style> 블록 맨 아래에 그대로 붙여넣을 수 있습니다.
+   새 색상/폰트/radius 없음. 그라데이션·그림자·신규 애니메이션 없음.
+   반응형은 컨테이너 쿼리(.uae-page)로 처리 — 기존 미디어쿼리와 충돌 없음.
+   ============================================================ */
+.uae-page{container-type:inline-size;background:var(--bg)}
+.uae-main{display:block}
+
+/* --- 다시 조회 --- */
+.uae-topbar{padding-block:20px 0}
+.uae-back{display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:500;color:var(--ink-62)}
+.uae-back:hover{color:var(--ink)}
+.uae-back-mark{font-size:15px;line-height:1}
+
+/* --- 1. 조회한 품목 헤더 --- */
+.uae-head{padding-block:26px 32px;border-bottom:1px solid var(--line)}
+.uae-head-kicker{margin:0 0 14px;font-size:12.5px;font-weight:700;letter-spacing:.14em;color:var(--muted)}
+.uae-hs{display:flex;align-items:baseline;font-size:30px;font-weight:600;letter-spacing:.06em;
+  font-variant-numeric:tabular-nums;line-height:1.2}
+.uae-hs-g{display:inline-block}
+.uae-hs-g + .uae-hs-g{margin-left:.34em}
+.uae-hs-note{margin:8px 0 0;font-size:12.5px;letter-spacing:.02em;color:var(--muted);
+  font-variant-numeric:tabular-nums}
+.uae-item-name{margin:14px 0 0;font-size:21px;line-height:1.4;font-weight:700;letter-spacing:-0.02em;max-width:34ch}
+.uae-item-parent{margin:4px 0 0;font-size:14.5px;color:var(--ink-64)}
+.uae-badge-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:18px}
+.uae-badge-quiet{color:var(--ink-64);border-color:var(--line)}
+/* 경고색은 금지품목(PH)에만 사용합니다. 양허제외(X)는 중립 .wf-badge를 씁니다. */
+.uae-badge-warning{color:var(--warning);border-color:rgba(220,38,38,.34)}
+
+/* --- 2. 세율 카드 3개 --- */
+.uae-rates{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding-block:28px 4px}
+.uae-rate{border:1px solid var(--line);border-radius:8px;padding:20px 22px 18px;background:var(--bg)}
+.uae-rate-now{background:var(--surface)}
+.uae-rate-label{display:flex;align-items:baseline;gap:8px;font-size:13px;font-weight:600;color:var(--ink-62)}
+.uae-rate-value{margin:8px 0 0;font-size:34px;line-height:1.15;font-weight:600;letter-spacing:-0.01em;
+  font-variant-numeric:tabular-nums}
+.uae-rate-value-na{font-size:19px;font-weight:600;letter-spacing:0;color:var(--muted)}
+.uae-rate-src{margin:14px 0 0;padding-top:11px;border-top:1px solid var(--line);
+  font-size:12.5px;line-height:1.6;color:var(--muted)}
+
+/* --- 블록 공통 --- */
+.uae-block{padding-block:32px;border-top:1px solid var(--line)}
+.uae-block-head{display:flex;align-items:baseline;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.uae-block-title{margin:0;font-size:16.5px;font-weight:700;letter-spacing:-0.01em}
+.uae-block-src{font-size:12.5px;line-height:1.6;color:var(--muted)}
+.uae-block-note{margin:10px 0 0;font-size:14.5px;line-height:1.7;color:var(--ink-64);max-width:60ch}
+
+/* --- 3. 연도별 세율 표 --- */
+.uae-table-wrap{margin-top:20px;max-width:430px;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.uae-table{width:100%;border-collapse:collapse}
+.uae-table th{text-align:left;background:var(--surface);font-size:12px;font-weight:700;letter-spacing:.08em;
+  color:var(--ink-62);padding:9px 18px;border-bottom:1px solid var(--line)}
+.uae-table th:last-child,.uae-table td:last-child{text-align:right}
+.uae-table td{padding:10px 18px;font-size:15.5px;border-bottom:1px solid var(--line);
+  font-variant-numeric:tabular-nums;color:var(--ink-70)}
+.uae-table tr:last-child td{border-bottom:0}
+.uae-table .uae-row-current td{background:var(--surface);color:var(--ink);font-weight:600}
+.uae-row-mark{font-size:11.5px;font-weight:600;color:var(--muted);letter-spacing:.02em;margin-left:8px}
+
+/* --- 4. 원산지 결정기준(PSR) --- */
+.uae-psr{margin-top:20px;border:1px solid var(--line);border-radius:8px;padding:20px 22px;background:var(--surface)}
+.uae-psr-pending{background:var(--bg);border-style:dashed}
+.uae-psr-state{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;
+  letter-spacing:.08em;color:var(--ink-62)}
+.uae-psr-mark{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.uae-psr-mark-pending{background:transparent;border:1.5px solid var(--muted)}
+.uae-psr-text{margin:10px 0 0;font-size:16.5px;line-height:1.76;max-width:56ch}
+.uae-psr-text-pending{color:var(--ink-64)}
+.uae-psr-meta{margin:12px 0 0;padding-top:11px;border-top:1px solid var(--line);
+  font-size:12.5px;line-height:1.6;color:var(--muted)}
+
+/* --- 5. 확인 항목 · 진단서 전환 --- */
+.uae-check{padding-block:34px 38px;border-top:1px solid var(--line)}
+.uae-check-count{margin:0;font-size:24px;line-height:1.34;font-weight:700;letter-spacing:-0.025em}
+.uae-check-sub{margin:10px 0 0;font-size:16.5px;line-height:1.76;color:var(--ink-64);max-width:50ch}
+.uae-check-list{margin:22px 0 0;padding:0;list-style:none;display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 28px;max-width:760px}
+.uae-check-item{display:grid;grid-template-columns:20px minmax(0,1fr);gap:8px;align-items:baseline;font-size:15px}
+.uae-check-num{font-size:12.5px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+.uae-check-cta{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:28px}
+.uae-check-cta-note{font-size:13.5px;line-height:1.6;color:var(--muted);max-width:34ch}
+
+/* --- 6. 면책 문구 — 하단 고정 --- */
+.uae-disclaimer{position:sticky;bottom:0;z-index:10;background:var(--surface);border-top:1px solid var(--line)}
+.uae-disclaimer-inner{padding-block:20px 22px}
+.uae-disclaimer p{margin:0;font-size:13px;line-height:1.78;color:var(--ink-64);max-width:82ch}
+
+/* --- 좁은 폭 --- */
+@container (max-width:680px){
+  .uae-hs{font-size:25px}
+  .uae-item-name{font-size:19px}
+  .uae-rates{grid-template-columns:1fr;gap:10px;padding-block:24px 0}
+  .uae-rate{padding:16px 18px 15px}
+  .uae-rate-value{font-size:29px}
+  .uae-block{padding-block:28px}
+  .uae-table-wrap{max-width:none}
+  .uae-check-count{font-size:21px}
+  .uae-check-list{grid-template-columns:1fr}
+  .uae-check-cta{gap:12px}
+  .uae-check-cta .btn{width:100%}
+  .uae-disclaimer p{font-size:12.5px}
+}

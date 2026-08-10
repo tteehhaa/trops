@@ -32,14 +32,16 @@
     --bg:           #FFFFFF;
     /* 경고 전용. 액센트로 쓰지 않고, 이 랜딩에서는 폼 오류 메시지에만 씁니다 */
     --warning:      #DC2626;
-    /* 다크 배경(--surface-dark) 위 잉크 4단계.
-       ⚠️ 정본 §3-1에 정의가 없습니다. --ink-70/64/62의 대응값으로 흰색 .72/.50을 쓴
-          와이어프레임 임시값을 그대로 옮겼습니다. 신뢰 섹션과 푸터만 쓰는 값이고,
-          토큰으로 승격할지는 미결입니다(와이어프레임 C 블록 [문의]). */
-    --d-ink:        #FFFFFF;
-    --d-ink-72:     rgba(255, 255, 255, .72);
-    --d-ink-50:     rgba(255, 255, 255, .50);
-    --d-line:       rgba(255, 255, 255, .28);
+    /* 다크 배경(--surface-dark) 위 잉크 3단계 — 정본 §3-1 정식 등재 (2026-08-11).
+       밝은 배경의 --ink / --ink-70·64 / --ink-62 에 대응합니다.
+       쓰는 곳은 --surface-dark 를 배경으로 쓰는 두 섹션뿐입니다 — 06 신뢰 · 13 푸터.
+       ⚠️ 밝은 배경 위에 쓰지 마십시오. 흰 글자가 흰 배경에 얹힙니다. */
+    --d-ink-primary:   #FFFFFF;                    /* 헤딩 · 강조 */
+    --d-ink-secondary: rgba(255, 255, 255, .72);   /* 본문 */
+    --d-ink-tertiary:  rgba(255, 255, 255, .50);   /* 보조·캡션 */
+    /* 다크 배경 위 선. --line(#E2E8F0)은 다크에서 안 보이므로 흰색 헤어라인을 씁니다
+       (정본 C-5). 잉크 3종과 달리 선 토큰이라 이름을 따로 둡니다. */
+    --d-line:          rgba(255, 255, 255, .28);
   }
 
   *, *::before, *::after { box-sizing: border-box; }
@@ -375,9 +377,19 @@
   .interest-msg { min-height: 22px; font-size: 14px; color: var(--ink-64); margin: 0; }
   .interest-msg.is-error { color: var(--warning); }
 
-  /* ---------- Footer ---------- */
-  .footer { border-top: 1px solid var(--line); }
-  .footer-inner { padding-block: 32px 28px; }
+  /* ---------- Footer (정본 §2 13번 · --surface-dark) ----------
+     본문 섹션 중 다크는 06 신뢰뿐이고, 푸터가 두 번째이자 마지막입니다.
+     밝은 배경용 잉크(--ink-64 · --muted)는 여기서 전부 --d-ink-* 로 바뀝니다 —
+     #0F172A 위에 rgba(15,23,42,...) 를 얹으면 글자가 배경에 잠깁니다.
+
+     위 기관안내(--bg #FFFFFF)에서 곧바로 넘어오는 경계라 border-top 을 없앴습니다.
+     흰색 → #0F172A 는 그 자체로 가장 강한 경계이고, --line(#E2E8F0) 한 줄을
+     그 사이에 끼우면 밝은 쪽에만 붙은 선이 되어 경계가 두 번 그려집니다. */
+  .footer { background: var(--surface-dark); color: var(--d-ink-secondary); }
+  /* 상단 32px → 44px. 흰 배경에서 경계선 없이 바로 넘어오는 자리라, 예전(흰 배경 +
+     헤어라인)의 32px 로는 첫 줄이 색 경계에 붙어 보입니다. 하단은 그대로 둡니다 —
+     페이지 끝이라 아래로 더 벌릴 이유가 없습니다. */
+  .footer-inner { padding-block: 44px 28px; }
   .footer-row {
     display: flex;
     flex-wrap: wrap;
@@ -385,20 +397,29 @@
     align-items: center;
     justify-content: space-between;
   }
-  .footer-mark { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
-  .footer-meta { font-size: 13.5px; color: var(--muted); }
-  .footer-legal { margin: 18px 0 0; font-size: 12.5px; line-height: 1.7; color: var(--muted); }
+  /* 워드마크는 푸터에서 유일한 강조 요소라 primary */
+  .footer-mark { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; color: var(--d-ink-primary); }
+  .footer-meta { font-size: 13.5px; color: var(--d-ink-tertiary); }
+  .footer-legal { margin: 18px 0 0; font-size: 12.5px; line-height: 1.7; color: var(--d-ink-tertiary); }
   .footer-legal p { margin: 0; }
   /* ---------- 사업자정보 (전 페이지 공통) ----------
      6개 항목의 표기는 사업자등록증·통신판매업신고증 원문과 글자 그대로 일치해야 합니다.
      "주식회사 테오네"를 "(주)테오네"로 줄여 쓰지 마십시오. */
   .footer-links { margin: 18px 0 0; display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; }
-  .footer-links a { color: var(--ink-64); }
+  /* 정책 링크는 클릭 요소지만 --accent(#1D4ED8)를 쓰지 않습니다 —
+     #0F172A 위에서 2.3:1 로 대비가 무너집니다. 다크에서는 밑줄로 클릭임을 알립니다. */
+  .footer-links a {
+    color: var(--d-ink-secondary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .footer-links a:hover { color: var(--d-ink-primary); }
   /* KAIST OverEdge 참여 표기 — 정책 링크와 사업자정보 사이, 회색 톤 */
-  .footer-credit { margin: 14px 0 0; font-size: 12.5px; line-height: 1.7; color: var(--muted); }
-  .footer-biz { margin: 16px 0 0; display: grid; gap: 3px; font-size: 12.5px; line-height: 1.7; color: var(--muted); }
+  .footer-credit { margin: 14px 0 0; font-size: 12.5px; line-height: 1.7; color: var(--d-ink-tertiary); }
+  .footer-biz { margin: 16px 0 0; display: grid; gap: 3px; font-size: 12.5px; line-height: 1.7; color: var(--d-ink-tertiary); }
   .footer-biz > div { display: flex; flex-wrap: wrap; gap: 4px 10px; }
-  .footer-biz dt { flex: 0 0 auto; min-width: 116px; margin: 0; }
+  /* 항목명(dt)을 값(dd)보다 한 단계 밝게 둬서 6개 항목이 읽히는 순서를 잡아 줍니다 */
+  .footer-biz dt { flex: 0 0 auto; min-width: 116px; margin: 0; color: var(--d-ink-secondary); }
   .footer-biz dd { margin: 0; }
 
   /* ==========================================================================
@@ -525,11 +546,11 @@
     line-height: 1.28;
     letter-spacing: -0.030em;
     font-weight: 700;
-    color: var(--d-ink);
+    color: var(--d-ink-primary);
   }
   .trust-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 48px; }
-  .trust-list p { margin: 0; font-size: 16.5px; line-height: 1.76; color: var(--d-ink-72); }
-  .trust-list .sub { color: var(--d-ink-50); }
+  .trust-list p { margin: 0; font-size: 16.5px; line-height: 1.76; color: var(--d-ink-secondary); }
+  .trust-list .sub { color: var(--d-ink-tertiary); }
   /* 이미지 자리 — 테두리는 --line 대신 흰색 헤어라인 (C-5) */
   .shot {
     display: flex;
@@ -544,8 +565,11 @@
     border-radius: 6px;
     background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.05) 0 10px, transparent 10px 20px);
   }
-  .shot-ph  { font-size: 12.5px; line-height: 1.7; font-weight: 600; letter-spacing: .04em; color: rgba(255,255,255,.78); }
-  .shot-phs { font-size: 12.5px; line-height: 1.7; color: rgba(255,255,255,.45); }
+  /* 토큰 정식 등재(§3-1) 전에는 .78/.45 생값을 썼습니다. 토큰 3종으로 맞췄습니다 —
+     같은 다크 섹션 안에서 잉크 단계가 둘 갈리면 나중에 한쪽만 바뀝니다.
+     (플레이스홀더는 8/20 실물 캡처가 오면 이 블록째로 사라집니다) */
+  .shot-ph  { font-size: 12.5px; line-height: 1.7; font-weight: 600; letter-spacing: .04em; color: var(--d-ink-secondary); }
+  .shot-phs { font-size: 12.5px; line-height: 1.7; color: var(--d-ink-tertiary); }
   /* 크롭 컷이 "위 결과지의 확대"로 읽히도록 겹쳐 놓습니다 */
   .shot-crop {
     width: 56%;
