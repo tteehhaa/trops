@@ -15,7 +15,7 @@
  *           hsCode:        '09011100' }                      선택 · HS 8단위
  *
  *   기준 우선순위(PRD-62 §3-3): 자사 서식이 오면 그것이 1순위 기준입니다.
- *   오지 않으면 뒷단이 ICC 를 2순위 대체 기준으로 씁니다.
+ *   오지 않으면 뒷단이 공개 표준 서식을 2순위 대체 기준으로 씁니다.
  *   여기서는 어느 기준을 쓸지 기록만 합니다 — 대조도 판정도 하지 않습니다.
  *
  *   targetCountry·hsCode 는 NDA 대조와 무관한 부속 항목입니다. 둘 다 있으면
@@ -127,7 +127,7 @@ async function handleIntake(req, res) {
   }
   const files = parsed.files;
 
-  // 자사 서식은 선택입니다. 없으면 ownForm 이 null 로 남고, 뒷단이 ICC 를 씁니다.
+  // 자사 서식은 선택입니다. 없으면 ownForm 이 null 로 남고, 뒷단이 공개 표준 서식을 씁니다.
   // 합계 용량은 바이어 서류와 같은 20MB 한도를 함께 씁니다 — 선택 항목이라고
   // 한도를 늘려 주면 요청 본문만 커집니다.
   const parsedOwnForm = parseOwnForm(body.ownForm, parsed.totalBytes);
@@ -428,7 +428,7 @@ function parseFiles(raw) {
 }
 
 // 자사 서식은 1개만 받습니다. 없으면 file 이 null 이고, 그 자체가 정상입니다 —
-// 뒷단은 null 을 보고 ICC 를 대체 기준으로 씁니다.
+// 뒷단은 null 을 보고 공개 표준 서식을 대체 기준으로 씁니다.
 // 검사는 바이어 서류와 똑같이 합니다. 선택 항목이라고 느슨하게 두면
 // 확장자·용량 한도를 우회하는 경로가 하나 더 생깁니다.
 function parseOwnForm(raw, bytesSoFar) {

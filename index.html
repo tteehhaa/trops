@@ -7,9 +7,9 @@
 <!-- 검색·공유 문구는 세 페이지(index · nda · precheck)가 같은 말을 씁니다.
      description = 헤드라인 + 리드, og:description = 리드.
      한 곳만 고치면 검색 결과와 공유 카드에서 다른 서비스처럼 보입니다. -->
-<meta name="description" content="바이어가 보낸 NDA, 우리 회사 기준과 뭐가 다른지 한눈에 안 보이실 때. 자사 서식이 있으면 그대로 대조하고, 없으면 국제표준(ICC) 18개 항목으로 대조해 당일 요약 자료로 정돈해 드립니다.">
+<meta name="description" content="바이어가 보낸 NDA, 우리 회사 기준과 뭐가 다른지 한눈에 안 보이실 때. 자사 서식이 있으면 그대로 대조하고, 없으면 공개 라이선스로 배포되는 표준 서식으로 대조해 당일 요약 자료로 정돈해 드립니다.">
 <meta property="og:title" content="TROPS — 바이어 NDA, 우리 회사 기준으로 확인하세요">
-<meta property="og:description" content="자사 서식이 있으면 그대로 대조하고, 없으면 국제표준(ICC) 18개 항목으로 대조해 당일 요약 자료로 정돈해 드립니다.">
+<meta property="og:description" content="자사 서식이 있으면 그대로 대조하고, 없으면 공개 라이선스로 배포되는 표준 서식으로 대조해 당일 요약 자료로 정돈해 드립니다.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://trops.kr/">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
@@ -19,13 +19,27 @@
     --ink-70:       rgba(15, 23, 42, .7);
     --ink-64:       rgba(15, 23, 42, .64);
     --ink-62:       rgba(15, 23, 42, .62);
-    --accent:       #0F172A;
-    --accent-press: #1E293B;
+    /* 액센트 — 클릭 가능한 요소에만 (정본 §3-1 · §6)
+       #0F172A(먹색)에서 교체. 판정색(초록·빨강·노랑·주황·보라)은 쓰지 않습니다. */
+    --accent:       #1D4ED8;
+    --accent-press: #1E40AF;
+    --accent-soft:  #EFF6FF;
     --muted:        #94A3B8;
     --line:         #E2E8F0;
-    --surface:      #F8FAFC;
+    /* #F8FAFC는 --bg와 명도차 1.5%라 섹션 교차가 안 잡혀 3%로 내림 (정본 §3-1) */
+    --surface:      #F1F5F9;
+    --surface-dark: #0F172A;
     --bg:           #FFFFFF;
+    /* 경고 전용. 액센트로 쓰지 않고, 이 랜딩에서는 폼 오류 메시지에만 씁니다 */
     --warning:      #DC2626;
+    /* 다크 배경(--surface-dark) 위 잉크 4단계.
+       ⚠️ 정본 §3-1에 정의가 없습니다. --ink-70/64/62의 대응값으로 흰색 .72/.50을 쓴
+          와이어프레임 임시값을 그대로 옮겼습니다. 신뢰 섹션과 푸터만 쓰는 값이고,
+          토큰으로 승격할지는 미결입니다(와이어프레임 C 블록 [문의]). */
+    --d-ink:        #FFFFFF;
+    --d-ink-72:     rgba(255, 255, 255, .72);
+    --d-ink-50:     rgba(255, 255, 255, .50);
+    --d-line:       rgba(255, 255, 255, .28);
   }
 
   *, *::before, *::after { box-sizing: border-box; }
@@ -46,7 +60,7 @@
   }
 
   a { color: var(--accent); text-decoration: none; }
-  a:hover { color: var(--ink); }
+  a:hover { color: var(--accent-press); }
 
   ::selection { background: rgba(15, 23, 42, .14); }
 
@@ -83,8 +97,9 @@
     border-bottom: 1px solid var(--line);
   }
   .nav-inner { height: 64px; display: flex; align-items: center; gap: 40px; }
-  /* 앵커 이동 시 sticky .nav(64px)에 목표 지점이 가리지 않도록 */
-  #how, #next, #interest { scroll-margin-top: 84px; }
+  /* 앵커 이동 시 sticky .nav(64px)에 목표 지점이 가리지 않도록.
+     #qna·#orgs 는 신설 섹션의 앵커 도착지입니다 (정본 §2-3). */
+  #how, #next, #interest, #service, #qna, #orgs { scroll-margin-top: 84px; }
   .wordmark {
     font-size: 19px;
     font-weight: 700;
@@ -102,31 +117,43 @@
   .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
 
   /* ---------- Buttons ---------- */
+  /* V7 — 고정 height(46px)를 버리고 세로 패딩 12px로 전환.
+     12+15.5+12 = 39.5px라 패딩만으로는 터치 타깃 44px에 못 미치므로
+     min-height로 44px를 따로 보장합니다. (정본 C-1의 "12px로 44px 확보"는 산술이 안 맞습니다) */
   .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: 46px;
-    padding: 0 22px;
+    min-height: 44px;
+    padding: 12px 22px;
     border-radius: 6px;
-    border: 0;
+    border: 1px solid transparent;
     font: inherit;
     font-size: 15.5px;
     font-weight: 600;
     line-height: 1;
     cursor: pointer;
     white-space: nowrap;
-    transition: background-color .14s ease, border-color .14s ease;
+    transition: background-color .14s ease, border-color .14s ease, color .14s ease;
   }
+  /* V3 — 버튼 3종 (정본 C-1). 주는 히어로·마감 CTA, 보조는 주 옆,
+     텍스트는 카드·섹션 내 이동. 풀사이즈는 좌우 32px로 한 단계 위. */
+  .btn-full { padding-inline: 32px; }
   .btn-primary { background: var(--accent); color: #FFFFFF; }
   .btn-primary:hover { background: var(--accent-press); color: #FFFFFF; }
   .btn-secondary {
     background: transparent;
-    border: 1px solid var(--line);
+    border-color: var(--line);
     color: var(--ink);
   }
   .btn-secondary:hover { border-color: var(--muted); color: var(--ink); }
-  .btn-nav { height: 36px; padding: 0 16px; font-size: 14.5px; }
+  .btn-text {
+    background: transparent;
+    border-color: transparent;
+    padding-inline: 0;
+    color: var(--accent);
+  }
+  .btn-text:hover { color: var(--accent-press); }
   /* nav 우측: 앱은 아직 메인 CTA가 아니므로 버튼이 아닌 저채도 텍스트 링크로 둔다 */
   .nav-quiet { font-size: 14px; font-weight: 500; color: var(--muted); }
   .nav-quiet:hover { color: var(--ink-64); }
@@ -140,10 +167,11 @@
     letter-spacing: .02em;
     color: var(--accent);
   }
+  /* V2 클램프 + V4 행간 1.18 → 1.30 (정본 §3-2: H1 36 → 56 / 1.30 / −0.035em) */
   .hero h1 {
     margin: 0;
-    font-size: clamp(36px, 4.4vw, 56px);
-    line-height: 1.18;
+    font-size: clamp(2.25rem, 4.5vw, 3.5rem);
+    line-height: 1.30;
     letter-spacing: -0.035em;
     font-weight: 700;
     max-width: 21ch;
@@ -192,14 +220,25 @@
   }
   .hs-group input:focus { outline: none; }
   .hs-group input::placeholder { color: var(--muted); }
-  .hs-group .btn { flex: 0 0 auto; height: 42px; padding: 0 20px; }
+  /* 입력 그룹 안에서는 옆 input(42px)과 높이를 맞춰야 하므로 min-height를 되돌립니다.
+     그룹 전체가 하나의 44px 이상 타깃이라 터치 크기는 유지됩니다. */
+  .hs-group .btn { flex: 0 0 auto; min-height: 42px; height: 42px; padding: 0 20px; }
   .hs-meta { margin: 10px 0 0; font-size: 13.5px; line-height: 1.65; color: var(--muted); }
 
   .cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 30px; }
-  .cta-row-note { font-size: 13.5px; color: var(--muted); }
+  /* 마이크로카피 — --muted는 --bg 위 2.56:1로 WCAG AA(4.5:1) 미달이라 --ink-62(5.03:1)로 교체.
+     --muted 토큰 값 자체는 그대로 둡니다. */
+  .cta-row-note { font-size: 13.5px; color: var(--ink-62); }
 
   /* ---------- How it works ---------- */
   .how { border-top: 1px solid var(--line); }
+  /* #how 만 --surface 입니다 (정본 §2 5번). .how 클래스를 #next(로드맵)도 쓰는데
+     로드맵은 §2 8번에서 --bg 이므로 클래스가 아니라 id 로 걸어야 합니다.
+     ⚠️ 이 배경이 「04·05·06 좌 3연속을 그대로 둔다」 결정의 근거입니다 —
+        2층카드(--bg) → HOW(--surface) → 신뢰(--surface-dark) 로 세 번 연속 바뀌기
+        때문에 정렬 교차 없이도 섹션 경계가 잡힙니다. 여기를 --bg 로 되돌리면
+        2층카드와 HOW가 흰 배경으로 붙어 그 근거가 사라집니다. */
+  #how { background: var(--surface); }
   .how-inner { padding-block: clamp(64px, 8vw, 112px) clamp(56px, 7vw, 96px); }
   .kicker {
     margin: 0 0 18px;
@@ -208,11 +247,12 @@
     letter-spacing: .14em;
     color: var(--muted);
   }
+  /* V2 — H2 28 → 40 / 1.28 / −0.030em (정본 §3-2) */
   .how h2 {
     margin: 0;
-    font-size: clamp(28px, 3.2vw, 40px);
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
     line-height: 1.28;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.030em;
     font-weight: 700;
     max-width: 24ch;
   }
@@ -242,13 +282,19 @@
   .flow-extra-label { margin: 0 0 12px; font-size: 14.5px; line-height: 1.7; color: var(--ink-64); max-width: 46ch; }
 
   /* ---------- Roadmap (예정 항목) ---------- */
-  #next { border-top: 0; }  /* .band already draws the divider above */
+  /* 위가 신뢰 섹션(--surface-dark)이라 경계는 배경 대비로 이미 완결됩니다.
+     .how 의 border-top(--line)은 다크 위에서 보이지 않으므로 끕니다. */
+  #next { border-top: 0; }
   .how-inner-tight { padding-block: clamp(44px, 5vw, 68px) clamp(56px, 7vw, 96px); }
-  .rm-h2 {
+  /* V2 — H3 22 → 28 / 1.35 / −0.025em (정본 §3-2). 기존 25→32px에서 한 단계 내려갑니다.
+     선택자를 .how h2.rm-h2 로 올린 이유: 이 요소는 .how 섹션 안의 <h2 class="rm-h2">라
+     .how h2(0,1,1)가 .rm-h2(0,1,0)를 이깁니다. 그동안 로드맵 헤딩이 H3가 아니라
+     H2 크기로 렌더되고 있었습니다. 특정도를 (0,2,1)로 올려 H3 역할을 실제로 적용합니다. */
+  .how h2.rm-h2 {
     margin: 0;
-    font-size: clamp(25px, 2.6vw, 32px);
-    line-height: 1.3;
-    letter-spacing: -0.028em;
+    font-size: clamp(1.375rem, 2vw, 1.75rem);
+    line-height: 1.35;
+    letter-spacing: -0.025em;
     font-weight: 700;
     max-width: 26ch;
   }
@@ -272,50 +318,33 @@
     gap: 10px;
     font-size: 18px;
     font-weight: 600;
-    letter-spacing: -0.015em;
+    letter-spacing: -0.02em;  /* 카드 제목 역할 (정본 §3-2) */
     line-height: 1.5;
     color: var(--ink);
   }
   .rm-num { font-size: 13px; font-weight: 600; color: var(--muted); }
   .rm-desc { margin: 0; font-size: 16.5px; line-height: 1.7; color: var(--ink-62); max-width: 44ch; }
-  .rm-meta { margin: 2px 0 0; grid-column: 1; font-size: 13.5px; line-height: 1.6; color: var(--muted); }
+  /* 「준비중」 라벨 — 마이크로카피와 같은 이유로 --ink-62. 회색조 유지, 경고색 금지 */
+  .rm-meta { margin: 2px 0 0; grid-column: 1; font-size: 13.5px; line-height: 1.6; color: var(--ink-62); }
   a.rm-row:hover { background: var(--surface); }
   a.rm-row:hover .rm-name { color: var(--ink); }
 
-  /* ---------- Emphasis band ---------- */
-  .band {
-    background: var(--surface);
-    border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
-  }
-  .band-inner { padding-block: clamp(56px, 7vw, 88px); }
-  .band p {
-    margin: 0;
-    font-size: clamp(21px, 2.5vw, 30px);
-    line-height: 1.58;
-    letter-spacing: -0.025em;
-    font-weight: 600;
-    max-width: 36ch;
-  }
-  /* 머리문장 아래 받침 문장 — "법률적 판단을 하지 않는다"는 약속을 여기서 밝힙니다. */
-  .band p.band-sub {
-    margin-top: 18px;
-    font-size: 16.5px;
-    line-height: 1.76;
-    letter-spacing: normal;
-    font-weight: 400;
-    color: var(--ink-64);
-    max-width: 46ch;
-  }
+  /* ---------- Emphasis band — 제거됨 (2026-08-11) ----------
+     .band/.band-inner/.band-sub 규칙을 지웠습니다. 그 섹션의 역할(「판단하지 않는다」)은
+     히어로 직하로 승격된 03 안심 문구(.assure)가 이어받았습니다 — 정본 §2 3번.
+     쓰이지 않는 채로 남겨두면 같은 선언이 한 페이지에 두 번 들어가는 길이 열립니다.
+     되살리려면 정본 §2 섹션 표부터 고쳐야 합니다. */
 
   /* ---------- Interest form ---------- */
-  .interest { border-top: 1px solid var(--line); }
+  /* --surface 는 정본 §2 11번입니다. 신설된 마감CTA(--bg)와 기관안내(--bg) 사이에
+     끼면서 이 배경이 없으면 흰 배경 세 섹션이 연달아 붙습니다. */
+  .interest { background: var(--surface); border-top: 1px solid var(--line); }
   .interest-inner { padding-block: clamp(64px, 8vw, 104px); }
   .interest h2 {
     margin: 0;
-    font-size: clamp(28px, 3.2vw, 40px);
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
     line-height: 1.28;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.030em;
     font-weight: 700;
     max-width: 24ch;
   }
@@ -328,7 +357,9 @@
   }
   .form-row { display: flex; flex-direction: column; gap: 6px; }
   .form-row label { font-size: 14px; font-weight: 600; }
-  .form-row .req { color: var(--accent); }
+  /* 「*」 표시는 클릭 요소가 아니므로 액센트를 쓰지 않습니다 (정본 §6 · 규칙 2).
+     --accent가 먹색이던 때는 문제가 없었으나 #1D4ED8로 바뀌면서 분리했습니다. */
+  .form-row .req { color: var(--ink); }
   .form-row .optional { color: var(--muted); font-weight: 400; }
   .form-row input {
     font: inherit;
@@ -370,6 +401,261 @@
   .footer-biz dt { flex: 0 0 auto; min-width: 116px; margin: 0; }
   .footer-biz dd { margin: 0; }
 
+  /* ==========================================================================
+     정본 §2 12섹션 — 신설 6개 (안심문구 · 2층카드 · 신뢰 · QnA · 마감CTA · 기관안내)
+     문구는 확정본 v3.1 원문 그대로입니다. 한 글자도 바꾸지 마십시오 (정본 §0 · §8).
+     ========================================================================== */
+
+  /* 폭 3단 (정본 §3-3) — 1200(.container) / 860(본문) / 680(좁은 콘텐츠) */
+  .body-w   { max-width: 860px; }
+  .narrow-c { max-width: 680px; margin-inline: auto; }
+
+  /* 반복 노출되는 eyebrow류는 --ink-62 (정본 §3-2★).
+     --accent를 유지하는 것은 히어로 eyebrow 하나뿐입니다(.eyebrow).
+     기존 .kicker(--muted)는 이번 범위 밖이라 건드리지 않았습니다. */
+  .eyebrow-quiet {
+    margin: 0;
+    font-size: 12.5px;
+    font-weight: 700;
+    line-height: 1.5;
+    letter-spacing: .14em;
+    color: var(--ink-62);
+  }
+
+  /* ---------- 03 안심 문구 (문구 §3 · 정본 §2 3번) ----------
+     히어로와 "한 덩어리"로 읽혀야 하므로 경계는 border-top 1px 한 줄이 전부입니다.
+     여백으로 더 떼거나 구분선을 장식하지 마십시오. */
+  .assure { background: var(--surface); border-top: 1px solid var(--line); }
+  .assure-inner {
+    padding-block: clamp(60px, 8vw, 96px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 28px;
+  }
+  .assure h2 {
+    margin: 0;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    line-height: 1.28;
+    letter-spacing: -0.030em;
+    font-weight: 700;
+  }
+  .assure-lines { display: flex; flex-direction: column; gap: 6px; max-width: 600px; }
+  .assure-lines p {
+    margin: 0;
+    font-size: clamp(16.5px, 1.4vw, 18px);
+    line-height: 1.6;
+    color: var(--ink-70);
+  }
+  .assure-note { margin: 0; font-size: 12.5px; line-height: 1.7; color: var(--muted); }
+
+  /* ---------- 04 2층 카드 (문구 §4 · 정본 C-2) ----------
+     6:4는 폭으로만 표현하고 높이는 맞추지 않습니다(align-items:start).
+     02 카드에 가격을 쓰지 않습니다. 「준비 중」은 회색조 — 경고색 금지. */
+  .cards-sec { border-top: 1px solid var(--line); }
+  .cards-inner { padding-block: clamp(60px, 8vw, 96px); }
+  /* max-width 를 24ch → 30ch 로 넓혔습니다. 24ch 에서는 「…시작한 후에 / 한 번.」으로
+     끊겨 「전에 한 번 / 후에 한 번」의 대구가 깨지고 「한 번.」만 홀로 남았습니다.
+     text-wrap 은 폭에 따라 다른 값이 맞아서 아래 미디어쿼리에서 갈라 줍니다 —
+     좁은 화면에서 balance 를 쓰면 「한 / 번,」으로 어절이 쪼개집니다. */
+  .cards-sec h2 {
+    margin: 0 0 clamp(28px, 3.5vw, 40px);
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    line-height: 1.28;
+    letter-spacing: -0.030em;
+    font-weight: 700;
+    max-width: 30ch;
+  }
+  .cards { display: grid; grid-template-columns: 6fr 4fr; gap: 24px; align-items: start; }
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 32px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--bg);
+  }
+  .card-head { display: flex; flex-direction: column; gap: 10px; }
+  .card-title { font-size: 20px; font-weight: 600; line-height: 1.35; letter-spacing: -0.02em; color: var(--ink); }
+  .card-body { margin: 0; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); }
+  .card-bullets { display: flex; flex-direction: column; gap: 2px; padding-top: 12px; border-top: 1px solid var(--line); }
+  .card-bullets p { margin: 0; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); }
+  /* 「준비 중」 — 회색조 유지. --muted는 --surface 위 2.34:1로 AA 미달이라 --ink-62(4.87:1) */
+  .badge-soon {
+    display: inline-flex;
+    /* .card-head 가 세로 flex 라 기본 align-items:stretch 에 걸려 뱃지가 카드 폭까지
+       늘어납니다. 라벨은 글자 폭만 차지해야 하므로 여기서 끊습니다. */
+    align-self: flex-start;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.35;
+    letter-spacing: -0.02em;
+    color: var(--ink-62);
+    padding: 2px 10px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--surface);
+  }
+  /* CEPA 데모 — 01 카드 내부의 보조 블록입니다. 독립 섹션으로 올리지 마십시오.
+     와이어프레임의 #F8FAFC는 v2 이전 --surface 값이라, 토큰인 --surface로 옮겼습니다. */
+  .cepa {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--surface);
+  }
+  .cepa p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--ink-64); }
+  /* 한 카드 안에 액센트 배경 CTA가 둘이면 위계가 무너지므로 CEPA는 텍스트 버튼(C-1 3종) */
+  .cepa .btn-text { font-size: 14px; min-height: 0; padding: 0; align-self: flex-start; }
+
+  /* ---------- 06 신뢰 (문구 §6 · 정본 C-5) ----------
+     페이지 유일한 다크 본문 섹션입니다(푸터와 둘뿐).
+     ⚠️ 카운터·숫자 자리는 비워둡니다 — 넣을 숫자가 없습니다 (C-5 · §8).
+     ⚠️ 이미지는 8/20 실물 캡처 대기 중입니다. 목업으로 채우지 마십시오. */
+  .trust { background: var(--surface-dark); }
+  .trust-inner { padding-block: clamp(60px, 8vw, 96px); }
+  .trust h2 {
+    margin: 0 0 28px;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    line-height: 1.28;
+    letter-spacing: -0.030em;
+    font-weight: 700;
+    color: var(--d-ink);
+  }
+  .trust-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 48px; }
+  .trust-list p { margin: 0; font-size: 16.5px; line-height: 1.76; color: var(--d-ink-72); }
+  .trust-list .sub { color: var(--d-ink-50); }
+  /* 이미지 자리 — 테두리는 --line 대신 흰색 헤어라인 (C-5) */
+  .shot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    aspect-ratio: 16 / 10;
+    padding: 10px;
+    text-align: center;
+    border: 1px solid var(--d-line);
+    border-radius: 6px;
+    background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.05) 0 10px, transparent 10px 20px);
+  }
+  .shot-ph  { font-size: 12.5px; line-height: 1.7; font-weight: 600; letter-spacing: .04em; color: rgba(255,255,255,.78); }
+  .shot-phs { font-size: 12.5px; line-height: 1.7; color: rgba(255,255,255,.45); }
+  /* 크롭 컷이 "위 결과지의 확대"로 읽히도록 겹쳐 놓습니다 */
+  .shot-crop {
+    width: 56%;
+    margin-left: 120px;
+    margin-top: -56px;
+    background-color: var(--surface-dark);
+    background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 10px, transparent 10px 20px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, .45);
+  }
+
+  /* ---------- 08 QnA (문구 §8 · 정본 C-3) ----------
+     3묶음 14문항. 기본 전부 접힘. 여러 개 동시 펼침 허용 —
+     하나만 열리는 방식은 비교가 안 되므로 금지입니다. */
+  .qna { background: var(--surface); border-top: 1px solid var(--line); }
+  .qna-inner { padding-block: clamp(60px, 8vw, 96px); }
+  .qna h2 {
+    margin: 0 0 clamp(32px, 4vw, 48px);
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    line-height: 1.28;
+    letter-spacing: -0.030em;
+    font-weight: 700;
+  }
+  .qgroups { display: flex; flex-direction: column; gap: clamp(32px, 4vw, 40px); }
+  .qgroup > .eyebrow-quiet { display: block; margin-bottom: 12px; }
+  .qitem { border-top: 1px solid var(--line); }
+  .qbtn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px 0;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+  }
+  .qbtn > span:first-child { font-size: 20px; font-weight: 600; line-height: 1.35; letter-spacing: -0.02em; }
+  /* 셰브론에 액센트를 쓰지 않습니다 (C-3) */
+  .qchev {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    transition: transform .14s ease;
+  }
+  .qitem[data-open="1"] .qchev { transform: rotate(180deg); }
+  .qans { padding: 0 0 24px; display: flex; flex-direction: column; gap: 6px; max-width: 720px; }
+  .qitem[data-open="0"] .qans { display: none; }
+  .qans p { margin: 0; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); }
+  .qans a { text-decoration: underline; text-underline-offset: 3px; }
+
+  /* ---------- 09 마감 CTA (문구 §9 · 정본 §2 10번) ----------
+     버튼 페어는 히어로와 동일합니다. 리드 문장을 추가하지 마십시오 —
+     안심 문구(03)와 톤이 겹칩니다. */
+  .close-cta { border-top: 1px solid var(--line); }
+  .close-cta-inner {
+    padding-block: clamp(60px, 8vw, 96px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+  }
+  .close-cta h2 {
+    margin: 0;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    line-height: 1.28;
+    letter-spacing: -0.030em;
+    font-weight: 700;
+  }
+  .close-cta-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 12px; }
+  .close-cta-note { margin: 0; font-size: 12.5px; line-height: 1.7; color: var(--ink-62); }
+
+  /* ---------- 11 기관 안내 (문구 §11 · 정본 C-4) ----------
+     ⚠️ 로고 금지(제휴 오인). 텍스트만.
+     ⚠️ 순번·평점·「추천순」 금지 — 번호를 붙이면 순위로 읽힙니다.
+     ⚠️ 정렬은 기관 유형순으로 고정(공공기관→협회→중기부, 확정본 v3.1 §11).
+        클릭 추적으로 순서를 바꾸지 마십시오.
+     2열 그리드를 쓰지 않습니다 — 5개를 2열로 나누면 읽는 순서가 갈려 순위처럼 보입니다. */
+  .orgs-sec { border-top: 1px solid var(--line); }
+  .orgs-inner { padding-block: clamp(60px, 8vw, 96px); }
+  .orgs-sec h2 {
+    margin: 0;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    line-height: 1.28;
+    letter-spacing: -0.030em;
+    font-weight: 700;
+    max-width: 24ch;
+  }
+  .orgs { margin: 28px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px; }
+  .orgs li { font-size: 16.5px; line-height: 1.76; color: var(--ink-64); }
+  .orgs-note { margin: 28px 0 0; font-size: 12.5px; line-height: 1.7; color: var(--muted); }
+
+  /* 신설 섹션 헤딩의 줄바꿈 — 769px 이상에서만 balance 를 씁니다.
+     넓은 화면: balance 가 줄 길이를 고르게 잡아 「한 번.」 같은 고아 줄을 막습니다.
+     좁은 화면: balance 는 줄 길이를 맞추려고 「거래를 … 전에 한 / 번,」처럼 어절을
+       쪼갭니다. body 에 이미 걸린 text-wrap:pretty 가 쉼표 뒤에서 끊어 주므로
+       (「…전에 한 번, / 시작한 후에 한 번.」) 모바일은 상속값을 그대로 씁니다.
+     ⚠️ 문구는 손대지 않았습니다 — 줄바꿈만 지정합니다 (정본 §0 · §8). */
+  @media (min-width: 769px) {
+    .assure h2, .cards-sec h2, .trust h2,
+    .qna h2, .close-cta h2, .orgs-sec h2 { text-wrap: balance; }
+  }
+
   /* ---------- Responsive ---------- */
   @media (max-width: 900px) {
     .flow-row { grid-template-columns: 1fr; }
@@ -392,8 +678,32 @@
     .cta-row { flex-direction: column; align-items: stretch; gap: 12px; }
     .cta-row .btn { width: 100%; }
   }
+
+  /* 정본 §5 레이아웃 전환 — 768px 미만 */
+  @media (max-width: 768px) {
+    /* 2층 카드: 1열로 접히되 01이 위 (C-2). DOM 순서가 이미 01→02라 순서 지정 불필요 */
+    .cards { grid-template-columns: 1fr; gap: 16px; }
+    .card { padding: 24px; gap: 16px; }
+    .card .btn { width: 100%; }
+    .badge-soon { font-size: 18px; }
+    .card-title { font-size: 18px; }
+    .cepa { padding: 14px; }
+    .cepa p, .cepa .btn-text { font-size: 13.5px; }
+    /* 신뢰 이미지 2컷: 세로 스택, 크롭이 아래 (겹침·들여쓰기 해제) */
+    .shot-crop { width: 100%; margin-left: 0; margin-top: 16px; box-shadow: none; }
+    /* QnA: 질문이 길어 셰브론과 같은 줄에서 눌리므로 위 정렬로 바꿉니다 */
+    .qbtn { align-items: flex-start; gap: 12px; padding: 16px 0; }
+    .qbtn > span:first-child { font-size: 18px; }
+    .qans { padding-bottom: 18px; }
+    .assure-inner { gap: 22px; }
+    .close-cta-row { flex-direction: column; align-items: stretch; width: 100%; }
+    .close-cta-row .btn { width: 100%; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
+    /* 셰브론 회전은 상태 표시라 없애지 않고, 애니메이션만 끕니다 */
+    .qchev { transition: none; }
   }
 </style>
 </head>
@@ -406,9 +716,13 @@
   <nav class="nav">
     <div class="container nav-inner">
       <a href="/" class="wordmark" aria-label="TROPS 홈">TROPS</a>
+      <!-- 「자주 묻는 질문」은 정본 §2-3이 요구하는 앵커입니다(헤더 → 09 QnA).
+           나머지 3개는 기존 링크를 그대로 뒀습니다 — 확정본 §1의 헤더 앵커 3종
+           (서비스 · 이용 방법 · 자주 묻는 질문)으로 맞추는 것은 헤더 개편 몫입니다. -->
       <div class="nav-links">
         <a href="#how">대조 방법</a>
         <a href="#next">준비 중인 것</a>
+        <a href="#qna">자주 묻는 질문</a>
         <a href="#interest">문의</a>
       </div>
       <div class="nav-right">
@@ -419,8 +733,9 @@
 
   <main id="main">
     <!-- ===== Hero =====
-         기준 우선순위(PRD-62 §3-3): 고객 보유 자사 서식이 1순위, ICC는 자사 서식이
-         없을 때만 쓰는 2순위 대체 기준입니다. 이 순서를 뒤집어 쓰지 마십시오.
+         기준 우선순위(PRD-62 §3-3): 고객 보유 자사 서식이 1순위, 공개 라이선스로
+         배포되는 표준 서식은 자사 서식이 없을 때만 쓰는 2순위 대체 기준입니다.
+         이 순서를 뒤집어 쓰지 마십시오.
          거래 8단계 타임라인 카드는 제거했습니다 — 실체 없는 단계를 미리 보여주면
          "이미 완성된 서비스인가?"라는 오해를 키웁니다. 거래 운영 기능이 실제로
          나올 때 다시 넣으십시오. -->
@@ -429,10 +744,79 @@
       <!-- 히어로 헤드라인·리드는 세 페이지(index · nda · precheck)가 글자 그대로 같습니다.
            <br> 위치도 확정된 것입니다 — "바이어가 보낸 NDA" 다음에서 끊습니다. -->
       <h1>바이어가 보낸 NDA<br>우리 회사 기준과 뭐가 다른지 한눈에 안 보이실 때.</h1>
-      <p class="hero-lead">자사 서식이 있으면 그대로 대조하고, 없으면 국제표준(ICC) 18개 항목으로 대조해 당일 요약 자료로 정돈해 드립니다.</p>
+      <p class="hero-lead">자사 서식이 있으면 그대로 대조하고, 없으면 공개 라이선스로 배포되는 표준 서식으로 대조해 당일 요약 자료로 정돈해 드립니다.</p>
       <div class="cta-row">
-        <a id="hero-cta" class="btn btn-primary" href="/precheck">내 NDA 대조하기</a>
+        <!-- btn-full(좌우 32px) — C-1 은 히어로와 마감 CTA를 같은 풀사이즈로 두고,
+             04 카드 CTA만 한 단계 작은 22px로 내립니다. 마감 CTA를 신설하면서
+             히어로만 22px로 남아 위계가 뒤집혀 있었습니다. -->
+        <a id="hero-cta" class="btn btn-primary btn-full" href="/precheck">내 NDA 대조하기</a>
         <span class="cta-row-note">선착순 20건 무료 · 로그인 없이 즉시 이용</span>
+      </div>
+    </section>
+
+    <!-- ===== 03 안심 문구 (문구 §3 · 정본 §2 3번 · 히어로 직하로 승격) =====
+         경쟁사는 같은 말을 페이지 맨 아래 작은 글씨로 씁니다. 우리는 맨 위에서 합니다 —
+         정본 §2-2가 꼽은 우선순위 1번이고, 이게 차별점입니다.
+         중앙 정렬을 히어로와 연속으로 두는 것은 의도입니다(§2-1) — 안심 문구가
+         히어로의 일부처럼 읽혀야 「입장을 맨 위에서 한 번」이 성립합니다.
+         ⚠️ 이 블록은 how 아래에 있던 강조 밴드(.band)를 승격·대체한 것입니다.
+            같은 역할의 블록을 아래쪽에 다시 만들지 마십시오. -->
+    <section class="assure" aria-labelledby="assure-title">
+      <div class="container narrow-c assure-inner">
+        <h2 id="assure-title">TROPS는 판단하지 않습니다.</h2>
+        <div class="assure-lines">
+          <p>문서에 적힌 것을 그대로 보여드립니다.</p>
+          <p>공적 절차는 빠짐없이 모으고, 거래 문서에 있는 것은 있는 그대로 옮깁니다.</p>
+          <p>대표님이 빠르고 쉽게 결정하실 수 있도록, 정리해드립니다.</p>
+        </div>
+        <p class="assure-note">※ 법률 자문 서비스가 아닙니다.</p>
+      </div>
+    </section>
+
+    <!-- ===== 04 2층 카드 (문구 §4 · 정본 C-2) =====
+         이 페이지가 무엇을 파는지 정의하는 자리입니다(§2-2 우선순위 2번).
+         01:02 = 6:4 는 폭으로만 표현하고 높이는 맞추지 않습니다 — 내용 길이가 다릅니다.
+         ⚠️ 02 카드에 가격을 쓰지 마십시오.
+         ⚠️ 「준비 중」 라벨은 회색조입니다. 경고색(--warning)을 쓰지 마십시오.
+         CEPA 조회는 독립 섹션이 아니라 01 카드 내부 블록입니다 — 밖으로 올리면
+         NDA 비교와 병렬 상품처럼 읽힙니다. -->
+    <section class="cards-sec" id="service" aria-labelledby="cards-title">
+      <div class="container cards-inner">
+        <h2 id="cards-title">거래를 시작하기 전에 한 번, 시작한 후에 한 번.</h2>
+        <div class="cards">
+
+          <div class="card">
+            <div class="card-head">
+              <span class="card-title">지금 쓸 수 있습니다</span>
+              <p class="eyebrow-quiet">거래 시작 전 · NDA 비교</p>
+            </div>
+            <p class="card-body">바이어에게 받은 NDA를 올리시면<br>공개된 서식과 하나씩 비교해서<br>다른 부분을 표시해 드립니다.</p>
+            <div class="card-bullets">
+              <p>· 로그인 없이 바로</p>
+              <p>· 선착순 20건 무료</p>
+            </div>
+            <div class="cepa">
+              <p>수출 국가가 있으면, 해당국 협정 세율도 함께 확인해 드립니다.</p>
+              <a class="btn btn-text" href="/uae">아랍에미리트(UAE) 관세율 조회 →</a>
+            </div>
+            <!-- 01 카드 CTA는 섹션 CTA가 아니라 카드 내부 요소라 위계가 아래입니다.
+                 히어로·마감(btn-full 32px)보다 한 단계 작은 기본 22px를 씁니다 (C-1). -->
+            <div><a class="btn btn-primary" href="/precheck">무료로 비교해 보기 →</a></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <span class="badge-soon">준비 중</span>
+              <p class="eyebrow-quiet">거래 시작 후 · 거래 절차 트래킹</p>
+            </div>
+            <p class="card-body">거래 문서에 있는 기한과 통관·외환 절차를<br>한 화면에 모아<br>남은 날짜로 보여드립니다.</p>
+            <div class="card-bullets">
+              <p>· 계약서만 있으면 시작</p>
+              <p>· 기한 7일 전, 1일 전 메일</p>
+            </div>
+            <div><a class="btn btn-secondary" href="#interest">알림 받기</a></div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -451,7 +835,7 @@
 
           <div class="flow-row">
             <p class="flow-name"><span class="flow-num" aria-hidden="true">02</span><span>양식 기준 1:1 대조</span></p>
-            <p class="flow-desc">귀사의 기존 NDA 양식을 우선 기준으로 대조하며, 별도 양식이 없는 경우 국제표준(ICC) 서식을 대조 기준으로 적용합니다.</p>
+            <p class="flow-desc">귀사의 기존 NDA 양식을 우선 기준으로 대조하며, 별도 양식이 없는 경우 공개 라이선스로 배포되는 표준 서식을 대조 기준으로 적용합니다.</p>
           </div>
 
           <div class="flow-row">
@@ -481,11 +865,41 @@
       </div>
     </section>
 
-    <!-- ===== Emphasis band (회사 정의 §2-3: 기준을 우리가 만들지 않는다) ===== -->
-    <section class="band">
-      <div class="container band-inner">
-        <p>대조 기준은 귀사의 무역 양식을 그대로 따릅니다.</p>
-        <p class="band-sub">트롭스는 별도의 법률적 판단을 내리지 않습니다. 귀사가 보유한 양식을 최우선 기준으로 하여 차이점만 정확히 대조·비교해 드립니다.</p>
+    <!-- ===== 06 신뢰 (문구 §6 · 정본 C-5) =====
+         현재 이미지 0장이라 "뭘 받는지" 안 보입니다. 전환에 가장 크게 작용하는 자리로
+         정본 §2-2가 우선순위 3번에 올려둔 섹션입니다.
+         페이지 유일한 다크 본문 섹션입니다(푸터와 둘뿐) — 다른 섹션을 다크로 만들지 마십시오.
+
+         ⚠️ 이 자리에 있던 강조 밴드(.band · 기준을 우리가 만들지 않는다는 선언)는
+            제거했습니다. 그 블록의 역할은 위로 승격된 03 안심 문구가 이어받습니다 —
+            정본 §2 3번의 「히어로 직하로 승격」이 뜻하는 것이 이 이동입니다. 둘을 같이
+            두면 「판단하지 않는다」 선언이 한 페이지에 두 번 나옵니다.
+
+         ⚠️ 이미지 2컷은 8/20 실물 캡처 대기 중입니다(정본 미결 L-2).
+            목업으로 채우지 마십시오 — C-5는 실물 캡처만 허용합니다.
+         ⚠️ 카운터·숫자 자리는 비워둡니다. 넣을 숫자가 없습니다(C-5 · §8).
+         ⚠️ 정본 §7 — 이 캡처는 준거법·관할이 「차이」로 찍히면 안 됩니다.
+            미결 L-1(정본 §7 — 준거법·관할의 4상태 매핑)이 캡처보다 먼저 확정돼야 합니다. -->
+    <section class="trust" aria-labelledby="trust-title">
+      <div class="container trust-inner">
+        <h2 id="trust-title">무엇을 근거로 비교하는지 밝힙니다.</h2>
+        <div class="body-w trust-list">
+          <p>· 비교 기준은 공개 라이선스로 배포되는 표준 서식을 씁니다.<br>
+            <span class="sub">&nbsp;&nbsp;기준 서식: 영국 지식재산청 공개 서식 · Open Government Licence v3.0<br>
+            &nbsp;&nbsp;© Crown copyright · 확인일 2026-08-10</span></p>
+          <p>· 비교 항목은 저희가 만들지 않습니다. 공적기관 문서를 그대로 인용합니다.</p>
+          <p>· 근거는 다섯 가지를 함께 보여드립니다 —<br>&nbsp;&nbsp;관할 · 법령명 · 조문 · 시행일 · 확인일자</p>
+        </div>
+        <div class="body-w">
+          <div class="shot">
+            <p class="shot-ph">실제 캡처 자리 / 16:10 / 목업 아님</p>
+            <p class="shot-phs">전체 결과지 1장 · 항목별 좌우 비교가 보이는 면 · 8/20 수령</p>
+          </div>
+          <div class="shot shot-crop">
+            <p class="shot-ph">실제 캡처 자리 / 16:10 / 목업 아님</p>
+            <p class="shot-phs">근거 5필드 확대 크롭 · 관할 · 법령명 · 조문 · 시행일 · 확인일자<br>크롭 지점 마케팅팀 표시 (8/20)</p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -513,6 +927,189 @@
       </div>
     </section>
 
+    <!-- ===== 08 QnA (문구 §8 · 정본 C-3) =====
+         3묶음 14문항입니다. 확정본 v3.1이 원문 15문항에서 서명 관련 1문항
+         (「NDA에 서명해도 되나요?」)을 뺀 결과입니다 — 되살리지 마십시오.
+         ⚠️ 기본값은 전부 접힘입니다.
+         ⚠️ 여러 개 동시 펼침을 허용합니다. 하나만 열리는 방식은 비교가 안 되므로 금지(C-3).
+         ⚠️ 셰브론에 액센트를 쓰지 마십시오.
+         「얼마인가요?」 답의 「← 통신판매업 신고 완료 후 게시」는 편집 메모라 넣지 않았습니다.
+         마지막 줄(세금계산서)은 신고 수리(정본 미결 L-3) 전까지 노출 여부 확인이 필요합니다. -->
+    <section class="qna" id="qna" aria-labelledby="qna-title">
+      <div class="container qna-inner">
+        <h2 id="qna-title">자주 묻는 질문</h2>
+        <div class="body-w qgroups">
+
+          <div class="qgroup">
+            <p class="eyebrow-quiet">▸ 처음이신가요</p>
+            <div class="qitem" data-open="0">
+              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-1">
+                <span>NDA가 뭔가요?</span>
+                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+              </button>
+              <div class="qans" id="qa-1">
+                <p>비밀유지계약서(Non-Disclosure Agreement)입니다.</p>
+                <p>거래 얘기를 본격적으로 시작하기 전에, 서로 주고받은 정보를 밖에 알리지 않기로 약속하는 문서예요. 바이어가 먼저 보내오는 경우가 많고, 보통 계약서보다 먼저 오갑니다.</p>
+              </div>
+            </div>
+            <div class="qitem" data-open="0">
+              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-2">
+                <span>NDA를 안 쓰는 업계인데요?</span>
+                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+              </button>
+              <div class="qans" id="qa-2">
+                <p>안 쓰시는 업계도 많습니다. 지금은 NDA만 비교할 수 있고, 계약서와 견적서는 준비 중입니다. 열리면 먼저 알려드리도록 등록을 받고 있습니다.</p>
+              </div>
+            </div>
+            <div class="qitem" data-open="0">
+              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-3">
+                <span>바이어가 서류비를 먼저 보내달라고 하는데요?</span>
+                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+              </button>
+              <div class="qans" id="qa-3">
+                <p>실제로 자주 있는 요청이고, 무역사기로 이어진 사례도 있습니다.</p>
+                <p>바이어를 확인해보실 수 있는 곳을 아래 「어디에 물어볼 수 있나요」에 정리해 뒀습니다.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="qgroup">
+            <p class="eyebrow-quiet">▸ 어떻게 쓰나요</p>
+            <div class="qitem" data-open="0">
+              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-4">
+                <span>무엇을 해주나요?</span>
+                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+              </button>
+              <div class="qans" id="qa-4">
+                <p>올려주신 NDA를 공개된 서식과 항목별로 비교해서, 다른 부분을 표시해 드립니다.</p>
+              </div>
+            </div>
+            <div class="qitem" data-open="0">
+              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-5">
+                <span>어느 쪽이 유리한지도 알려주나요?</span>
+                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+              </button>
+              <div class="qans" id="qa-5">
+                <p>다른 부분은 하나도 빠뜨리지 않고 표시합니다.</p>
+                <p>유불리는 거래마다 달라서, 그건 보시고 정하시는 게 맞습니다.</p>
+              </div>
+            </div>
+            <div class="qitem" data-open="0">
+              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-6">
+                <span>어떻게 시작하나요?</span>
+                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+              </button>
+              <div class="qans" id="qa-6">
+                <p>로그인 없이 바로 올리시면 됩니다. 선착순 20건까지 무료입니다.</p>
+              </div>
+            </div>
+            <div class="qitem" data-open="0">
+              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-7">
+                <span>결과는 어떻게 받나요?</span>
+                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+              </button>
+              <div class="qans" id="qa-7">
+                <p>이메일로 보내드리는 링크에서 받으실 수 있습니다.</p>
+              </div>
+            </div>
+            <div class="qitem" data-open="0">
+              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-8">
+                <span>AI가 하나요?</span>
+                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+              </button>
+              <div class="qans" id="qa-8">
+                <p>문구를 찾는 데 씁니다. 판단에는 쓰지 않습니다.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="qgroup">
+            <p class="eyebrow-quiet">▸ 믿을 수 있나요</p>
+            <div class="qitem" data-open="0">
+              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-9">
+                <span>무엇을 기준으로 비교하나요?</span>
+                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+              </button>
+              <div class="qans" id="qa-9">
+                <p>공개 라이선스로 배포되는 표준 서식을 기준으로 씁니다.</p>
+                <p>기준 서식: 영국 지식재산청 공개 서식 · Open Government Licence v3.0</p>
+                <p>© Crown copyright · 확인일 2026-08-10</p>
+                <p>비교 항목은 공적기관 문서를 그대로 인용합니다.</p>
+                <p>관할·법령명·조문·시행일·확인일자 다섯 가지를 함께 보여드립니다.</p>
+              </div>
+            </div>
+            <div class="qitem" data-open="0">
+              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-10">
+                <span>올린 문서는 어떻게 되나요?</span>
+                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+              </button>
+              <div class="qans" id="qa-10">
+                <p>원본은 30일 뒤 자동 삭제됩니다. 삭제 예정일은 업로드하실 때 함께 안내해 드립니다.</p>
+                <p>그전에 직접 삭제를 요청하시면 바로 지웁니다.</p>
+              </div>
+            </div>
+            <div class="qitem" data-open="0">
+              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-11">
+                <span>계약서에 상대방 담당자 이름이 들어 있는데요?</span>
+                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+              </button>
+              <div class="qans" id="qa-11">
+                <p>문서에 든 다른 분의 정보는 비교 목적으로만 쓰고, 따로 모으거나 학습에 쓰지 않습니다.</p>
+                <p>원본과 함께 30일 뒤 삭제됩니다.</p>
+              </div>
+            </div>
+            <div class="qitem" data-open="0">
+              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-12">
+                <span>법률 자문인가요?</span>
+                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+              </button>
+              <div class="qans" id="qa-12">
+                <p>아닙니다. 문서에 적힌 것을 보여드리는 서비스입니다.</p>
+              </div>
+            </div>
+            <div class="qitem" data-open="0">
+              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-13">
+                <span>어디에 물어볼 수 있나요?</span>
+                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+              </button>
+              <!-- 정본 §2-3 앵커 — 기관 안내(11)가 폼 뒤로 내려가면서 멀어졌으므로
+                   문구는 그대로 두고 링크만 겁니다. -->
+              <div class="qans" id="qa-13">
+                <p><a href="#orgs">관세청 관세평가분류원 · KOTRA 해외무역관 · FTA활용지원센터 · 한국무역협회 Trade SOS · 중소벤처기업부 비즈니스지원단을 안내해 드립니다.</a></p>
+                <p>저희는 이들 기관과 제휴 관계가 없고 어떤 대가도 받지 않습니다.</p>
+              </div>
+            </div>
+            <div class="qitem" data-open="0">
+              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-14">
+                <span>얼마인가요?</span>
+                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+              </button>
+              <div class="qans" id="qa-14">
+                <p>지금은 선착순 20건까지 무료입니다.</p>
+                <p>유료 상품은 9월에 열 예정이며, 세금계산서 발행되고 비용 처리하실 수 있습니다.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 09 마감 CTA (문구 §9 · 정본 §2 10번) =====
+         주 CTA는 페이지에서 3회 나옵니다 — 히어로(풀) · 04 01카드(인라인, 한 단계 아래) ·
+         여기(풀). 크기로 위계를 가르는 것이 C-1의 규칙입니다.
+         ⚠️ 리드 문장을 추가하지 마십시오. 안심 문구(03)와 톤이 겹칩니다. -->
+    <section class="close-cta" aria-labelledby="close-cta-title">
+      <div class="container narrow-c close-cta-inner">
+        <h2 id="close-cta-title">상담 전에, 한 번 더 확인하세요.</h2>
+        <div class="close-cta-row">
+          <a class="btn btn-primary btn-full" href="/precheck">무료로 비교해 보기</a>
+          <a class="btn btn-secondary btn-full" href="#interest">거래 절차 트래킹 알림 받기</a>
+        </div>
+        <p class="close-cta-note">선착순 20건 무료 · 로그인 없이 바로</p>
+      </div>
+    </section>
+
     <!-- ===== Interest form =====
          랜딩 하단은 약한 버전입니다. 강한 버전("먼저 써보고 싶어요")은
          precheck 결과지 페이지 하단 몫이므로 여기에 끌어오지 마십시오. -->
@@ -535,6 +1132,32 @@
           <button type="submit" class="btn btn-primary interest-submit">사전 등록하기</button>
           <p class="interest-msg" id="interest-msg" role="status" aria-live="polite"></p>
         </form>
+      </div>
+    </section>
+
+    <!-- ===== 11 기관 안내 (문구 §11 · 정본 C-4) =====
+         정본 §2-3의 앵커 도착지입니다 — 08 QnA 「어디에 물어볼 수 있나요」에서 들어옵니다.
+         ⚠️ 로고를 넣지 마십시오. 제휴 관계로 오인됩니다. 텍스트만.
+         ⚠️ 순번·평점·「추천순」 표기 금지. 문구 원문의 「·」 불릿을 그대로 씁니다 —
+            번호를 붙이면 순위로 읽힙니다.
+         ⚠️ 순서는 확정본 v3.1 §11 / 정본 v3 C-4 기준 기관 유형순으로 고정입니다:
+            관세청·KOTRA·FTA활용지원센터(공공기관) → 한국무역협회(협회) → 중기부(정부부처).
+            클릭 추적으로 순서를 바꾸지 마십시오.
+         ⚠️ 외부 링크를 걸지 않았습니다 — 링크를 걸면 액센트색이 5번 등장해
+            「로고 금지」가 막으려던 제휴 오인이 같은 방식으로 생깁니다. -->
+    <section class="orgs-sec" id="orgs" aria-labelledby="orgs-title">
+      <div class="container orgs-inner">
+        <div class="body-w">
+          <h2 id="orgs-title">여기에 물어보시면 됩니다.</h2>
+          <ul class="orgs">
+            <li>· 관세청 관세평가분류원</li>
+            <li>· KOTRA 해외무역관</li>
+            <li>· FTA활용지원센터</li>
+            <li>· 한국무역협회 Trade SOS</li>
+            <li>· 중소벤처기업부 비즈니스지원단</li>
+          </ul>
+          <p class="orgs-note">※ 저희는 이들 기관과 제휴 관계가 없고 어떤 대가도 받지 않습니다.</p>
+        </div>
       </div>
     </section>
   </main>
@@ -574,6 +1197,29 @@
   </footer>
 
   <script>
+  /* ---------- 08 QnA 아코디언 (정본 C-3) ----------
+     별도 IIFE 입니다. 아래 폼 스크립트는 맨 위에서 `if (!form) return` 으로 빠져나가므로
+     같은 함수 안에 넣으면 폼이 없는 화면에서 QnA 가 조용히 죽습니다.
+
+     펼침 상태는 CSS(.qitem[data-open]) 가 그리고, JS 는 data-open 과
+     aria-expanded 두 값만 뒤집습니다. 마크업이 이미 전부 접힌 상태(data-open="0" ·
+     aria-expanded="false")로 서버에서 내려오므로, JS 가 실패해도 질문 목록은 그대로 보입니다. */
+  (function () {
+    var groups = document.querySelector('.qgroups');
+    if (!groups) return;
+
+    /* 위임으로 한 번만 겁니다 — 14개에 각각 걸지 않습니다.
+       동시 펼침 허용이므로 다른 항목을 닫는 코드를 넣지 마십시오 (C-3). */
+    groups.addEventListener('click', function (e) {
+      var btn = e.target.closest('.qbtn');
+      if (!btn) return;
+      var item = btn.parentNode;
+      var open = item.getAttribute('data-open') === '1' ? '0' : '1';
+      item.setAttribute('data-open', open);
+      btn.setAttribute('aria-expanded', open === '1' ? 'true' : 'false');
+    });
+  })();
+
   (function () {
     var API_URL = '/api/leads';
     var form = document.getElementById('interest-form');

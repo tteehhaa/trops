@@ -53,12 +53,12 @@ async function sendIntakeMails(info) {
     : '무상 ' + String(info.slotNo).padStart(2, '0') + '/20';
   const bucket = info.storageBucket || 'intake';
 
-  // 대조 기준(PRD-62 §3-3) — 자사 서식이 1순위, ICC 는 자사 서식이 없을 때만 씁니다.
+  // 대조 기준(PRD-62 §3-3) — 자사 서식이 1순위, 공개 표준 서식은 자사 서식이 없을 때만 씁니다.
   // 운영자가 무엇과 대조할지 메일에서 바로 알 수 있어야 합니다.
   const ownFormName = typeof info.ownFormName === 'string' ? info.ownFormName : '';
   const basis = ownFormName
     ? '자사 서식 — ' + ownFormName
-    : '자사 서식 없음 → 국제표준(ICC) 18항목';
+    : '자사 서식 없음 → 공개 라이선스로 배포되는 표준 서식';
 
   // 거래 정보(선택)를 넣으신 건에만 붙습니다. 없으면 trade 가 null 이고,
   // 아래 두 메일 모두 해당 문단을 만들지 않습니다 — 빈 항목을 남기지 않습니다.
@@ -104,7 +104,7 @@ async function sendIntakeMails(info) {
           : ''}
         <p>${ownFormName
           ? '함께 보내주신 자사 서식을 기준으로 대조한 뒤, 당일 안에 요약 자료를 정돈해 아래 주소로 올려 드립니다.'
-          : '자사 서식을 함께 받지 못했으므로 국제표준(ICC) 18개 항목을 기준으로 대조한 뒤, 당일 안에 요약 자료를 정돈해 아래 주소로 올려 드립니다.'}</p>
+          : '자사 서식을 함께 받지 못했으므로 공개 라이선스로 배포되는 표준 서식을 기준으로 대조한 뒤, 당일 안에 요약 자료를 정돈해 아래 주소로 올려 드립니다.'}</p>
         <p><a href="${escapeHtml(info.magicLink)}">접수 내용 확인하기</a></p>
         ${trade ? trade.html : ''}
         <p style="color:#64748B;font-size:13px">
@@ -244,7 +244,7 @@ async function sendDeliveryMail(info) {
         <p><a href="${escapeHtml(summaryUrl)}">요약 자료 보기</a></p>
         <p>${info.ownFormName
           ? '함께 보내주신 자사 서식 <strong>' + escapeHtml(info.ownFormName) + '</strong> 을 기준으로 대조했습니다.'
-          : '자사 서식을 받지 못했으므로 국제표준(ICC) 18개 항목을 기준으로 대조했습니다.'}</p>
+          : '자사 서식을 받지 못했으므로 공개 라이선스로 배포되는 표준 서식을 기준으로 대조했습니다.'}</p>
         <p style="color:#64748B;font-size:13px">
           접수 번호 ${escapeHtml(info.intakeId)}<br>
           접수 내용은 <a href="${escapeHtml(info.magicLink)}">여기</a>에서 확인하실 수 있습니다.<br>

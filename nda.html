@@ -8,7 +8,7 @@
      description = 헤드라인 + 리드, og:description = 리드.
      ⚠️ "측정" 을 쓰지 않습니다. 우리가 무엇을 재서 값을 내놓는다는 인상을 주는데,
         실제로 하는 일은 기준 문안과 바이어 문안의 차이를 표시하는 것뿐입니다. -->
-<meta name="description" content="바이어가 보낸 NDA, 우리 회사 기준과 뭐가 다른지 한눈에 안 보이실 때. 자사 서식이 있으면 그대로 대조하고, 없으면 국제표준(ICC) 18개 항목으로 대조해 당일 요약 자료로 정돈해 드립니다.">
+<meta name="description" content="바이어가 보낸 NDA, 우리 회사 기준과 뭐가 다른지 한눈에 안 보이실 때. 자사 서식이 있으면 그대로 대조하고, 없으면 공개 라이선스로 배포되는 표준 서식으로 대조해 당일 요약 자료로 정돈해 드립니다.">
 
 <!--
   SEO 입구 전용 페이지입니다.
@@ -17,7 +17,7 @@
 -->
 <link rel="canonical" href="https://trops.kr/precheck">
 <meta property="og:title" content="바이어가 보낸 NDA, 우리 기준과 대조하기 — TROPS">
-<meta property="og:description" content="자사 서식이 있으면 그대로 대조하고, 없으면 국제표준(ICC) 18개 항목으로 대조해 당일 요약 자료로 정돈해 드립니다.">
+<meta property="og:description" content="자사 서식이 있으면 그대로 대조하고, 없으면 공개 라이선스로 배포되는 표준 서식으로 대조해 당일 요약 자료로 정돈해 드립니다.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://trops.kr/precheck">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
@@ -27,11 +27,16 @@
     --ink-70:       rgba(15, 23, 42, .7);
     --ink-64:       rgba(15, 23, 42, .64);
     --ink-62:       rgba(15, 23, 42, .62);
-    --accent:       #0F172A;
-    --accent-press: #1E293B;
+    /* 액센트 — 클릭 가능한 요소에만 (정본 §3-1 · §6)
+       #0F172A(먹색)에서 교체. 판정색(초록·빨강·노랑·주황·보라)은 쓰지 않습니다. */
+    --accent:       #1D4ED8;
+    --accent-press: #1E40AF;
+    --accent-soft:  #EFF6FF;
     --muted:        #94A3B8;
     --line:         #E2E8F0;
-    --surface:      #F8FAFC;
+    /* #F8FAFC는 --bg와 명도차 1.5%라 섹션 교차가 안 잡혀 3%로 내림 (정본 §3-1) */
+    --surface:      #F1F5F9;
+    --surface-dark: #0F172A;
     --bg:           #FFFFFF;
   }
 
@@ -51,7 +56,9 @@
   }
 
   a { color: var(--accent); text-decoration: none; }
-  a:hover { color: var(--ink); }
+  /* --accent가 먹색이던 때는 hover가 무변화였습니다. #1D4ED8로 바뀐 뒤 --ink로 가면
+     채도가 빠져 "비활성"으로 읽히므로 index.html 과 같이 --accent-press로 어둡게 갑니다. */
+  a:hover { color: var(--accent-press); }
   :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
   .container { max-width: 1200px; margin: 0 auto; padding-inline: clamp(24px, 5vw, 64px); }
@@ -62,26 +69,35 @@
   .wordmark { font-size: 19px; font-weight: 700; letter-spacing: -0.02em; }
   .nav-right { margin-left: auto; }
 
+  /* V7 — 고정 height(46px)를 버리고 세로 패딩 12px로 전환.
+     12+15.5+12 = 39.5px라 패딩만으로는 터치 타깃 44px에 못 미치므로
+     min-height로 44px를 따로 보장합니다. (정본 C-1의 "12px로 44px 확보"는 산술이 안 맞습니다) */
   .btn {
     display: inline-flex; align-items: center; justify-content: center;
-    height: 46px; padding: 0 22px;
-    border-radius: 6px; border: 0;
+    min-height: 44px; padding: 12px 22px;
+    border-radius: 6px; border: 1px solid transparent;
     font: inherit; font-size: 15.5px; font-weight: 600; line-height: 1;
     cursor: pointer; white-space: nowrap;
-    transition: background-color .14s ease, border-color .14s ease;
+    transition: background-color .14s ease, border-color .14s ease, color .14s ease;
   }
+  /* V3 — 버튼 3종 (정본 C-1) */
   .btn-primary { background: var(--accent); color: #FFFFFF; }
   .btn-primary:hover { background: var(--accent-press); color: #FFFFFF; }
-  .btn-secondary { background: transparent; border: 1px solid var(--line); color: var(--ink); }
+  .btn-secondary { background: transparent; border-color: var(--line); color: var(--ink); }
   .btn-secondary:hover { border-color: var(--muted); color: var(--ink); }
-  .btn-nav { height: 36px; padding: 0 16px; font-size: 14.5px; }
+  .btn-text { background: transparent; border-color: transparent; padding-inline: 0; color: var(--accent); }
+  .btn-text:hover { color: var(--accent-press); }
+  /* nav 안에서는 64px 바에 맞춘 36px를 유지합니다. min-height가 height를 이기므로
+     여기서만 되돌립니다 (index.html .hs-group .btn 과 같은 처리). */
+  .btn-nav { min-height: 36px; height: 36px; padding: 0 16px; font-size: 14.5px; }
 
   .hero { padding-block: clamp(56px, 8vw, 96px) clamp(40px, 5vw, 64px); }
   .eyebrow { margin: 0 0 20px; font-size: 13.5px; font-weight: 600; letter-spacing: .02em; color: var(--accent); }
+  /* V2 클램프 + V4 행간 (정본 §3-2: H1 36 → 56 / 1.30 / −0.035em) */
   h1 {
     margin: 0;
-    font-size: clamp(30px, 3.8vw, 45px);
-    line-height: 1.32; letter-spacing: -0.033em; font-weight: 700;
+    font-size: clamp(2.25rem, 4.5vw, 3.5rem);
+    line-height: 1.30; letter-spacing: -0.035em; font-weight: 700;
     max-width: 22ch;
   }
   .lead { margin: 26px 0 0; font-size: 18.5px; line-height: 1.75; font-weight: 500; color: var(--ink-70); max-width: 34ch; }
@@ -90,7 +106,8 @@
 
   .section { border-top: 1px solid var(--line); }
   .section-inner { padding-block: clamp(48px, 6vw, 76px); }
-  h2 { margin: 0; font-size: clamp(23px, 2.6vw, 30px); line-height: 1.36; letter-spacing: -0.028em; font-weight: 700; max-width: 26ch; }
+  /* V2 — H2 28 → 40 / 1.28 / −0.030em (정본 §3-2) */
+  h2 { margin: 0; font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1.28; letter-spacing: -0.030em; font-weight: 700; max-width: 26ch; }
   .body { margin: 20px 0 0; font-size: 17px; line-height: 1.75; color: var(--ink-62); max-width: 50ch; }
   .body + .body { margin-top: 16px; }
 
@@ -142,7 +159,7 @@
               "측정" 은 우리가 무엇을 재서 값을 내놓는다는 인상을 줍니다. 우리가 하는 일은
               기준 문안과 바이어 문안의 차이를 표시하는 것까지입니다. -->
       <h1>바이어가 보낸 NDA<br>우리 회사 기준과 뭐가 다른지 한눈에 안 보이실 때.</h1>
-      <p class="lead">자사 서식이 있으면 그대로 대조하고, 없으면 국제표준(ICC) 18개 항목으로 대조해 당일 요약 자료로 정돈해 드립니다.</p>
+      <p class="lead">자사 서식이 있으면 그대로 대조하고, 없으면 공개 라이선스로 배포되는 표준 서식으로 대조해 당일 요약 자료로 정돈해 드립니다.</p>
       <div class="cta-row">
         <a class="btn btn-primary" href="/precheck">서류 보내기</a>
         <span class="cta-note">선착순 20건 무료 · 로그인 없음</span>
