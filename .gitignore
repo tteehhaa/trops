@@ -8,3 +8,8 @@ Trash Can/
 .claude/
 skills-lock.json
 node_modules/
+# 빌드 산출물 (npm run build → 주석 뗀 배포본). 소스가 정본이므로 추적하지 않습니다.
+dist/
+
+# Playwright MCP 스크래치 산출물
+.playwright-mcp/

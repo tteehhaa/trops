@@ -2,6 +2,7 @@
   "name": "trops-landing",
   "private": true,
   "scripts": {
+    "build": "node scripts/build-static.js",
     "test": "node --test test/",
     "keys:verify": "node --env-file=.env.local scripts/verify-supabase-keys.js",
     "cleanup:preview": "node --env-file=.env.local scripts/cleanup-expired.js",
@@ -10,5 +11,8 @@
   },
   "dependencies": {
     "resend": "^4.0.1"
+  },
+  "devDependencies": {
+    "html-minifier-terser": "^7.2.0"
   }
 }
