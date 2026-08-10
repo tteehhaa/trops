@@ -29,6 +29,14 @@
     --surface-dark: #0F172A;
     --bg:           #FFFFFF;
     --warning:      #DC2626;
+    /* 다크 배경(--surface-dark) 위 잉크 3단계. index.html 과 같은 값입니다 —
+       한 곳만 고치면 페이지마다 푸터 회색조가 어긋납니다.
+       ⚠️ 정본 §3-1 등재값(.72/.50/.28)을 그대로 쓰면 tertiary 가 #0F172A 위
+          2.50:1 로 WCAG AA(4.5:1) 미달입니다. 이름만 정본을 따르고 값은 대비를
+          지키는 쪽으로 뒀습니다 (index.html :root 주석에 같은 내용). */
+    --d-ink-primary:   #FFFFFF;                    /* 헤딩 · 강조 */
+    --d-ink-secondary: rgba(255, 255, 255, .72);   /* 본문 */
+    --d-ink-tertiary:  rgba(255, 255, 255, .50);   /* 보조·캡션 */
   }
 
   *, *::before, *::after { box-sizing: border-box; }
@@ -314,18 +322,31 @@
 /* --- 7. Footer · 사업자정보 (전 페이지 공통) ---
    6개 항목의 표기는 사업자등록증·통신판매업신고증 원문과 글자 그대로 일치해야 합니다.
    "주식회사 테오네"를 "(주)테오네"로 줄여 쓰지 마십시오. */
-.footer{border-top:1px solid var(--line)}
-.footer-inner{padding-block:32px 28px}
+/* 푸터 (다크) — index.html 과 같은 처리. 네 페이지가 같은 값을 쓰지 않으면
+   페이지를 오갈 때 푸터만 색이 튑니다.
+   밝은 배경용 잉크(--ink-64 · --muted)는 여기서 전부 --d-ink-* 로 바뀝니다 —
+   #0F172A 위에 rgba(15,23,42,...) 를 얹으면 글자가 배경에 잠깁니다.
+   border-top 을 없앴습니다 — 흰 배경에서 #0F172A 로 넘어가는 것 자체가 가장 강한
+   경계이고, --line 한 줄을 끼우면 밝은 쪽에만 붙은 선이 되어 경계가 두 번 그려집니다.
+   상단 패딩 32px → 44px. 경계선 없이 색만 바뀌는 자리라 32px 로는 첫 줄이 색 경계에
+   붙어 보입니다. 하단은 그대로 둡니다. */
+.footer{background:var(--surface-dark);color:var(--d-ink-secondary)}
+.footer-inner{padding-block:44px 28px}
 .footer-row{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
-.footer-mark{font-size:14px;font-weight:600;letter-spacing:-0.01em}
-.footer-meta{font-size:13.5px;color:var(--muted)}
+/* 워드마크는 푸터에서 유일한 강조 요소라 primary */
+.footer-mark{font-size:14px;font-weight:600;letter-spacing:-0.01em;color:var(--d-ink-primary)}
+.footer-meta{font-size:13.5px;color:var(--d-ink-tertiary)}
 .footer-links{margin:18px 0 0;display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px}
-.footer-links a{color:var(--ink-64)}
-.footer-biz{margin:16px 0 0;display:grid;gap:3px;font-size:12.5px;line-height:1.7;color:var(--muted)}
+/* 정책 링크는 클릭 요소지만 --accent(#1D4ED8)를 쓰지 않습니다 — #0F172A 위에서
+   2.3:1 로 대비가 무너집니다. 다크에서는 밑줄로 클릭임을 알립니다. */
+.footer-links a{color:var(--d-ink-secondary);text-decoration:underline;text-underline-offset:3px}
+.footer-links a:hover{color:var(--d-ink-primary)}
+.footer-biz{margin:16px 0 0;display:grid;gap:3px;font-size:12.5px;line-height:1.7;color:var(--d-ink-tertiary)}
 .footer-biz>div{display:flex;flex-wrap:wrap;gap:4px 10px}
-.footer-biz dt{flex:0 0 auto;min-width:116px;margin:0}
+/* 항목명(dt)을 값(dd)보다 한 단계 밝게 둬서 6개 항목이 읽히는 순서를 잡아 줍니다 */
+.footer-biz dt{flex:0 0 auto;min-width:116px;margin:0;color:var(--d-ink-secondary)}
 .footer-biz dd{margin:0}
-.footer-legal{margin:18px 0 0;font-size:12.5px;line-height:1.7;color:var(--muted)}
+.footer-legal{margin:18px 0 0;font-size:12.5px;line-height:1.7;color:var(--d-ink-tertiary)}
 .footer-legal p{margin:0}
 
 /* --- 6. 면책 문구 — 하단 고정 --- */
