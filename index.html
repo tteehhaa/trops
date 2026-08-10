@@ -87,7 +87,26 @@
     outline-offset: 2px;
   }
 
-  .container { max-width: 1200px; margin: 0 auto; padding-inline: clamp(24px, 5vw, 64px); }
+  /* 좌우 상한 64px → 48px (정본 §4-2 · 시각사양 4-2 「모바일 24 · 데스크톱 48」).
+     Anaconda 의 80px 은 컨테이너가 없을 때의 값이고, 1200 컨테이너에는 48이 맞습니다.
+     ⚠️ 나머지 4페이지(precheck · nda · uae · refund)는 아직 64px 입니다 —
+        이번 배치가 그 페이지들에서는 푸터 색만 다루기로 한 범위라 두었습니다. */
+  .container { max-width: 1200px; margin: 0 auto; padding-inline: clamp(24px, 5vw, 48px); }
+
+  /* ---------- H3 계층 (시각사양 3-1 · 정본 타입스케일) ----------
+     28 / 600 / 1.35 / −0.025em. 시각사양 3-4 가 「H1·H2만 스케일하고 나머지는 고정」
+     이라 clamp 를 쓰지 않습니다.
+     ⚠️ 지금 12섹션에서 이 규칙으로 그려지는 요소는 없습니다(미결 L-3 「H3를 쓸 자리」).
+        H2(40)와 카드제목(20) 사이가 필요해질 때 쓰라고 정의만 둔 것입니다.
+        로드맵 헤딩(.how h2.rm-h2)이 값은 가장 가깝지만 굵기 700 · clamp 22→28 이라
+        이 계층과 다릅니다 — 맞출지는 별도 결정입니다. 임의로 합치지 마십시오. */
+  h3, .h3 {
+    margin: 0;
+    font-size: 28px;
+    line-height: 1.35;
+    letter-spacing: -0.025em;
+    font-weight: 600;
+  }
 
   /* ---------- Skip link ---------- */
   .skip {
@@ -177,7 +196,10 @@
   .nav-quiet:hover { color: var(--ink-64); }
 
   /* ---------- Hero ---------- */
-  .hero { padding-block: clamp(60px, 8vw, 108px) clamp(60px, 8vw, 104px); }
+  /* 상하 108/104 → 96 (정본 §4-2 · 시각사양 4-2). 신설 6섹션은 처음부터
+     clamp(60px, 8vw, 96px) 였는데 히어로·HOW·사전등록만 V7 이전 값으로 남아
+     한 페이지 안에서 섹션 리듬이 96·104·108·112 로 갈려 있었습니다. */
+  .hero { padding-block: clamp(60px, 8vw, 96px); }
   .eyebrow {
     margin: 0 0 20px;
     font-size: 13.5px;
@@ -265,7 +287,7 @@
         때문에 정렬 교차 없이도 섹션 경계가 잡힙니다. 여기를 --bg 로 되돌리면
         2층카드와 HOW가 흰 배경으로 붙어 그 근거가 사라집니다. */
   #how { background: var(--surface); }
-  .how-inner { padding-block: clamp(64px, 8vw, 112px) clamp(56px, 7vw, 96px); }
+  .how-inner { padding-block: clamp(60px, 8vw, 96px); }
   .kicker {
     margin: 0 0 18px;
     font-size: 12.5px;
@@ -311,7 +333,10 @@
   /* 위가 신뢰 섹션(--surface-dark)이라 경계는 배경 대비로 이미 완결됩니다.
      .how 의 border-top(--line)은 다크 위에서 보이지 않으므로 끕니다. */
   #next { border-top: 0; }
-  .how-inner-tight { padding-block: clamp(44px, 5vw, 68px) clamp(56px, 7vw, 96px); }
+  /* 하단만 기준값(60/96)으로 맞춥니다. 상단을 44/68 로 좁게 두는 것은 의도입니다 —
+     위 신뢰 섹션이 --surface-dark 라 배경 대비가 이미 경계를 만들고, 여기에 96 을
+     더 얹으면 다크 블록 아래로 빈 흰 띠가 생깁니다. */
+  .how-inner-tight { padding-block: clamp(44px, 5vw, 68px) clamp(60px, 8vw, 96px); }
   /* V2 — H3 22 → 28 / 1.35 / −0.025em (정본 §3-2). 기존 25→32px에서 한 단계 내려갑니다.
      선택자를 .how h2.rm-h2 로 올린 이유: 이 요소는 .how 섹션 안의 <h2 class="rm-h2">라
      .how h2(0,1,1)가 .rm-h2(0,1,0)를 이깁니다. 그동안 로드맵 헤딩이 H3가 아니라
@@ -365,7 +390,7 @@
   /* --surface 는 정본 §2 11번입니다. 신설된 마감CTA(--bg)와 기관안내(--bg) 사이에
      끼면서 이 배경이 없으면 흰 배경 세 섹션이 연달아 붙습니다. */
   .interest { background: var(--surface); border-top: 1px solid var(--line); }
-  .interest-inner { padding-block: clamp(64px, 8vw, 104px); }
+  .interest-inner { padding-block: clamp(60px, 8vw, 96px); }
   .interest h2 {
     margin: 0;
     font-size: clamp(1.75rem, 3vw, 2.5rem);
