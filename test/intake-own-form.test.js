@@ -263,7 +263,7 @@ test('운영자 메일에 대조 기준을 넘긴다 — 무엇과 대조할지 
   });
 });
 
-test('자사 서식이 없으면 ownFormName 은 null 로 넘어간다 (메일이 ICC 로 안내)', async () => {
+test('자사 서식이 없으면 ownFormName 은 null 로 넘어간다 (메일이 공개 표준 서식으로 안내)', async () => {
   await withFakeSupabase(async () => {
     const res = fakeRes();
     await intake(post(base()), res);

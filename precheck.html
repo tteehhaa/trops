@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>바이어 서류 사전 확인 — TROPS</title>
-<meta name="description" content="바이어가 보낸 NDA, 우리 회사 기준과 뭐가 다른지 한눈에 안 보이실 때. 자사 서식이 있으면 그대로 대조하고, 없으면 국제표준(ICC) 18개 항목으로 대조해 당일 요약 자료로 정돈해 드립니다.">
+<meta name="description" content="바이어가 보낸 NDA, 우리 회사 기준과 뭐가 다른지 한눈에 안 보이실 때. 자사 서식이 있으면 그대로 대조하고, 없으면 공개 라이선스로 배포되는 표준 서식으로 대조해 당일 요약 자료로 정돈해 드립니다.">
 <link rel="canonical" href="https://trops.kr/precheck">
 <meta property="og:title" content="바이어 서류 사전 확인 — TROPS">
-<meta property="og:description" content="자사 서식이 있으면 그대로 대조하고, 없으면 국제표준(ICC) 18개 항목으로 대조해 당일 요약 자료로 정돈해 드립니다.">
+<meta property="og:description" content="자사 서식이 있으면 그대로 대조하고, 없으면 공개 라이선스로 배포되는 표준 서식으로 대조해 당일 요약 자료로 정돈해 드립니다.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://trops.kr/precheck">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
@@ -21,11 +21,16 @@
     --ink-70:       rgba(15, 23, 42, .7);
     --ink-64:       rgba(15, 23, 42, .64);
     --ink-62:       rgba(15, 23, 42, .62);
-    --accent:       #0F172A;
-    --accent-press: #1E293B;
+    /* 액센트 — 클릭 가능한 요소에만 (정본 §3-1 · §6)
+       #0F172A(먹색)에서 교체. 판정색(초록·빨강·노랑·주황·보라)은 쓰지 않습니다. */
+    --accent:       #1D4ED8;
+    --accent-press: #1E40AF;
+    --accent-soft:  #EFF6FF;
     --muted:        #94A3B8;
     --line:         #E2E8F0;
-    --surface:      #F8FAFC;
+    /* #F8FAFC는 --bg와 명도차 1.5%라 섹션 교차가 안 잡혀 3%로 내림 (정본 §3-1) */
+    --surface:      #F1F5F9;
+    --surface-dark: #0F172A;
     --bg:           #FFFFFF;
     --warning:      #DC2626;
   }
@@ -48,7 +53,9 @@
   }
 
   a { color: var(--accent); text-decoration: none; }
-  a:hover { color: var(--ink); }
+  /* --accent가 먹색이던 때는 hover가 무변화였습니다. #1D4ED8로 바뀐 뒤 --ink로 가면
+     채도가 빠져 "비활성"으로 읽히므로 index.html 과 같이 --accent-press로 어둡게 갑니다. */
+  a:hover { color: var(--accent-press); }
 
   ::selection { background: rgba(15, 23, 42, .14); }
 
@@ -89,20 +96,30 @@
   #how, #deliver, #intake { scroll-margin-top: 84px; }
 
   /* ---------- Buttons ---------- */
+  /* V7 — 고정 height(46px)를 버리고 세로 패딩 12px로 전환.
+     12+15.5+12 = 39.5px라 패딩만으로는 터치 타깃 44px에 못 미치므로
+     min-height로 44px를 따로 보장합니다. (정본 C-1의 "12px로 44px 확보"는 산술이 안 맞습니다) */
   .btn {
     display: inline-flex; align-items: center; justify-content: center;
-    height: 46px; padding: 0 22px;
-    border-radius: 6px; border: 0;
+    min-height: 44px; padding: 12px 22px;
+    border-radius: 6px; border: 1px solid transparent;
     font: inherit; font-size: 15.5px; font-weight: 600; line-height: 1;
     cursor: pointer; white-space: nowrap;
-    transition: background-color .14s ease, border-color .14s ease;
+    transition: background-color .14s ease, border-color .14s ease, color .14s ease;
   }
+  /* V3 — 버튼 3종 (정본 C-1) */
   .btn-primary { background: var(--accent); color: #FFFFFF; }
   .btn-primary:hover { background: var(--accent-press); color: #FFFFFF; }
-  .btn-secondary { background: transparent; border: 1px solid var(--line); color: var(--ink); }
+  .btn-secondary { background: transparent; border-color: var(--line); color: var(--ink); }
   .btn-secondary:hover { border-color: var(--muted); color: var(--ink); }
-  .btn-nav { height: 36px; padding: 0 16px; font-size: 14.5px; }
-  .btn-block { width: 100%; height: 52px; font-size: 16.5px; }
+  .btn-text { background: transparent; border-color: transparent; padding-inline: 0; color: var(--accent); }
+  .btn-text:hover { color: var(--accent-press); }
+  /* nav 안에서는 64px 바에 맞춘 36px를 유지합니다. min-height가 height를 이기므로
+     여기서만 되돌립니다 (index.html .hs-group .btn 과 같은 처리). */
+  .btn-nav { min-height: 36px; height: 36px; padding: 0 16px; font-size: 14.5px; }
+  /* 접수 제출 버튼은 원래 52px로 base(46px)보다 컸습니다. min-height 44px로는
+     52px를 못 지키므로 min-height 쪽을 같이 올립니다. */
+  .btn-block { width: 100%; min-height: 52px; height: 52px; font-size: 16.5px; }
   .btn:disabled,
   .btn[aria-disabled="true"] {
     background: var(--surface); border: 1px solid var(--line);
@@ -112,11 +129,17 @@
   /* ---------- Hero ---------- */
   .hero { padding-block: clamp(56px, 8vw, 100px) clamp(48px, 6vw, 80px); }
   .eyebrow { margin: 0 0 20px; font-size: 13.5px; font-weight: 600; letter-spacing: .02em; color: var(--accent); }
-  .hero h1 {
+  /* V2 클램프 + V4 행간 (정본 §3-2: H1 36 → 56 / 1.30 / −0.035em).
+     .receipt-inner h1 을 함께 묶은 이유: 접수확인 화면과 히어로는 같은 페이지의
+     배타적 두 상태(매직링크 여부)라 화면당 H1 은 언제나 하나뿐입니다.
+     그쪽은 인라인 style 로 28→40px가 박혀 있어 CSS 가 아예 닿지 않았습니다 —
+     인라인을 걷어내고 같은 토큰을 쓰게 합니다. */
+  .hero h1,
+  .receipt-inner h1 {
     margin: 0;
-    font-size: clamp(31px, 3.9vw, 47px);
-    line-height: 1.32;
-    letter-spacing: -0.033em;
+    font-size: clamp(2.25rem, 4.5vw, 3.5rem);
+    line-height: 1.30;
+    letter-spacing: -0.035em;
     font-weight: 700;
     max-width: 22ch;
   }
@@ -137,7 +160,10 @@
     font-size: 14px; font-weight: 600; letter-spacing: -0.005em;
     color: var(--ink-70);
   }
-  .slots-mark { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex: 0 0 auto; }
+  /* 잔여 슬롯 점 — 누를 수 있는 요소가 아니므로 액센트를 쓰지 않습니다 (정본 §3-1).
+     --accent가 먹색이던 때는 티가 안 났지만 #1D4ED8로 바뀌면 "눌러야 하나" 신호가 됩니다.
+     채움/빈 원의 대비(-off)는 그대로라 열림·닫힘 구분은 유지됩니다. */
+  .slots-mark { width: 7px; height: 7px; border-radius: 50%; background: var(--ink-70); flex: 0 0 auto; }
   .slots-mark-off { background: transparent; border: 1.5px solid var(--muted); }
   .slots-off { color: var(--muted); }
 
@@ -146,10 +172,13 @@
   .section { border-top: 1px solid var(--line); }
   .section-inner { padding-block: clamp(56px, 7vw, 92px); }
   .kicker { margin: 0 0 18px; font-size: 12.5px; font-weight: 700; letter-spacing: .14em; color: var(--muted); }
+  /* V2 — H2 28 → 40 / 1.28 / −0.030em (정본 §3-2).
+     .tariff h2 · .erase h2 (16.5px 카드 제목)는 .receipt-inner 안이라
+     .section 자손이 아닙니다 — 여기 걸리지 않으니 그대로 둡니다. */
   .section h2 {
     margin: 0;
-    font-size: clamp(26px, 3vw, 36px);
-    line-height: 1.32; letter-spacing: -0.03em; font-weight: 700;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    line-height: 1.28; letter-spacing: -0.030em; font-weight: 700;
     max-width: 24ch;
   }
   .section-sub { margin: 16px 0 0; font-size: 17px; line-height: 1.75; color: var(--ink-64); max-width: 44ch; }
@@ -165,6 +194,9 @@
     align-items: baseline;
   }
   .step:first-child { border-top: 1px solid var(--line); }
+  /* V2 적용 제외 — 태그가 아니라 역할로 맞춥니다(.rm-h2 에서 배운 것).
+     01·02·03 단계 제목은 §3-2 의 「카드 제목」 역할(19.5/−0.02em)이지
+     H3(22→28) 디스플레이 헤딩이 아닙니다. index.html .flow-name(20px)과 같은 자리입니다. */
   .step h3 {
     margin: 0; display: flex; gap: 14px;
     font-size: 19.5px; line-height: 1.5; letter-spacing: -0.02em; font-weight: 700;
@@ -199,7 +231,9 @@
     display: inline-block;
     font-size: 11.5px; font-weight: 700; line-height: 1.5; letter-spacing: .02em;
     padding: 2px 7px; border-radius: 4px;
-    border: 1px solid rgba(15, 23, 42, .28); color: var(--accent);
+    /* 반복 노출되는 뱃지류는 액센트를 쓰지 않습니다 (정본 §3-2★). 카드 자체는
+       라디오라 클릭 가능하지만, 뱃지는 그 안의 라벨이라 클릭 대상이 아닙니다. */
+    border: 1px solid rgba(15, 23, 42, .28); color: var(--ink-62);
   }
   .plan-tag-quiet { border-color: var(--line); color: var(--muted); }
   .plan-name { margin: 9px 0 0; font-size: 16.5px; font-weight: 700; letter-spacing: -0.015em; }
@@ -245,7 +279,10 @@
   .form { max-width: 520px; margin-top: clamp(32px, 4vw, 44px); display: flex; flex-direction: column; gap: 26px; }
   .field { display: flex; flex-direction: column; gap: 8px; }
   .field > label { font-size: 14.5px; font-weight: 600; }
-  .field .req { color: var(--accent); }
+  /* 「*」 표시는 클릭 요소가 아니므로 액센트를 쓰지 않습니다 (정본 §6 · 규칙 2).
+     --accent가 먹색이던 때는 문제가 없었으나 #1D4ED8로 바뀌면서 분리했습니다.
+     (index.html .form-row .req 과 같은 처리) */
+  .field .req { color: var(--ink); }
   .field .optional { color: var(--muted); font-weight: 400; }
   .field-hint { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--muted); }
   .field input[type="email"] {
@@ -290,7 +327,9 @@
   .consent-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; font-size: 15px; font-weight: 600; }
   .consent-tag {
     font-size: 11.5px; font-weight: 700; line-height: 1.5; letter-spacing: .02em;
-    padding: 2px 7px; border-radius: 4px; border: 1px solid rgba(15, 23, 42, .28); color: var(--accent);
+    /* .plan-tag 과 같은 이유 — 라벨 뱃지는 클릭 대상이 아닙니다 (정본 §3-2★).
+       「*」 뱃지도 여기 걸리므로 index.html .form-row .req 과 같은 --ink 로 둡니다. */
+    padding: 2px 7px; border-radius: 4px; border: 1px solid rgba(15, 23, 42, .28); color: var(--ink);
   }
   .consent-tag-optional { border-color: var(--line); color: var(--muted); }
   .consent-body { margin: 8px 0 0; font-size: 14.5px; line-height: 1.7; color: var(--ink-62); }
@@ -418,9 +457,7 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
     <!-- ===== 접수 확인 (Magic Link 로 들어온 경우에만) ===== -->
     <section class="container receipt-inner" id="receipt" hidden aria-labelledby="receipt-title">
       <p class="eyebrow" id="receipt-eyebrow">접수 확인</p>
-      <h1 id="receipt-title" style="margin:0;font-size:clamp(28px,3.4vw,40px);line-height:1.3;letter-spacing:-0.032em;font-weight:700">
-        접수 내용입니다.
-      </h1>
+      <h1 id="receipt-title">접수 내용입니다.</h1>
       <div class="receipt-card" id="receipt-card">
         <p class="form-msg" id="receipt-msg" role="status" aria-live="polite">불러오는 중입니다…</p>
       </div>
@@ -479,7 +516,7 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
         <!-- 히어로 헤드라인·리드는 세 페이지(index · nda · precheck)가 글자 그대로 같습니다.
              <br> 위치도 확정된 것입니다 — "바이어가 보낸 NDA" 다음에서 끊습니다. -->
         <h1>바이어가 보낸 NDA<br>우리 회사 기준과 뭐가 다른지 한눈에 안 보이실 때.</h1>
-        <p class="hero-lead">자사 서식이 있으면 그대로 대조하고, 없으면 국제표준(ICC) 18개 항목으로 대조해 당일 요약 자료로 정돈해 드립니다.</p>
+        <p class="hero-lead">자사 서식이 있으면 그대로 대조하고, 없으면 공개 라이선스로 배포되는 표준 서식으로 대조해 당일 요약 자료로 정돈해 드립니다.</p>
 
         <p class="slots" id="slots-badge" role="status" aria-live="polite">
           <span class="slots-mark" id="slots-mark" aria-hidden="true"></span>
@@ -505,7 +542,7 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
             </div>
             <div class="step">
               <h3><span class="step-num" aria-hidden="true">02</span><span>기준과 대조</span></h3>
-              <p>보내주신 자사 서식이 기준입니다. 그것과 바이어 문안을 나란히 놓고 서로 다른 지점을 표시합니다. 자사 서식이 없으시면 국제표준(ICC) 18개 항목을 기준으로 씁니다.</p>
+              <p>보내주신 자사 서식이 기준입니다. 그것과 바이어 문안을 나란히 놓고 서로 다른 지점을 표시합니다. 자사 서식이 없으시면 공개 라이선스로 배포되는 표준 서식을 기준으로 씁니다.</p>
             </div>
             <div class="step">
               <h3><span class="step-num" aria-hidden="true">03</span><span>당일 전달</span></h3>
@@ -526,7 +563,7 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
             <li><span class="deliver-num" aria-hidden="true">01</span><span>항목별 대조 결과 — 기준 문안과 바이어 문안을 나란히</span></li>
             <li><span class="deliver-num" aria-hidden="true">02</span><span>차이가 큰 순서로 정돈한 목록</span></li>
             <li><span class="deliver-num" aria-hidden="true">03</span><span>각 항목이 서류 원문 어디에 있는지 인용 위치</span></li>
-            <li><span class="deliver-num" aria-hidden="true">04</span><span>대조에 쓰인 기준 — 자사 서식이면 그 파일명, 없으면 국제표준(ICC) 18개 항목 — 과 측정 시각</span></li>
+            <li><span class="deliver-num" aria-hidden="true">04</span><span>대조에 쓰인 기준 — 자사 서식이면 그 파일명, 없으면 공개 라이선스로 배포되는 표준 서식 — 과 측정 시각</span></li>
           </ul>
         </div>
       </section>
@@ -592,7 +629,7 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
             </div>
 
             <!-- 자사 서식 = 1순위 기준 (PRD-62 §3-3).
-                 선택 항목이지만 "없으면 ICC" 를 반드시 함께 안내해야 합니다 —
+                 선택 항목이지만 "없으면 공개 표준 서식" 을 반드시 함께 안내해야 합니다 —
                  무엇을 기준으로 대조하는지가 이 서비스의 약속입니다. -->
             <div class="field">
               <label for="intake-own-form">자사 NDA 서식 <span class="optional">(선택)</span></label>
@@ -600,14 +637,14 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
                      accept=".pdf,.doc,.docx,.hwp,.hwpx,.txt,.rtf,.png,.jpg,.jpeg">
               <p class="field-hint">
                 올려주시면 <strong>이 서식을 기준으로</strong> 대조해 드립니다.
-                없으시면 국제표준(ICC) 18개 항목을 기준으로 대조합니다. · 1개 · 10MB
+                없으시면 공개 라이선스로 배포되는 표준 서식을 기준으로 대조합니다. · 1개 · 10MB
               </p>
               <ul class="filelist" id="intake-own-form-list"></ul>
             </div>
 
             <!-- 거래 정보 (2026-08-09 · 선택)
                  NDA 대조와는 아무 상관이 없는 부속 항목입니다. 비워도 접수는 그대로 됩니다.
-                 ⚠️ 절대 필수로 만들지 마십시오. NDA 하나 보내려는 분에게 HS 코드를
+                 ⚠️ 절대 입력을 강제하지 마십시오. NDA 하나 보내려는 분에게 HS 코드를
                     요구하는 순간, 부속 항목 하나 때문에 접수 자체를 잃습니다.
                  국가 목록은 api/_agreements.js 의 AGREEMENTS 와 같아야 합니다 —
                  한쪽만 늘리면 화면에는 뜨는데 서버가 400 으로 거절합니다. -->
@@ -630,7 +667,10 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
                 <input type="checkbox" id="consent-terms" name="consentTerms" required>
                 <div>
                   <label class="consent-head" for="consent-terms">
-                    <span class="consent-tag">필수</span>
+                    <!-- 「필수」는 금지어(디자인 정본 §8 · C-6). 같은 뜻을 `*` 로만 표시합니다.
+                         읽어주는 도구에는 checkbox 의 required 속성이 이미 같은 사실을 전달하므로
+                         이 표시는 aria-hidden 으로 중복 안내를 막습니다. -->
+                    <span class="consent-tag" aria-hidden="true">*</span>
                     <span>서비스 이용약관 및 문서 대조 요청 동의</span>
                   </label>
                   <p class="consent-body">보내주신 바이어 서류와 자사 서식의 대조 및 당일 자료 전달을 위한 최소한의 데이터 처리에 동의합니다.</p>
@@ -974,7 +1014,7 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
       var consentTerms = document.getElementById('consent-terms').checked;
       var consentTraining = document.getElementById('consent-training').checked;
       var files = Array.prototype.slice.call(fileInput.files);
-      // 자사 서식은 선택입니다. 없으면 ownFile 이 null 이고 서버가 ICC 기준으로 표시합니다.
+      // 자사 서식은 선택입니다. 없으면 ownFile 이 null 이고 서버가 공개 표준 서식 기준으로 표시합니다.
       var ownFile = ownInput.files.length > 0 ? ownInput.files[0] : null;
       // 거래 정보도 선택입니다. 비어 있으면 null 로 보내고 세율 섹션이 나오지 않습니다.
       var country = countrySel.value;
@@ -1011,7 +1051,10 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
         return fail('파일 합계가 20MB를 넘습니다.');
       }
       if (!consentTerms) {
-        return fail('필수 동의 항목에 동의해 주셔야 접수됩니다.');
+        // 금지어「필수」를 뺀 문장입니다. 동의 항목 제목을 그대로 인용하지 않는 이유는
+        // 그 문구가 법무 확인 대기 중이고 용어 치환 대기 목록에도 올라 있어서입니다 —
+        // 여기서 인용해두면 나중에 두 곳을 같이 고쳐야 합니다.
+        return fail('표시된 동의 항목에 동의해 주셔야 접수됩니다.');
       }
       // 적어 넣으셨는데 형식이 틀린 경우만 막습니다. 비워 두신 것은 오류가 아닙니다 —
       // 조용히 버리면 세율이 나올 줄 알고 기다리시게 됩니다.
@@ -1038,7 +1081,7 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
               consentTerms: consentTerms,
               consentTraining: consentTraining,
               files: read[0],
-              // null 이면 서버가 ICC 를 대체 기준으로 씁니다(PRD-62 §3-3).
+              // null 이면 서버가 공개 표준 서식을 대체 기준으로 씁니다(PRD-62 §3-3).
               ownForm: read[1],
               // 선택 항목. 둘 다 있을 때만 접수 확인 화면·확인메일에 세율이 붙습니다.
               targetCountry: country || null,
@@ -1196,7 +1239,7 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
           addRow(box, '접수 시각', formatDate(r.body.receivedAt));
           addRow(box, '보내신 파일', r.body.fileCount + '개');
           // 무엇을 기준으로 대조하는지가 이 서비스의 약속입니다. 접수 확인에서도 밝힙니다.
-          addRow(box, '대조 기준', r.body.ownForm ? '보내주신 자사 서식' : '국제표준(ICC) 18개 항목');
+          addRow(box, '대조 기준', r.body.ownForm ? '보내주신 자사 서식' : '공개 라이선스로 배포되는 표준 서식');
           // 자료를 보낸 시각은 환불규정 §02 의 기준선입니다("링크를 보내드린
           // 시점을 전달 시점으로 봅니다"). 이용자가 자기 건이 전액 환불 구간인지
           // 직접 확인할 수 있도록 화면에 밝힙니다.
