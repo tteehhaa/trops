@@ -1,12 +1,20 @@
-# ⚠️ docs/ 는 배포에서 반드시 빠져야 합니다.
-#    정본·확정본·와이어프레임에는 가격(9월 오픈 99,000원) · 미결 법무 항목 ·
-#    마케팅팀 내부 일정 · 금지어 목록이 그대로 들어 있습니다.
-#    이 줄을 지우면 trops.kr/docs/... 로 전부 공개됩니다.
-#    (dd-now/ 는 2026-08-11 docs/wireframe/ 으로 옮겼습니다. 아래 줄은 예전 경로입니다)
+# 이 파일의 역할이 2026-08-11 부터 달라졌습니다.
+#
+# 전에는 저장소 루트가 곧 정적 루트여서, 여기 적힌 것이 「공개되지 않는 것」이었습니다.
+# 이제 vercel.json 이 outputDirectory: "dist" 를 쓰므로 웹에 노출되는 것은
+# dist/ 안에 들어간 것뿐이고, 그 목록은 scripts/build-static.js 의 STATIC 이 정합니다.
+# 여기 남은 항목은 「업로드 자체를 줄이는」 이중 방어입니다.
+#
+# ⚠️ scripts/ 를 다시 넣지 마십시오. buildCommand 가 scripts/build-static.js 를
+#    실행하므로, 제외하면 빌드가 파일을 못 찾고 배포가 깨집니다.
+#    (전에는 정적 루트라 제외해야 했지만 지금은 정반대입니다)
+
+# 정본·확정본·와이어프레임. 가격 · 미결 법무 항목 · 내부 일정 · 금지어 목록이
+# 그대로 들어 있어 절대 공개되면 안 됩니다. build-static.js 의 NOT_DEPLOYED 에도 있습니다.
 docs/
-dd-now/
+dd-now/                    # 2026-08-11 docs/wireframe/ 으로 이동. 예전 경로
 design_handoff_trops_landing/
+
 .bkit/
 precheck-schema.sql
-scripts/
 test/
