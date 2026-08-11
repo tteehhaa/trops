@@ -267,6 +267,23 @@ const CHECKS = [
       return true;
     },
   },
+  /* ── R-1 정가 취소선 제거 (2026-08-11) ──────────────────────────── */
+  {
+    id: 'R1-취소선',
+    label: '/precheck 에 정가 취소선이 없다 (₩99,000 만 보인다)',
+    page: '/precheck',
+    check: (html) => {
+      // 세 겹으로 봅니다 — 마크업 · CSS · 값. 하나만 보면 되살아나는 형태를 놓칩니다.
+      const tags = (html.match(/<s[\s>]/g) || []).length;
+      if (tags) return `s 태그가 ${tags}개 남아 있습니다`;
+      if (/line-through/.test(html)) return 'line-through CSS 가 배포본에 있습니다';
+      if (/290,000/.test(html)) return '₩290,000 이 화면에 렌더되고 있습니다';
+
+      // 지울 것만 지웠는지 — 런칭가는 그대로 있어야 합니다.
+      if (!/₩99,000/.test(html)) return '₩99,000 이 사라졌습니다 — 지울 것만 지운 게 아닙니다';
+      return true;
+    },
+  },
   {
     id: 'cron-비공개',
     label: 'cron 라우트가 무인증 호출에 404 로 답한다',
