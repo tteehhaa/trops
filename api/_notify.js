@@ -23,7 +23,27 @@ const {
   agreementFor, fetchTariffRecord, lookupUrl, tariffDisclaimer,
 } = require('./_agreements.js');
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+/*
+ * 🔴 클라이언트를 **모듈을 읽을 때 만들지 않습니다** (2026-08-11).
+ *
+ * 전에는 여기서 바로 `new Resend(process.env.RESEND_API_KEY)` 를 했습니다.
+ * Resend 는 키가 비어 있으면 **생성자에서 던집니다.** 그래서 RESEND_API_KEY 가
+ * 없는 환경에서는 이 파일을 require 하는 것만으로 함수가 죽었습니다 —
+ * 접수·결제·환불 라우트 전부가 「메일을 못 보냄」이 아니라 「import 실패」로
+ * 무너집니다. 메일은 이 저장소에서 실패해도 접수를 취소하지 않는 부속 동작인데,
+ * 그 부속이 본체를 끌고 내려가는 배선이었습니다.
+ *
+ * 지금은 보낼 때 만듭니다. 키가 없으면 아래 send 함수들의 try 안에서 던지고,
+ * 각 함수가 이미 갖고 있는 「실패는 로그로만」 처리에 걸립니다.
+ * (api/cron/refund-blocked.js 가 이 파일을 require 하면서 드러난 문제입니다 —
+ *  test/cron-registration.test.js 가 빈 env 로 전 라우트를 부릅니다.)
+ */
+let resendClient = null;
+
+function resendApi() {
+  if (!resendClient) resendClient = new Resend(process.env.RESEND_API_KEY);
+  return resendClient;
+}
 
 const CONTACT_ADDRESS = 'contact@theo-ne.com';
 const DEFAULT_ORIGIN = 'https://trops.kr';
@@ -65,7 +85,7 @@ async function sendIntakeMails(info) {
   const trade = await describeTrade(info.targetCountry, info.hsCode);
 
   try {
-    const { error } = await resend.emails.send({
+    const { error } = await resendApi().emails.send({
       from: `TROPS 사전 확인 접수 <${CONTACT_ADDRESS}>`,
       to: [CONTACT_ADDRESS],
       replyTo: info.email,
@@ -93,7 +113,7 @@ async function sendIntakeMails(info) {
   }
 
   try {
-    const { error } = await resend.emails.send({
+    const { error } = await resendApi().emails.send({
       from: `TROPS <${CONTACT_ADDRESS}>`,
       to: [info.email],
       subject: '[TROPS] 사전 확인 접수가 완료되었습니다',
@@ -145,7 +165,7 @@ async function sendErasureMails(info) {
   const paid = info.path === 'paid';
 
   try {
-    const { error } = await resend.emails.send({
+    const { error } = await resendApi().emails.send({
       from: `TROPS 자료 삭제 요청 <${CONTACT_ADDRESS}>`,
       to: [CONTACT_ADDRESS],
       replyTo: info.email,
@@ -181,7 +201,7 @@ async function sendErasureMails(info) {
   }
 
   try {
-    const { error } = await resend.emails.send({
+    const { error } = await resendApi().emails.send({
       from: `TROPS <${CONTACT_ADDRESS}>`,
       to: [info.email],
       subject: '[TROPS] 요청하신 자료를 삭제했습니다',
@@ -235,7 +255,7 @@ async function sendDeliveryMail(info) {
   let failure = null;
 
   try {
-    const { error } = await resend.emails.send({
+    const { error } = await resendApi().emails.send({
       from: `TROPS <${CONTACT_ADDRESS}>`,
       to: [info.email],
       subject: '[TROPS] 요청하신 요약 자료를 보내드립니다',
@@ -276,7 +296,7 @@ async function sendDeliveryMail(info) {
   if (!sent) return { sent: false, error: failure };
 
   try {
-    const { error } = await resend.emails.send({
+    const { error } = await resendApi().emails.send({
       from: `TROPS 자료 전달 <${CONTACT_ADDRESS}>`,
       to: [CONTACT_ADDRESS],
       replyTo: info.email,
