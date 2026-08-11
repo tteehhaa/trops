@@ -33,7 +33,8 @@ const OUT = path.join(ROOT, 'dist');
 
 /** 배포되는 정적 자산. 루트 기준. */
 const STATIC = {
-  html: ['index.html', 'nda.html', 'precheck.html', 'refund.html', 'uae.html'],
+  // en.html 은 cleanUrls 로 /en 에 붙습니다 (vercel.json).
+  html: ['index.html', 'en.html', 'nda.html', 'precheck.html', 'refund.html', 'uae.html'],
   dirs: ['data'],
 };
 

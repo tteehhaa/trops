@@ -1,19 +1,18 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TROPS — 바이어 NDA, 우리 회사 기준으로 확인하세요</title>
-<!-- 검색·공유 문구는 세 페이지(index · nda · precheck)가 같은 말을 씁니다.
-     description = 헤드라인 + 리드, og:description = 리드.
-     한 곳만 고치면 검색 결과와 공유 카드에서 다른 서비스처럼 보입니다. -->
-<meta name="description" content="바이어가 보낸 NDA, 우리 회사 기준과 뭐가 다른지 한눈에 안 보이실 때. 자사 서식이 있으면 그대로 대조하고, 없으면 공개 라이선스로 배포되는 표준 서식으로 대조해 당일 요약 자료로 정돈해 드립니다.">
-<meta property="og:title" content="TROPS — 바이어 NDA, 우리 회사 기준으로 확인하세요">
-<meta property="og:description" content="자사 서식이 있으면 그대로 대조하고, 없으면 공개 라이선스로 배포되는 표준 서식으로 대조해 당일 요약 자료로 정돈해 드립니다.">
+<title>TROPS — First export? Start with the NDA you were sent.</title>
+<!-- description = H1 + lead, og:description = lead. 국문(index.html)이 쓰는 규칙과 같습니다.
+     문장은 영문 확정본 v2 §2 원문이라 임의로 줄이거나 다시 쓰지 마십시오. -->
+<meta name="description" content="First export? Start with the NDA you were sent. Upload the NDA your buyer sent you. We compare it line by line against a public standard form and mark where they differ. We also show you what's left to check.">
+<meta property="og:title" content="TROPS — First export? Start with the NDA you were sent.">
+<meta property="og:description" content="Upload the NDA your buyer sent you. We compare it line by line against a public standard form and mark where they differ. We also show you what's left to check.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://trops.kr/">
-<!-- hreflang 은 양쪽이 서로를 가리켜야 검색엔진이 인정합니다 — 한쪽만 있으면 무시됩니다.
-     en.html <head> 에도 같은 3줄이 있습니다. 한쪽만 고치지 마십시오. -->
+<meta property="og:url" content="https://trops.kr/en">
+<!-- hreflang 은 양쪽이 서로를 가리켜야 검색엔진이 인정합니다.
+     index.html <head> 에도 같은 3줄이 있습니다 — 한쪽만 고치지 마십시오. -->
 <link rel="alternate" hreflang="ko" href="https://trops.kr/">
 <link rel="alternate" hreflang="en" href="https://trops.kr/en">
 <link rel="alternate" hreflang="x-default" href="https://trops.kr/">
@@ -801,401 +800,397 @@
     .qchev { transition: none; }
   }
 </style>
+<style>
+  /* ==========================================================================
+     영문판 전용 조정 — 위 공유 블록에서 「폭」만 다시 잡습니다.
+     색·간격·컴포넌트는 한 줄도 바꾸지 않습니다. 국문 페이지의 영문 버전이지
+     새 디자인이 아닙니다.
+
+     왜 폭만 다른가: 공유 블록의 max-width 는 전부 ch 단위인데, ch 는 「0」 한 글자
+     폭이라 한글 기준으로 맞춰 둔 값입니다. 같은 21ch 라도 라틴은 글자가 좁아
+     훨씬 많은 글자가 들어갑니다 — 그대로 두면 영문 헤딩·본문이 한 줄에 지나치게
+     길게 늘어집니다.
+     ⚠️ 값을 바꾸기 전에 실제 렌더 폭을 재십시오. 눈대중으로 고치지 마십시오.
+     ========================================================================== */
+  /* 실측값(1033px 뷰포트, Pretendard):
+       H1  17ch=522px → 2줄. 15ch 는 3줄이라 국문 히어로(2줄)와 리듬이 어긋납니다
+       리드 2행 「We compare it line by line…」이 670px. 54ch=583px 로는 4줄이 됩니다
+       카드 본문 1행이 434px. 42ch=413px 로 21px 모자랐습니다
+     확정본이 <br> 로 끊어 둔 줄 수를 지키는 것이 기준입니다 — 리드 3줄 · 카드 2줄. */
+  .hero h1   { max-width: 17ch; }
+  .hero-lead { max-width: 63ch; }
+  .card-body { max-width: 45ch; }
+  .flow-desc { max-width: 58ch; }
+  .rm-desc   { max-width: 54ch; }
+  .how h2.rm-h2 { max-width: 20ch; }
+  .interest h2 { max-width: 28ch; }
+
+  /* 10 사전등록 폼의 보조 문구. 국문 index.html 에는 이 줄이 없어서 공유 블록에도
+     규칙이 없습니다(확정본에는 한/영 양쪽 다 있는데 국문 구현만 빠진 상태).
+     리드 계열이라 .rm-lead 와 같은 값을 씁니다 — 국문에 같은 줄을 넣을 때
+     이 규칙을 공유 블록으로 올리십시오. */
+  .interest-sub { margin: 16px 0 0; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); max-width: 46ch; }
+
+  /* 사업자정보 항목명 열. 공유 블록의 116px 은 국문 라벨(「사업자등록번호」 6자) 기준이라
+     「E-Commerce Registration No.」가 들어가면 값 열이 라벨마다 다른 위치에서 시작합니다. */
+  .footer-biz dt { min-width: 208px; }
+</style>
 </head>
 <body>
-  <a href="#main" class="skip">본문으로 건너뛰기</a>
+  <a href="#main" class="skip">Skip to content</a>
 
   <!-- ===== Nav =====
-       메인 CTA는 랜딩 전체에서 [내 NDA 확인 받기](/precheck) 하나뿐입니다.
-       app.trops.kr 진입은 아직 메인 CTA 자리를 차지하지 않도록 저채도 텍스트 링크로만 둡니다. -->
+       확정본 v2 §1 은 헤더 CTA 를 「Button」 으로 적었지만, 실제 국문 구현(index.html)은
+       헤더에 CTA 버튼을 두지 않습니다 — 이 페이지는 국문 구현을 따릅니다(강등 확정).
+       앵커 3종은 v2 §1 원문(Service · How it works · FAQ)입니다.
+       ⚠️ app.trops.kr 링크는 넣지 않았습니다. 앱이 한국어 전용이라 영어 독자를
+          한국어 화면으로 보내게 됩니다. 영문 앱이 생기면 그때 넣으십시오. -->
   <nav class="nav">
     <div class="container nav-inner">
-      <a href="/" class="wordmark" aria-label="TROPS 홈">TROPS</a>
-      <!-- 「자주 묻는 질문」은 정본 §2-3이 요구하는 앵커입니다(헤더 → 09 QnA).
-           나머지 3개는 기존 링크를 그대로 뒀습니다 — 확정본 §1의 헤더 앵커 3종
-           (서비스 · 이용 방법 · 자주 묻는 질문)으로 맞추는 것은 헤더 개편 몫입니다. -->
+      <a href="/en" class="wordmark" aria-label="TROPS home">TROPS</a>
       <div class="nav-links">
-        <a href="#how">대조 방법</a>
-        <a href="#next">준비 중인 것</a>
-        <a href="#qna">자주 묻는 질문</a>
-        <a href="#interest">문의</a>
+        <a href="#service">Service</a>
+        <a href="#how">How it works</a>
+        <a href="#qna">FAQ</a>
       </div>
       <div class="nav-right">
-        <a class="nav-quiet" href="https://app.trops.kr/" target="_self">트롭스 앱 살펴보기(준비중)</a>
+        <!-- 언어 전환. 국문 → 영문 방향 링크는 index.html 에 아직 없습니다 —
+             한쪽만 있으면 국문 독자가 이 페이지를 찾을 수 없습니다. -->
+        <a class="nav-quiet" href="/" hreflang="ko" lang="ko">한국어</a>
       </div>
     </div>
   </nav>
 
   <main id="main">
-    <!-- ===== Hero =====
-         기준 우선순위(PRD-62 §3-3): 고객 보유 자사 서식이 1순위, 공개 라이선스로
-         배포되는 표준 서식은 자사 서식이 없을 때만 쓰는 2순위 대체 기준입니다.
-         이 순서를 뒤집어 쓰지 마십시오.
-         거래 8단계 타임라인 카드는 제거했습니다 — 실체 없는 단계를 미리 보여주면
-         "이미 완성된 서비스인가?"라는 오해를 키웁니다. 거래 운영 기능이 실제로
-         나올 때 다시 넣으십시오. -->
+    <!-- ===== 02 Hero (영문 확정본 v2 §2) =====
+         6요소 전부 v2 §2 원문입니다. 한 글자도 바꾸지 마십시오.
+         eyebrow 는 영문 단독입니다 — 국문 히어로가 「수출을 앞두고 / BEFORE YOU EXPORT」로
+         병기하는 것은 국문 독자에게 영문 태그를 같이 보여주려는 것이고, 영문판에서
+         국문을 병기할 이유는 없습니다(v2 §2).
+         리드의 <br> 2개는 v2 가 끊어 둔 문장 경계입니다. -->
     <section class="container hero">
-      <!-- eyebrow 는 확정본 §2 가 한 줄로 「수출을 앞두고 / BEFORE YOU EXPORT」 라고 적은
-           그대로입니다. 국문만 남기거나 영문을 별도 줄로 내리지 마십시오 — 푸터 §12 태그
-           (국문만)와 호응하는 구조라 여기서만 병기됩니다. -->
-      <p class="eyebrow">수출을 앞두고 / BEFORE YOU EXPORT</p>
-      <!-- 히어로 6요소 전부 확정본 v3.1 §2 원문입니다. 한 글자도 바꾸지 마십시오 (정본 §0 · §8).
-           리드의 <br> 2개는 확정본이 끊어 둔 자리 그대로입니다 — 문구 변경이 아니라
-           마크업이라 정본 §2-3 이 명시적으로 허용합니다.
-           ⚠️ 이전 헤드라인·리드는 세 페이지(index · nda · precheck)가 공유하던 문장이었습니다.
-              여기만 §2 로 교체됐으므로 nda·precheck 와 더 이상 같지 않습니다 — 두 페이지를
-              여기에 맞추는 것은 별도 배치입니다. 임의로 되돌리지 마십시오. -->
-      <h1>첫 수출이라 무엇부터 봐야 할지 모르겠다면.</h1>
-      <p class="hero-lead">바이어에게 받은 NDA를 올려보세요.<br>공개된 서식과 하나씩 비교해서 다른 부분을 표시해 드립니다.<br>무엇을 더 확인하시면 되는지도 함께 알려드립니다.</p>
-      <!-- 주+보조 2버튼 — 마감 CTA(§9)와 같은 조합입니다. C-1 대로 주는 채움(btn-primary),
-           보조는 아웃라인(btn-secondary), 둘 다 풀사이즈(btn-full 좌우 32px)입니다.
-           04 카드 CTA만 한 단계 작은 기본 22px로 남습니다. -->
+      <p class="eyebrow">BEFORE YOU EXPORT</p>
+      <h1>First export? Start with the NDA you were sent.</h1>
+      <p class="hero-lead">Upload the NDA your buyer sent you.<br>We compare it line by line against a public standard form and mark where they differ.<br>We also show you what's left to check.</p>
       <div class="cta-row">
-        <a id="hero-cta" class="btn btn-primary btn-full" href="/precheck">무료로 비교해 보기</a>
-        <a class="btn btn-secondary btn-full" href="#interest">거래 절차 트래킹 알림 받기</a>
+        <a id="hero-cta" class="btn btn-primary btn-full" href="/precheck">Compare my NDA — free</a>
+        <a class="btn btn-secondary btn-full" href="#interest">Get notified about trade procedure tracking</a>
       </div>
-      <!-- 마이크로카피는 버튼 옆이 아니라 아래 줄입니다 — 버튼이 둘로 늘면서 같은 행에
-           두면 모바일에서 세 덩어리가 세로로 쌓입니다. 마감 CTA(.close-cta-note)와 같은 배치. -->
-      <p class="hero-note">선착순 20건 무료 · 로그인 없이 바로</p>
+      <p class="hero-note">First 20 free · no sign-up</p>
     </section>
 
-    <!-- ===== 03 안심 문구 (문구 §3 · 정본 §2 3번 · 히어로 직하로 승격) =====
-         경쟁사는 같은 말을 페이지 맨 아래 작은 글씨로 씁니다. 우리는 맨 위에서 합니다 —
-         정본 §2-2가 꼽은 우선순위 1번이고, 이게 차별점입니다.
-         중앙 정렬을 히어로와 연속으로 두는 것은 의도입니다(§2-1) — 안심 문구가
-         히어로의 일부처럼 읽혀야 「입장을 맨 위에서 한 번」이 성립합니다.
-         ⚠️ 이 블록은 how 아래에 있던 강조 밴드(.band)를 승격·대체한 것입니다.
-            같은 역할의 블록을 아래쪽에 다시 만들지 마십시오. -->
+    <!-- ===== 03 Reassurance (v2 §3) =====
+         마지막 행의 주어는 우리지만 결정 주체는 고객입니다 — v2 번역노트 ①.
+         "so you can decide" 를 "we decide for you" 류로 바꾸지 마십시오. -->
     <section class="assure" aria-labelledby="assure-title">
       <div class="container narrow-c assure-inner">
-        <h2 id="assure-title">TROPS는 판단하지 않습니다.</h2>
+        <h2 id="assure-title">TROPS does not judge.</h2>
         <div class="assure-lines">
-          <p>문서에 적힌 것을 그대로 보여드립니다.</p>
-          <p>공적 절차는 빠짐없이 모으고, 거래 문서에 있는 것은 있는 그대로 옮깁니다.</p>
-          <p>대표님이 빠르고 쉽게 결정하실 수 있도록, 정리해드립니다.</p>
+          <p>We show what the document says.</p>
+          <p>Public procedures we gather in full. What's in your trade documents, we move over as it is.</p>
+          <p>We lay it out so you can decide quickly and easily.</p>
         </div>
-        <p class="assure-note">※ 법률 자문 서비스가 아닙니다.</p>
+        <p class="assure-note">※ This is not a legal advisory service.</p>
       </div>
     </section>
 
-    <!-- ===== 04 2층 카드 (문구 §4 · 정본 C-2) =====
-         이 페이지가 무엇을 파는지 정의하는 자리입니다(§2-2 우선순위 2번).
-         01:02 = 6:4 는 폭으로만 표현하고 높이는 맞추지 않습니다 — 내용 길이가 다릅니다.
+    <!-- ===== 04 Two-tier cards (v2 §4 · 정본 C-2) =====
          ⚠️ 02 카드에 가격을 쓰지 마십시오.
-         ⚠️ 「준비 중」 라벨은 회색조입니다. 경고색(--warning)을 쓰지 마십시오.
-         CEPA 조회는 독립 섹션이 아니라 01 카드 내부 블록입니다 — 밖으로 올리면
-         NDA 비교와 병렬 상품처럼 읽힙니다. -->
+         ⚠️ 「COMING SOON」 라벨은 회색조입니다. 경고색(--warning)을 쓰지 마십시오.
+         ⚠️ [ Get notified ] 는 앱으로 보내지 않습니다. 사전 등록 폼으로만 연결됩니다 —
+            v2 번역노트 ②. "Try it" · "Open" · "Start tracking" 류 금지. -->
     <section class="cards-sec" id="service" aria-labelledby="cards-title">
       <div class="container cards-inner">
-        <h2 id="cards-title">거래를 시작하기 전에 한 번, 시작한 후에 한 번.</h2>
+        <h2 id="cards-title">Once before the deal starts. Once after.</h2>
         <div class="cards">
 
           <div class="card">
             <div class="card-head">
-              <span class="card-title">지금 쓸 수 있습니다</span>
-              <p class="eyebrow-quiet">거래 시작 전 · NDA 비교</p>
+              <span class="card-title">AVAILABLE NOW</span>
+              <p class="eyebrow-quiet">Before the deal · NDA comparison</p>
             </div>
-            <p class="card-body">바이어에게 받은 NDA를 올리시면<br>공개된 서식과 하나씩 비교해서<br>다른 부분을 표시해 드립니다.</p>
+            <p class="card-body">Upload the NDA your buyer sent. We compare it line by line<br>against a public standard form and mark where they differ.</p>
             <div class="card-bullets">
-              <p>· 로그인 없이 바로</p>
-              <p>· 선착순 20건 무료</p>
+              <p>· No sign-up</p>
+              <p>· First 20 free</p>
             </div>
+            <!-- CEPA 블록은 독립 섹션이 아니라 01 카드 내부입니다 — 밖으로 올리면
+                 NDA comparison 과 병렬 상품처럼 읽힙니다.
+                 "show you" 를 "check for you" 로 바꾸지 마십시오. 우리가 판정한다는
+                 함의가 생깁니다(v2 번역노트 ①). -->
             <div class="cepa">
-              <p>수출 국가가 있으면, 해당국 협정 세율도 함께 확인해 드립니다.</p>
-              <a class="btn btn-text" href="/uae">아랍에미리트(UAE) 관세율 조회 →</a>
+              <p>Tell us the destination country and we'll show you the agreement tariff rate that applies there.</p>
+              <a class="btn btn-text" href="/uae">Check UAE tariff rates →</a>
             </div>
-            <!-- 01 카드 CTA는 섹션 CTA가 아니라 카드 내부 요소라 위계가 아래입니다.
-                 히어로·마감(btn-full 32px)보다 한 단계 작은 기본 22px를 씁니다 (C-1). -->
-            <div><a class="btn btn-primary" href="/precheck">무료로 비교해 보기 →</a></div>
+            <div><a class="btn btn-primary" href="/precheck">Compare my NDA — free →</a></div>
           </div>
 
           <div class="card">
             <div class="card-head">
-              <span class="badge-soon">준비 중</span>
-              <p class="eyebrow-quiet">거래 시작 후 · 거래 절차 트래킹</p>
+              <span class="badge-soon">COMING SOON</span>
+              <p class="eyebrow-quiet">After the deal starts · Trade procedure tracking</p>
             </div>
-            <p class="card-body">거래 문서에 있는 기한과 통관·외환 절차를<br>한 화면에 모아<br>남은 날짜로 보여드립니다.</p>
+            <!-- 01 카드와 달리 <br> 를 넣지 않았습니다. 02 는 6:4 중 4쪽이라 열이 좁아
+                 v2 가 끊어 둔 자리에서 다시 접히면 5줄로 너덜해집니다. 자연 줄바꿈이
+                 더 낫습니다 — 줄바꿈은 마크업이라 문구가 바뀐 것이 아닙니다(정본 §2-3). -->
+            <p class="card-body">Deadlines in your trade documents, plus customs and foreign exchange procedures, gathered in one view with the days remaining on each.</p>
             <div class="card-bullets">
-              <p>· 계약서만 있으면 시작</p>
-              <p>· 기한 7일 전, 1일 전 메일</p>
+              <p>· Your contract is all you need to start</p>
+              <p>· Email 7 days and 1 day before each deadline</p>
             </div>
-            <div><a class="btn btn-secondary" href="#interest">알림 받기</a></div>
+            <div><a class="btn btn-secondary" href="#interest">Get notified</a></div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ===== How it works (지금 파는 것: NDA 사전확인 v1) =====
-         협정 세율 조회(/uae)는 병렬 상품이 아니라 3단계의 보조 항목으로만 노출합니다. -->
+    <!-- ===== 05 How it works (v2 §5) =====
+         ⚠️ 이 섹션은 국문 index.html 과 내용이 다릅니다. 영문 v2 §5 는 국문 확정본
+            v3.1 §5(「제출하고, 비교하고, 정리합니다」)를 따라간 판인데, 국문 index 는
+            아직 그 이전 판(「어떻게 대조하나요 / NDA 파일 등록 …」)이 남아 있습니다.
+            국문이 §5 로 교체되면 두 페이지가 다시 같아집니다 — 그때까지 이쪽을
+            국문에 맞춰 되돌리지 마십시오. 영문은 확정본대로가 맞습니다.
+         ⚠️ 국문 HOW 03 에 있는 HS 코드 조회 폼은 넣지 않았습니다. v2 §5 에 그 블록이
+            없고, 넣으려면 국가명·플레이스홀더·버튼·안내문을 전부 새로 지어내야
+            합니다. 영문 독자는 04 카드의 CEPA 블록으로 /uae 에 갑니다. -->
     <section class="how" id="how">
       <div class="container how-inner">
         <p class="kicker">HOW IT WORKS</p>
-        <h2>어떻게 대조하나요</h2>
+        <h2>Submit. Compare. Lay it out.</h2>
 
         <div class="flow">
           <div class="flow-row">
-            <p class="flow-name"><span class="flow-num" aria-hidden="true">01</span><span>NDA 파일 등록</span></p>
-            <p class="flow-desc">수신한 바이어 NDA 파일을 올려주세요. 회원가입이나 로그인 없이 즉시 접수됩니다.</p>
+            <p class="flow-name"><span class="flow-num" aria-hidden="true">01</span><span>Submit</span></p>
+            <p class="flow-desc">Send the NDA as you received it. No formatting needed.</p>
           </div>
 
           <div class="flow-row">
-            <p class="flow-name"><span class="flow-num" aria-hidden="true">02</span><span>양식 기준 1:1 대조</span></p>
-            <p class="flow-desc">귀사의 기존 NDA 양식을 우선 기준으로 대조하며, 별도 양식이 없는 경우 공개 라이선스로 배포되는 표준 서식을 대조 기준으로 적용합니다.</p>
+            <p class="flow-name"><span class="flow-num" aria-hidden="true">02</span><span>Compare</span></p>
+            <p class="flow-desc">We compare it against a public standard form, item by item, and mark the differences.</p>
           </div>
 
           <div class="flow-row">
-            <p class="flow-name"><span class="flow-num" aria-hidden="true">03</span><span>대조 리포트 발송</span></p>
-            <p class="flow-desc">항목별 차이점을 한눈에 비교하는 대조 리포트와 공유용 요약 노트를 전달해 드립니다.</p>
-
-            <div class="flow-extra">
-              <p class="flow-extra-label">거래 대상국이 있으면, 해당국 협정 세율도 함께 확인해 드립니다.</p>
-              <div class="hs-box">
-                <form class="hs-group" action="/uae" method="get">
-                  <span class="hs-country">아랍에미리트</span>
-                  <input id="hs-input" type="text" name="hs" inputmode="numeric" pattern="[0-9]{8}" maxlength="8"
-                         placeholder="HS 8단위 입력" aria-label="HS 코드 8단위"
-                         title="HS 코드 8자리 숫자를 입력하세요" required>
-                  <button class="btn btn-secondary" type="submit">조회</button>
-                </form>
-                <p class="hs-meta">아랍에미리트 · 한-UAE CEPA 기준 · 무료 · 로그인 없이 조회</p>
-              </div>
-            </div>
+            <p class="flow-name"><span class="flow-num" aria-hidden="true">03</span><span>Lay it out</span></p>
+            <!-- 「where to ask」 는 v2 §13 이 §5·§9·§11 공통으로 묶어 둔 표현입니다.
+                 11 기관 안내로 앵커를 겁니다 — 문구는 그대로 두고 링크만 겁니다. -->
+            <p class="flow-desc">Where judgment remains, we show you <a href="#orgs">where to ask</a>.</p>
           </div>
-        </div>
-
-        <div class="cta-row">
-          <a class="btn btn-primary" href="/precheck">내 NDA 대조하기</a>
-          <span class="cta-row-note">선착순 20건 무료 · 지금 신청 가능</span>
         </div>
       </div>
     </section>
 
-    <!-- ===== 06 신뢰 (문구 §6 · 정본 C-5) =====
-         현재 이미지 0장이라 "뭘 받는지" 안 보입니다. 전환에 가장 크게 작용하는 자리로
-         정본 §2-2가 우선순위 3번에 올려둔 섹션입니다.
-         페이지 유일한 다크 본문 섹션입니다(푸터와 둘뿐) — 다른 섹션을 다크로 만들지 마십시오.
-
-         ⚠️ 이 자리에 있던 강조 밴드(.band · 기준을 우리가 만들지 않는다는 선언)는
-            제거했습니다. 그 블록의 역할은 위로 승격된 03 안심 문구가 이어받습니다 —
-            정본 §2 3번의 「히어로 직하로 승격」이 뜻하는 것이 이 이동입니다. 둘을 같이
-            두면 「판단하지 않는다」 선언이 한 페이지에 두 번 나옵니다.
-
-         ⚠️ 이미지 2컷은 8/20 실물 캡처 대기 중입니다(정본 미결 L-2).
-            목업으로 채우지 마십시오 — C-5는 실물 캡처만 허용합니다.
-         ⚠️ 카운터·숫자 자리는 비워둡니다. 넣을 숫자가 없습니다(C-5 · §8).
-         ⚠️ 정본 §7 — 이 캡처는 준거법·관할이 「차이」로 찍히면 안 됩니다.
-            미결 L-1(정본 §7 — 준거법·관할의 4상태 매핑)이 캡처보다 먼저 확정돼야 합니다. -->
+    <!-- ===== 06 Trust (v2 §6 · 정본 C-5) =====
+         페이지 유일한 다크 본문 섹션입니다(푸터와 둘뿐).
+         ⚠️ 저작권 표기는 라이선스 조건이라 의무입니다. "© Crown copyright" 와 확인일을
+            빼지 마십시오. "Open Government Licence" 는 고유명사라 영국식 철자를
+            유지하고, 본문의 일반명사 "license" 와 철자가 다른 것은 의도입니다(v2 §6).
+         ⚠️ 이미지 2컷은 실물 캡처 대기 중입니다. 목업으로 채우지 마십시오.
+         ⚠️ 플레이스홀더에 내부 일정(수령일·담당 부서)을 적지 마십시오. 국문 쪽은
+            「8/20 수령」·「크롭 지점 마케팅팀 표시」가 화면에 그대로 읽히는 상태입니다 —
+            같은 것을 영문에 옮기지 않았습니다.
+         🚫 절대 금지: 재현율·정밀도 수치 · "15 patterns" · 사내 계약서 건수 ·
+            ICC · "international standard" -->
     <section class="trust" aria-labelledby="trust-title">
       <div class="container trust-inner">
-        <h2 id="trust-title">무엇을 근거로 비교하는지 밝힙니다.</h2>
+        <h2 id="trust-title">We show what we compare against.</h2>
         <div class="body-w trust-list">
-          <p>· 비교 기준은 공개 라이선스로 배포되는 표준 서식을 씁니다.<br>
-            <span class="sub">&nbsp;&nbsp;기준 서식: 영국 지식재산청 공개 서식 · Open Government Licence v3.0<br>
-            &nbsp;&nbsp;© Crown copyright · 확인일 2026-08-10</span></p>
-          <p>· 비교 항목은 저희가 만들지 않습니다. 공적기관 문서를 그대로 인용합니다.</p>
-          <p>· 근거는 다섯 가지를 함께 보여드립니다 —<br>&nbsp;&nbsp;관할 · 법령명 · 조문 · 시행일 · 확인일자</p>
+          <p>· We compare against a standard form published under an open license.<br>
+            <span class="sub">&nbsp;&nbsp;Reference form: UK Intellectual Property Office public form · Open Government Licence v3.0<br>
+            &nbsp;&nbsp;© Crown copyright · checked 10 August 2026</span></p>
+          <p>· We don't write the comparison items. We quote public agency documents as they are.</p>
+          <p>· We show five fields alongside every item —<br>&nbsp;&nbsp;jurisdiction · statute · article · effective date · date checked</p>
         </div>
         <div class="body-w">
           <div class="shot">
-            <p class="shot-ph">실제 캡처 자리 / 16:10 / 목업 아님</p>
-            <p class="shot-phs">전체 결과지 1장 · 항목별 좌우 비교가 보이는 면 · 8/20 수령</p>
+            <p class="shot-ph">REAL SCREENSHOT / 16:10 / NOT A MOCKUP</p>
+            <p class="shot-phs">Full result sheet · the view showing the item-by-item comparison</p>
           </div>
           <div class="shot shot-crop">
-            <p class="shot-ph">실제 캡처 자리 / 16:10 / 목업 아님</p>
-            <p class="shot-phs">근거 5필드 확대 크롭 · 관할 · 법령명 · 조문 · 시행일 · 확인일자<br>크롭 지점 마케팅팀 표시 (8/20)</p>
+            <p class="shot-ph">REAL SCREENSHOT / 16:10 / NOT A MOCKUP</p>
+            <p class="shot-phs">Close crop of the five fields · jurisdiction · statute · article · effective date · date checked</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ===== 예정 항목 =====
-         지금 파는 것(NDA 사전확인)과 섞이지 않도록 별도 섹션으로 분리합니다.
-         표기 방식은 가격 + 오픈일 병기를 유지하십시오. -->
-    <section class="how" id="next" aria-label="준비 중인 것">
+    <!-- ===== 07 Roadmap (v2 §7) =====
+         ⚠️ v2 §7 은 「이름 · 상태 · 가격」 세 값만 줍니다. 국문에 있는 섹션 제목·리드·
+            항목 설명에 해당하는 영문 문구가 확정본에 없습니다.
+            제목은 국문 페이지가 이미 쓰고 있는 영문 문자열(WHAT'S NEXT)을 그대로
+            헤딩으로 올려 썼고, kicker 를 따로 두지 않았습니다 — 같은 말이 두 번
+            나오기 때문입니다. 리드·설명은 지어내지 않고 비웠습니다.
+            마케팅팀에서 영문 리드가 오면 .rm-lead 로 넣으십시오. -->
+    <section class="how" id="next" aria-label="What's next">
       <div class="container how-inner how-inner-tight">
-        <p class="kicker">WHAT'S NEXT</p>
-        <h2 class="rm-h2">준비 중인 것</h2>
-        <p class="rm-lead">아래는 아직 이용할 수 없습니다. 오픈 시점과 가격을 함께 적어둡니다.</p>
+        <h2 class="rm-h2">What's next</h2>
 
         <div class="rm">
           <div class="rm-row">
-            <p class="rm-name"><span class="rm-num">01</span>확인 항목 진단서</p>
-            <p class="rm-desc">품목별 확인 항목을 근거와 함께 문서로 정리해 드립니다</p>
-            <p class="rm-meta">99,000원 · 9월 오픈 예정</p>
+            <p class="rm-name"><span class="rm-num">01</span>Item comparison sheet</p>
+            <p class="rm-meta">₩99,000 · Opens September</p>
           </div>
           <div class="rm-row">
-            <p class="rm-name"><span class="rm-num">02</span>거래 운영</p>
-            <p class="rm-desc">계약이 성사된 뒤 통관·대금회수까지 거래 단위로 이어서 관리합니다</p>
-            <p class="rm-meta">가격 미정 · 준비중</p>
+            <p class="rm-name"><span class="rm-num">02</span>Trade procedure tracking</p>
+            <p class="rm-meta">Pricing to follow · Coming soon</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ===== 08 QnA (문구 §8 · 정본 C-3) =====
-         3묶음 14문항입니다. 확정본 v3.1이 원문 15문항에서 서명 관련 1문항
-         (「NDA에 서명해도 되나요?」)을 뺀 결과입니다 — 되살리지 마십시오.
-         ⚠️ 기본값은 전부 접힘입니다.
-         ⚠️ 여러 개 동시 펼침을 허용합니다. 하나만 열리는 방식은 비교가 안 되므로 금지(C-3).
-         ⚠️ 셰브론에 액센트를 쓰지 마십시오.
-         「얼마인가요?」 답의 「← 통신판매업 신고 완료 후 게시」는 편집 메모라 넣지 않았습니다.
-         마지막 줄(세금계산서)은 신고 수리(정본 미결 L-3) 전까지 노출 여부 확인이 필요합니다. -->
+    <!-- ===== 08 FAQ (v2 §8 · 정본 C-3) =====
+         3묶음 14문항. 국문과 같은 문항 구성입니다.
+         ⚠️ 기본값은 전부 접힘. 여러 개 동시 펼침을 허용합니다(C-3).
+         ⚠️ 국문 §8 의 병기문구(「실제 서비스 화면에서는 「대조」」)는 영문에 넣지
+            않습니다 — 앱이 한국어 전용이라 영어 독자는 그 화면을 볼 일이 없고,
+            넣으면 존재하지 않는 영문 UI 용어를 예고하는 셈입니다(v2 §0-1).
+         ⚠️ 「얼마인가요」 답의 「← 통신판매업 신고 완료 후 게시」는 편집 메모라
+            넣지 않았습니다. -->
     <section class="qna" id="qna" aria-labelledby="qna-title">
       <div class="container qna-inner">
-        <h2 id="qna-title">자주 묻는 질문</h2>
+        <h2 id="qna-title">Frequently asked questions</h2>
         <div class="body-w qgroups">
 
           <div class="qgroup">
-            <p class="eyebrow-quiet">▸ 처음이신가요</p>
+            <p class="eyebrow-quiet">▸ New to this?</p>
             <div class="qitem" data-open="0">
               <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-1">
-                <span>NDA가 뭔가요?</span>
+                <span>What is an NDA?</span>
                 <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
               </button>
               <div class="qans" id="qa-1">
-                <p>비밀유지계약서(Non-Disclosure Agreement)입니다.</p>
-                <p>거래 얘기를 본격적으로 시작하기 전에, 서로 주고받은 정보를 밖에 알리지 않기로 약속하는 문서예요. 바이어가 먼저 보내오는 경우가 많고, 보통 계약서보다 먼저 오갑니다.</p>
+                <p>A non-disclosure agreement. Before serious talks begin, both sides agree not to share what they learn from each other. Buyers often send one first, usually before the contract itself.</p>
               </div>
             </div>
             <div class="qitem" data-open="0">
               <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-2">
-                <span>NDA를 안 쓰는 업계인데요?</span>
+                <span>My industry doesn't use NDAs.</span>
                 <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
               </button>
               <div class="qans" id="qa-2">
-                <p>안 쓰시는 업계도 많습니다. 지금은 NDA만 비교할 수 있고, 계약서와 견적서는 준비 중입니다. 열리면 먼저 알려드리도록 등록을 받고 있습니다.</p>
+                <p>Many don't. For now we compare NDAs only. Sales contracts and quotations are on the way — register and we'll tell you when they open.</p>
               </div>
             </div>
             <div class="qitem" data-open="0">
               <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-3">
-                <span>바이어가 서류비를 먼저 보내달라고 하는데요?</span>
+                <span>My buyer is asking me to send a document fee up front.</span>
                 <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
               </button>
+              <!-- v2 §8 앵커 지정 — 답 안의 「Where can I ask?」에서 11 기관 안내로 -->
               <div class="qans" id="qa-3">
-                <p>실제로 자주 있는 요청이고, 무역사기로 이어진 사례도 있습니다.</p>
-                <p>바이어를 확인해보실 수 있는 곳을 아래 「어디에 물어볼 수 있나요」에 정리해 뒀습니다.</p>
+                <p>That request comes up often, and it has led to trade fraud in some cases. Where you can check on a buyer is listed under <a href="#orgs">"Where can I ask?"</a> below.</p>
               </div>
             </div>
           </div>
 
           <div class="qgroup">
-            <p class="eyebrow-quiet">▸ 어떻게 쓰나요</p>
+            <p class="eyebrow-quiet">▸ How it works</p>
             <div class="qitem" data-open="0">
               <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-4">
-                <span>무엇을 해주나요?</span>
+                <span>What do you do?</span>
                 <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
               </button>
               <div class="qans" id="qa-4">
-                <p>올려주신 NDA를 공개된 서식과 항목별로 비교해서, 다른 부분을 표시해 드립니다.</p>
+                <p>We compare the NDA you upload against a public standard form, item by item, and mark where they differ.</p>
               </div>
             </div>
             <div class="qitem" data-open="0">
               <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-5">
-                <span>어느 쪽이 유리한지도 알려주나요?</span>
+                <span>Do you tell me which side is better?</span>
                 <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
               </button>
               <div class="qans" id="qa-5">
-                <p>다른 부분은 하나도 빠뜨리지 않고 표시합니다.</p>
-                <p>유불리는 거래마다 달라서, 그건 보시고 정하시는 게 맞습니다.</p>
+                <p>We mark every difference without exception. What counts as better depends on the deal, so that call is yours.</p>
               </div>
             </div>
             <div class="qitem" data-open="0">
               <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-6">
-                <span>어떻게 시작하나요?</span>
+                <span>How do I start?</span>
                 <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
               </button>
               <div class="qans" id="qa-6">
-                <p>로그인 없이 바로 올리시면 됩니다. 선착순 20건까지 무료입니다.</p>
+                <p>Upload it. No sign-up. The first 20 are free.</p>
               </div>
             </div>
             <div class="qitem" data-open="0">
               <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-7">
-                <span>결과는 어떻게 받나요?</span>
+                <span>How do I get the result?</span>
                 <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
               </button>
               <div class="qans" id="qa-7">
-                <p>이메일로 보내드리는 링크에서 받으실 수 있습니다.</p>
+                <p>Through a link we send to your email.</p>
               </div>
             </div>
             <div class="qitem" data-open="0">
               <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-8">
-                <span>AI가 하나요?</span>
+                <span>Is AI doing this?</span>
                 <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
               </button>
               <div class="qans" id="qa-8">
-                <p>문구를 찾는 데 씁니다. 판단에는 쓰지 않습니다.</p>
+                <p>It finds the wording. It doesn't make the call.</p>
               </div>
             </div>
           </div>
 
           <div class="qgroup">
-            <p class="eyebrow-quiet">▸ 믿을 수 있나요</p>
+            <p class="eyebrow-quiet">▸ Can I trust it?</p>
             <div class="qitem" data-open="0">
               <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-9">
-                <span>무엇을 기준으로 비교하나요?</span>
+                <span>What do you compare against?</span>
                 <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
               </button>
               <div class="qans" id="qa-9">
-                <p>공개 라이선스로 배포되는 표준 서식을 기준으로 씁니다.</p>
-                <p>기준 서식: 영국 지식재산청 공개 서식 · Open Government Licence v3.0</p>
-                <p>© Crown copyright · 확인일 2026-08-10</p>
-                <p>비교 항목은 공적기관 문서를 그대로 인용합니다.</p>
-                <p>관할·법령명·조문·시행일·확인일자 다섯 가지를 함께 보여드립니다.</p>
-                <!-- 확정본 v3.2 추가분 — 랜딩("비교")과 제품 화면("대조")이 다른 단어를 쓰는
-                     것을 이 한 줄이 접점에서 설명합니다(Option A). 랜딩 밖 「대조」를
-                     「비교」로 바꾸면 이 줄이 근거를 잃으니 함께 검토하십시오. -->
-                <p>(실제 서비스 화면에서는 「대조」라는 표현을 씁니다.)</p>
+                <p>A standard form published under an open license.</p>
+                <p>Reference form: UK Intellectual Property Office public form · Open Government Licence v3.0 · © Crown copyright · checked 10 August 2026</p>
+                <p>Comparison items are quoted from public agency documents as they are.</p>
+                <p>We show five fields alongside every item: jurisdiction, statute, article, effective date, and the date we checked.</p>
               </div>
             </div>
             <div class="qitem" data-open="0">
               <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-10">
-                <span>올린 문서는 어떻게 되나요?</span>
+                <span>What happens to the document I upload?</span>
                 <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
               </button>
               <div class="qans" id="qa-10">
-                <p>원본은 30일 뒤 자동 삭제됩니다. 삭제 예정일은 업로드하실 때 함께 안내해 드립니다.</p>
-                <p>그전에 직접 삭제를 요청하시면 바로 지웁니다.</p>
+                <p>The original is deleted automatically after 30 days. We tell you the deletion date when you upload. Ask us earlier and we delete it right away.</p>
               </div>
             </div>
             <div class="qitem" data-open="0">
               <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-11">
-                <span>계약서에 상대방 담당자 이름이 들어 있는데요?</span>
+                <span>My contract has the other party's staff names in it.</span>
                 <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
               </button>
               <div class="qans" id="qa-11">
-                <p>문서에 든 다른 분의 정보는 비교 목적으로만 쓰고, 따로 모으거나 학습에 쓰지 않습니다.</p>
-                <p>원본과 함께 30일 뒤 삭제됩니다.</p>
+                <p>Other people's information in your document is used only for the comparison. We don't collect it separately or use it for training.</p>
+                <p>It is deleted after 30 days along with the original.</p>
               </div>
             </div>
             <div class="qitem" data-open="0">
               <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-12">
-                <span>법률 자문인가요?</span>
+                <span>Is this legal advice?</span>
                 <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
               </button>
               <div class="qans" id="qa-12">
-                <p>아닙니다. 문서에 적힌 것을 보여드리는 서비스입니다.</p>
+                <p>No. We show what the document says.</p>
               </div>
             </div>
             <div class="qitem" data-open="0">
               <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-13">
-                <span>어디에 물어볼 수 있나요?</span>
+                <span>Where can I ask?</span>
                 <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
               </button>
-              <!-- 정본 §2-3 앵커 — 기관 안내(11)가 폼 뒤로 내려가면서 멀어졌으므로
-                   문구는 그대로 두고 링크만 겁니다. -->
+              <!-- v2 §8 앵커 지정 — 11 기관 안내로. 국문 qa-13 과 같은 처리입니다. -->
               <div class="qans" id="qa-13">
-                <p><a href="#orgs">관세청 관세평가분류원 · KOTRA 해외무역관 · FTA활용지원센터 · 한국무역협회 Trade SOS · 중소벤처기업부 비즈니스지원단을 안내해 드립니다.</a></p>
-                <p>저희는 이들 기관과 제휴 관계가 없고 어떤 대가도 받지 않습니다.</p>
+                <p><a href="#orgs">Korea Customs Service — Customs Valuation and Classification Institute · KOTRA overseas offices · FTA Support Centers · Korea International Trade Association Trade SOS · Ministry of SMEs and Startups Business Support Team.</a></p>
+                <p>We have no affiliation with these organizations and receive nothing from them.</p>
               </div>
             </div>
             <div class="qitem" data-open="0">
               <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-14">
-                <span>얼마인가요?</span>
+                <span>What does it cost?</span>
                 <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
               </button>
               <div class="qans" id="qa-14">
-                <p>지금은 선착순 20건까지 무료입니다.</p>
-                <p>유료 상품은 9월에 열 예정이며, 세금계산서 발행되고 비용 처리하실 수 있습니다.</p>
+                <p>The first 20 are free. The paid product opens in September, with tax invoices issued so you can expense it.</p>
               </div>
             </div>
           </div>
@@ -1204,122 +1199,124 @@
       </div>
     </section>
 
-    <!-- ===== 09 마감 CTA (문구 §9 · 정본 §2 10번) =====
-         주 CTA는 페이지에서 3회 나옵니다 — 히어로(풀) · 04 01카드(인라인, 한 단계 아래) ·
-         여기(풀). 크기로 위계를 가르는 것이 C-1의 규칙입니다.
-         ⚠️ 리드 문장을 추가하지 마십시오. 안심 문구(03)와 톤이 겹칩니다. -->
+    <!-- ===== 09 Closing CTA (v2 §9) =====
+         「before you ask」는 HOW 03(where to ask)·11 기관 안내(Here's where to ask.)와
+         같은 동사로 묶은 것입니다 — "consultation" 으로 되돌리지 마십시오. 유료 자문을
+         받으러 간다는 인상이 생깁니다(v2 §9 번역노트).
+         ⚠️ 리드 문장을 추가하지 마십시오. 03 안심 문구와 톤이 겹칩니다. -->
     <section class="close-cta" aria-labelledby="close-cta-title">
       <div class="container narrow-c close-cta-inner">
-        <h2 id="close-cta-title">상담 전에, 한 번 더 확인하세요.</h2>
+        <h2 id="close-cta-title">One more look before you ask.</h2>
         <div class="close-cta-row">
-          <a class="btn btn-primary btn-full" href="/precheck">무료로 비교해 보기</a>
-          <a class="btn btn-secondary btn-full" href="#interest">거래 절차 트래킹 알림 받기</a>
+          <a class="btn btn-primary btn-full" href="/precheck">Compare my NDA — free</a>
+          <a class="btn btn-secondary btn-full" href="#interest">Get notified about trade procedure tracking</a>
         </div>
-        <p class="close-cta-note">선착순 20건 무료 · 로그인 없이 바로</p>
+        <p class="close-cta-note">First 20 free · no sign-up</p>
       </div>
     </section>
 
-    <!-- ===== Interest form =====
-         랜딩 하단은 약한 버전입니다. 강한 버전("먼저 써보고 싶어요")은
-         precheck 결과지 페이지 하단 몫이므로 여기에 끌어오지 마십시오. -->
+    <!-- ===== 10 Interest form (v2 §10) =====
+         ⚠️ v2 §10 은 「어떤 문서를 비교하고 싶으신가요」 체크박스 4종을 포함하지만
+            넣지 않았습니다. 국문 index.html 도 넣지 않았고, /api/leads 가 name·email·
+            company 세 필드만 받습니다. 넣으려면 API 부터 고쳐야 합니다.
+         ⚠️ 보조 문구(KOTRA mentor network)는 v2 §10 원문이라 넣었는데, 국문 index 에는
+            같은 줄이 없습니다 — 영문 독자에게만 보이는 안내가 됩니다. 국문에도 넣을지
+            확인이 필요합니다.
+         ⚠️ 개인정보처리방침 동의 체크는 법무 트랙 미결입니다(국문과 같은 상태). -->
     <section class="interest" id="interest">
       <div class="container interest-inner">
-        <h2>트롭스 무역 관리 서비스 출시 알림 받기</h2>
+        <h2>We'll let you know the moment trade procedure tracking opens.</h2>
+        <p class="interest-sub">Early free slots go to the KOTRA mentor network first.</p>
         <form class="interest-form" id="interest-form" novalidate>
           <div class="form-row">
-            <label for="interest-name">이름 <span class="req" aria-hidden="true">*</span></label>
+            <label for="interest-name">Name <span class="req" aria-hidden="true">*</span></label>
             <input type="text" id="interest-name" name="name" autocomplete="name" required>
           </div>
           <div class="form-row">
-            <label for="interest-email">이메일 <span class="req" aria-hidden="true">*</span></label>
+            <label for="interest-email">Email <span class="req" aria-hidden="true">*</span></label>
             <input type="email" id="interest-email" name="email" autocomplete="email" required>
           </div>
           <div class="form-row">
-            <label for="interest-company">회사명 <span class="optional">(선택)</span></label>
+            <label for="interest-company">Company <span class="optional">(optional)</span></label>
             <input type="text" id="interest-company" name="company" autocomplete="organization">
           </div>
-          <button type="submit" class="btn btn-primary interest-submit">사전 등록하기</button>
+          <button type="submit" class="btn btn-primary interest-submit">Register</button>
           <p class="interest-msg" id="interest-msg" role="status" aria-live="polite"></p>
         </form>
       </div>
     </section>
 
-    <!-- ===== 11 기관 안내 (문구 §11 · 정본 C-4) =====
-         정본 §2-3의 앵커 도착지입니다 — 08 QnA 「어디에 물어볼 수 있나요」에서 들어옵니다.
+    <!-- ===== 11 Where to ask (v2 §11 · 정본 C-4) =====
+         05 HOW 03 과 08 FAQ 두 곳에서 들어오는 앵커 도착지입니다.
          ⚠️ 로고를 넣지 마십시오. 제휴 관계로 오인됩니다. 텍스트만.
-         ⚠️ 순번·평점·「추천순」 표기 금지. 문구 원문의 「·」 불릿을 그대로 씁니다 —
-            번호를 붙이면 순위로 읽힙니다.
-         ⚠️ 순서는 확정본 v3.1 §11 / 정본 v3 C-4 기준 기관 유형순으로 고정입니다:
-            관세청·KOTRA·FTA활용지원센터(공공기관) → 한국무역협회(협회) → 중기부(정부부처).
+         ⚠️ 순번·평점·「추천순」 표기 금지. 「·」 불릿을 그대로 씁니다.
+         ⚠️ 순서는 국문 v3.1 §11 과 같은 기관 유형순으로 고정입니다:
+            관세청·KOTRA·FTA(공공기관) → 무역협회(협회) → 중기부(정부부처).
             클릭 추적으로 순서를 바꾸지 마십시오.
-         ⚠️ 외부 링크를 걸지 않았습니다 — 링크를 걸면 액센트색이 5번 등장해
-            「로고 금지」가 막으려던 제휴 오인이 같은 방식으로 생깁니다. -->
+         ⚠️ "affiliation" 외에 "partnership" · "partner" 표현 금지(v2 §11).
+         ⚠️ 외부 링크를 걸지 않았습니다 — 국문과 같은 이유입니다. -->
     <section class="orgs-sec" id="orgs" aria-labelledby="orgs-title">
       <div class="container orgs-inner">
         <div class="body-w">
-          <h2 id="orgs-title">여기에 물어보시면 됩니다.</h2>
+          <h2 id="orgs-title">Here's where to ask.</h2>
           <ul class="orgs">
-            <li>· 관세청 관세평가분류원</li>
-            <li>· KOTRA 해외무역관</li>
-            <li>· FTA활용지원센터</li>
-            <li>· 한국무역협회 Trade SOS</li>
-            <li>· 중소벤처기업부 비즈니스지원단</li>
+            <li>· Korea Customs Service — Customs Valuation and Classification Institute</li>
+            <li>· KOTRA overseas offices</li>
+            <li>· FTA Support Centers</li>
+            <li>· Korea International Trade Association — Trade SOS</li>
+            <li>· Ministry of SMEs and Startups — Business Support Team</li>
           </ul>
-          <p class="orgs-note">※ 저희는 이들 기관과 제휴 관계가 없고 어떤 대가도 받지 않습니다.</p>
+          <p class="orgs-note">※ We have no affiliation with these organizations and receive nothing from them.</p>
         </div>
       </div>
     </section>
   </main>
 
-  <!-- ===== Footer ===== -->
+  <!-- ===== 12 Footer (v2 §12) ===== -->
   <footer class="footer">
     <div class="container footer-inner">
-      <p class="footer-tag">수출을 앞두고</p>
+      <p class="footer-tag">BEFORE YOU EXPORT</p>
       <div class="footer-row">
         <span class="footer-mark">TROPS</span>
-        <span class="footer-meta">바이어 서류 사전 확인 · contact@theo-ne.com</span>
+        <span class="footer-meta">Buyer document pre-check · contact@theo-ne.com</span>
       </div>
-      <nav class="footer-links" aria-label="정책">
-        <a href="/precheck">바이어 서류 사전 확인</a>
-        <a href="/refund">환불규정</a>
+      <!-- Terms of Service · Privacy Policy 는 아직 페이지가 없어 링크를 걸지 못합니다.
+           국문 푸터도 같은 상태입니다(환불규정만 존재). 페이지가 생기면 함께 거십시오. -->
+      <nav class="footer-links" aria-label="Policies">
+        <a href="/refund">Refund Policy</a>
       </nav>
 
-      <p class="footer-credit">KAIST OverEdge(오버엣지) — AI Agent 1인 창업지원 사업 참여 · 2026</p>
-
-      <dl class="footer-biz" aria-label="사업자정보">
-        <div><dt>상호명</dt><dd>주식회사 테오네</dd></div>
-        <div><dt>대표자명</dt><dd>범하나</dd></div>
-        <div><dt>사업자등록번호</dt><dd>625-81-04032</dd></div>
-        <!-- 통신판매업신고 신청 중. 신고번호 확정 시 "신청 중"을 번호로 교체하십시오. -->
-        <div><dt>통신판매업신고번호</dt><dd>신청 중</dd></div>
-        <div><dt>사업장주소</dt><dd>서울특별시 강남구 봉은사로 524, B층 269-11호(삼성동)</dd></div>
-        <div><dt>전화번호</dt><dd>010-2605-5238</dd></div>
+      <dl class="footer-biz" aria-label="Business information">
+        <!-- ⚠️ [확인 필요 — 등기부 기준 공식 영문 표기 대기]
+             아래 「Theone Inc.」·「Hana Beom」·영문 주소는 v2 §12 의 임시값입니다.
+             법정 고지라 임의 표기하면 안 됩니다. 등기·사업자등록 기준 공식 영문
+             표기를 받는 즉시 교체하십시오. 국문 값(주식회사 테오네 · 범하나 ·
+             서울특별시 강남구 봉은사로 524, B층 269-11호(삼성동))이 원본입니다. -->
+        <div><dt>Company</dt><dd>Theone Inc.</dd></div>
+        <div><dt>CEO</dt><dd>Hana Beom</dd></div>
+        <div><dt>Business Registration No.</dt><dd>625-81-04032</dd></div>
+        <!-- 통신판매업신고 신청 중. 신고번호 확정 시 "Applied for" 를 번호로 교체하십시오. -->
+        <div><dt>E-Commerce Registration No.</dt><dd>Applied for</dd></div>
+        <div><dt>Address</dt><dd>B269-11, 524 Bongeunsa-ro, Gangnam-gu, Seoul, Republic of Korea</dd></div>
+        <div><dt>Phone</dt><dd>+82 10-2605-5238</dd></div>
       </dl>
 
       <div class="footer-legal">
-        <!-- "판단이 필요한 사안은 파트너 전문가로 연결됩니다" 는 뺐습니다(2026-08-09 승인).
-             아직 연결해 드릴 파트너 망이 없는 상태에서 약속으로 읽히는 문장이었습니다. -->
-        <p>TROPS · 주식회사 테오네</p>
-        <p>※ TROPS는 무역 서류 대조 및 수출 데이터 관리를 지원하는 B2B 무역 서비스이며, 법률 자문이나 법률 대리 서비스를 제공하지 않습니다.</p>
-        <p>© 2026 TROPS · 주식회사 테오네. All rights reserved.</p>
+        <p>TROPS · Theone Inc.</p>
+        <p>※ This is not a legal advisory service.</p>
+        <p>© 2026 TROPS · Theone Inc. All rights reserved.</p>
       </div>
     </div>
   </footer>
 
   <script>
-  /* ---------- 08 QnA 아코디언 (정본 C-3) ----------
-     별도 IIFE 입니다. 아래 폼 스크립트는 맨 위에서 `if (!form) return` 으로 빠져나가므로
-     같은 함수 안에 넣으면 폼이 없는 화면에서 QnA 가 조용히 죽습니다.
-
-     펼침 상태는 CSS(.qitem[data-open]) 가 그리고, JS 는 data-open 과
-     aria-expanded 두 값만 뒤집습니다. 마크업이 이미 전부 접힌 상태(data-open="0" ·
-     aria-expanded="false")로 서버에서 내려오므로, JS 가 실패해도 질문 목록은 그대로 보입니다. */
+  /* ---------- 08 FAQ 아코디언 (정본 C-3) ----------
+     index.html 과 같은 로직입니다. 동작을 고칠 일이 생기면 두 파일을 함께 고치십시오.
+     동시 펼침 허용이므로 다른 항목을 닫는 코드를 넣지 마십시오. */
   (function () {
     var groups = document.querySelector('.qgroups');
     if (!groups) return;
 
-    /* 위임으로 한 번만 겁니다 — 14개에 각각 걸지 않습니다.
-       동시 펼침 허용이므로 다른 항목을 닫는 코드를 넣지 마십시오 (C-3). */
     groups.addEventListener('click', function (e) {
       var btn = e.target.closest('.qbtn');
       if (!btn) return;
@@ -1331,6 +1328,8 @@
   })();
 
   (function () {
+    /* 국문과 같은 엔드포인트입니다. 필드 3종(name · email · company)도 같습니다 —
+       영문 폼만 필드를 늘리면 /api/leads 가 받지 못합니다. */
     var API_URL = '/api/leads';
     var form = document.getElementById('interest-form');
     var msg = document.getElementById('interest-msg');
@@ -1345,14 +1344,14 @@
       msg.classList.remove('is-error');
 
       if (!name || !email) {
-        msg.textContent = '이름과 이메일을 입력해 주세요.';
+        msg.textContent = 'Please enter your name and email.';
         msg.classList.add('is-error');
         return;
       }
 
       var submitBtn = form.querySelector('button[type="submit"]');
       submitBtn.disabled = true;
-      msg.textContent = '등록 중입니다...';
+      msg.textContent = 'Registering...';
 
       fetch(API_URL, {
         method: 'POST',
@@ -1364,11 +1363,11 @@
           return res.json();
         })
         .then(function () {
-          msg.textContent = '등록이 완료되었습니다. 곧 연락드리겠습니다.';
+          msg.textContent = "You're registered. We'll be in touch soon.";
           form.reset();
         })
         .catch(function () {
-          msg.textContent = '등록에 실패했습니다. 잠시 후 다시 시도해 주세요.';
+          msg.textContent = 'Registration failed. Please try again in a moment.';
           msg.classList.add('is-error');
         })
         .finally(function () {
