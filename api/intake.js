@@ -121,6 +121,19 @@ async function handleIntake(req, res) {
   // free 는 여기서 접수가 끝나고, paid 는 결제 승인까지 가야 끝납니다.
   const path = body.path === 'paid' ? 'paid' : 'free';
 
+  /*
+   * 브라우저가 신고한 기계적 사실 〔M-1 → M-3 · 2026-08-11〕.
+   *
+   * ⚠️ 여기서 **파일을 열지 않습니다.** 텍스트 레이어 유무는 브라우저가 PDF 구조를
+   *    보고 정해 보내온 값이고, 이 파일은 그 값을 **과금 차단 사유로 옮길 뿐**입니다.
+   *    (경계: 판정·파싱은 trops_a. 이 저장소는 접수·저장·알림·결제 처리만.)
+   *
+   * 형식이 아니면 조용히 버립니다 — 없는 것과 같게 취급합니다. 400 으로 막지 않는
+   * 이유는, 이 값이 **접수의 요건이 아니라 과금을 줄이는 쪽으로만 쓰이는 값**이라
+   * 형식이 틀렸다고 접수 자체를 잃을 이유가 없기 때문입니다.
+   */
+  const declaration = readDeclaration(body.detection);
+
   // 🔴 과금 게이트 — 유료 경로는 여기서 먼저 막습니다 〔R-2 · api/_precheck-charge-gate.js〕.
   //
   // 파일 업로드·주문 생성보다 **앞**입니다. 뒤에 두면 막히는 건인데도 파일이 저장되고
@@ -129,7 +142,11 @@ async function handleIntake(req, res) {
   // 무상 건은 지나갑니다 — 막는 것은 「유상 개시」이지 「제품 제공」이 아닙니다.
   // 실증 20건은 0원이라 이 게이트에 걸리지 않고, 변호사 확인을 기다리는 동안에도
   // 계속 굴러가야 합니다(그 20건이 확인에 필요한 실측의 출처입니다).
-  if (path === 'paid' && rejectIfChargeBlocked(res, 'api/intake.js')) return;
+  //
+  // 🔴 두 번째 축이 여기 들어옵니다 〔M-3〕 — 「불가」로 신고된 건은 유상 경로로
+  //    들어가지 않습니다. **무상 건은 신고값과 무관하게 그대로 접수됩니다.**
+  //    글자를 읽을 수 없는 파일이라고 접수를 거절하지 않습니다 — 막는 것은 돈입니다.
+  if (path === 'paid' && rejectIfChargeBlocked(res, 'api/intake.js', declaration)) return;
 
   const parsed = parseFiles(body.files);
   if (!parsed.ok) {
@@ -501,6 +518,28 @@ function parseTradeInfo(body) {
   }
 
   return { ok: true, trade: { country: country, hsCode: hsCode } };
+}
+
+/* ──────────────────────────────────────────────────────────────
+ * 브라우저 신고값 〔M-1 → M-3〕
+ * ────────────────────────────────────────────────────────────── */
+
+/**
+ * 접수 본문의 detection 을 아는 값만 남기고 걸러냅니다.
+ *
+ * ⚠️ **아는 값만 통과**시킵니다. 모르는 문자열이 지나가면 나중에 사유 코드를
+ *    늘렸을 때 옛 브라우저가 보낸 오타가 조용히 차단 사유가 됩니다.
+ *
+ * ⛔ 여기서 값을 **만들지 않습니다.** 없으면 없는 것으로 둡니다 —
+ *    서버가 추정하기 시작하면 그것이 판정이 되고, 판정은 이 저장소 일이 아닙니다.
+ */
+const TEXT_LAYER_STATES = ['present', 'absent', 'unknown'];
+
+function readDeclaration(raw) {
+  if (!raw || typeof raw !== 'object') return null;
+  const state = raw.pdfTextLayer;
+  if (typeof state !== 'string' || TEXT_LAYER_STATES.indexOf(state) === -1) return null;
+  return { pdfTextLayer: state };
 }
 
 /* ──────────────────────────────────────────────────────────────

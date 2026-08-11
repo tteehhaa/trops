@@ -42,6 +42,8 @@ const PRICE = 99000;
 const ORDER_NAME = '바이어 서류 사전 확인';
 
 const CONFIRM_URL = 'https://api.tosspayments.com/v1/payments/confirm';
+/** 취소(환불). `{paymentKey}/cancel` 로 붙입니다 〔M-3 · 2026-08-11〕. */
+const PAYMENT_URL_BASE = 'https://api.tosspayments.com/v1/payments/';
 
 // 토스 공식 문서에 공개된 결제위젯 테스트 키.
 // 비밀이 아니며, 실제 매출이 발생하지 않습니다. 심사용 결제창을 띄우기 위한 기본값입니다.
@@ -160,6 +162,73 @@ async function confirmPayment(params) {
   }
 }
 
+/**
+ * 결제 취소(환불) 〔M-3 · 신설 2026-08-11〕.
+ *
+ * ⚠️ **여기에는 「환불해야 하는가」가 없습니다.** 그 판단은 사람이 하고
+ *    (판별이 뒤집혔다는 사실은 뒷단·검수에서 나옵니다), 이 함수는 시키는 취소를
+ *    실행하기만 합니다. 이 저장소의 경계가 그렇습니다 — 결제 처리는 하고 판정은 안 합니다.
+ *
+ * ⛔ 라우트에서 부르지 마십시오. 지금 호출부는 scripts/refund.js 하나이고,
+ *    그것이 의도입니다 — 돈을 되돌리는 경로가 공개 주소에 서면 안 됩니다.
+ *
+ * amount 를 넘기지 않으면 전액 취소입니다. 부분 취소는 지금 쓰지 않습니다
+ * (환불규정 §02 가 요약 자료 전달 전 **전액**을 말합니다).
+ */
+async function cancelPayment(params) {
+  const { secretKey } = readTossConfig();
+  const auth = Buffer.from(secretKey + ':').toString('base64');
+
+  const body = { cancelReason: params.reason };
+  if (params.amount != null) body.cancelAmount = params.amount;
+
+  try {
+    const response = await fetch(
+      PAYMENT_URL_BASE + encodeURIComponent(params.paymentKey) + '/cancel',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: 'Basic ' + auth,
+          'Content-Type': 'application/json',
+          // 같은 건을 두 번 취소하지 않도록 멱등키를 붙입니다. 스크립트를 두 번
+          // 돌려도 토스가 같은 결과를 돌려줍니다(재취소가 아닙니다).
+          'Idempotency-Key': 'refund_' + params.paymentKey,
+        },
+        body: JSON.stringify(body),
+      }
+    );
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      return {
+        ok: false,
+        code: data.code || String(response.status),
+        message: data.message || '결제 취소에 실패했습니다.',
+      };
+    }
+
+    const cancels = Array.isArray(data.cancels) ? data.cancels : [];
+    const last = cancels.length > 0 ? cancels[cancels.length - 1] : {};
+    return {
+      ok: true,
+      cancel: {
+        paymentKey: data.paymentKey,
+        orderId: data.orderId,
+        status: data.status,
+        cancelledAt: last.canceledAt || new Date().toISOString(),
+        cancelledAmount: last.cancelAmount != null ? Number(last.cancelAmount) : null,
+      },
+    };
+  } catch (err) {
+    return {
+      ok: false,
+      code: 'NETWORK',
+      message: err && err.message ? err.message : '네트워크 오류',
+    };
+  }
+}
+
 module.exports = {
   LIST_PRICE: LIST_PRICE,
   PRICE: PRICE,
@@ -168,4 +237,5 @@ module.exports = {
   classifyKey: classifyKey,
   makeOrderId: makeOrderId,
   confirmPayment: confirmPayment,
+  cancelPayment: cancelPayment,
 };

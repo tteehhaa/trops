@@ -9,6 +9,8 @@
     "verify:prod": "node scripts/verify-deployment.js https://www.trops.kr",
     "cleanup:preview": "node --env-file=.env.local scripts/cleanup-expired.js",
     "cleanup:apply": "node --env-file=.env.local scripts/cleanup-expired.js --apply",
+    "refund:preview": "node --env-file=.env.local scripts/refund.js",
+    "refund:apply": "node --env-file=.env.local scripts/refund.js --apply",
     "deliver": "node --env-file=.env.local scripts/deliver.js"
   },
   "dependencies": {

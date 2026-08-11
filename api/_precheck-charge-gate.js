@@ -103,6 +103,58 @@ function isPrecheckPaidChargeEnabled(flags, confirmation) {
   return precheckChargeBlockers(flags, confirmation).length === 0;
 }
 
+/* ──────────────────────────────────────────────────────────────────────────────
+ * 축 ② 「이 건이 불가인가」 〔M-3 · 신설 2026-08-11〕
+ *
+ * 위쪽(축 ①)은 **유상 판매를 개시해도 되는가**입니다 — 건별로 달라지지 않고,
+ * trops_a 정본의 사본이라 값을 여기서 바꾸지 않습니다.
+ * 아래(축 ②)는 **이 접수 한 건을 과금해도 되는가**입니다. 건마다 다릅니다.
+ *
+ * 🔴 **왜 새 게이트를 만들지 않고 여기 붙였는가.** 결제 경로에서 「막혔나」를 묻는
+ *    자리가 둘이 되면, 새로 생기는 결제 경로가 한쪽만 부르고 지나갑니다.
+ *    던지는 함수 하나(assertPrecheckChargeAllowed)가 두 축을 함께 보게 두면
+ *    호출부는 이유를 몰라도 되고, 이유가 늘어도 호출부를 고치지 않습니다.
+ *
+ * ⚠️ **이것은 판정이 아닙니다.** 「불가」인지 정하는 것은 trops_a 소관이고,
+ *    여기서 하는 일은 **브라우저가 신고한 기계적 사실을 차단 사유로 옮기는 것**뿐입니다.
+ *    파일을 열지도, 파싱하지도, 등급을 계산하지도 않습니다.
+ *
+ * 🔴 **한 방향으로만 움직입니다.** 신고값은 차단 사유를 **더할** 수만 있고
+ *    축 ①을 **열지는** 못합니다. 그래서 브라우저에서 고쳐 보내도 위험한 방향
+ *    (막혀야 할 건이 과금되는 방향)으로는 가지 않습니다. 'absent' 를 지워 보내면
+ *    축 ①이 그대로 막고 있고, 축 ①이 열린 뒤에는 「불가인데 결제됨」이 되지만
+ *    그때는 아래 환불 경로(scripts/refund.js)가 받는 자리입니다.
+ * ────────────────────────────────────────────────────────────────────────────── */
+
+/**
+ * 접수 단계에서 「불가」로 보는 사유.
+ *
+ * ⛔ 여기에 「판정으로 알 수 있는 것」을 넣지 마십시오. 기계적으로 확인되는 것만
+ *    옵니다 — 지금은 하나입니다.
+ *
+ *   text-layer-absent  PDF 에 글자층이 없습니다(api/../precheck.html 의 감지 블록).
+ *                      뒷단이 대조할 글자가 없으므로 유상으로 받지 않습니다.
+ *
+ * ⚠️ 'unknown' 은 사유가 아닙니다. 못 정한 것을 불가로 취급하면, 감지가 실패한
+ *    모든 건의 과금이 조용히 멈춥니다.
+ */
+const INTAKE_INELIGIBLE_REASONS = {
+  'text-layer-absent': 'PDF 에 텍스트 레이어가 없다고 신고된 건',
+};
+
+/**
+ * 신고값을 차단 사유 목록으로 옮깁니다. 비어 있으면 이 건은 과금 대상입니다.
+ *
+ * 사유 코드에 `ineligible:` 을 붙여 축 ①의 항목(paid_charge_enabled · S62-44 …)과
+ * 섞이지 않게 합니다 — 로그에서 「무엇이 막았나」가 갈려야 합니다.
+ */
+function intakeIneligibilityBlockers(declaration) {
+  const d = declaration && typeof declaration === 'object' ? declaration : {};
+  const out = [];
+  if (d.pdfTextLayer === 'absent') out.push('ineligible:text-layer-absent');
+  return out;
+}
+
 /**
  * 상품을 화면에 노출하는가 — 가격 게시·플랜 카드·결제 진입 버튼.
  * 게시는 과금이 아닙니다. 막히는 것은 과금 실행뿐입니다.
@@ -113,10 +165,19 @@ function isPrecheckPaidDisplayEnabled(flags) {
 
 /** 차단 사유를 들고 다니는 오류 — 로그에서 「왜」가 사라지지 않게 합니다. */
 class PrecheckChargeBlockedError extends Error {
-  constructor(blockers) {
+  constructor(blockers, kind) {
     super('앞단 과금이 막혀 있습니다 — 남은 항목: ' + blockers.join(', '));
     this.name = 'PrecheckChargeBlockedError';
     this.blockers = blockers;
+    /**
+     * 'launch'     유상 개시가 안 열렸습니다 — 모든 건에 걸립니다.
+     * 'ineligible' 개시는 열렸고 이 건만 불가입니다.
+     *
+     * 🔴 이용자에게 할 말이 다릅니다. 「아직 안 열었습니다」와 「이 파일로는
+     *    받지 않습니다」를 한 문장으로 합치면 둘 다 틀린 말이 됩니다.
+     *    launch 가 우선입니다 — 안 열린 것이 더 앞선 사실입니다.
+     */
+    this.kind = kind || 'launch';
     /** 라우트가 그대로 응답 코드로 씁니다. */
     this.statusCode = 403;
   }
@@ -130,10 +191,16 @@ class PrecheckChargeBlockedError extends Error {
  *    던지는 함수는 「부르지 않은 것」과 「통과한 것」이 구분됩니다.
  *
  * ⛔ 노출 판정에 쓰지 않습니다 — 노출은 isPrecheckPaidDisplayEnabled() 입니다.
+ *
+ * 세 번째 인자가 축 ②입니다(브라우저 신고값). 넘기지 않으면 축 ①만 봅니다 —
+ * 종전 호출부의 뜻이 바뀌지 않도록 뒤에 붙였습니다.
  */
-function assertPrecheckChargeAllowed(flags, confirmation) {
-  const blockers = precheckChargeBlockers(flags, confirmation);
-  if (blockers.length > 0) throw new PrecheckChargeBlockedError(blockers);
+function assertPrecheckChargeAllowed(flags, confirmation, declaration) {
+  const launch = precheckChargeBlockers(flags, confirmation);
+  const ineligible = intakeIneligibilityBlockers(declaration);
+  const blockers = launch.concat(ineligible);
+  if (blockers.length === 0) return;
+  throw new PrecheckChargeBlockedError(blockers, launch.length > 0 ? 'launch' : 'ineligible');
 }
 
 /**
@@ -141,15 +208,35 @@ function assertPrecheckChargeAllowed(flags, confirmation) {
  *
  * 각 라우트가 try/catch 를 따로 적으면 응답 모양이 갈라집니다.
  * 이용자에게 보이는 문장은 여기 한 곳에서만 정합니다.
+ *
+ * declaration 은 접수 본문의 detection 입니다(선택). 결제 승인처럼 신고값이
+ * 없는 자리에서는 넘기지 않습니다 — 그 자리는 접수 때 이미 걸러진 뒤입니다.
  */
-function rejectIfChargeBlocked(res, where) {
+function rejectIfChargeBlocked(res, where, declaration) {
   try {
-    assertPrecheckChargeAllowed();
+    assertPrecheckChargeAllowed(undefined, undefined, declaration);
     return false;
   } catch (err) {
     if (!(err instanceof PrecheckChargeBlockedError)) throw err;
     console.error('precheck charge blocked at ' + where + ': ' + err.blockers.join(', ') +
+      ' | 사유종류=' + err.kind +
       ' | 정본=' + CANON.repo + ' ' + CANON.file + ' | 원장=' + CANON.ledger);
+
+    if (err.kind === 'ineligible') {
+      /*
+       * 🔴 이 응답은 **접수 거절이 아니라 과금 거절**입니다 〔M-3〕.
+       *    문장이 「무상으로 보내주시면 그대로 접수됩니다」로 끝나야 합니다 —
+       *    여기서 말을 멈추면 이용자는 자기 서류를 받아주지 않는다고 읽습니다.
+       *    화면은 이 문장을 그대로 씁니다(precheck.html onIneligible).
+       */
+      res.status(403).json({
+        error: 'ineligible-not-charged',
+        blockers: err.blockers,
+        message: '이 파일에서는 글자를 읽을 수 없어 유상 접수로 진행하지 않습니다. 무상 실증으로 보내주시면 그대로 접수됩니다.',
+      });
+      return true;
+    }
+
     res.status(403).json({
       error: 'charge-not-open',
       blockers: err.blockers,
@@ -163,6 +250,8 @@ module.exports = {
   CANON: CANON,
   PRECHECK_PAID_FLAGS: PRECHECK_PAID_FLAGS,
   LAWYER_CONFIRMATION: LAWYER_CONFIRMATION,
+  INTAKE_INELIGIBLE_REASONS: INTAKE_INELIGIBLE_REASONS,
+  intakeIneligibilityBlockers: intakeIneligibilityBlockers,
   precheckChargeBlockers: precheckChargeBlockers,
   isPrecheckPaidChargeEnabled: isPrecheckPaidChargeEnabled,
   isPrecheckPaidDisplayEnabled: isPrecheckPaidDisplayEnabled,

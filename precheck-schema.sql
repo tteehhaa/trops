@@ -159,6 +159,34 @@
 --     where delivered_at is not null;
 
 
+-- ── 0-F. 환불 기록 컬럼 — 판별 뒤집힘 환불 (2026-08-11 · M-3) ────────────────
+--
+-- 접수 뒤에 「불가」로 뒤집힌 건은 환불합니다. payment_status 에는 'refunded' 가
+-- 이미 있었지만 **언제·왜** 를 담을 자리가 없었습니다. 그 두 칸이 없으면
+-- 환불한 건과 환불하지 않은 건을 구분만 할 수 있고, 분쟁이 나면 회사가
+-- "언제 무슨 사유로 돌려드렸다" 를 제시하지 못합니다(0-E 와 같은 형태의 공백).
+--
+-- 쓰는 곳은 scripts/refund.js 하나입니다. 라우트는 이 컬럼을 쓰지 않습니다 —
+-- 돈을 되돌리는 경로를 공개 주소에 두지 않는다는 판단입니다.
+--
+-- ⚠️ **이 절을 실행하지 않아도 접수·결제는 그대로 동작합니다.** 환불 스크립트만
+--    선행 검사에서 멈추고 이 절을 실행하라고 말합니다. 접수 경로가 이 컬럼을
+--    쓰지 않게 둔 것이 의도입니다 — 마이그레이션을 잊었을 때 깨지는 것이
+--    운영 도구 하나이지 접수 전체가 아니어야 합니다.
+--
+-- ⚠️ 이 절만 따로 실행하십시오(0-D·0-E 와 같습니다). 파일 전체를 붙여넣으면
+--    아래 1번의 create table public.intake 에서 42P07 로 멈춥니다.
+--
+-- 가산 변경만 합니다 — 기존 컬럼을 지우거나 형을 바꾸지 않습니다.
+--
+--   alter table public.intake
+--     add column if not exists refunded_at    timestamptz,
+--     add column if not exists refund_reason  text;
+--
+--   create index if not exists intake_refunded_idx on public.intake (refunded_at)
+--     where refunded_at is not null;
+
+
 -- ── 1. 접수 ──────────────────────────────────────────────────────────────────
 --
 -- 이 테이블에는 판정 결과를 두지 않습니다. 접수 사실만 기록합니다.
@@ -224,6 +252,14 @@ create table public.intake (
   -- ⚠️ 덮어쓰지 마십시오. 덮어쓰면 환불 기준선이 뒤로 밀립니다.
   delivered_at      timestamptz,
 
+  -- ── 환불 기록 (2026-08-11 추가 · M-3 「불가」 비과금) ──────────────────────
+  -- 접수 뒤에 판별이 「불가」로 뒤집힌 건을 환불한 기록입니다.
+  -- payment_status='refunded' 와 함께 scripts/refund.js 가 씁니다.
+  -- 사유를 남기는 이유는 환불이 두 갈래이기 때문입니다 —
+  -- 이용자 요청(환불규정 §02)과 우리 쪽 사유(판별 뒤집힘)는 성질이 다릅니다.
+  refunded_at       timestamptz,
+  refund_reason     text,
+
   received_at       timestamptz not null default now(),
   -- 30일 보관 후 삭제. 확인메일에 PDF 를 첨부하지 않는 이유이기도 합니다
   -- (첨부한 파일에는 이 삭제 정책을 적용할 수 없습니다).
@@ -269,6 +305,9 @@ create index intake_hs_code_idx      on public.intake (hs_code)
 -- 부분 색인으로 둡니다.
 create index intake_delivered_idx    on public.intake (delivered_at)
   where delivered_at is not null;
+-- 환불한 건은 드뭅니다. 부분 색인으로 두고, 「환불 이력」 조회에만 씁니다.
+create index intake_refunded_idx     on public.intake (refunded_at)
+  where refunded_at is not null;
 
 -- service role 로만 읽고 씁니다. anon/authenticated 접근은 막습니다.
 -- (정책을 만들지 않으면 service role 외 모든 접근이 차단됩니다.)

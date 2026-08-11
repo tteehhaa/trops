@@ -242,7 +242,159 @@ test('payment-config 는 게이트 상태를 알린다 — 화면이 잠글 근�
   });
 });
 
+/* ══════════════════════════════════════════════════════════════════════════════
+ * 축 ② 「불가」 비과금 〔M-3 · 2026-08-11〕
+ *
+ * 🔴 **개시 게이트를 잠시 열고 잽니다.** 지금은 축 ①(paid_charge_enabled ·
+ *    S62-44 · S62-03)이 모든 유상 건을 막고 있어서, 그 상태로는 「불가라서
+ *    막혔다」와 「아직 안 열려서 막혔다」가 구분되지 않습니다. 구분이 안 되면
+ *    개시가 열리는 날 이 기능이 동작하는지 아무도 모릅니다.
+ *
+ * ⚠️ 상수를 파일에서 고치는 것이 아니라 **객체 속성을 잠깐 뒤집고 되돌립니다.**
+ *    (모듈이 상수를 참조로 들고 있어 같은 객체를 봅니다.) 파일을 고치면 정본
+ *    드리프트 테스트가 red 를 내야 하고, 그건 이 테스트가 잴 것이 아닙니다.
+ * ════════════════════════════════════════════════════════════════════════════ */
+
+function withLaunchOpen(run) {
+  const flags = gate.PRECHECK_PAID_FLAGS;
+  const confirmation = gate.LAWYER_CONFIRMATION;
+  const before = {
+    charge: flags.paid_charge_enabled, s44: confirmation.S62_44, s03: confirmation.S62_03,
+  };
+
+  flags.paid_charge_enabled = true;
+  confirmation.S62_44 = true;
+  confirmation.S62_03 = true;
+
+  return Promise.resolve()
+    .then(run)
+    .finally(() => {
+      flags.paid_charge_enabled = before.charge;
+      confirmation.S62_44 = before.s44;
+      confirmation.S62_03 = before.s03;
+    });
+}
+
+test('신고값이 차단 사유로 옮겨진다 — absent 하나만', () => {
+  assert.deepStrictEqual(gate.intakeIneligibilityBlockers({ pdfTextLayer: 'absent' }),
+    ['ineligible:text-layer-absent']);
+  assert.deepStrictEqual(gate.intakeIneligibilityBlockers({ pdfTextLayer: 'present' }), []);
+  assert.deepStrictEqual(gate.intakeIneligibilityBlockers({ pdfTextLayer: 'unknown' }), [],
+    '못 정한 것을 불가로 취급하면 감지 실패한 모든 건의 과금이 조용히 멈춥니다');
+  assert.deepStrictEqual(gate.intakeIneligibilityBlockers(null), []);
+  assert.deepStrictEqual(gate.intakeIneligibilityBlockers({ pdfTextLayer: 'ABSENT' }), [],
+    '아는 값만 통과시켜야 합니다');
+});
+
+test('신고값은 축 ①을 열지 못한다 — 한 방향으로만 움직인다', () => {
+  // present 를 보내도 개시 게이트는 그대로 막혀 있습니다.
+  assert.throws(() => gate.assertPrecheckChargeAllowed(undefined, undefined, { pdfTextLayer: 'present' }),
+    (err) => err instanceof gate.PrecheckChargeBlockedError && err.kind === 'launch');
+});
+
+test('개시가 열려도 「불가」 건은 막힌다 — 사유종류가 갈린다', async () => {
+  await withLaunchOpen(() => {
+    assert.doesNotThrow(() => gate.assertPrecheckChargeAllowed(undefined, undefined, null),
+      '개시가 열렸고 신고값도 없으면 통과해야 합니다');
+
+    assert.throws(
+      () => gate.assertPrecheckChargeAllowed(undefined, undefined, { pdfTextLayer: 'absent' }),
+      (err) => err instanceof gate.PrecheckChargeBlockedError &&
+        err.kind === 'ineligible' &&
+        err.blockers.length === 1 &&
+        err.blockers[0] === 'ineligible:text-layer-absent'
+    );
+  });
+});
+
+test('e2e — 「불가」 유상 접수는 403 · 주문도 파일도 만들어지지 않는다', async () => {
+  await withLaunchOpen(() => withFakes(async (calls) => {
+    const res = fakeRes();
+    await intake({
+      method: 'POST', query: {},
+      body: {
+        path: 'paid', email: 'buyer@example.com', consentTerms: true,
+        files: [file('scan.pdf')],
+        detection: { pdfTextLayer: 'absent' },
+      },
+    }, res);
+
+    assert.strictEqual(res.statusCode, 403);
+    assert.strictEqual(res.body.error, 'ineligible-not-charged',
+      '「아직 안 열었습니다」와 같은 답을 하면 이용자가 파일을 바꿔 볼 생각을 못 합니다');
+    // 🔴 화면이 그대로 쓰는 문장입니다. 「접수됩니다」로 끝나야 합니다 —
+    //    여기서 말을 멈추면 서류를 안 받아준다고 읽힙니다.
+    assert.match(res.body.message, /무상 실증으로 보내주시면 그대로 접수됩니다/);
+
+    assert.deepStrictEqual(writeCalls(calls), [],
+      'Supabase 쓰기가 일어났습니다 — 게이트가 저장보다 뒤에 있습니다');
+    assert.deepStrictEqual(tossCalls(calls), [], '결제 호출이 나갔습니다');
+    assert.strictEqual(mails.length, 0);
+  }));
+});
+
+test('e2e — 「불가」라도 무상 접수는 그대로 완료된다 〔M-1 · 접수 거부 금지〕', async () => {
+  await withFakes(async (calls) => {
+    const res = fakeRes();
+    await intake({
+      method: 'POST', query: {},
+      body: {
+        path: 'free', email: 'buyer@example.com', consentTerms: true,
+        files: [file('scan.pdf')],
+        detection: { pdfTextLayer: 'absent' },
+      },
+    }, res);
+
+    // 🔴 이것이 M-1 의 「이대로 진행하기」가 실제로 통하는지에 대한 답입니다.
+    //    글자를 읽을 수 없는 파일이라고 접수를 거절하면 안 됩니다 — 막는 것은 돈뿐입니다.
+    assert.strictEqual(res.statusCode, 201, '「불가」를 접수 거절로 쓰면 안 됩니다');
+    assert.strictEqual(res.body.ok, true);
+    assert.strictEqual(res.body.path, 'free');
+    assert.ok(writeCalls(calls).length > 0, '저장이 일어나지 않았습니다');
+    assert.strictEqual(mails.length, 1, '확인메일이 나가지 않았습니다');
+  });
+});
+
+test('e2e — 개시가 열린 뒤 「불가 아님」 유상 접수는 지나간다', async () => {
+  await withLaunchOpen(() => withFakes(async (calls) => {
+    const res = fakeRes();
+    await intake({
+      method: 'POST', query: {},
+      body: {
+        path: 'paid', email: 'buyer@example.com', consentTerms: true,
+        files: [file('nda.pdf')],
+        detection: { pdfTextLayer: 'present' },
+      },
+    }, res);
+
+    assert.strictEqual(res.statusCode, 201, '막을 이유가 없는 건을 막았습니다');
+    assert.strictEqual(res.body.path, 'paid');
+    assert.ok(res.body.orderId, '주문번호가 발급되어야 합니다');
+  }));
+});
+
+test('형식이 틀린 신고값은 접수를 막지 않는다 — 접수 요건이 아니다', async () => {
+  await withFakes(async () => {
+    const res = fakeRes();
+    await intake({
+      method: 'POST', query: {},
+      body: {
+        path: 'free', email: 'buyer@example.com', consentTerms: true,
+        files: [file('nda.pdf')],
+        detection: { pdfTextLayer: 12345 },
+      },
+    }, res);
+    assert.strictEqual(res.statusCode, 201);
+  });
+});
+
 /* ── 배선이 끊기면 알린다 ──────────────────────────────────────────────────── */
+
+test('접수 경로가 신고값을 게이트에 넘긴다 — 넘기지 않으면 축 ②가 죽는다', () => {
+  const src = fs.readFileSync(path.join(__dirname, '..', 'api', 'intake.js'), 'utf8');
+  assert.ok(/rejectIfChargeBlocked\(res, 'api\/intake\.js', declaration\)/.test(src),
+    'api/intake.js 가 신고값을 게이트에 넘기지 않습니다 — 축 ②가 아무것도 막지 못합니다');
+});
 
 test('결제 경로 두 곳이 게이트를 부르고 있다 — 호출부가 사라지면 red', () => {
   const wired = ['api/intake.js', 'api/payment-confirm.js'];
