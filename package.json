@@ -11,6 +11,8 @@
     "cleanup:apply": "node --env-file=.env.local scripts/cleanup-expired.js --apply",
     "refund:preview": "node --env-file=.env.local scripts/refund.js",
     "refund:apply": "node --env-file=.env.local scripts/refund.js --apply",
+    "refund:blocked:preview": "node --env-file=.env.local scripts/refund-blocked.js",
+    "refund:blocked:apply": "node --env-file=.env.local scripts/refund-blocked.js --apply",
     "deliver": "node --env-file=.env.local scripts/deliver.js"
   },
   "dependencies": {

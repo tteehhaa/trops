@@ -323,6 +323,83 @@ async function sendDeliveryMail(info) {
   return { sent: true, error: null };
 }
 
+/**
+ * 「범위 밖」으로 뒤집혀 자동 환불한 건의 안내메일 〔M-2 · 2026-08-11〕.
+ *
+ * 🔴 **환불이 끝난 뒤에만** 부릅니다(api/_route-refund.js ⑦). 돈이 돌아가지
+ *    않은 상태에서 이 메일이 나가면 지키지 못한 약속이 됩니다.
+ *
+ * ⚠️ 문면을 여기서 만들지 않습니다. 사유 문장(info.notice)은 api/_intake-route.js
+ *    한 곳에서 옵니다 — 화면과 메일이 같은 문장을 말해야 하고, 두 곳에 적어 두면
+ *    한쪽만 고쳐집니다. 「등급」·「부분」이라는 낱말은 쓰지 않습니다(C2).
+ *
+ * ⛔ 무엇이 문제인 파일인지·무슨 언어인지 말하지 않습니다. 말하는 것은
+ *    「지금 확인할 수 있는 범위」와 「돈은 돌려드렸다」 둘입니다.
+ *
+ * @returns {Promise<{sent: boolean, error: string|null}>}
+ */
+async function sendRouteRefundMail(info) {
+  const notice = String(info.notice || '').trim();
+  const magicLink = info.magicLink ? String(info.magicLink) : '';
+
+  try {
+    const { error } = await resendApi().emails.send({
+      from: `TROPS <${CONTACT_ADDRESS}>`,
+      to: [info.email],
+      subject: '[TROPS] 결제하신 금액을 전액 환불했습니다',
+      html: `
+        <p>${escapeHtml(notice)}</p>
+        <p><strong>결제하신 ${escapeHtml(formatWon(info.amount))} 을 전액 환불했습니다.</strong>
+          카드사에 따라 실제 입금까지 며칠 걸릴 수 있습니다.</p>
+        <p>서류를 다시 보내주시면 새로 접수됩니다. 접수 자체에는 비용이 들지 않습니다.</p>
+        ${magicLink
+          ? `<p style="color:#64748B;font-size:13px">
+             접수 내용은 <a href="${escapeHtml(magicLink)}">여기</a>에서 확인하실 수 있습니다.<br>
+             주문번호 ${escapeHtml(info.orderId || '-')}</p>`
+          : `<p style="color:#64748B;font-size:13px">주문번호 ${escapeHtml(info.orderId || '-')}</p>`}
+        <p style="color:#64748B;font-size:13px">
+          환불규정은 <a href="${escapeHtml(origin())}/refund">${escapeHtml(origin().replace(/^https?:\/\//, ''))}/refund</a> 에서 보실 수 있습니다.
+          문의는 ${escapeHtml(CONTACT_ADDRESS)} 으로 주십시오.
+        </p>
+      `,
+    });
+    if (error) {
+      console.error('route refund email error', error);
+      return { sent: false, error: String(error.message || error) };
+    }
+  } catch (err) {
+    console.error('route refund email exception', err);
+    return { sent: false, error: err && err.message ? err.message : String(err) };
+  }
+
+  // 운영자 알림. 실패해도 이용자 안내가 나갔으면 sent 는 true 입니다 —
+  // 이 값을 보고 부르는 쪽이 「알렸는가」를 셉니다.
+  try {
+    const { error } = await resendApi().emails.send({
+      from: `TROPS 자동 환불 <${CONTACT_ADDRESS}>`,
+      to: [CONTACT_ADDRESS],
+      replyTo: info.email,
+      subject: `[TROPS] 자동 환불 - ${info.orderId || '-'}`,
+      html: `
+        <p><strong>처리 불가로 확인되어 자동 환불했습니다.</strong></p>
+        <p><strong>주문번호:</strong> ${escapeHtml(info.orderId || '-')}</p>
+        <p><strong>이메일:</strong> ${escapeHtml(info.email)}</p>
+        <p><strong>금액:</strong> ${escapeHtml(formatWon(info.amount))}</p>
+        <p><strong>이용자에게 나간 문장:</strong> ${escapeHtml(notice)}</p>
+        <p style="color:#64748B;font-size:13px">
+          판단의 정본은 판정층 trops_a 입니다(precheck_intake_route). 이 저장소는 그것을
+          읽어 환불만 실행했습니다 — api/_route-refund.js.
+        </p>
+      `,
+    });
+    if (error) console.error('route refund operator email error', error);
+  } catch (err) {
+    console.error('route refund operator email exception', err);
+  }
+
+  return { sent: true, error: null };
+}
+
 /* ──────────────────────────────────────────────────────────────
  * 거래 정보 · 협정 세율 (선택 항목)
  * ────────────────────────────────────────────────────────────── */
@@ -426,6 +503,7 @@ module.exports = {
   sendIntakeMails: sendIntakeMails,
   sendErasureMails: sendErasureMails,
   sendDeliveryMail: sendDeliveryMail,
+  sendRouteRefundMail: sendRouteRefundMail,
   formatWon: formatWon,
   escapeHtml: escapeHtml,
 };

@@ -8,6 +8,10 @@
     {
       "path": "/api/cron/cleanup-expired",
       "schedule": "20 21 * * *"
+    },
+    {
+      "path": "/api/cron/refund-blocked",
+      "schedule": "40 22 * * *"
     }
   ],
   "headers": [

@@ -121,6 +121,28 @@ test('정리 배치가 등재돼 있다', () => {
   );
 });
 
+test('환불 배치가 등재돼 있다 〔M-2〕', () => {
+  // 이것이 빠지면 「범위 밖」으로 뒤집힌 유상 건의 돈이 조용히 남습니다 —
+  // 아무 화면도 깨지지 않으므로 증상이 「환불이 안 됐다」로만 나타납니다.
+  const registered = (vercelJson().crons || []).map((c) => c.path);
+  assert.ok(
+    registered.includes('/api/cron/refund-blocked'),
+    '「범위 밖」 자동 환불 배치가 vercel.json 에 없습니다'
+  );
+});
+
+test('cron 이 같은 시(hour)에 겹치지 않는다', () => {
+  /*
+   * Hobby 플랜은 지정한 시각의 **시 안에서** 부르고 분을 보장하지 않습니다.
+   * 그래서 분만 다르게 두면 두 배치가 같은 시각에 겹칠 수 있고, 하나는
+   * 삭제하고 하나는 환불하는 배치가 같은 행을 동시에 보게 됩니다.
+   * (판정층 trops_a 의 cron 3개와도 시를 겹치지 않게 골랐습니다 —
+   *  근거는 각 라우트 머리주석에 있습니다.)
+   */
+  const hours = (vercelJson().crons || []).map((c) => String(c.schedule).trim().split(/\s+/)[1]);
+  assert.strictEqual(new Set(hours).size, hours.length, '같은 시에 도는 cron 이 있습니다: ' + hours.join(', '));
+});
+
 test('스케줄이 Hobby 제약을 지킨다 — 하루 1회 · 프로젝트당 2개', () => {
   const crons = vercelJson().crons || [];
   assert.ok(
