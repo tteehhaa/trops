@@ -117,6 +117,36 @@ v3 에서 등재한 세 값을 그대로 쓰면 **본문 7역할이 WCAG AA 미�
 ⚠️ 코드가 바뀌면 이 문서도 함께 고쳐야 합니다. 특히 **30일 보관**과 **수탁사 3곳**
 (Resend · Supabase · Vercel)입니다.
 
+### 30일 보관 배치가 Vercel Cron 으로 섭니다 (2026-08-11)
+
+전에는 `scripts/cleanup-expired.js` 를 **사람이 손으로** 돌려야 했습니다. 돌리지 않는
+날은 이용자에게 한 30일 약속(환불규정 · 개인정보처리방침)이 그냥 깨졌습니다.
+
+| | |
+|---|---|
+| 라우트 | `api/cron/cleanup-expired.js` → `/api/cron/cleanup-expired` |
+| 배치 본체 | `api/_cleanup.js` (CLI · 라우트 **공용** — 복제하지 마십시오) |
+| 스케줄 | `vercel.json` `crons` · `20 21 * * *` UTC = **매일 06:20 KST** |
+| 인증 | `Authorization: Bearer $CRON_SECRET` · 불일치·미설정 → **404** |
+| 미설정 시 | `configured:false` 로 **아무것도 지우지 않고** 200 |
+
+**🔴 실제 삭제를 집행하려면 `CRON_SECRET` 을 Vercel Production 에 등록해야 합니다.**
+`INTAKE_SUPABASE_URL` · `INTAKE_SUPABASE_SECRET_KEY` 는 이미 등록돼 있으므로
+**남은 조건은 이 하나뿐**입니다. 등록 전까지 cron 은 매일 돌되 404 로 끝납니다
+(= 아무것도 지우지 않습니다).
+
+```
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"   # 값 생성
+vercel env add CRON_SECRET production                                       # 붙여넣기
+```
+
+⛔ `scripts/cleanup-expired.js` 를 지우지 마십시오 — 라우트는 정기 실행,
+스크립트는 **미리보기**(`--apply` 없이 「오늘 무엇이 지워질 예정인가」)와 수동 복구용입니다.
+
+⚠️ 판정층 `precheck_case` 원문·span 은 `trops_a` 의 `precheck-retention` 소관입니다.
+**두 배치를 다 돌려야** 30일 약속이 지켜집니다. 시(hour)를 겹치지 않게 골랐습니다
+(Hobby 플랜은 분을 보장하지 않고 시 안에서 부릅니다).
+
 §10 사전등록 폼에는 동의 2종(개인정보 수집·이용 **필수** / 서비스 소식 수신 **선택**)이
 붙었고, `POST /api/leads` 가 필수 동의를 서버에서 다시 검사합니다.
 **사전등록은 DB 에 저장하지 않으므로 담당자 알림 메일이 동의의 유일한 기록입니다.**

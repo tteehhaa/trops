@@ -4,6 +4,12 @@
   "outputDirectory": "dist",
   "cleanUrls": true,
   "trailingSlash": false,
+  "crons": [
+    {
+      "path": "/api/cron/cleanup-expired",
+      "schedule": "20 21 * * *"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
