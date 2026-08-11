@@ -187,6 +187,58 @@
 --     where refunded_at is not null;
 
 
+-- ── 0-G. 처리 가능 여부 표 — ⛔ **이 저장소 소관이 아닙니다** (2026-08-11 · M-2) ──
+--
+-- 🔴 **여기서 실행하지 마십시오. 참조본입니다.**
+--    precheck_intake_route 는 판정층 trops_a 가 만들고 쓰는 표입니다
+--    (정본 함수: trops_a lib/precheck/intake-route.ts · cron 이 1일 1회 채웁니다).
+--    이 저장소는 **select 만** 합니다 — api/_intake-route.js 한 곳에서.
+--
+--    그런데도 모양을 여기 적어 두는 이유는, 우리가 무엇을 읽고 있는지가 이 파일에
+--    없으면 컬럼 이름 하나가 바뀌었을 때 「왜 안내가 안 뜨는지」를 아무도 못 찾기
+--    때문입니다. 읽는 쪽의 계약을 읽는 쪽 저장소에 남깁니다.
+--
+-- ── 왜 intake 에 컬럼을 더하지 않았는가 (재착수 결정 ②) ──────────────────────
+--    intake 는 접수 사실의 표이고 이 저장소가 소유합니다. 거기에 판정층이 쓰는 칸을
+--    두면 한 표를 두 저장소가 쓰게 되고, 「누가 이 값을 정하는가」가 흐려집니다.
+--    별 표로 두면 소유가 갈리고, 이 저장소는 읽기 권한만으로 충분해집니다.
+--
+-- ── append-only 인 것이 설계입니다 (재착수 결정 ⑤) ──────────────────────────
+--    뒤집힘(ok → blocked · 그 반대)이 UPDATE 가 아니라 **새 행**으로 옵니다.
+--    그래서 읽는 쪽은 언제나 decided_at 내림차순 첫 행만 봅니다. 과거 행을 보고
+--    환불하면 이미 되돌려진 판단으로 돈을 움직입니다.
+--
+-- ── 우리가 읽는 것 (이 넷이 이름·형까지 맞아야 합니다) ──────────────────────
+--
+--   create table public.precheck_intake_route (
+--     id          bigserial   primary key,
+--     intake_id   uuid        not null,          -- public.intake.id
+--     route       text        not null check (route in ('ok','blocked')),
+--     reason      text        null,              -- trops_a PreflightStop
+--                                                --   'scan-only' | 'unsupported-language'
+--                                                --   route='ok' 이면 null
+--     decided_at  timestamptz not null default now()
+--   );
+--
+--   -- 읽기가 언제나 「한 건의 마지막 행」이라 이 색인이 필요합니다.
+--   create index if not exists precheck_intake_route_latest_idx
+--     on public.precheck_intake_route (intake_id, decided_at desc);
+--
+--   -- 환불 배치의 1차 후보 수집(route='blocked' 전체 훑기)용.
+--   create index if not exists precheck_intake_route_blocked_idx
+--     on public.precheck_intake_route (decided_at desc) where route = 'blocked';
+--
+-- ⚠️ **없어도 접수·결제·확인 화면은 그대로 동작합니다.** 못 읽으면 확인 화면은
+--    아무것도 그리지 않고, 환불 배치는 0건으로 끝냅니다(fail-safe closed).
+--    이 글을 쓰는 시점에 표는 **아직 없습니다** — trops_a 미착수입니다.
+--
+-- ⚠️ 외래키(references public.intake)를 우리가 요구하지 않습니다. 30일 정리 배치가
+--    intake 행을 지우므로, on delete 규칙을 잘못 걸면 지워진 접수 때문에 판정층
+--    배치가 멈추거나 이력이 함께 사라집니다. 참조 무결성보다 **두 배치가 서로를
+--    멈추지 않는 것**이 여기서는 더 중요합니다(우리는 없는 intake_id 를 만나면
+--    조용히 후보에서 뺍니다).
+
+
 -- ── 1. 접수 ──────────────────────────────────────────────────────────────────
 --
 -- 이 테이블에는 판정 결과를 두지 않습니다. 접수 사실만 기록합니다.

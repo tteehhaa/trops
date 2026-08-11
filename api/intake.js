@@ -37,8 +37,13 @@
  *   → 503 { error:'not-configured' }    카운터/저장소 미설정 (fail-safe closed)
  *
  * GET /api/intake?r=<token>          Magic Link 조회
- *   → 200 { ok:true, status, receivedAt, fileCount, slotNo, deleteAfter, erasedAt }
+ *   → 200 { ok:true, status, receivedAt, fileCount, slotNo, deleteAfter, erasedAt,
+ *           routeNotice }
  *   → 404 { error:'not-found' }
+ *
+ *   routeNotice 는 「지금 확인할 수 있는 범위 밖」인 건에만 문자열이고, 그 밖에는
+ *   전부 null 입니다 〔M-2 · api/_intake-route.js〕. 정본은 판정층 trops_a 이고
+ *   여기서는 읽어서 문면으로 옮기기만 합니다. route 코드 자체는 내보내지 않습니다.
  *
  * 같은 토큰으로 자료를 즉시 지우는 경로는 api/erasure.js 입니다(환불규정 05).
  *
@@ -61,6 +66,7 @@ const { PRICE, ORDER_NAME, makeOrderId } = require('./_payment.js');
 const { buildMagicLink, sendIntakeMails, RETENTION_DAYS } = require('./_notify.js');
 const { agreementFor, normalizeHsCode } = require('./_agreements.js');
 const { rejectIfChargeBlocked } = require('./_precheck-charge-gate.js');
+const ROUTE = require('./_intake-route.js');
 
 const STORAGE_BUCKET = 'intake';
 
@@ -313,7 +319,8 @@ async function handleReceipt(req, res) {
   }
 
   try {
-    const select = 'status,received_at,file_count,slot_no,delete_after,intake_path,amount,payment_status,paid_at,' +
+    // id 는 내보내지 않습니다 — precheck_intake_route 를 서버에서 짚기 위해서만 읽습니다.
+    const select = 'id,status,received_at,file_count,slot_no,delete_after,intake_path,amount,payment_status,paid_at,' +
       'erasure_requested_at,own_form_path,target_country,hs_code,delivered_at';
     const response = await fetch(
       config.restUrl + '/intake?access_token=eq.' + encodeURIComponent(token) + '&select=' + select,
@@ -333,6 +340,26 @@ async function handleReceipt(req, res) {
       res.status(404).json({ error: 'not-found' });
       return;
     }
+
+    /*
+     * 처리 가능 여부 〔M-2 · 2026-08-11〕.
+     *
+     * ⚠️ 접수 직후에는 아직 없습니다. trops_a cron 이 1일 1회 채우므로,
+     *    이 화면을 **다시 방문했을 때** 비로소 붙습니다(재착수 결정 ④).
+     *    ⛔ 「확인 중」을 두지 않습니다 — 없으면 이 절은 아무 값도 만들지 않고,
+     *       화면도 아무것도 그리지 않습니다. 안 정해진 것을 상태로 보여 주면
+     *       접수 직후 화면마다 「무언가 진행 중」이라는 인상만 남습니다.
+     *
+     * 못 읽어도 조회는 그대로 200 입니다. 이 값은 접수 확인의 부속 정보이고,
+     * 표 하나(그것도 다른 저장소 소관) 때문에 접수 내용 전체를 잃게 하지 않습니다.
+     */
+    const route = await ROUTE.readLatestRoute(config, row.id);
+    if (!route.available) {
+      console.error('intake receipt route lookup skipped: ' + route.error);
+    }
+    const routeNotice = route.available && route.row
+      ? ROUTE.noticeFor(route.row.route, route.row.reason)
+      : null;
 
     res.status(200).json({
       ok: true,
@@ -356,6 +383,9 @@ async function handleReceipt(req, res) {
       // 자료 즉시 삭제(환불규정 05)를 이미 요청한 건인지. 화면은 이 값으로
       // 삭제 요청 항목을 감추고 "삭제 완료" 를 표시합니다.
       erasedAt: row.erasure_requested_at,
+      // 「범위 밖」인 건에만 문장이 들어갑니다. 그 밖에는 언제나 null 입니다 —
+      // 진행 가능한 건은 아무 문면도 갖지 않습니다(C2 · api/_intake-route.js).
+      routeNotice: routeNotice,
     });
   } catch (err) {
     console.error('intake receipt request failed:', err && err.message ? err.message : err);
