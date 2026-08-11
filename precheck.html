@@ -251,19 +251,21 @@
     font-variant-numeric: tabular-nums;
   }
   /*
-   * 정가 취소선(.plan-price s · .pay-summary-value s)을 2026-08-11 에 뗐습니다 〔R-1〕.
-   * ₩290,000 은 실제 판매 이력이 없어 「종전거래가격」 표시 요건을 채우지 못합니다 —
+   * 취소선(.plan-price s · .pay-summary-value s)을 2026-08-11 에 뗐습니다 〔R-1〕.
+   * 비교 기준값에 실제 판매 이력이 없어 「종전거래가격」 표시 요건을 채우지 못합니다 —
    * 취소선은 「그 값에 팔았다」는 진술이라 걸 수 없습니다.
    *
-   * ⚠️ 값을 지운 것이 아닙니다. api/_payment.js 의 LIST_PRICE(290000)는 그대로 있고,
+   * ⚠️ 값을 지운 것이 아닙니다. api/_payment.js 의 LIST_PRICE 는 그대로 있고,
    *    화면에 취소선으로 「표시」하던 마크업만 내렸습니다. 값 변경은 별개 결정입니다
    *    (trops_a lib/config/cross-repo-values.ts PENDING_DECISIONS 게이트②).
    *
    * ⚠️ 규칙도 같이 뗍니다. 남겨 두면 다음에 누가 s 태그를 넣었을 때 조용히 가격
    *    취소선으로 그려집니다 — 뗀 이유가 마크업이 아니라 표시 자체이기 때문입니다.
    *
-   * ⚠️ 이 주석에 취소선 마크업을 문자 그대로 적지 마십시오. trops_a 의 드리프트
-   *    검출기가 이 파일 원문에서 그 문자열을 세므로 주석이 오탐이 됩니다.
+   * ⚠️ 이 주석에 취소선 마크업·비교 기준값·그 수식어를 문자 그대로 적지 마십시오.
+   *    trops_a 의 드리프트 검출기와 scripts/verify-deployment.js 「R1-비교표기」가
+   *    원문에서 그 문자열을 세므로 주석이 오탐이 됩니다. 2026-08-12 까지 이 주석
+   *    자체가 기준값을 적고 있어 원문 대조가 늘 오탐이었습니다 — 그것을 고쳤습니다.
    */
   .plan-desc { margin: 9px 0 0; font-size: 14.5px; line-height: 1.7; color: var(--ink-62); }
   .plan-off { opacity: .48; cursor: not-allowed; }
@@ -673,10 +675,21 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
             </label>
           </div>
 
-          <!-- 무료 자리가 없을 때만 나옵니다. 유료 경로는 그대로 열려 있으므로 폼을 막지 않습니다. -->
+          <!-- 무료 자리가 없을 때만 나옵니다. 유료 경로는 그대로 열려 있으므로 폼을 막지 않습니다.
+
+               ⚠️ 2026-08-12 〔R-1 확장 2〕: 종전가를 함의하는 가격 수식어를 이 문장에서
+                  뗐습니다. 앞선 두 작업이 비교 기준값 표기를 전부 없앴으므로, 수식어만
+                  남으면 비교 대상 없이 「원래 더 비쌌다」를 암시합니다. 그 값에 판 이력이
+                  없으니 암시에도 근거가 없습니다.
+               ⛔ 비교를 함의하는 수식어를 다시 붙이지 마십시오(대비 표현·비율 표기 포함).
+                  금액은 그대로 말합니다 — 지우는 것은 비교이지 가격이 아닙니다.
+
+               ⚠️ 이 주석에 그 수식어를 문자 그대로 적지 마십시오. 확인이 이 파일 원문을
+                  세므로 주석이 오탐이 됩니다(위 .plan-price 주석에 같은 경고). 확인은
+                  scripts/verify-deployment.js 「R1-비교표기」가 8페이지에서 합니다. -->
           <div class="closed" id="closed-notice" hidden>
             <h3 id="closed-title">선착순 20건이 모두 찼습니다.</h3>
-            <p id="closed-body">무료 접수 자리가 모두 나갔습니다. 지금은 런칭가 ₩99,000으로 신청하실 수 있습니다.</p>
+            <p id="closed-body">무료 접수 자리가 모두 나갔습니다. 지금은 ₩99,000으로 신청하실 수 있습니다.</p>
             <a class="btn btn-secondary" href="/#interest">다음 회차 알림 받기</a>
           </div>
 
@@ -961,7 +974,9 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
         return;
       }
       if (!state.open) {
-        setSlotText('선착순 ' + state.limit + '건 마감 · 런칭가로 신청 가능', true);
+        // 뱃지라 짧아야 합니다. 금액을 넣으면 줄이 넘치므로 경로 이름을 씁니다 —
+        // 「유료 접수」는 이 파일이 이미 무료의 짝으로 쓰는 말입니다(과금 게이트 문면).
+        setSlotText('선착순 ' + state.limit + '건 마감 · 유료 접수 가능', true);
         lockFreePlan();
         return;
       }
@@ -1530,7 +1545,7 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
       var hsCode = digitsOnly(hsInput.value);
 
       if (plan === 'free' && !freeAvailable) {
-        return fail('무료 접수 자리가 모두 찼습니다. 런칭가로 신청해 주십시오.');
+        return fail('무료 접수 자리가 모두 찼습니다. 유료 접수로 신청해 주십시오.');
       }
       if (!email || email.indexOf('@') === -1) {
         return fail('이메일 주소를 확인해 주십시오.');
@@ -1683,7 +1698,7 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
     function onExhausted() {
       setBusy(false);
       lockFreePlan();
-      fail('접수하시는 사이에 선착순 20건이 모두 찼습니다. 런칭가로 신청해 주십시오.');
+      fail('접수하시는 사이에 선착순 20건이 모두 찼습니다. 유료 접수로 신청해 주십시오.');
     }
 
     /*
