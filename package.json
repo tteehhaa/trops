@@ -5,6 +5,8 @@
     "build": "node scripts/build-static.js",
     "test": "node --test --test-concurrency=1 test/",
     "keys:verify": "node --env-file=.env.local scripts/verify-supabase-keys.js",
+    "verify:deploy": "node scripts/verify-deployment.js",
+    "verify:prod": "node scripts/verify-deployment.js https://www.trops.kr",
     "cleanup:preview": "node --env-file=.env.local scripts/cleanup-expired.js",
     "cleanup:apply": "node --env-file=.env.local scripts/cleanup-expired.js --apply",
     "deliver": "node --env-file=.env.local scripts/deliver.js"
