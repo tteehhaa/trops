@@ -305,7 +305,7 @@
 .uae-psr-meta{margin:12px 0 0;padding-top:11px;border-top:1px solid var(--line);
   font-size:12.5px;line-height:1.6;color:var(--muted)}
 
-/* --- 5. 확인 항목 · 진단서 전환 --- */
+/* --- 5. 확인 항목 · 요약 자료 전환 --- */
 .uae-check{padding-block:34px 38px;border-top:1px solid var(--line)}
 .uae-check-count{margin:0;font-size:24px;line-height:1.34;font-weight:700;letter-spacing:-0.025em}
 .uae-check-sub{margin:10px 0 0;font-size:16.5px;line-height:1.76;color:var(--ink-64);max-width:50ch}
@@ -314,7 +314,7 @@
 .uae-check-item{display:grid;grid-template-columns:20px minmax(0,1fr);gap:8px;align-items:baseline;font-size:15px}
 .uae-check-num{font-size:12.5px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
 .uae-check-cta{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:28px}
-/* 진단서 신청 오픈 전 비활성 상태 — 새 색 없이 면(--surface)·선(--line)·--muted 로만 */
+/* 요약 자료 신청 오픈 전 비활성 상태 — 새 색 없이 면(--surface)·선(--line)·--muted 로만 */
 .uae-check-cta .btn:disabled{background:var(--surface);border:1px solid var(--line);
   color:var(--muted);cursor:not-allowed}
 .uae-check-cta-note{font-size:13.5px;line-height:1.6;color:var(--muted);max-width:34ch}
@@ -470,14 +470,16 @@
   ];
 
   const DIAGNOSIS_PRICE = '99,000원';
-  // 진단서(품목별 확인 항목 문서) 발급 플로우는 아직 열지 않았습니다.
+  // 확인 항목 요약 자료(품목별 확인 항목 문서) 발급 플로우는 아직 열지 않았습니다.
   // 그때까지 비활성 버튼으로 세워두는 대신, 지금 실제로 신청할 수 있는
   // /precheck(바이어 서류 사전 확인)로 보냅니다.
-  // 진단서 오픈 시 LABEL 을 '진단서 신청 · ' + DIAGNOSIS_PRICE 로,
+  // 오픈 시 LABEL 을 '확인 항목 요약 자료 신청 · ' + DIAGNOSIS_PRICE 로,
   // HREF 를 '/uae/diagnosis?hs=…' 로 되돌리면 됩니다.
+  // ⚠️ 상수 이름(DIAGNOSIS_*)은 그대로 둡니다 — 내부 식별자이고, 바꾸면 이 파일 안
+  //    참조 5곳을 함께 옮겨야 하는데 §4-7 은 **대외 문구** 규칙입니다(화면에 안 찍힙니다).
   const DIAGNOSIS_CTA_HREF = '/precheck';
   const DIAGNOSIS_CTA_LABEL = '바이어 서류 사전 확인 신청';
-  const DIAGNOSIS_CTA_NOTE = '진단서는 준비 중입니다. 바이어가 보낸 서류의 18개 항목 대조는 지금 신청하실 수 있습니다.';
+  const DIAGNOSIS_CTA_NOTE = '확인 항목 요약 자료는 준비 중입니다. 바이어가 보낸 서류의 18개 항목 대조는 지금 신청하실 수 있습니다.';
   const PSR_PENDING_TEXT = '원문 확인 중 — 정확한 기준은 담당 관세사에게 문의하십시오';
 
   /* 허용치(제3.7조)는 세번변경기준을 전제한 항목입니다.
@@ -859,7 +861,7 @@
     checkSec.appendChild(list);
 
     const cta = el('div', 'uae-check-cta');
-    // 진단서 신청 플로우(/uae/diagnosis)는 아직 없습니다.
+    // 확인 항목 요약 자료 신청 플로우(/uae/diagnosis)는 아직 없습니다.
     // 그동안 이 자리는 지금 신청 가능한 /precheck 로 연결합니다.
     const ctaBtn = el('a', 'btn btn-primary', DIAGNOSIS_CTA_LABEL);
     ctaBtn.href = DIAGNOSIS_CTA_HREF;
