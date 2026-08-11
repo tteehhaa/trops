@@ -78,42 +78,80 @@ const NOT_DEPLOYED = new Set([
 ]);
 
 /* ──────────────────────────────────────────────────────────────
- * 사업자정보 토큰 치환
+ * 토큰 치환
  *
- * {{biz.ecommerceNo}} 같은 자리를 site.config.json 값으로 바꿉니다.
- * 소스에는 값이 한 벌도 없고 토큰만 있습니다 — 6곳 드리프트가 구조적으로 불가능합니다.
+ * {{biz.ecommerceNo}} · {{precheck.itemCount}} 같은 자리를 site.config.json 값으로
+ * 바꿉니다. 소스에는 값이 한 벌도 없고 토큰만 있습니다 —
+ * 여러 곳 드리프트가 구조적으로 불가능합니다.
+ *
+ * 묶음(namespace)이 둘입니다. 한 벌로 뭉치지 않은 이유는 채우는 방식이 다르기 때문입니다:
+ *
+ *   biz       파일의 locale 에 따라 biz.ko / biz.en 중 하나로 채웁니다
+ *   precheck  언어와 무관한 한 벌입니다 — 제품 사실(대조 항목 수)이라
+ *             국·영문이 같은 숫자를 씁니다
+ *
+ * ⚠️ 토큰에 언어를 박지 마십시오({{biz.ko.…}}). 파일 단위로 한 번만 정하는 것이
+ *    en 파일에 ko 토큰을 붙여넣는 실수를 막습니다 (STATIC.html 주석 참조).
  *
  * ⚠️ 치환은 아래 검증(D. 화면 문구 불변)보다 **앞**에서 끝나야 합니다.
  *    그 검증이 지키는 것은 「주석 제거가 문구를 바꾸지 않는다」이지
  *    「소스 파일과 산출물이 같다」가 아닙니다. 치환된 결과를 기준으로 비교합니다.
  * ────────────────────────────────────────────────────────────── */
 
-const TOKEN_RE = /\{\{\s*biz\.([A-Za-z0-9_]+)\s*\}\}/g;
+/** 아는 묶음 이름. 여기 없는 이름은 애초에 토큰으로 잡히지 않습니다(오타 = 빌드 실패). */
+const TOKEN_NAMESPACES = ['biz', 'precheck'];
+
+const TOKEN_RE = new RegExp(
+  '\\{\\{\\s*(' + TOKEN_NAMESPACES.join('|') + ')\\.([A-Za-z0-9_]+)\\s*\\}\\}',
+  'g'
+);
 
 function loadSiteConfig() {
   const file = path.join(ROOT, 'site.config.json');
   if (!fs.existsSync(file)) {
-    console.error('✋ site.config.json 이 없습니다. 사업자정보 원본입니다.');
+    console.error('✋ site.config.json 이 없습니다. 화면에 나가는 값의 원본입니다.');
     process.exit(1);
   }
   const config = JSON.parse(fs.readFileSync(file, 'utf8'));
+
   for (const locale of ['ko', 'en']) {
     if (!config.biz || !config.biz[locale]) {
       console.error(`✋ site.config.json 에 biz.${locale} 이 없습니다.`);
       process.exit(1);
     }
   }
+
+  // 대조 항목 수. 화면에 「N개 항목」으로 찍히고 환불규정 04 의 근거가 되는 숫자라
+  // 0 이나 문자열이 조용히 통과하면 안 됩니다.
+  const count = config.precheck && config.precheck.itemCount;
+  if (!Number.isInteger(count) || count <= 0) {
+    console.error(
+      '✋ site.config.json 의 precheck.itemCount 가 양의 정수가 아닙니다: ' +
+        JSON.stringify(count) +
+        '\n   trops_a 의 ICC_ITEM_IDS − V1_EXCLUDED_ITEM_IDS 개수와 맞추십시오.'
+    );
+    process.exit(1);
+  }
+
   return config;
+}
+
+/** 파일 하나를 채울 사전 — 묶음 이름 → 값 묶음. locale 은 biz 에만 걸립니다. */
+function tokenValues(config, locale) {
+  return { biz: config.biz[locale], precheck: config.precheck };
 }
 
 /**
  * 토큰을 값으로 바꿉니다. 사전에 없는 키를 만나면 바꾸지 않고 그대로 둡니다 —
  * 남은 토큰은 호출한 쪽이 빌드 실패로 처리합니다(조용히 빈 문자열로 만들지 않습니다).
  */
-function resolveTokens(html, values) {
-  return html.replace(TOKEN_RE, (whole, key) =>
-    Object.prototype.hasOwnProperty.call(values, key) ? String(values[key]) : whole
-  );
+function resolveTokens(html, dicts) {
+  return html.replace(TOKEN_RE, (whole, ns, key) => {
+    const values = dicts[ns];
+    return values && Object.prototype.hasOwnProperty.call(values, key)
+      ? String(values[key])
+      : whole;
+  });
 }
 
 /**
@@ -207,7 +245,7 @@ async function main() {
     };
 
     const raw = fs.readFileSync(src, 'utf8');
-    const before = resolveTokens(raw, config.biz[locale]);
+    const before = resolveTokens(raw, tokenValues(config, locale));
 
     // 사전에 없는 키(오타)가 남아 있으면 화면에 {{...}} 가 그대로 찍힙니다.
     // 조용히 나가는 것보다 빌드가 깨지는 편이 낫습니다 — 루트 미분류와 같은 태도입니다.
@@ -215,7 +253,8 @@ async function main() {
     if (unresolved) {
       fail(
         `치환되지 않은 토큰이 남았습니다: ${[...new Set(unresolved)].join(', ')}\n` +
-          `   site.config.json 의 biz.${locale} 에 해당 키가 있는지 확인하십시오.`
+          `   site.config.json 에 해당 키가 있는지 확인하십시오` +
+          ` (biz 는 biz.${locale} 아래, precheck 는 precheck 아래).`
       );
     }
 

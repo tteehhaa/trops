@@ -213,8 +213,12 @@
     <div class="container narrow doc">
       <section>
         <h2><span class="doc-num" aria-hidden="true">01</span><span>적용 대상</span></h2>
+        <!-- 대조 항목 수는 site.config.json 의 precheck.itemCount 한 곳이 원본입니다.
+             ⚠️ 이 페이지의 두 자리(여기 · 04 표의 「N개 항목 중 일부가…」)는 **환불 사유**의
+                근거입니다. 판정층(trops_a)이 실제로 대조하는 개수와 어긋나면 지키지 못하는
+                약속이 됩니다. 숫자를 직접 적지 마십시오 — test/item-count.test.js 가 막습니다. -->
         <p class="lead">
-          바이어가 보낸 서류의 18개 항목을 측정해 대조하고, 당일 요약 자료로 정돈해 전달하는 서비스입니다.
+          바이어가 보낸 서류의 {{precheck.itemCount}}개 항목을 측정해 대조하고, 당일 요약 자료로 정돈해 전달하는 서비스입니다.
           런칭가 99,000원(정가 290,000원)의 1회성 결제 건에 이 규정이 적용됩니다.
         </p>
         <p>
@@ -269,7 +273,7 @@
                 <td>전액 환불</td>
               </tr>
               <tr>
-                <th scope="row">18개 항목 중 일부가 자료에 담기지 않은 경우</th>
+                <th scope="row">{{precheck.itemCount}}개 항목 중 일부가 자료에 담기지 않은 경우</th>
                 <td>전액 환불</td>
               </tr>
               <tr>

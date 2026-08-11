@@ -51,20 +51,27 @@ function build() {
 }
 
 /**
- * 소스의 {{biz.키}} 를 site.config.json 값으로 채웁니다.
+ * 소스의 {{biz.키}} · {{precheck.키}} 를 site.config.json 값으로 채웁니다.
  *
  * 소스와 산출물을 직접 비교하던 검사(문구 불변 · 태그 구조)의 기준을 여기로 옮깁니다.
  * 그 검사가 지키는 것은 「**주석 제거가** 문구를 바꾸지 않는다」이지 「소스 파일과
- * 산출물이 글자까지 같다」가 아닙니다. 치환이 문구를 바꾸는지는 site-config.test.js 몫입니다.
+ * 산출물이 글자까지 같다」가 아닙니다. 치환이 문구를 바꾸는지는
+ * site-config.test.js(사업자정보) · item-count.test.js(대조 항목 수) 몫입니다.
+ *
+ * ⚠️ 묶음 목록이 scripts/build-static.js 의 TOKEN_NAMESPACES 와 같아야 합니다.
+ *    갈리면 이 파일의 검사가 새 토큰을 치환하지 못하고 「문구가 변함」으로 잘못 실패합니다.
  */
 function resolved(page) {
   const config = JSON.parse(fs.readFileSync(path.join(ROOT, 'site.config.json'), 'utf8'));
-  const values = config.biz[PAGE_LOCALES[page]];
+  const dicts = { biz: config.biz[PAGE_LOCALES[page]], precheck: config.precheck };
   return fs
     .readFileSync(path.join(ROOT, page), 'utf8')
-    .replace(/\{\{\s*biz\.([A-Za-z0-9_]+)\s*\}\}/g, (whole, key) =>
-      Object.prototype.hasOwnProperty.call(values, key) ? String(values[key]) : whole
-    );
+    .replace(/\{\{\s*(biz|precheck)\.([A-Za-z0-9_]+)\s*\}\}/g, (whole, ns, key) => {
+      const values = dicts[ns];
+      return values && Object.prototype.hasOwnProperty.call(values, key)
+        ? String(values[key])
+        : whole;
+    });
 }
 
 function blocks(html, tag) {
