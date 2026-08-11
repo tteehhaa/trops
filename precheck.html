@@ -319,6 +319,21 @@
   .filelist { margin: 0; padding: 0; list-style: none; font-size: 13.5px; line-height: 1.7; color: var(--ink-64); }
   .filelist li { display: flex; justify-content: space-between; gap: 16px; font-variant-numeric: tabular-nums; }
 
+  /* ---------- 텍스트 레이어 안내 〔M-1〕 ----------
+     ⚠️ 경고색을 쓰지 않습니다. 이용자가 잘못한 것이 아니고, 상대방 서류가
+        부실하다는 뜻도 아닙니다 — 「이 파일에서는 글자를 읽을 수 없다」는
+        기계적 사실 하나를 말하는 자리입니다. .closed 와 같은 중립 카드로 둡니다
+        (--warning 은 .form-msg.is-error 전용). */
+  .textlayer {
+    margin-top: 14px;
+    border: 1px solid var(--line); border-radius: 8px;
+    background: var(--surface); padding: 18px 20px;
+  }
+  .textlayer p { margin: 0; font-size: 14.5px; line-height: 1.72; color: var(--ink-70); }
+  .textlayer-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 14px; }
+  .textlayer-actions .btn { height: 44px; padding: 0 18px; font-size: 14.5px; }
+  .textlayer-files { margin: 8px 0 0; font-size: 13.5px; line-height: 1.7; color: var(--ink-64); }
+
   /* ---------- 거래 정보 (선택 · 협정 세율) ---------- */
   .trade-row { display: flex; flex-wrap: wrap; gap: 10px; }
   .trade-row select,
@@ -666,6 +681,22 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
                      accept=".pdf,.doc,.docx,.hwp,.hwpx,.txt,.rtf,.png,.jpg,.jpeg" required>
               <p class="field-hint">PDF · DOC · DOCX · HWP · 이미지 · 최대 5개 · 개당 10MB</p>
               <ul class="filelist" id="intake-filelist"></ul>
+
+              <!-- 텍스트 레이어 안내 〔M-1 · 2026-08-11〕
+                   PDF 에 글자층이 없을 때만 나옵니다. 브라우저가 파일 구조를 보고 정합니다
+                   (서버로 보내서 판정하는 것이 아닙니다 — 경계: 판정은 trops_a).
+
+                   ⛔ **이 안내가 접수를 막지 않습니다.** 「이대로 진행하기」는 물론이고,
+                      안내를 그냥 두고 보내기를 눌러도 접수는 그대로 진행됩니다.
+                      막는 것은 **과금**뿐입니다 〔M-3 · api/_precheck-charge-gate.js〕. -->
+              <div class="textlayer" id="textlayer-notice" hidden role="status" aria-live="polite">
+                <p id="textlayer-msg">이 파일에서 글자를 읽을 수 없습니다. 워드 파일이나 텍스트가 선택되는 PDF가 있으면 그것을 올려주세요.</p>
+                <p class="textlayer-files" id="textlayer-files" hidden></p>
+                <div class="textlayer-actions">
+                  <button type="button" class="btn btn-secondary" id="textlayer-replace">다른 파일 올리기</button>
+                  <button type="button" class="btn btn-text" id="textlayer-proceed">이대로 진행하기</button>
+                </div>
+              </div>
             </div>
 
             <!-- 자사 서식 = 1순위 기준 (PRD-62 §3-3).
@@ -875,11 +906,21 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
     loadSlots();
     loadPayConfig();
 
-    fileInput.addEventListener('change', renderFileList);
+    fileInput.addEventListener('change', onFilesChanged);
     ownInput.addEventListener('change', renderOwnFormList);
     form.addEventListener('submit', onSubmit);
     freeRadio.addEventListener('change', onPlanChange);
     paidRadio.addEventListener('change', onPlanChange);
+
+    /* 텍스트 레이어 안내의 두 선택 〔M-1〕.
+       「이대로 진행하기」는 안내만 내립니다 — 접수를 막고 있던 것이 없으므로
+       내릴 것도 안내뿐입니다. 과금 차단은 그대로 남습니다(M-3). */
+    document.getElementById('textlayer-replace').addEventListener('click', function () {
+      fileInput.click();
+    });
+    document.getElementById('textlayer-proceed').addEventListener('click', function () {
+      hideTextLayerNotice();
+    });
 
     /* ---------- 슬롯 ---------- */
 
@@ -933,7 +974,7 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
     }
 
     /*
-     * 유료 경로만 잠급니다 〔R-2 · 과금 게이트〕.
+     * 유료 경로만 잠급니다 〔R-2 · 과금 게이트 · M-3 「불가」 비과금〕.
      *
      * ⚠️ 카드를 숨기지 않습니다. 게시(가격 노출)와 과금은 별개 결정이고,
      *    지금 막힌 것은 과금뿐입니다 — 숨기면 두 결정을 하나로 합치는 것이 됩니다.
@@ -941,26 +982,73 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
      *
      * ⚠️ 이 함수는 안내이지 차단이 아닙니다. 브라우저 값은 고쳐질 수 있으므로
      *    실제 차단은 api/intake.js · api/payment-confirm.js 가 듭니다.
+     *
+     * 🔴 **이유가 둘이고 성질이 다릅니다** 〔M-3 · 2026-08-11〕.
+     *    'launch'     유상 개시 자체가 안 열렸습니다. 되돌아오지 않습니다.
+     *    'ineligible' 지금 올린 파일이 「불가」입니다. 파일을 바꾸면 풀립니다.
+     *    그래서 잠금을 켜고 끄는 자리에 이유를 남깁니다 — 이유가 없으면
+     *    파일을 바꿨을 때 무엇을 되돌려야 하는지 알 수 없습니다.
+     *    'launch' 가 더 강합니다(서버의 우선순위와 같습니다).
      */
-    function lockPaidPlan() {
+    var paidLockReason = null;
+    var paidTagOriginal = document.getElementById('plan-paid-tag').textContent;
+    var paidDescOriginal = document.getElementById('plan-paid-desc').textContent;
+
+    function lockPaidPlan(reason) {
+      var why = reason || 'launch';
+      if (paidLockReason === 'launch') return;   // 더 강한 이유로 이미 잠겨 있습니다
+      paidLockReason = why;
       paidAvailable = false;
       paidRadio.disabled = true;
       paidCard.classList.add('plan-off');
-      document.getElementById('plan-paid-tag').textContent = '준비 중';
-      document.getElementById('plan-paid-desc').textContent =
-        '유료 접수는 아직 열지 않았습니다. 지금은 무상 실증으로 신청하실 수 있습니다.';
+
+      if (why === 'ineligible') {
+        document.getElementById('plan-paid-tag').textContent = '결제 없이 접수';
+        document.getElementById('plan-paid-desc').textContent =
+          '이 파일에서는 글자를 읽을 수 없어 유상 접수로 진행하지 않습니다. 무상 실증으로 보내주시면 그대로 접수됩니다.';
+      } else {
+        document.getElementById('plan-paid-tag').textContent = '준비 중';
+        document.getElementById('plan-paid-desc').textContent =
+          '유료 접수는 아직 열지 않았습니다. 지금은 무상 실증으로 신청하실 수 있습니다.';
+      }
 
       if (paidRadio.checked) {
         if (freeAvailable) {
           freeRadio.checked = true;
           onPlanChange();
-        } else {
+        } else if (why === 'launch') {
           blockBothPlans();
+        } else {
+          // 「불가」는 폼을 닫지 않습니다 — 파일을 바꾸면 되돌아오는 상태이고,
+          // 닫아 버리면 다른 파일을 올릴 자리까지 사라집니다.
+          payArea.hidden = true;
         }
       } else {
         // 선택 중이 아니어도 결제 영역은 닫아 둡니다.
         payArea.hidden = true;
       }
+    }
+
+    /** 「불가」로 걸린 잠금만 풉니다. 개시 게이트는 여기서 풀리지 않습니다. */
+    function unlockPaidPlanForFile() {
+      if (paidLockReason !== 'ineligible') return;
+      paidLockReason = null;
+      paidAvailable = true;
+      paidRadio.disabled = false;
+      paidCard.classList.remove('plan-off');
+      document.getElementById('plan-paid-tag').textContent = paidTagOriginal;
+      document.getElementById('plan-paid-desc').textContent = paidDescOriginal;
+    }
+
+    /*
+     * 🔴 M-3 의 화면 쪽 절반. 「불가」면 유상 경로로 못 들어갑니다.
+     *
+     * 결제위젯을 **그리기 전에** 잠그는 것이 핵심입니다 — 그려 놓고 제출에서 막으면
+     * 카드번호까지 넣은 뒤에 거절당합니다. 나머지 절반(실제 차단)은 서버입니다.
+     */
+    function applyTextLayerIneligibility() {
+      if (textLayerState === TEXT_LAYER.ABSENT) lockPaidPlan('ineligible');
+      else unlockPaidPlanForFile();
     }
 
     // 무료 마감 + 유료 미개시 — 지금 받을 수 있는 경로가 없습니다.
@@ -1059,7 +1147,305 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
         });
     }
 
+    /* <text-layer-detect>
+     * ---------- PDF 텍스트 레이어 감지 〔M-1 · 2026-08-11〕 ----------
+     *
+     * ⚠️ **경계.** 이 블록은 브라우저에서만 돕니다. 파일을 서버로 보내 파싱하지 않고,
+     *    PDF 구조(글꼴 자원·텍스트 연산자)만 봅니다. 「등급」을 정하지 않습니다 —
+     *    정하는 것은 「이 파일에 글자층이 있는가」 하나이고, 처리 등급 판정은
+     *    trops_a 소관입니다.
+     *
+     * 🔴 판별 기준은 「스캔인가」가 아니라 「텍스트 레이어가 있는가」입니다.
+     *    OCR 을 거친 스캔 PDF 는 글꼴과 (보이지 않는) 텍스트를 가지므로
+     *    **present** 로 잡혀야 합니다. 실측 표본에 그 경우가 들어 있습니다
+     *    (test/text-layer-detect.test.js).
+     *
+     * ── 왜 라이브러리를 안 쓰는가 〔결정 근거〕 ────────────────────────────────
+     *   후보는 pdf.js(pdfjs-dist · Apache-2.0)였습니다. 표준이고 정확합니다.
+     *   쓰지 않기로 한 이유 셋:
+     *     ① **무게** — pdf.min.mjs + worker 가 합쳐 1.4MB 입니다. 이 저장소는
+     *        번들러가 없어 CDN 아니면 원본을 통째 커밋해야 합니다.
+     *     ② **결제 화면에 제3자 원본을 더 붙이게 됩니다.** 이 페이지에는 결제위젯이
+     *        이미 있습니다. 동적 import 에는 SRI 를 걸 수 없어 무결성 확인 없이
+     *        늘어납니다.
+     *     ③ **필요한 것이 판독이 아니라 유무 확인입니다.** 글자를 뽑아 쓰지 않고
+     *        「있나 없나」만 답합니다. 그 답에는 구조 표지 세 개로 충분합니다.
+     *   ⛔ 되짚을 조건: 실측에서 오탐(글자 있는 PDF 를 absent)이 나오면 그때
+     *      pdf.js 로 올립니다. 지금 근거는 표본 8건 전건 일치입니다.
+     *
+     * ── 못 정하면 안내하지 않습니다 ─────────────────────────────────────────
+     *   'unknown' 은 안내를 띄우지 않습니다. 암호화 PDF · 못 푼 압축 스트림 ·
+     *   PDF 아닌 파일이 여기 옵니다. 확신 없이 「글자를 읽을 수 없습니다」를
+     *   띄우면 읽히는 파일에 대고 그 말을 하게 됩니다.
+     *
+     * ⚠️ 이 블록만 async/await 을 씁니다 — 압축 스트림을 하나씩 풀어 보는 순차
+     *    루프가 .then 사슬로는 읽히지 않습니다. 나머지 코드 양식은 그대로 둡니다.
+     */
+
+    var TEXT_LAYER = { PRESENT: 'present', ABSENT: 'absent', UNKNOWN: 'unknown' };
+
+    /* 한 파일에서 풀어 볼 압축 스트림 수 · 크기 상한.
+       스캔 PDF 는 이미지가 DCTDecode(JPEG)라 애초에 대상이 아니고, 여기 걸리는 것은
+       콘텐츠 스트림과 객체 스트림입니다. 상한은 「이상한 파일에 브라우저가 붙잡히지
+       않게」 두는 것입니다. */
+    var TL_MAX_STREAMS = 24;
+    var TL_MAX_STREAM_INPUT = 4 * 1024 * 1024;
+    var TL_MAX_STREAM_OUTPUT = 12 * 1024 * 1024;
+    var TL_MAX_TOTAL_OUTPUT = 48 * 1024 * 1024;
+    /* 청크 경계에서 잘린 표지를 잇습니다. BT…Tj 검사 창(8000)보다 커야 합니다. */
+    var TL_CARRY = 8192;
+
+    function tlLatin1(bytes) {
+      return new TextDecoder('latin1').decode(bytes);
+    }
+
+    function tlLooksLikePdf(bytes) {
+      return tlLatin1(bytes.subarray(0, 1024)).indexOf('%PDF-') !== -1;
+    }
+
+    /*
+     * 글자가 있다는 표지 셋.
+     *   /Font       글꼴 자원 — 글자를 그리려면 있어야 합니다. OCR 결과도 여기 걸립니다.
+     *   /ToUnicode  글리프→문자 대응표. 추출 가능한 글자가 있다는 뜻입니다.
+     *   BT … Tj/TJ/Tf  텍스트 연산자.
+     * 셋 중 하나면 present 로 봅니다. 없다고 말하려면 셋 다 없어야 합니다.
+     */
+    function tlHasTextMarker(s) {
+      if (s.indexOf('/Font') !== -1) return true;
+      if (s.indexOf('/ToUnicode') !== -1) return true;
+      return /\bBT\b[\s\S]{0,8000}?\b(Tj|TJ|Tf)\b/.test(s);
+    }
+
+    /** zlib(RFC1950) 머리 2바이트인가 — 아니면 애초에 풀지 않습니다. */
+    function tlLooksLikeZlib(bytes) {
+      if (bytes.length < 2) return false;
+      var cmf = bytes[0];
+      if ((cmf & 0x0f) !== 8) return false;
+      return ((cmf << 8) + bytes[1]) % 31 === 0;
+    }
+
+    /*
+     * FlateDecode 스트림의 바이트 구간을 모읍니다.
+     *
+     * latin1 문자열은 1바이트=1문자라 문자 위치가 곧 바이트 오프셋입니다.
+     * /Length 가 직접값이면 그것을 씁니다 — 압축 데이터 안에 우연히 'endstream'
+     * 과 같은 바이트열이 들어 있어도 잘리지 않습니다.
+     */
+    function tlFlateStreams(bytes, whole) {
+      var out = [];
+      var at = 0;
+      while (out.length < TL_MAX_STREAMS) {
+        var s = whole.indexOf('stream', at);
+        if (s === -1) break;
+        at = s + 6;
+        if (whole.slice(s - 3, s) === 'end') continue;
+
+        var dict = whole.slice(s < 600 ? 0 : s - 600, s);
+        if (dict.indexOf('/FlateDecode') === -1) continue;
+
+        var p = s + 6;
+        if (whole.charCodeAt(p) === 13) p += 1;
+        if (whole.charCodeAt(p) === 10) p += 1;
+
+        var end = -1;
+        var len = /\/Length\s+(\d+)[^0-9R]*$/.exec(dict);
+        if (len) {
+          var candidate = p + Number(len[1]);
+          if (candidate <= bytes.length && whole.indexOf('endstream', candidate) - candidate <= 4) {
+            end = candidate;
+          }
+        }
+        if (end === -1) {
+          var e = whole.indexOf('endstream', p);
+          if (e === -1) break;
+          end = e;
+          if (whole.charCodeAt(end - 1) === 10) end -= 1;
+          if (whole.charCodeAt(end - 1) === 13) end -= 1;
+        }
+
+        if (end > p && end - p <= TL_MAX_STREAM_INPUT) {
+          var chunk = bytes.subarray(p, end);
+          if (tlLooksLikeZlib(chunk)) out.push(chunk);
+        }
+        at = end + 9;
+      }
+      return out;
+    }
+
+    /**
+     * 스트림 하나를 풀면서 표지를 찾습니다.
+     *   'found'  표지를 봤습니다            'clean'  끝까지 읽었고 표지가 없습니다
+     *   'failed' 풀지 못했습니다            'truncated' 상한에 걸려 끝까지 못 봤습니다
+     *
+     * ⚠️ **거절을 흘리지 않는 것이 이 함수의 절반입니다.** 압축 해제 실패는 흔한 일인데
+     *    (경계를 잘못 잡은 스트림 · 다른 필터가 섞인 스트림), 처리기를 달지 않은 약속이
+     *    하나라도 남으면 **이용자 콘솔에 붉은 오류로 찍힙니다.** 결제 화면에서 그것이
+     *    보이는 것은 그 자체로 신뢰를 깎습니다. 그래서 다섯 군데에 전부 답니다 —
+     *    writer.closed · write() · close() · reader.closed · cancel().
+     *    (pipeThrough 를 쓰지 않는 이유도 같습니다 — 내부 pipeTo 의 거절에 손이 닿지 않습니다.
+     *     cancel() 은 **던지지 않고 거절된 약속을 돌려줍니다** — try/catch 로는 안 잡힙니다.)
+     *    test/text-layer-detect.test.js 가 새는 거절 0건을 단정합니다.
+     */
+    async function tlScanStream(chunk, budget) {
+      var reader = null;
+      try {
+        var decompressor = new DecompressionStream('deflate');
+        var writer = decompressor.writable.getWriter();
+        writer.closed.catch(function () {});
+        writer.write(chunk).catch(function () {});
+        writer.close().catch(function () {});
+        reader = decompressor.readable.getReader();
+        reader.closed.catch(function () {});
+
+        var carry = '';
+        var seen = 0;
+        for (;;) {
+          var step = await reader.read();
+          if (step.done) return 'clean';
+
+          seen += step.value.length;
+          budget.spent += step.value.length;
+
+          var text = carry + tlLatin1(step.value);
+          if (tlHasTextMarker(text)) { reader.cancel().catch(function () {}); return 'found'; }
+          carry = text.length > TL_CARRY ? text.slice(-TL_CARRY) : text;
+
+          if (seen > TL_MAX_STREAM_OUTPUT || budget.spent > TL_MAX_TOTAL_OUTPUT) {
+            reader.cancel().catch(function () {});
+            return 'truncated';
+          }
+        }
+      } catch (err) {
+        if (reader) reader.cancel().catch(function () {});
+        return 'failed';
+      }
+    }
+
+    /** 'present' | 'absent' | 'unknown' — 이 함수가 M-1 의 판별 전부입니다. */
+    async function detectTextLayerInBytes(bytes) {
+      if (!bytes || bytes.length === 0) return TEXT_LAYER.UNKNOWN;
+      if (!tlLooksLikePdf(bytes)) return TEXT_LAYER.UNKNOWN;
+
+      var whole = tlLatin1(bytes);
+      // 암호화된 PDF 는 스트림을 풀 수 없습니다 — 없다고 말할 근거가 없습니다.
+      if (whole.indexOf('/Encrypt') !== -1) return TEXT_LAYER.UNKNOWN;
+      if (tlHasTextMarker(whole)) return TEXT_LAYER.PRESENT;
+
+      if (typeof DecompressionStream !== 'function' || typeof Blob !== 'function') {
+        return TEXT_LAYER.UNKNOWN;
+      }
+
+      // 현대 생산기는 글꼴 사전을 압축 객체스트림(/ObjStm)에 넣습니다.
+      // 원시 바이트만 보면 글자 있는 PDF 를 없다고 말하게 됩니다.
+      var streams = tlFlateStreams(bytes, whole);
+      var budget = { spent: 0 };
+      var clean = 0;
+
+      for (var i = 0; i < streams.length; i += 1) {
+        var verdict = await tlScanStream(streams[i], budget);
+        if (verdict === 'found') return TEXT_LAYER.PRESENT;
+        if (verdict === 'clean') clean += 1;
+        if (verdict === 'truncated') return TEXT_LAYER.UNKNOWN;
+      }
+
+      // 압축 스트림이 있는데 하나도 끝까지 읽지 못했다면 「없다」고 말하지 않습니다.
+      if (streams.length > 0 && clean === 0) return TEXT_LAYER.UNKNOWN;
+      return TEXT_LAYER.ABSENT;
+    }
+
+    function isPdfFile(file) {
+      return file.type === 'application/pdf' || /\.pdf$/i.test(file.name || '');
+    }
+
+    /** 파일 하나. PDF 가 아니면 판별 대상이 아닙니다(unknown 이 아니라 대상 외). */
+    function detectFileTextLayer(file) {
+      if (!isPdfFile(file)) return Promise.resolve(null);
+      if (typeof file.arrayBuffer !== 'function') return Promise.resolve(TEXT_LAYER.UNKNOWN);
+      return file.arrayBuffer()
+        .then(function (buf) { return detectTextLayerInBytes(new Uint8Array(buf)); })
+        .catch(function () { return TEXT_LAYER.UNKNOWN; });
+    }
+    /* </text-layer-detect> */
+
+    /* ---------- 텍스트 레이어 안내 · 상태 ---------- */
+
+    /*
+     * 지금 올라온 PDF 들의 판별 결과.
+     *   'present' | 'unknown'  안내 없음 (unknown 은 못 정한 것 — 말하지 않습니다)
+     *   'absent'               안내 표시 + 과금 차단 사유로 서버에 신고
+     *   null                   PDF 가 없습니다(대상 외)
+     */
+    var textLayerState = null;
+    var textLayerAbsentNames = [];
+    /* 감지가 끝나기 전에 보내기를 누를 수 있습니다. 그때는 이 약속을 기다립니다. */
+    var textLayerPending = Promise.resolve();
+
+    function runTextLayerDetection() {
+      var files = Array.prototype.slice.call(fileInput.files);
+      textLayerState = null;
+      textLayerAbsentNames = [];
+      hideTextLayerNotice();
+
+      var pdfs = files.filter(isPdfFile);
+      if (pdfs.length === 0) {
+        applyTextLayerIneligibility();
+        return textLayerPending;
+      }
+
+      textLayerPending = Promise.all(pdfs.map(function (f) {
+        return detectFileTextLayer(f).then(function (state) { return { file: f, state: state }; });
+      })).then(function (results) {
+        // 파일을 다시 고르는 사이에 끝난 오래된 감지는 버립니다.
+        var current = Array.prototype.slice.call(fileInput.files);
+        if (current.length !== files.length || current.some(function (f, i) { return f !== files[i]; })) return;
+
+        textLayerAbsentNames = results
+          .filter(function (r) { return r.state === TEXT_LAYER.ABSENT; })
+          .map(function (r) { return r.file.name; });
+
+        textLayerState = textLayerAbsentNames.length > 0
+          ? TEXT_LAYER.ABSENT
+          : (results.some(function (r) { return r.state === TEXT_LAYER.PRESENT; })
+            ? TEXT_LAYER.PRESENT : TEXT_LAYER.UNKNOWN);
+
+        if (textLayerState === TEXT_LAYER.ABSENT) showTextLayerNotice();
+        applyTextLayerIneligibility();
+      });
+
+      return textLayerPending;
+    }
+
+    function showTextLayerNotice() {
+      var box = document.getElementById('textlayer-notice');
+      var names = document.getElementById('textlayer-files');
+      /*
+       * 올린 파일이 둘 이상이면 어느 것인지 밝힙니다.
+       *
+       * ⚠️ 기준은 「글자를 못 읽은 파일이 여럿인가」가 아니라 **「올린 파일이
+       *    여럿인가」**입니다. 셋을 올렸는데 하나만 걸린 경우가 오히려 더
+       *    헷갈립니다 — 문구의 「이 파일」이 어느 것인지 모르면 바꿀 파일을
+       *    고를 수 없습니다.
+       */
+      if (fileInput.files.length > 1 && textLayerAbsentNames.length > 0) {
+        names.textContent = textLayerAbsentNames.join(' · ');
+        names.hidden = false;
+      } else {
+        names.textContent = '';
+        names.hidden = true;
+      }
+      box.hidden = false;
+    }
+
+    function hideTextLayerNotice() {
+      document.getElementById('textlayer-notice').hidden = true;
+    }
+
     /* ---------- 파일 ---------- */
+
+    function onFilesChanged() {
+      renderFileList();
+      runTextLayerDetection();
+    }
 
     function renderFileList() {
       renderInto(fileList, fileInput.files);
@@ -1168,13 +1554,24 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
       if (plan === 'paid' && (!widgets || !widgetsReady)) {
         return fail('결제 화면을 아직 불러오지 못했습니다. 잠시 후 다시 시도해 주십시오.');
       }
+      /* 「불가」인데 유상으로 왔다면 결제창을 열지 않습니다 〔M-3〕.
+         카드가 이미 잠겨 있어 정상 흐름은 여기 오지 않습니다. 서버도 다시 막습니다. */
+      if (plan === 'paid' && textLayerState === TEXT_LAYER.ABSENT) {
+        return notice('이 파일에서는 글자를 읽을 수 없어 유상 접수로 진행하지 않습니다. 무상 실증으로 보내주시면 그대로 접수됩니다.');
+      }
 
       setBusy(true, plan === 'paid' ? '접수 내용을 저장하는 중입니다…' : '보내는 중입니다…');
 
-      Promise.all([
-        Promise.all(files.map(toPayload)),
-        ownFile ? toPayload(ownFile) : Promise.resolve(null)
-      ])
+      /* 감지가 아직 돌고 있으면 기다립니다 — 결과를 신고해야 서버가 과금을
+         막을 수 있습니다. 감지가 실패해도 접수는 계속 갑니다(unknown). */
+      textLayerPending
+        .catch(function () { /* 감지 실패는 접수를 막지 않습니다 */ })
+        .then(function () {
+          return Promise.all([
+            Promise.all(files.map(toPayload)),
+            ownFile ? toPayload(ownFile) : Promise.resolve(null)
+          ]);
+        })
         .then(function (read) {
           return fetch(INTAKE_URL, {
             method: 'POST',
@@ -1189,7 +1586,17 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
               ownForm: read[1],
               // 선택 항목. 둘 다 있을 때만 접수 확인 화면·확인메일에 세율이 붙습니다.
               targetCountry: country || null,
-              hsCode: hsCode || null
+              hsCode: hsCode || null,
+              /*
+               * 브라우저가 본 기계적 사실 〔M-1 → M-3〕.
+               *
+               * ⚠️ 판정이 아니라 **신고**입니다. 서버는 이 값으로 과금을 **막을** 수만
+               *    있고 열 수는 없습니다 — 'absent' 가 차단 사유를 하나 더 얹을 뿐,
+               *    'present' 가 개시 게이트를 여는 데는 쓰이지 않습니다.
+               *    그래서 이 값이 위조돼도 위험한 방향으로는 움직이지 않습니다.
+               * PDF 가 없으면 null 입니다(대상 외).
+               */
+              detection: { pdfTextLayer: textLayerState }
             })
           });
         })
@@ -1200,6 +1607,11 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
           // 사이에 게이트가 닫혔거나 잠금을 지나쳐 온 요청이면 여기로 옵니다.
           if (r.status === 403 && r.body && r.body.error === 'charge-not-open') {
             return onChargeBlocked(r.body);
+          }
+          // 「불가」라서 과금하지 않는 경우 〔M-3〕. 접수를 거절한 것이 아니라
+          // 유상 경로만 닫은 것이므로, 무상 경로로 옮겨 놓고 그렇게 말합니다.
+          if (r.status === 403 && r.body && r.body.error === 'ineligible-not-charged') {
+            return onIneligible(r.body);
           }
           if (r.status !== 201 || !r.body.ok) throw new Error(r.body.error || 'request failed');
           if (plan === 'paid') return openPaymentWindow(r.body, email);
@@ -1235,6 +1647,11 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
       form.reset();
       fileList.innerHTML = '';
       ownList.innerHTML = '';
+      // 파일이 사라졌으므로 그 파일에 걸려 있던 안내와 잠금도 함께 내립니다 〔M-1 · M-3〕.
+      textLayerState = null;
+      textLayerAbsentNames = [];
+      hideTextLayerNotice();
+      unlockPaidPlanForFile();
       setBusy(true);
       msg.classList.remove('is-error');
       msg.textContent = '접수되었습니다 (' + body.slotNo + '/20). ' +
@@ -1259,8 +1676,25 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
      */
     function onChargeBlocked(body) {
       setBusy(false);
-      lockPaidPlan();
+      lockPaidPlan('launch');
       fail(body.message || '유료 접수는 아직 열지 않았습니다. 무상 실증으로 신청해 주십시오.');
+    }
+
+    /*
+     * 「불가」로 과금하지 않는 경우 〔M-3〕.
+     *
+     * 화면이 이미 유상 카드를 잠갔어야 하지만, 감지가 늦었거나 잠금을 지나쳐 온
+     * 요청이면 여기로 옵니다. 서버 문장을 그대로 씁니다 — 같은 사유를 두 곳에
+     * 따로 적으면 한쪽만 고쳐집니다.
+     *
+     * ⛔ 접수를 닫지 않습니다. 무상 경로는 그대로 열려 있고, 그쪽으로 옮겨 놓습니다.
+     */
+    function onIneligible(body) {
+      setBusy(false);
+      lockPaidPlan('ineligible');
+      if (freeAvailable) freeRadio.checked = true;
+      onPlanChange();
+      notice(body.message || '이 파일에서는 글자를 읽을 수 없어 유상 접수로 진행하지 않습니다. 무상 실증으로 보내주시면 그대로 접수됩니다.');
     }
 
     function setBusy(busy, text) {
@@ -1274,6 +1708,20 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
     function fail(text) {
       msg.textContent = text;
       msg.classList.add('is-error');
+      submitBtn.disabled = false;
+    }
+
+    /*
+     * 오류가 아닌 안내 〔M-3 · 2026-08-11〕.
+     *
+     * 🔴 `fail()` 은 --warning(붉은색)으로 씁니다. 「불가라서 과금하지 않습니다」는
+     *    이용자가 뭘 잘못한 것이 아니고 접수가 실패한 것도 아니라, 그 색으로 말하면
+     *    사실과 다른 것을 말하게 됩니다(안내 카드에 경고색을 쓰지 않은 것과 같은 이유).
+     *    문장은 남기고 색만 중립으로 둡니다.
+     */
+    function notice(text) {
+      msg.classList.remove('is-error');
+      msg.textContent = text;
       submitBtn.disabled = false;
     }
 
