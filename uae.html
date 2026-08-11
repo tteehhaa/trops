@@ -479,7 +479,9 @@
   //    참조 5곳을 함께 옮겨야 하는데 §4-7 은 **대외 문구** 규칙입니다(화면에 안 찍힙니다).
   const DIAGNOSIS_CTA_HREF = '/precheck';
   const DIAGNOSIS_CTA_LABEL = '바이어 서류 사전 확인 신청';
-  const DIAGNOSIS_CTA_NOTE = '확인 항목 요약 자료는 준비 중입니다. 바이어가 보낸 서류의 18개 항목 대조는 지금 신청하실 수 있습니다.';
+  // 항목 수는 빌드가 채웁니다 — site.config.json 의 precheck.itemCount 가 원본입니다.
+  // ⚠️ 문자열 리터럴 안이지만 숫자라 따옴표 문제가 없습니다. 토큰을 따옴표로 감싸지 마십시오.
+  const DIAGNOSIS_CTA_NOTE = '확인 항목 요약 자료는 준비 중입니다. 바이어가 보낸 서류의 {{precheck.itemCount}}개 항목 대조는 지금 신청하실 수 있습니다.';
   const PSR_PENDING_TEXT = '원문 확인 중 — 정확한 기준은 담당 관세사에게 문의하십시오';
 
   /* 허용치(제3.7조)는 세번변경기준을 전제한 항목입니다.
