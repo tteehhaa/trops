@@ -815,12 +815,17 @@
      길게 늘어집니다.
      ⚠️ 값을 바꾸기 전에 실제 렌더 폭을 재십시오. 눈대중으로 고치지 마십시오.
      ========================================================================== */
-  /* 실측값(1033px 뷰포트, Pretendard):
-       H1  17ch=522px → 2줄. 15ch 는 3줄이라 국문 히어로(2줄)와 리듬이 어긋납니다
+  /* 실측값(Pretendard):
+       H1  2행 「Start with the NDA you were sent.」이 56px 에서 835px = 22.59ch.
+           17ch(628px)로는 「were sent.」가 떨어져 나가 3줄이 됐습니다.
+           23ch = 848px 로 13px 여유. 1200 컨테이너 콘텐츠폭(1104px) 안에 들어갑니다
        리드 2행 「We compare it line by line…」이 670px. 54ch=583px 로는 4줄이 됩니다
        카드 본문 1행이 434px. 42ch=413px 로 21px 모자랐습니다
-     확정본이 <br> 로 끊어 둔 줄 수를 지키는 것이 기준입니다 — 리드 3줄 · 카드 2줄. */
-  .hero h1   { max-width: 17ch; }
+     확정본이 <br> 로 끊어 둔 줄 수를 지키는 것이 기준입니다 — H1 2줄 · 리드 3줄 · 카드 2줄.
+     ⚠️ 폰이 600px 미만이면 H1 2행이 콘텐츠폭을 넘어 한 번 더 접힙니다(518px @36px).
+        「Start with the NDA / you were sent.」로 끊겨 고아 단어는 생기지 않습니다.
+        H1 문구가 바뀌면 이 폭을 다시 재십시오. */
+  .hero h1   { max-width: 23ch; }
   .hero-lead { max-width: 63ch; }
   .card-body { max-width: 45ch; }
   .flow-desc { max-width: 58ch; }
@@ -868,7 +873,7 @@
          리드의 <br> 2개는 v2 가 끊어 둔 문장 경계입니다. -->
     <section class="container hero">
       <p class="eyebrow">BEFORE YOU EXPORT</p>
-      <h1>First export? Start with the NDA you were sent.</h1>
+      <h1>First export?<br>Start with the NDA you were sent.</h1>
       <p class="hero-lead">Upload the NDA your buyer sent you.<br>We compare it line by line against a public standard form and mark where they differ.<br>We also show you what's left to check.</p>
       <div class="cta-row">
         <a id="hero-cta" class="btn btn-primary btn-full" href="/precheck">Compare my NDA — free</a>
