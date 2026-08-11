@@ -433,6 +433,26 @@
     background-color: var(--bg);
     color: var(--ink);
   }
+  /* ---------- Consent (§10 · 2026-08-11 신설) ----------
+     index.html 과 값이 같은 공유 블록입니다. 한쪽만 고치지 마십시오.
+     ⚠️ 바탕은 --bg — 이 섹션이 --surface 라 같은 색을 쓰면 카드가 사라집니다. */
+  .consents { display: flex; flex-direction: column; gap: 12px; }
+  .consent {
+    display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 12px;
+    padding: 16px 18px;
+    border: 1px solid var(--line); border-radius: 8px;
+    background: var(--bg);
+  }
+  .consent input[type="checkbox"] { width: 18px; height: 18px; margin: 3px 0 0; accent-color: var(--accent); }
+  .consent-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; font-size: 14.5px; font-weight: 600; }
+  .consent-tag {
+    font-size: 11.5px; font-weight: 700; line-height: 1.5; letter-spacing: .02em;
+    padding: 2px 7px; border-radius: 4px; border: 1px solid rgba(15, 23, 42, .28); color: var(--ink);
+  }
+  .consent-tag-optional { border-color: var(--line); color: var(--muted); }
+  .consent-body { margin: 7px 0 0; font-size: 13.5px; line-height: 1.7; color: var(--ink-62); }
+  .consent-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+
   .interest-submit { margin-top: 4px; }
   .interest-msg { min-height: 22px; font-size: 14px; color: var(--ink-64); margin: 0; }
   .interest-msg.is-error { color: var(--warning); }
@@ -1238,7 +1258,10 @@
          ⚠️ 보조 문구(KOTRA mentor network)는 v2 §10 원문이라 넣었는데, 국문 index 에는
             같은 줄이 없습니다 — 영문 독자에게만 보이는 안내가 됩니다. 국문에도 넣을지
             확인이 필요합니다.
-         ⚠️ 개인정보처리방침 동의 체크는 법무 트랙 미결입니다(국문과 같은 상태). -->
+         2026-08-11: 개인정보처리방침 동의 체크 2종을 넣었습니다(국문 index 와 같은 구성).
+         방침 페이지는 en-privacy.html 이며 법무 검토 전 초안입니다 — 그 사실을 페이지
+         자체가 배너로 알립니다. 확정본이 나오면 이 폼 문구는 그대로 두고 방침만
+         교체하면 됩니다. -->
     <section class="interest" id="interest">
       <div class="container interest-inner">
         <h2>We'll let you know the moment trade procedure tracking opens.</h2>
@@ -1256,6 +1279,34 @@
             <label for="interest-company">Company <span class="optional">(optional)</span></label>
             <input type="text" id="interest-company" name="company" autocomplete="organization">
           </div>
+
+          <!-- 동의 2종 (2026-08-11 신설). 국문 index.html §10 과 같은 구성입니다.
+               ⚠️ 하나로 합치지 마십시오 — 근거 법이 다릅니다.
+               ⚠️ 필수 동의를 기본 체크 상태로 두지 마십시오. -->
+          <div class="consents">
+            <div class="consent">
+              <input type="checkbox" id="interest-consent-privacy" name="consentPrivacy" required>
+              <div>
+                <label class="consent-head" for="interest-consent-privacy">
+                  <span class="consent-tag" aria-hidden="true">*</span>
+                  <span>Consent to collection and use of personal information</span>
+                </label>
+                <p class="consent-body">We take your name, email and company (optional) so we can tell you when we open. We handle it as set out in our <a href="/en-privacy">Privacy Notice</a>.</p>
+              </div>
+            </div>
+
+            <div class="consent">
+              <input type="checkbox" id="interest-consent-marketing" name="consentMarketing">
+              <div>
+                <label class="consent-head" for="interest-consent-marketing">
+                  <span class="consent-tag consent-tag-optional">optional</span>
+                  <span>Consent to receive service updates</span>
+                </label>
+                <p class="consent-body">Hear about new features and guides as well as the launch. Say no and you still get the launch notice.</p>
+              </div>
+            </div>
+          </div>
+
           <button type="submit" class="btn btn-primary interest-submit">Register</button>
           <p class="interest-msg" id="interest-msg" role="status" aria-live="polite"></p>
         </form>
@@ -1296,34 +1347,37 @@
         <span class="footer-mark">TROPS</span>
         <span class="footer-meta">Buyer document pre-check · contact@theo-ne.com</span>
       </div>
-      <!-- Terms of Service · Privacy Policy 는 아직 페이지가 없어 링크를 걸지 못합니다.
-           국문 푸터도 같은 상태입니다(환불규정만 존재). 페이지가 생기면 함께 거십시오. -->
+      <!-- Privacy Notice 는 2026-08-11 에 생겨 링크를 걸었습니다(en-privacy.html ·
+           법무 검토 전 초안). Terms of Service 는 아직 페이지가 없습니다 —
+           국문 푸터도 같은 상태입니다. 생기면 여기와 국문 5개 푸터에 함께 거십시오.
+           ⚠️ 영문 방침 경로는 /en/privacy 가 아니라 /en-privacy 입니다
+              (이유는 en-privacy.html 머리주석). -->
       <nav class="footer-links" aria-label="Policies">
         <a href="/refund">Refund Policy</a>
+        <a href="/en-privacy">Privacy Notice</a>
       </nav>
 
       <dl class="footer-biz" aria-label="Business information">
-        <!-- 법인명·대표자 영문 표기 확정 (2026-08-11). 국문 원본은
-             「주식회사 테오네」·「범하나」입니다.
+        <!-- 값은 전부 site.config.json 의 biz.en 이 원본입니다(2026-08-11 단일소스화).
+             ⚠️ 여기를 직접 고치지 마십시오. 전에는 이 화면 안에서만 법인명이 네 번
+                반복돼 한 곳만 고치면 같은 화면에서 두 가지로 보이는 상태였습니다.
+             ⚠️ 법인명·대표자·주소 영문 표기는 확정본 v2 §12 기준입니다. 국문 원본은
+                「주식회사 테오네」·「범하나」·「서울특별시 강남구 봉은사로 524,
+                B층 269-11호(삼성동)」입니다. 줄이거나 다시 로마자로 옮기지 마십시오.
              ⚠️ THÉONÉ 의 É 는 확정 표기의 일부입니다. THEONE 으로 바꿔 쓰지 마십시오.
-                이 값은 en.html 안에서 세 군데 더 나옵니다(.footer-legal 2줄 · 저작권
-                1줄) — 한 곳만 고치면 같은 화면에서 법인명이 두 가지로 보입니다. -->
-        <div><dt>Company</dt><dd>THÉONÉ Co., Ltd.</dd></div>
-        <div><dt>CEO</dt><dd>Hana Beom</dd></div>
-        <div><dt>Business Registration No.</dt><dd>625-81-04032</dd></div>
-        <!-- 통신판매업신고 신청 중. 신고번호 확정 시 "Applied for" 를 번호로 교체하십시오. -->
-        <div><dt>E-Commerce Registration No.</dt><dd>Applied for</dd></div>
-        <!-- 영문 주소 로마자 표기 확정 (2026-08-11 · 확정본 v2 §12).
-             국문 원본: 서울특별시 강남구 봉은사로 524, B층 269-11호(삼성동)
-             ⚠️ 법정 고지입니다. 줄이거나 다시 로마자로 옮기지 마십시오. -->
-        <div><dt>Address</dt><dd>B269-11, 524 Bongeunsa-ro, Gangnam-gu, Seoul, Republic of Korea</dd></div>
-        <div><dt>Phone</dt><dd>+82 10-2605-5238</dd></div>
+             통신판매업신고번호가 확정되면 biz.ko.ecommerceNo 와 함께 고치십시오. -->
+        <div><dt>Company</dt><dd>{{biz.companyName}}</dd></div>
+        <div><dt>CEO</dt><dd>{{biz.ceo}}</dd></div>
+        <div><dt>Business Registration No.</dt><dd>{{biz.registrationNo}}</dd></div>
+        <div><dt>E-Commerce Registration No.</dt><dd>{{biz.ecommerceNo}}</dd></div>
+        <div><dt>Address</dt><dd>{{biz.address}}</dd></div>
+        <div><dt>Phone</dt><dd>{{biz.phone}}</dd></div>
       </dl>
 
       <div class="footer-legal">
-        <p>TROPS · THÉONÉ Co., Ltd.</p>
+        <p>TROPS · {{biz.companyName}}</p>
         <p>※ This is not a legal advisory service.</p>
-        <p>© 2026 TROPS · THÉONÉ Co., Ltd. All rights reserved.</p>
+        <p>© 2026 TROPS · {{biz.companyName}}. All rights reserved.</p>
       </div>
     </div>
   </footer>
@@ -1347,7 +1401,8 @@
   })();
 
   (function () {
-    /* 국문과 같은 엔드포인트입니다. 필드 3종(name · email · company)도 같습니다 —
+    /* 국문과 같은 엔드포인트입니다. 필드 5종(name · email · company ·
+       consentPrivacy · consentMarketing)도 같습니다 —
        영문 폼만 필드를 늘리면 /api/leads 가 받지 못합니다. */
     var API_URL = '/api/leads';
     var form = document.getElementById('interest-form');
@@ -1359,11 +1414,21 @@
       var name = document.getElementById('interest-name').value.trim();
       var email = document.getElementById('interest-email').value.trim();
       var company = document.getElementById('interest-company').value.trim();
+      var consentPrivacy = document.getElementById('interest-consent-privacy').checked;
+      var consentMarketing = document.getElementById('interest-consent-marketing').checked;
 
       msg.classList.remove('is-error');
 
       if (!name || !email) {
         msg.textContent = 'Please enter your name and email.';
+        msg.classList.add('is-error');
+        return;
+      }
+
+      /* 여기서 멈추면 fetch 가 아예 나가지 않습니다. 서버도 같은 검사를 따로 합니다 —
+         index.html 과 같은 이유이고 같은 순서입니다. */
+      if (!consentPrivacy) {
+        msg.textContent = 'Please agree to the collection and use of your personal information.';
         msg.classList.add('is-error');
         return;
       }
@@ -1375,7 +1440,10 @@
       fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name, email: email, company: company })
+        body: JSON.stringify({
+          name: name, email: email, company: company,
+          consentPrivacy: consentPrivacy, consentMarketing: consentMarketing
+        })
       })
         .then(function (res) {
           if (!res.ok) throw new Error('request failed');

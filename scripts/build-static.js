@@ -4,7 +4,12 @@
 /**
  * 배포용 정적 산출물을 dist/ 로 만듭니다.
  *
- * 하는 일은 하나입니다 — 주석 제거 (HTML · CSS · JS 세 종류 전부).
+ * 하는 일은 둘입니다 — 사업자정보 토큰 치환, 그리고 주석 제거
+ * (HTML · CSS · JS 세 종류 전부).
+ *
+ * 치환은 2026-08-11 에 들어왔습니다. 그전에는 사업자정보 6항목이 6개 HTML 에
+ * 각자 하드코딩돼 있었고, 통신판매업신고번호가 확정되면 6곳을 손으로 고쳐야 하는
+ * 상태였습니다. 이제 site.config.json 한 곳이 원본입니다.
  *
  * 이 저장소는 주석을 인수인계 수단으로 씁니다(정본 조항 번호 · 미결 항목 · 왜 이렇게
  * 했는지). 그건 소스에 남아야 하지만, 세 종류 전부 브라우저로 전송됩니다 —
@@ -31,10 +36,30 @@ const { minify } = require('html-minifier-terser');
 const ROOT = path.resolve(__dirname, '..');
 const OUT = path.join(ROOT, 'dist');
 
-/** 배포되는 정적 자산. 루트 기준. */
+/**
+ * 배포되는 정적 자산. 루트 기준.
+ *
+ * locale 은 site.config.json 의 어느 묶음(biz.ko / biz.en)으로 토큰을 채울지 정합니다.
+ * 토큰 자체에는 언어가 없습니다 — 같은 푸터 블록이 두 언어에서 구조가 같고 값만
+ * 다르기 때문입니다. 토큰에 언어를 박으면 en 파일에 ko 토큰을 붙여넣는 실수가
+ * 조용히 통과합니다. 여기서 파일 단위로 한 번만 정합니다.
+ *
+ * ⚠️ 평면 목록입니다. 하위 폴더(en/privacy.html)를 넣지 마십시오 —
+ *    폴더는 STATIC.dirs 로 가야 하는데 dirs 는 주석 제거 없이 통째 복사입니다.
+ *    영문 페이지는 형제 파일(en.html · en-privacy.html)로 둡니다.
+ */
 const STATIC = {
   // en.html 은 cleanUrls 로 /en 에 붙습니다 (vercel.json).
-  html: ['index.html', 'en.html', 'nda.html', 'precheck.html', 'refund.html', 'uae.html'],
+  html: [
+    { file: 'index.html', locale: 'ko' },
+    { file: 'en.html', locale: 'en' },
+    { file: 'nda.html', locale: 'ko' },
+    { file: 'precheck.html', locale: 'ko' },
+    { file: 'refund.html', locale: 'ko' },
+    { file: 'uae.html', locale: 'ko' },
+    { file: 'privacy.html', locale: 'ko' },
+    { file: 'en-privacy.html', locale: 'en' },
+  ],
   dirs: ['data'],
 };
 
@@ -47,9 +72,49 @@ const NOT_DEPLOYED = new Set([
   'package.json', 'package-lock.json',
   'precheck-schema.sql',  // .vercelignore
   'vercel.json',
+  'site.config.json',     // 빌드 입력 — 값은 치환되어 HTML 안으로 들어갑니다
   'skills-lock.json',
   'README.md',
 ]);
+
+/* ──────────────────────────────────────────────────────────────
+ * 사업자정보 토큰 치환
+ *
+ * {{biz.ecommerceNo}} 같은 자리를 site.config.json 값으로 바꿉니다.
+ * 소스에는 값이 한 벌도 없고 토큰만 있습니다 — 6곳 드리프트가 구조적으로 불가능합니다.
+ *
+ * ⚠️ 치환은 아래 검증(D. 화면 문구 불변)보다 **앞**에서 끝나야 합니다.
+ *    그 검증이 지키는 것은 「주석 제거가 문구를 바꾸지 않는다」이지
+ *    「소스 파일과 산출물이 같다」가 아닙니다. 치환된 결과를 기준으로 비교합니다.
+ * ────────────────────────────────────────────────────────────── */
+
+const TOKEN_RE = /\{\{\s*biz\.([A-Za-z0-9_]+)\s*\}\}/g;
+
+function loadSiteConfig() {
+  const file = path.join(ROOT, 'site.config.json');
+  if (!fs.existsSync(file)) {
+    console.error('✋ site.config.json 이 없습니다. 사업자정보 원본입니다.');
+    process.exit(1);
+  }
+  const config = JSON.parse(fs.readFileSync(file, 'utf8'));
+  for (const locale of ['ko', 'en']) {
+    if (!config.biz || !config.biz[locale]) {
+      console.error(`✋ site.config.json 에 biz.${locale} 이 없습니다.`);
+      process.exit(1);
+    }
+  }
+  return config;
+}
+
+/**
+ * 토큰을 값으로 바꿉니다. 사전에 없는 키를 만나면 바꾸지 않고 그대로 둡니다 —
+ * 남은 토큰은 호출한 쪽이 빌드 실패로 처리합니다(조용히 빈 문자열로 만들지 않습니다).
+ */
+function resolveTokens(html, values) {
+  return html.replace(TOKEN_RE, (whole, key) =>
+    Object.prototype.hasOwnProperty.call(values, key) ? String(values[key]) : whole
+  );
+}
 
 /**
  * 주석만 제거하는 설정. 나머지 최적화는 전부 꺼 둡니다.
@@ -101,8 +166,14 @@ function visibleText(html) {
 }
 
 async function main() {
+  const config = loadSiteConfig();
+
   // 1. 루트에 분류되지 않은 것이 있으면 실패시킵니다 (조용한 누락 방지)
-  const known = new Set([...STATIC.html, ...STATIC.dirs, ...NOT_DEPLOYED]);
+  const known = new Set([
+    ...STATIC.html.map((h) => h.file),
+    ...STATIC.dirs,
+    ...NOT_DEPLOYED,
+  ]);
   const unknown = fs
     .readdirSync(ROOT, { withFileTypes: true })
     .map((e) => e.name)
@@ -123,19 +194,32 @@ async function main() {
 
   let totalBytes = 0;
 
-  for (const name of STATIC.html) {
+  for (const { file: name, locale } of STATIC.html) {
     const src = path.join(ROOT, name);
     if (!fs.existsSync(src)) {
       console.error(`✋ ${name} 이 없습니다. STATIC.html 목록과 실제 파일이 어긋납니다.`);
       process.exit(1);
     }
-    const before = fs.readFileSync(src, 'utf8');
-    const after = await minify(before, MINIFY_OPTS);
 
     const fail = (msg) => {
       console.error(`✋ ${name}: ${msg}\n   배포를 중단합니다.`);
       process.exit(1);
     };
+
+    const raw = fs.readFileSync(src, 'utf8');
+    const before = resolveTokens(raw, config.biz[locale]);
+
+    // 사전에 없는 키(오타)가 남아 있으면 화면에 {{...}} 가 그대로 찍힙니다.
+    // 조용히 나가는 것보다 빌드가 깨지는 편이 낫습니다 — 루트 미분류와 같은 태도입니다.
+    const unresolved = before.match(TOKEN_RE);
+    if (unresolved) {
+      fail(
+        `치환되지 않은 토큰이 남았습니다: ${[...new Set(unresolved)].join(', ')}\n` +
+          `   site.config.json 의 biz.${locale} 에 해당 키가 있는지 확인하십시오.`
+      );
+    }
+
+    const after = await minify(before, MINIFY_OPTS);
 
     // ── 검증 ──────────────────────────────────────────────────────────────
     // A. 주석이 남지 않았는지 (세 종류 전부)
@@ -158,10 +242,12 @@ async function main() {
 
     // D. 눈에 보이는 텍스트가 한 글자도 안 바뀌었는지.
     //    문구는 한 글자도 바뀌면 안 되는 것이 이 프로젝트의 첫 규칙입니다(정본 §0 · §8).
+    //    ⚠️ 기준은 치환이 끝난 before 입니다. 여기서 지키는 것은 「주석 제거가 문구를
+    //       바꾸지 않는다」이고, 치환이 문구를 바꾸는지는 test/site-config.test.js 몫입니다.
     if (visibleText(before) !== visibleText(after)) fail('화면에 보이는 문구가 변했습니다');
 
     fs.writeFileSync(path.join(OUT, name), after);
-    const saved = before.length - after.length;
+    const saved = raw.length - after.length;
     totalBytes += saved;
     console.log(
       `  ${name.padEnd(15)} ${String(before.length).padStart(6)} → ` +

@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<!--
+  개인정보처리방침 — 초안 (2026-08-11 신설)
+
+  ⚠️ 법무 검토 전입니다. 화면 상단 .draft 배너와 §08「아직 확정하지 못한 항목」이
+     그 사실을 이용자에게 그대로 알립니다. 둘 중 하나만 지우지 마십시오.
+
+  ⚠️ 여기 적힌 처리 내용은 전부 코드에서 확인한 사실입니다. 지어낸 문장이 없습니다.
+       · 사전등록 폼      api/leads.js       (Resend 메일 2통 · DB 저장 없음)
+       · 서류 접수        api/intake.js · precheck-schema.sql (Supabase · 30일 삭제)
+       · 즉시 삭제        api/erasure.js
+       · 세율 조회 기록    api/lookup-log.js  (개인정보 없음 · IP·UA 저장 안 함)
+     코드가 바뀌면 이 문서도 함께 고쳐야 합니다 — 특히 30일 보관과 수탁사 3곳.
+
+  ⚠️ 사업자정보와 법인명은 site.config.json 이 원본입니다. 여기서 값을 쓰지 마십시오.
+
+  영문판은 en-privacy.html 입니다. 한쪽만 고치지 마십시오.
+-->
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개인정보처리방침(초안) — TROPS</title>
+<meta name="description" content="TROPS 가 어떤 자리에서 어떤 정보를 받아 무엇에 쓰고 언제 지우는지 적은 문서입니다. 법무 검토 전 초안입니다.">
+<link rel="canonical" href="https://trops.kr/privacy">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<style>
+  :root {
+    --ink:          #0F172A;
+    --ink-70:       rgba(15, 23, 42, .7);
+    --ink-64:       rgba(15, 23, 42, .64);
+    --ink-62:       rgba(15, 23, 42, .62);
+    /* 액센트 — 클릭 가능한 요소에만 (정본 §3-1 · §6)
+       #0F172A(먹색)에서 교체. 판정색(초록·빨강·노랑·주황·보라)은 쓰지 않습니다. */
+    --accent:       #1D4ED8;
+    --accent-press: #1E40AF;
+    --accent-soft:  #EFF6FF;
+    --muted:        #94A3B8;
+    --line:         #E2E8F0;
+    /* #F8FAFC는 --bg와 명도차 1.5%라 섹션 교차가 안 잡혀 3%로 내림 (정본 §3-1) */
+    --surface:      #F1F5F9;
+    --surface-dark: #0F172A;
+    --bg:           #FFFFFF;
+    /* 다크 배경(--surface-dark) 위 잉크 3단계. index.html 과 같은 값입니다 —
+       한 곳만 고치면 페이지마다 푸터 회색조가 어긋납니다.
+       ⚠️ 정본 §3-1 등재값(.72/.50/.28)을 그대로 쓰면 tertiary 가 #0F172A 위
+          2.50:1 로 WCAG AA(4.5:1) 미달입니다. 이름만 정본을 따르고 값은 대비를
+          지키는 쪽으로 뒀습니다 (index.html :root 주석에 같은 내용). */
+    --d-ink-primary:   #FFFFFF;                    /* 헤딩 · 강조 */
+    --d-ink-secondary: rgba(255, 255, 255, .72);   /* 본문 */
+    --d-ink-tertiary:  rgba(255, 255, 255, .50);   /* 보조·캡션 */
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.75;
+    word-break: keep-all;
+    text-wrap: pretty;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  a { color: var(--accent); text-decoration: none; }
+  /* --accent가 먹색이던 때는 hover가 무변화였습니다. #1D4ED8로 바뀐 뒤 --ink로 가면
+     채도가 빠져 "비활성"으로 읽히므로 index.html 과 같이 --accent-press로 어둡게 갑니다. */
+  a:hover { color: var(--accent-press); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .container { max-width: 1200px; margin: 0 auto; padding-inline: clamp(24px, 5vw, 48px); }
+  .narrow { max-width: 780px; }
+
+  .nav { border-bottom: 1px solid var(--line); }
+  .nav-inner { height: 64px; display: flex; align-items: center; gap: 40px; }
+  .wordmark { font-size: 19px; font-weight: 700; letter-spacing: -0.02em; }
+  .nav-right { margin-left: auto; }
+
+  /* V7 — 고정 height(46px)를 버리고 세로 패딩 12px로 전환.
+     12+15.5+12 = 39.5px라 패딩만으로는 터치 타깃 44px에 못 미치므로
+     min-height로 44px를 따로 보장합니다. (정본 C-1의 "12px로 44px 확보"는 산술이 안 맞습니다) */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 44px; padding: 12px 22px;
+    border-radius: 6px; border: 1px solid transparent;
+    font: inherit; font-size: 15.5px; font-weight: 600; line-height: 1;
+    cursor: pointer; white-space: nowrap;
+    transition: background-color .14s ease, border-color .14s ease, color .14s ease;
+  }
+  /* V3 — 버튼 3종 (정본 C-1). 이 페이지는 주 CTA만 씁니다. */
+  .btn-primary { background: var(--accent); color: #FFFFFF; }
+  .btn-primary:hover { background: var(--accent-press); color: #FFFFFF; }
+  /* nav 안에서는 64px 바에 맞춘 36px를 유지합니다. min-height가 height를 이기므로
+     여기서만 되돌립니다 (index.html .hs-group .btn 과 같은 처리). */
+  .btn-nav { min-height: 36px; height: 36px; padding: 0 16px; font-size: 14.5px; }
+
+  .head { padding-block: clamp(48px, 6vw, 80px) clamp(28px, 3.5vw, 40px); }
+  .eyebrow { margin: 0 0 18px; font-size: 13.5px; font-weight: 600; letter-spacing: .02em; color: var(--accent); }
+  /* V2 클램프 + V4 행간 (정본 §3-2: H1 36 → 56 / 1.30 / −0.035em) */
+  h1 { margin: 0; font-size: clamp(2.25rem, 4.5vw, 3.5rem); line-height: 1.30; letter-spacing: -0.035em; font-weight: 700; }
+  .head-meta { margin: 18px 0 0; font-size: 13.5px; line-height: 1.7; color: var(--muted); }
+
+  .doc { padding-bottom: clamp(56px, 7vw, 92px); }
+  .doc section { padding-block: clamp(28px, 3.4vw, 40px); border-top: 1px solid var(--line); }
+  /* V2 적용 제외 — 태그가 아니라 역할로 맞춥니다(.rm-h2 에서 배운 것).
+     01~06 은 약관 조항 제목이라 §3-2 의 「카드 제목」(20/−0.02em) 역할이지
+     H2(28→40) 디스플레이 헤딩이 아닙니다. 여기에 40px를 넣으면 조항 하나가
+     화면 한 판을 먹습니다. 바깥에 h2 태그 선택자가 없어 특정도 충돌도 없습니다. */
+  .doc h2 {
+    margin: 0 0 6px;
+    display: flex; gap: 14px;
+    font-size: 20px; line-height: 1.5; letter-spacing: -0.022em; font-weight: 700;
+  }
+  .doc-num { font-size: 13px; font-weight: 600; color: var(--muted); line-height: 1.85; }
+  .doc p { margin: 12px 0 0; font-size: 16.5px; line-height: 1.75; color: var(--ink-62); max-width: 54ch; }
+  .doc p.lead { color: var(--ink); }
+
+  table {
+    margin-top: 20px;
+    width: 100%; max-width: 680px;
+    border-collapse: collapse;
+    font-size: 16px;
+  }
+  caption { text-align: left; font-size: 13.5px; color: var(--muted); padding-bottom: 10px; }
+  th, td { text-align: left; padding: 14px 16px 13px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  thead th { border-top: 1px solid var(--line); font-size: 13.5px; font-weight: 700; color: var(--ink-70); }
+  tbody th { font-weight: 600; width: 46%; }
+  td { color: var(--ink-62); }
+  .table-wrap { overflow-x: auto; }
+
+  .note {
+    margin-top: 22px; max-width: 680px;
+    border: 1px solid var(--line); border-radius: 8px;
+    background: var(--surface);
+    padding: 20px 22px;
+  }
+  .note p { margin: 0; font-size: 15.5px; line-height: 1.72; }
+  .note p + p { margin-top: 10px; }
+
+  /* ---------- 푸터 (다크) ----------
+     index.html 과 같은 처리입니다. 네 페이지가 같은 값을 쓰지 않으면 페이지를
+     오갈 때 푸터만 색이 튑니다.
+     밝은 배경용 잉크(--ink-64 · --muted)는 여기서 전부 --d-ink-* 로 바뀝니다 —
+     #0F172A 위에 rgba(15,23,42,...) 를 얹으면 글자가 배경에 잠깁니다.
+
+     border-top 을 없앴습니다 — 흰 배경에서 #0F172A 로 넘어가는 것 자체가 가장
+     강한 경계이고, --line(#E2E8F0) 한 줄을 끼우면 밝은 쪽에만 붙은 선이 되어
+     경계가 두 번 그려집니다.
+     상단 패딩 32px → 44px. 경계선 없이 색만 바뀌는 자리라 32px 로는 첫 줄이
+     색 경계에 붙어 보입니다. 하단은 그대로 둡니다. */
+  .footer { background: var(--surface-dark); color: var(--d-ink-secondary); }
+  .footer-inner { padding-block: 44px 28px; }
+  .footer-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; }
+  /* 워드마크는 푸터에서 유일한 강조 요소라 primary */
+  .footer-mark { font-size: 14px; font-weight: 600; color: var(--d-ink-primary); }
+  .footer-meta { font-size: 13.5px; color: var(--d-ink-tertiary); }
+  /* ---------- 사업자정보 (전 페이지 공통) ----------
+     6개 항목의 표기는 사업자등록증·통신판매업신고증 원문과 글자 그대로 일치해야 합니다.
+     "주식회사 테오네"를 "(주)테오네"로 줄여 쓰지 마십시오. */
+  .footer-links { margin: 18px 0 0; display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; }
+  /* 정책 링크는 클릭 요소지만 --accent(#1D4ED8)를 쓰지 않습니다 —
+     #0F172A 위에서 2.3:1 로 대비가 무너집니다. 다크에서는 밑줄로 클릭임을 알립니다. */
+  .footer-links a {
+    color: var(--d-ink-secondary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .footer-links a:hover { color: var(--d-ink-primary); }
+  .footer-biz { margin: 16px 0 0; display: grid; gap: 3px; font-size: 12.5px; line-height: 1.7; color: var(--d-ink-tertiary); }
+  .footer-biz > div { display: flex; flex-wrap: wrap; gap: 4px 10px; }
+  /* 항목명(dt)을 값(dd)보다 한 단계 밝게 둬서 6개 항목이 읽히는 순서를 잡아 줍니다 */
+  .footer-biz dt { flex: 0 0 auto; min-width: 116px; margin: 0; color: var(--d-ink-secondary); }
+  .footer-biz dd { margin: 0; }
+  .footer-legal { margin: 18px 0 0; font-size: 12.5px; line-height: 1.7; color: var(--d-ink-tertiary); }
+  .footer-legal p { margin: 0; }
+
+  @media (max-width: 640px) {
+    tbody th { width: auto; }
+    table, thead, tbody, tr, th, td { display: block; }
+    thead { display: none; }
+    tr { border-top: 1px solid var(--line); padding-block: 6px; }
+    th, td { border-bottom: 0; padding: 4px 0; }
+    tbody th { font-size: 16px; }
+    td { font-size: 15.5px; }
+  }
+
+  /* ---------- 초안 배너 ----------
+     법무 검토 전이라는 사실을 페이지 첫 화면에서 숨김 없이 알립니다.
+     ⚠️ 확정본으로 교체할 때 이 블록과 §08 을 함께 지우십시오. 한쪽만 지우면
+        "검토 끝난 문서"와 "검토 전이라 비워 둔 항목"이 한 페이지에 남습니다.
+     판정색(빨강·주황)을 쓰지 않습니다 — 경고가 아니라 상태 표시입니다(정본 §6). */
+  .draft {
+    margin: 0 0 28px;
+    border: 1px solid var(--line); border-left: 3px solid var(--ink);
+    border-radius: 8px; background: var(--surface);
+    padding: 18px 22px 17px;
+  }
+  .draft p { margin: 0; font-size: 15.5px; line-height: 1.72; color: var(--ink-70); max-width: 60ch; }
+  .draft p + p { margin-top: 8px; }
+  .draft strong { color: var(--ink); }
+
+  .doc ul { margin: 12px 0 0; padding-left: 20px; max-width: 54ch; }
+  .doc li { margin: 6px 0 0; font-size: 16.5px; line-height: 1.75; color: var(--ink-62); }
+</style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a href="/" class="wordmark" aria-label="TROPS 홈">TROPS</a>
+      <div class="nav-right">
+        <a class="btn btn-primary btn-nav" href="/precheck">서류 보내기</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container narrow head">
+      <p class="eyebrow">이용자 안내</p>
+      <h1>개인정보처리방침</h1>
+      <p class="head-meta">
+        초안 · 법무 검토 전 &middot; 작성일 2026년 8월 11일<br>
+        {{biz.companyName}} (이하 &ldquo;회사&rdquo;)가 trops.kr 에서 제공하는 서비스에 적용됩니다.
+      </p>
+    </div>
+
+    <div class="container narrow doc">
+      <div class="draft" role="note">
+        <p><strong>이 문서는 초안입니다. 법무 검토를 마치지 않았습니다.</strong></p>
+        <p>확정본으로 교체되기 전까지는, 회사가 지금 실제로 하고 있는 처리 방식을 사실대로 적어 둔 것으로 봐 주십시오. 아직 정하지 못한 항목은 비워 두고 §08 에 그대로 적어 두었습니다 &mdash; 확정되지 않은 것을 확정된 것처럼 적지 않았습니다.</p>
+      </div>
+
+      <section>
+        <h2><span class="doc-num" aria-hidden="true">01</span><span>이 방침이 다루는 범위</span></h2>
+        <p class="lead">trops.kr 과 그 하위 페이지에서 회사가 이용자의 개인정보를 어떤 자리에서 받아 무엇에 쓰고 언제 지우는지 적었습니다.</p>
+        <p>개인정보를 받는 자리는 두 곳입니다 &mdash; 출시 알림 사전등록 폼과 바이어 서류 사전 확인 접수(/precheck)입니다. 협정 세율 조회(/uae)는 개인정보를 받지 않습니다.</p>
+        <p>회사는 이 사이트에서 광고 식별자·행태정보 수집 도구를 쓰지 않습니다. 접속 통계·광고 목적의 쿠키를 심지 않고, 브라우저 저장소(localStorage 등)에 이용자 정보를 남기지 않습니다.</p>
+      </section>
+      <section>
+        <h2><span class="doc-num" aria-hidden="true">02</span><span>받는 항목과 쓰는 목적</span></h2>
+        <p>자리마다 받는 것이 다릅니다. 아래 표에 적힌 것이 전부입니다.</p>
+        <div class="table-wrap">
+        <table>
+          <caption>수집 자리별 항목 · 목적 · 보관</caption>
+          <thead>
+            <tr><th scope="col">받는 자리</th><th scope="col">항목</th><th scope="col">목적</th><th scope="col">보관</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">출시 알림 사전등록</th>
+              <td>이름, 이메일<br>회사명(선택)<br>동의 여부와 시각</td>
+              <td>출시 시점 안내<br>등록 확인 회신</td>
+              <td>회사 담당자 메일함에만 남습니다. 별도 데이터베이스에 저장하지 않습니다.</td>
+            </tr>
+            <tr>
+              <th scope="row">서류 사전 확인 접수<br>(/precheck)</th>
+              <td>이메일<br>업로드하신 바이어 서류<br>자사 서식(선택)<br>거래 상대국·HS 코드(선택)<br>동의 2종과 시각<br>결제 정보(유료 접수 시 주문번호·결제 상태)</td>
+              <td>요청하신 서류 대조 수행<br>결과 자료 전달<br>결제·환불 처리</td>
+              <td>접수일로부터 30일 후 삭제. 이용자가 요청하면 그 전에 즉시 삭제.</td>
+            </tr>
+            <tr>
+              <th scope="row">협정 세율 조회<br>(/uae)</th>
+              <td class="lead"><strong>개인정보 없음</strong><br>조회한 HS 코드·국가·결과 구분만 남깁니다</td>
+              <td>조회 기록 보존</td>
+              <td>개인정보가 아니므로 이 방침의 대상이 아닙니다</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+        <p>협정 세율 조회 기록에는 IP 주소·브라우저 정보·이용자 식별자를 담지 않습니다. 누가 조회했는지 회사도 알지 못합니다.</p>
+        <p>주민등록번호를 비롯한 고유식별정보와 민감정보는 어느 자리에서도 받지 않습니다. 이용자가 업로드하는 서류 안에 그런 정보가 들어 있을 수 있으므로, 대조에 필요하지 않은 정보는 가려서 보내 주시기를 권합니다.</p>
+      </section>
+      <section>
+        <h2><span class="doc-num" aria-hidden="true">03</span><span>보관 기간과 파기</span></h2>
+        <p><strong>서류 사전 확인 접수</strong> &mdash; 접수한 날로부터 30일이 지나면 업로드하신 파일과 접수 기록을 지웁니다. 확인 메일에 자료를 첨부하지 않고 링크만 보내는 것도 같은 이유입니다. 첨부한 파일에는 이 삭제 정책을 적용할 수 없습니다.</p>
+        <p>기다리지 않고 지우고 싶으시면 확인 메일의 링크로 들어가 &ldquo;자료 즉시 삭제&rdquo;를 선택해 주십시오. 요청한 시점에 파일을 지웁니다. 한 번 지우면 같은 자료를 다시 받아보실 수 없습니다.</p>
+        <p><strong>출시 알림 사전등록</strong> &mdash; 별도 데이터베이스가 없어 회사 담당자 메일함에만 남습니다. 출시 안내를 마쳤거나 이용자가 삭제를 요청하면 해당 메일을 지웁니다.</p>
+        <p>관계 법령이 보존을 요구하는 기록(전자상거래법상 계약·결제·소비자 불만 처리 기록 등)은 그 법이 정한 기간 동안 따로 보관합니다.</p>
+      </section>
+      <section>
+        <h2><span class="doc-num" aria-hidden="true">04</span><span>처리를 맡기는 곳</span></h2>
+        <p>회사는 서비스를 돌리는 데 필요한 범위에서 아래 세 곳에 처리를 맡깁니다. 세 곳 모두 계약 범위 밖의 목적으로 쓰지 못합니다.</p>
+        <div class="table-wrap">
+        <table>
+          <caption>수탁자와 맡기는 일</caption>
+          <thead><tr><th scope="col">맡기는 곳</th><th scope="col">맡기는 일</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Resend</th><td>안내·확인 메일 발송</td></tr>
+            <tr><th scope="row">Supabase</th><td>접수 기록과 업로드 파일 보관</td></tr>
+            <tr><th scope="row">Vercel</th><td>웹사이트 호스팅과 요청 처리</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p>결제는 토스페이먼츠 결제창에서 이루어집니다. 카드번호를 비롯한 결제수단 정보는 결제사가 받아 처리하며, 회사는 받지도 보관하지도 않습니다.</p>
+      </section>
+      <section>
+        <h2><span class="doc-num" aria-hidden="true">05</span><span>이용자가 요구할 수 있는 것</span></h2>
+        <p>이용자는 자신의 개인정보에 대해 열람·정정·삭제·처리정지를 요구하실 수 있습니다. 선택 동의는 언제든 철회하실 수 있고, 철회하셔도 이미 신청하신 서비스는 그대로 이용하실 수 있습니다.</p>
+        <p>접수 건은 확인 메일의 링크에서 상태를 보시고 즉시 삭제를 요청하실 수 있습니다. 그 밖의 요구는 <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a> 으로 보내 주시면 확인해 처리합니다.</p>
+      </section>
+      <section>
+        <h2><span class="doc-num" aria-hidden="true">06</span><span>안전하게 지키기 위해 하는 일</span></h2>
+        <p>저장소 접근 키는 서버에서만 쓰고 브라우저로 내려보내지 않습니다. 접수 기록 테이블은 행 수준 접근 제어를 켜 두어 서버 외의 경로로는 읽히지 않습니다.</p>
+        <p>확인 메일에는 자료를 첨부하지 않고 링크만 담습니다. 회수할 수 없고 삭제 정책이 미치지 않는 사본을 만들지 않기 위해서입니다.</p>
+        <p>보관 기간이 지난 자료는 정리 작업으로 지웁니다.</p>
+      </section>
+      <section>
+        <h2><span class="doc-num" aria-hidden="true">07</span><span>방침이 바뀔 때</span></h2>
+        <p>내용이 바뀌면 이 페이지에 바뀐 내용과 적용일을 함께 올립니다. 이용자에게 불리하게 바뀌는 경우에는 적용일 전에 알려 드립니다.</p>
+      </section>
+      <section>
+        <h2><span class="doc-num" aria-hidden="true">08</span><span>아직 확정하지 못한 항목</span></h2>
+        <p class="lead">아래는 법무 검토에서 확정할 항목입니다. <strong>지어내지 않고 비워 두었습니다.</strong></p>
+        <ul>
+          <li>개인정보 보호책임자의 성명·직위·연락처 (현재는 위 문의 주소로 받습니다)</li>
+          <li>수탁사의 국외 이전 상세 &mdash; 이전되는 국가, 시점과 방법, 이전받는 자의 정보</li>
+          <li>개인정보 분쟁조정위원회 등 권리침해 구제 절차 안내</li>
+          <li>파기 절차와 방법의 구체적 기술</li>
+          <li>이 방침의 시행일 (확정본이 나오면 그날로 정합니다)</li>
+        </ul>
+        <p>확인이 필요하시면 <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a> 으로 물어봐 주십시오. 문서가 확정되기 전이라도 현재 처리 방식은 위에 적은 그대로입니다.</p>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-row">
+        <span class="footer-mark">TROPS</span>
+        <span class="footer-meta">바이어 서류 사전 확인 · contact@theo-ne.com</span>
+      </div>
+      <nav class="footer-links" aria-label="정책">
+        <a href="/precheck">바이어 서류 사전 확인</a>
+        <a href="/refund">환불규정</a>
+        <a href="/privacy">개인정보처리방침</a>
+        <a href="/">TROPS 홈</a>
+      </nav>
+
+      <dl class="footer-biz" aria-label="사업자정보">
+        <!-- 값은 전부 site.config.json 이 원본입니다(2026-08-11 단일소스화).
+             여기를 직접 고치지 마십시오 — 빌드가 토큰을 채웁니다. -->
+        <div><dt>상호명</dt><dd>{{biz.companyName}}</dd></div>
+        <div><dt>대표자명</dt><dd>{{biz.ceo}}</dd></div>
+        <div><dt>사업자등록번호</dt><dd>{{biz.registrationNo}}</dd></div>
+        <div><dt>통신판매업신고번호</dt><dd>{{biz.ecommerceNo}}</dd></div>
+        <div><dt>사업장주소</dt><dd>{{biz.address}}</dd></div>
+        <div><dt>전화번호</dt><dd>{{biz.phone}}</dd></div>
+      </dl>
+
+      <div class="footer-legal">
+        <p>TROPS · {{biz.companyName}} — ※ 법률 자문 서비스가 아닙니다.</p>
+        <p>© 2026 TROPS · {{biz.companyName}}. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
