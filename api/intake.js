@@ -60,6 +60,7 @@ const { readConfig, safeText } = require('./_supabase.js');
 const { PRICE, ORDER_NAME, makeOrderId } = require('./_payment.js');
 const { buildMagicLink, sendIntakeMails, RETENTION_DAYS } = require('./_notify.js');
 const { agreementFor, normalizeHsCode } = require('./_agreements.js');
+const { rejectIfChargeBlocked } = require('./_precheck-charge-gate.js');
 
 const STORAGE_BUCKET = 'intake';
 
@@ -119,6 +120,16 @@ async function handleIntake(req, res) {
   // 무상 실증(free)과 건별 결제(paid)는 접수 시점이 다릅니다.
   // free 는 여기서 접수가 끝나고, paid 는 결제 승인까지 가야 끝납니다.
   const path = body.path === 'paid' ? 'paid' : 'free';
+
+  // 🔴 과금 게이트 — 유료 경로는 여기서 먼저 막습니다 〔R-2 · api/_precheck-charge-gate.js〕.
+  //
+  // 파일 업로드·주문 생성보다 **앞**입니다. 뒤에 두면 막히는 건인데도 파일이 저장되고
+  // 주문번호가 발급되어, 결제창을 열지도 못할 주문이 awaiting_payment 로 쌓입니다.
+  //
+  // 무상 건은 지나갑니다 — 막는 것은 「유상 개시」이지 「제품 제공」이 아닙니다.
+  // 실증 20건은 0원이라 이 게이트에 걸리지 않고, 변호사 확인을 기다리는 동안에도
+  // 계속 굴러가야 합니다(그 20건이 확인에 필요한 실측의 출처입니다).
+  if (path === 'paid' && rejectIfChargeBlocked(res, 'api/intake.js')) return;
 
   const parsed = parseFiles(body.files);
   if (!parsed.ok) {

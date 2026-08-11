@@ -27,6 +27,7 @@
 
 const { readConfig, safeText } = require('./_supabase.js');
 const { confirmPayment } = require('./_payment.js');
+const { rejectIfChargeBlocked } = require('./_precheck-charge-gate.js');
 const { buildMagicLink, sendIntakeMails } = require('./_notify.js');
 
 const STORAGE_BUCKET = 'intake';
@@ -104,6 +105,23 @@ module.exports = async (req, res) => {
     res.status(400).json({ error: 'amount-mismatch' });
     return;
   }
+
+  // 🔴 과금 게이트 — 게이트웨이를 부르기 **직전** 자리입니다 〔R-2〕.
+  //
+  // api/intake.js 가 이미 막고 있으므로 정상 흐름은 여기까지 오지 않습니다.
+  // 그런데도 여기 한 번 더 두는 이유는, 이 엔드포인트가 **직접 호출 가능**하기
+  // 때문입니다 — 앞의 관문을 지나지 않고 온 요청에도 같은 답을 해야 합니다.
+  // (게이트가 하나면 그 하나를 우회하는 경로가 곧 구멍입니다.)
+  //
+  // ⚠️ 자리가 중요합니다. 위쪽 '이미 승인된 주문' 분기보다 **뒤**입니다 —
+  //    이미 돈이 오간 건의 토큰 반환까지 막으면, 결제를 마친 분이 접수 내용을
+  //    못 보게 됩니다. 막아야 하는 것은 **새 청구**이지 지난 청구의 조회가 아닙니다.
+  //
+  // ⚠️ 알고 감수하는 것 — 결제가 **진행 중일 때** 게이트를 닫으면, 토스에서 승인(authorize)
+  //    까지 갔는데 여기서 확정(confirm)을 안 하는 건이 생깁니다. 그 건은 확정되지 않은 채
+  //    남고 토스가 일정 시간 뒤 자동 취소하므로 돈은 돌아갑니다. 통과시키는 쪽을 고르면
+  //    차단 스위치가 「지금부터」 막지 못하게 되므로, 닫는 쪽을 택했습니다.
+  if (rejectIfChargeBlocked(res, 'api/payment-confirm.js')) return;
 
   // 4) 승인.
   const result = await confirmPayment({

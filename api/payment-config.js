@@ -14,6 +14,7 @@
  */
 
 const { PRICE, LIST_PRICE, ORDER_NAME, readTossConfig } = require('./_payment.js');
+const { precheckChargeBlockers, isPrecheckPaidDisplayEnabled } = require('./_precheck-charge-gate.js');
 
 module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
@@ -24,6 +25,21 @@ module.exports = async (req, res) => {
   }
 
   const toss = readTossConfig();
+  const blockers = precheckChargeBlockers();
+
+  /*
+   * 🔴 실키가 붙었는데 과금이 막혀 있는 상태를 로그에 남깁니다 〔R-2〕.
+   *
+   * 둘 다 정상인 조합입니다(심사용으로 실키를 먼저 넣어 둘 수 있습니다).
+   * 다만 「실키를 넣었으니 이제 팔리겠지」라고 생각한 채 안 팔리는 상태가
+   * 조용히 유지되는 것이 위험합니다 — 그 침묵을 깨는 것이 이 줄입니다.
+   * 반대 방향(게이트를 열었는데 키가 테스트)은 결제가 눈에 띄게 실패하므로
+   * 굳이 여기서 말하지 않습니다.
+   */
+  if (toss.mode === 'live' && blockers.length > 0) {
+    console.error('payment gate notice: 실키(live)가 붙어 있으나 과금은 막혀 있습니다 — 남은 항목: ' +
+      blockers.join(', ') + ' | 의도한 상태가 아니라면 trops_a lib/payment/precheck-paid-gate.ts 를 먼저 보십시오.');
+  }
 
   res.status(200).json({
     ok: true,
@@ -35,5 +51,19 @@ module.exports = async (req, res) => {
     amount: PRICE,
     listPrice: LIST_PRICE,
     orderName: ORDER_NAME,
+
+    /*
+     * 과금 게이트 상태 〔R-2 · api/_precheck-charge-gate.js〕.
+     *
+     * 화면이 이걸 보고 유료 플랜을 잠급니다. ⚠️ **이것이 차단은 아닙니다** —
+     * 실제 차단은 api/intake.js · api/payment-confirm.js 가 서버에서 합니다.
+     * 브라우저 값은 고쳐질 수 있으므로, 여기 내려가는 값은 「왜 잠겼는지 사람에게
+     * 설명하기 위한 것」이고 안전은 서버가 듭니다.
+     *
+     * display 는 따로입니다 — 가격 게시는 과금이 아니라 계속 열려 있습니다.
+     */
+    chargeEnabled: blockers.length === 0,
+    chargeBlockers: blockers,
+    displayEnabled: isPrecheckPaidDisplayEnabled(),
   });
 };

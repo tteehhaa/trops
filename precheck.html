@@ -633,10 +633,11 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
             <label class="plan" id="plan-paid-card">
               <input type="radio" name="plan" value="paid" id="plan-paid">
               <div>
-                <span class="plan-tag plan-tag-quiet">바로 신청</span>
+                <!-- id 는 과금 게이트가 잠글 때 문구를 바꾸기 위한 것입니다 〔R-2〕. -->
+                <span class="plan-tag plan-tag-quiet" id="plan-paid-tag">바로 신청</span>
                 <p class="plan-name">바이어 서류 사전 확인</p>
                 <p class="plan-price">₩99,000</p>
-                <p class="plan-desc">
+                <p class="plan-desc" id="plan-paid-desc">
                   남은 자리와 관계없이 오늘 접수됩니다. 신용·체크카드로 건별 1회 결제하며, 정기결제가 아닙니다.
                 </p>
               </div>
@@ -867,6 +868,9 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
     var widgets      = null;   // 토스 결제위젯 인스턴스
     var widgetsReady = false;
     var freeAvailable = true;
+    // 과금 게이트 〔R-2〕. 서버(/api/payment-config)가 알려줍니다 — 기본값은 열림으로 두고
+    // 응답을 받은 뒤에 잠급니다. 여기서 막지 못해도 서버가 다시 막으므로 안전합니다.
+    var paidAvailable = true;
 
     loadSlots();
     loadPayConfig();
@@ -919,8 +923,53 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
       document.getElementById('plan-free-desc').textContent =
         '선착순 20건이 모두 찼습니다. 다음 회차가 열리면 알려드립니다.';
       closedBox.hidden = false;
-      paidRadio.checked = true;
-      onPlanChange();
+      // 유료도 잠겨 있으면 옮겨갈 곳이 없습니다 — 그때는 아래에서 폼을 닫습니다.
+      if (paidAvailable) {
+        paidRadio.checked = true;
+        onPlanChange();
+      } else {
+        blockBothPlans();
+      }
+    }
+
+    /*
+     * 유료 경로만 잠급니다 〔R-2 · 과금 게이트〕.
+     *
+     * ⚠️ 카드를 숨기지 않습니다. 게시(가격 노출)와 과금은 별개 결정이고,
+     *    지금 막힌 것은 과금뿐입니다 — 숨기면 두 결정을 하나로 합치는 것이 됩니다.
+     *    가격은 그대로 두고 「지금은 결제할 수 없다」만 말합니다.
+     *
+     * ⚠️ 이 함수는 안내이지 차단이 아닙니다. 브라우저 값은 고쳐질 수 있으므로
+     *    실제 차단은 api/intake.js · api/payment-confirm.js 가 듭니다.
+     */
+    function lockPaidPlan() {
+      paidAvailable = false;
+      paidRadio.disabled = true;
+      paidCard.classList.add('plan-off');
+      document.getElementById('plan-paid-tag').textContent = '준비 중';
+      document.getElementById('plan-paid-desc').textContent =
+        '유료 접수는 아직 열지 않았습니다. 지금은 무상 실증으로 신청하실 수 있습니다.';
+
+      if (paidRadio.checked) {
+        if (freeAvailable) {
+          freeRadio.checked = true;
+          onPlanChange();
+        } else {
+          blockBothPlans();
+        }
+      } else {
+        // 선택 중이 아니어도 결제 영역은 닫아 둡니다.
+        payArea.hidden = true;
+      }
+    }
+
+    // 무료 마감 + 유료 미개시 — 지금 받을 수 있는 경로가 없습니다.
+    function blockBothPlans() {
+      document.getElementById('closed-title').textContent = '지금은 접수를 받지 않습니다.';
+      document.getElementById('closed-body').textContent =
+        '무료 자리가 모두 찼고, 유료 접수는 아직 열지 않았습니다. 다음 회차가 열리면 알려드립니다.';
+      closedBox.hidden = false;
+      form.hidden = true;
     }
 
     // Supabase 미설정·장애 — 어느 경로로도 접수를 저장할 수 없는 상태입니다.
@@ -960,6 +1009,12 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
         .then(function (cfg) {
           if (!cfg || cfg.ok !== true) return;
           payConfig = cfg;
+          // 과금이 막혀 있으면 결제위젯을 그리지 않고 유료 카드를 잠급니다 〔R-2〕.
+          // 위젯을 그려 놓고 제출에서 막으면, 카드번호까지 넣은 뒤에 거절당합니다.
+          if (cfg.chargeEnabled === false) {
+            lockPaidPlan();
+            return;
+          }
           if (cfg.mode !== 'live') {
             var note = document.getElementById('pay-mode');
             note.textContent = '테스트 결제로 동작 중입니다. 실제로 청구되지 않습니다.';
@@ -971,6 +1026,8 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
     }
 
     function renderWidgets() {
+      // 과금이 막혀 있으면 결제수단 입력을 아예 그리지 않습니다 〔R-2〕.
+      if (!paidAvailable) return;
       if (widgetsReady || !payConfig || typeof window.TossPayments !== 'function') return;
       widgetsReady = true;   // 두 번 그리지 않도록 먼저 세웁니다.
 
@@ -1139,6 +1196,11 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
         .then(readJson)
         .then(function (r) {
           if (r.status === 409) return onExhausted();
+          // 과금 게이트에 막힌 경우 〔R-2〕. 화면이 이미 잠갔어야 하지만, 페이지를 열어둔
+          // 사이에 게이트가 닫혔거나 잠금을 지나쳐 온 요청이면 여기로 옵니다.
+          if (r.status === 403 && r.body && r.body.error === 'charge-not-open') {
+            return onChargeBlocked(r.body);
+          }
           if (r.status !== 201 || !r.body.ok) throw new Error(r.body.error || 'request failed');
           if (plan === 'paid') return openPaymentWindow(r.body, email);
           return onAccepted(r.body);
@@ -1186,6 +1248,19 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
       setBusy(false);
       lockFreePlan();
       fail('접수하시는 사이에 선착순 20건이 모두 찼습니다. 런칭가로 신청해 주십시오.');
+    }
+
+    /*
+     * 과금 게이트에 막혔습니다 〔R-2〕.
+     *
+     * 서버 문장을 그대로 씁니다 — 같은 사유를 두 곳에서 따로 적으면 한쪽만 고쳐집니다.
+     * blockers(어느 항목이 남았는가)는 화면에 쓰지 않습니다. 이용자에게는 내부
+     * 항목번호가 아무 뜻이 없고, 확인이 필요한 사람은 서버 로그에서 봅니다.
+     */
+    function onChargeBlocked(body) {
+      setBusy(false);
+      lockPaidPlan();
+      fail(body.message || '유료 접수는 아직 열지 않았습니다. 무상 실증으로 신청해 주십시오.');
     }
 
     function setBusy(busy, text) {

@@ -284,6 +284,47 @@ const CHECKS = [
       return true;
     },
   },
+
+  /* ── R-2 과금 게이트 (2026-08-11) ───────────────────────────────── */
+  {
+    id: 'R2-과금게이트',
+    /*
+     * 🔴 **배포 시 대조**입니다. 게이트 값은 코드 상수라 배포본에 굳습니다 —
+     *    소스를 고치고 배포를 잊거나, 배포는 됐는데 다른 커밋이 올라간 경우
+     *    라이브가 소스와 다른 답을 합니다. 그 침묵을 여기서 깹니다.
+     *
+     * ⚠️ 기대값을 하드코딩하지 않습니다. 이 저장소 소스에서 읽어 대조합니다 —
+     *    하드코딩하면 게이트를 여는 날 이 파일이 조용히 낡습니다.
+     */
+    label: '/api/payment-config 의 과금 게이트가 소스와 같다',
+    page: null,
+    raw: '/api/payment-config',
+    check: (res) => {
+      if (res.status !== 200) return `HTTP ${res.status}`;
+      let body;
+      try { body = JSON.parse(res.body); } catch (e) { return '응답이 JSON 이 아닙니다'; }
+
+      const gate = require(path.join(ROOT, 'api', '_precheck-charge-gate.js'));
+      const expected = gate.isPrecheckPaidChargeEnabled();
+
+      if (typeof body.chargeEnabled !== 'boolean') {
+        return 'chargeEnabled 가 응답에 없습니다 — 게이트 배선이 배포되지 않았습니다';
+      }
+      if (body.chargeEnabled !== expected) {
+        return `라이브 chargeEnabled=${body.chargeEnabled} · 소스=${expected} — 배포본이 소스와 다릅니다`;
+      }
+      if (!expected) {
+        const want = gate.precheckChargeBlockers();
+        const got = body.chargeBlockers || [];
+        if (got.join(',') !== want.join(',')) {
+          return `막힌 사유가 다릅니다 — 라이브 [${got}] · 소스 [${want}]`;
+        }
+      }
+      // 게시는 과금과 별개로 계속 열려 있어야 합니다.
+      if (body.displayEnabled !== true) return '게시(displayEnabled)까지 닫혔습니다';
+      return true;
+    },
+  },
   {
     id: 'cron-비공개',
     label: 'cron 라우트가 무인증 호출에 404 로 답한다',
