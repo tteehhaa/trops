@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "node scripts/build-static.js",
-    "test": "node --test test/",
+    "test": "node --test --test-concurrency=1 test/",
     "keys:verify": "node --env-file=.env.local scripts/verify-supabase-keys.js",
     "cleanup:preview": "node --env-file=.env.local scripts/cleanup-expired.js",
     "cleanup:apply": "node --env-file=.env.local scripts/cleanup-expired.js --apply",

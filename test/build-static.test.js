@@ -7,6 +7,12 @@
  * 인수인계 수단으로 써서(정본 조항 번호 · 미결 항목 · 승인 이력) 양이 많고,
  * 그게 그대로 trops.kr 에서 읽히던 상태였습니다. 빌드가 조용히 망가지면
  * 다시 같은 상태로 돌아갑니다.
+ *
+ * ⚠️ 이 파일과 site-config.test.js 는 같은 dist/ 를 만들고, 검사 도중 잠깐
+ *    루트 파일을 바꿨다 되돌립니다(빌드 가드 확인용 probe · 설정값 교체).
+ *    그래서 package.json 의 test 스크립트가 --test-concurrency=1 로 돕니다.
+ *    이것을 지우면 두 파일이 서로의 dist/ 와 소스를 밟아 회차마다 결과가 달라집니다
+ *    (2026-08-11 에 실제로 3회 중 1회 실패로 나타났습니다).
  */
 
 const test = require('node:test');
@@ -17,7 +23,25 @@ const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
 const DIST = path.join(ROOT, 'dist');
-const PAGES = ['index.html', 'nda.html', 'precheck.html', 'refund.html', 'uae.html'];
+
+/**
+ * 로케일은 scripts/build-static.js 의 STATIC.html 과 같아야 합니다 —
+ * 사업자정보 토큰을 어느 묶음으로 채우는지가 여기 달렸습니다.
+ * 2026-08-11 에 en.html · privacy.html · en-privacy.html 을 넣었습니다.
+ * (en.html 은 그전까지 이 목록에서 빠져 있었습니다 — 영문 랜딩만 주석 검사를
+ *  못 받고 있었다는 뜻이라 이번에 함께 넣습니다.)
+ */
+const PAGE_LOCALES = {
+  'index.html': 'ko',
+  'en.html': 'en',
+  'nda.html': 'ko',
+  'precheck.html': 'ko',
+  'refund.html': 'ko',
+  'uae.html': 'ko',
+  'privacy.html': 'ko',
+  'en-privacy.html': 'en',
+};
+const PAGES = Object.keys(PAGE_LOCALES);
 
 function build() {
   execFileSync('node', [path.join(ROOT, 'scripts', 'build-static.js')], {
@@ -26,12 +50,29 @@ function build() {
   });
 }
 
+/**
+ * 소스의 {{biz.키}} 를 site.config.json 값으로 채웁니다.
+ *
+ * 소스와 산출물을 직접 비교하던 검사(문구 불변 · 태그 구조)의 기준을 여기로 옮깁니다.
+ * 그 검사가 지키는 것은 「**주석 제거가** 문구를 바꾸지 않는다」이지 「소스 파일과
+ * 산출물이 글자까지 같다」가 아닙니다. 치환이 문구를 바꾸는지는 site-config.test.js 몫입니다.
+ */
+function resolved(page) {
+  const config = JSON.parse(fs.readFileSync(path.join(ROOT, 'site.config.json'), 'utf8'));
+  const values = config.biz[PAGE_LOCALES[page]];
+  return fs
+    .readFileSync(path.join(ROOT, page), 'utf8')
+    .replace(/\{\{\s*biz\.([A-Za-z0-9_]+)\s*\}\}/g, (whole, key) =>
+      Object.prototype.hasOwnProperty.call(values, key) ? String(values[key]) : whole
+    );
+}
+
 function blocks(html, tag) {
   const re = new RegExp(`<${tag}\\b[^>]*>[\\s\\S]*?</${tag}\\s*>`, 'gi');
   return (html.match(re) || []).join('');
 }
 
-test('빌드가 성공하고 5개 페이지를 모두 만든다', () => {
+test('빌드가 성공하고 모든 페이지를 만든다', () => {
   build();
   for (const p of PAGES) {
     assert.ok(fs.existsSync(path.join(DIST, p)), `${p} 이 dist 에 없습니다`);
@@ -77,7 +118,7 @@ test('내부 표기가 배포본에 새지 않는다', () => {
 
 test('DOCTYPE 과 문서 구조가 살아 있다', () => {
   for (const p of PAGES) {
-    const src = fs.readFileSync(path.join(ROOT, p), 'utf8');
+    const src = resolved(p);
     const out = fs.readFileSync(path.join(DIST, p), 'utf8');
     assert.match(out.trim(), /^<!DOCTYPE html>/i, `${p}: DOCTYPE 없음`);
 
@@ -105,7 +146,7 @@ test('화면에 보이는 문구가 한 글자도 바뀌지 않는다', () => {
       .replace(/\s+/g, ' ')
       .trim();
   for (const p of PAGES) {
-    const src = fs.readFileSync(path.join(ROOT, p), 'utf8');
+    const src = resolved(p);
     const out = fs.readFileSync(path.join(DIST, p), 'utf8');
     assert.equal(visible(out), visible(src), `${p}: 화면 문구가 변함`);
   }
