@@ -1,9 +1,23 @@
 /*
- * GET /api/cron/refund-blocked — 「범위 밖」으로 뒤집힌 유상 건 환불 (Vercel Cron)
- * 〔M-2 · 신설 2026-08-11〕
+ * GET /api/cron/refund-blocked — 사후 자동환불 배치 2종 (Vercel Cron)
+ * 〔M-2 · 신설 2026-08-11 · E5 후속 2026-08-12 로 배치 병합〕
  *
- * 배치 본체는 api/_route-refund.js 입니다. 여기는 「누가 부를 수 있는가」와
- * 「붙어 있지 않을 때 무엇을 하는가」만 정합니다
+ * 배치 본체는 둘입니다 — 이름은 옛날 그대로지만 이제 두 축을 함께 봅니다:
+ *   api/_route-refund.js         route(ok/blocked) 축 〔M-2〕
+ *   api/_nda-outcome-refund.js   outcome_kind(ok/not_supported/failed) 축 〔E5〕
+ *
+ * 🔴 **왜 파일을 새로 안 만들고 여기 합쳤는가.** Hobby 플랜 cron 상한(2개)을
+ *    cleanup-expired · 이 라우트가 이미 다 씁니다(아래 스케줄 절 참조). 세 번째
+ *    배치(E5)가 생겨서 플랜을 올리는 대신 이 라우트 안에서 두 번째 잡으로
+ *    돌립니다 — 이 파일이 스스로 예고했던 대로입니다(🔴 표 아래 옛 문단).
+ *
+ * 두 잡은 **서로 독립**입니다 — 한쪽이 죽어도 다른 쪽은 돕니다
+ * (api/cron/cleanup-expired.js guarded() 와 같은 양식). 판정 표가 다르고
+ * (precheck_intake_route ↔ precheck_nda_run), 후보 집합도 겹칠 수 있지만
+ * api/_refund.js refundOrder() 자체가 「이미 환불됨」을 멱등으로 걸러 두
+ * 배치가 우연히 같은 건을 집어도 두 번 취소되지 않습니다.
+ *
+ * 여기는 「누가 부를 수 있는가」와 「붙어 있지 않을 때 무엇을 하는가」만 정합니다
  * (api/cron/cleanup-expired.js 와 같은 꼴 — 두 라우트가 같은 규칙을 씁니다).
  *
  * vercel.json 의 crons 에 등재돼 있습니다. 등재와 파일이 어긋나면
@@ -70,29 +84,36 @@
  *      읽지 않는다는 원칙은 그대로입니다 — 0건으로 끝내되 성공으로 보고합니다.
  *
  * ── 이 라우트가 하지 않는 것 ────────────────────────────────────────────────
- *   · 「처리 가능한가」를 정하지 않습니다 (정본: trops_a intake-route)
+ *   · 「처리 가능한가」·「과금 대상인가」를 정하지 않습니다
+ *     (정본: trops_a intake-route.ts · precheck-paid-gate.ts)
  *   · 자료를 **이미 전달한 건**은 자동 환불하지 않습니다 — 환불규정 §02·§03 의
- *     판단이 필요해 사람에게 넘깁니다. 응답 deferred 에 실려 나옵니다.
+ *     판단이 필요해 사람에게 넘깁니다. 두 결과의 deferred 에 각각 실려 나옵니다.
  *   · 무상 건은 다루지 않습니다 (환불할 돈이 없습니다 — 문면은 확인 화면이 합니다)
  *
- * ── 응답 ────────────────────────────────────────────────────────────────────
- *   200 { ok:true,  configured:false, note }                    env 미등록 — 무동작
- *   200 { ok:true,  configured:true, result:{available:false} } 표 없음/읽기 실패 — 0건
- *   200 { ok:true,  configured:true, result }                   전건 성공(0건 포함)
- *   502 { ok:false, configured:true, result }                    표는 있는데 한 건이라도 실패
- *   404 (본문 없음)                                              인증 불일치 · 미설정
- *   405 { error }                                                인증 통과 · GET 아님
+ * ── 응답 (result = route 축, ndaOutcome = outcome_kind 축) ─────────────────
+ *   200 { ok:true,  configured:false, note }                             env 미등록 — 무동작
+ *   200 { ok:true,  configured:true, result, ndaOutcome }                둘 다 전건 성공(0건 포함)
+ *   502 { ok:false, configured:true, result, ndaOutcome }                한쪽이라도 실패
+ *   404 (본문 없음)                                                      인증 불일치 · 미설정
+ *   405 { error }                                                        인증 통과 · GET 아님
+ *
+ *   각 결과 객체 자체는 available:false(표 없음/읽기 실패)여도 200 입니다 —
+ *   「표가 없다」는 실패가 아니라는 원칙은 두 축 모두 같습니다. hardError:true 는
+ *   그 결과 객체를 만드는 함수가 **던졌을 때**(예: 환불 컬럼 0-F 미실행)만 붙고,
+ *   이때는 실패로 셉니다 — 「아직 안 붙었다」와 「붙었는데 부서졌다」를 가릅니다.
  */
 
 'use strict';
 
 const { readConfig } = require('../_supabase.js');
 const ROUTE_REFUND = require('../_route-refund.js');
+const OUTCOME_REFUND = require('../_nda-outcome-refund.js');
 
 /** 다음 사람이 「이거 하나면 되는구나」로 읽지 않도록 응답에 박아 둡니다. */
 const NOT_OURS =
-  '처리 가능 여부의 정본은 판정층 trops_a(lib/precheck/intake-route.ts · ' +
-  'precheck_intake_route)입니다 — 이 배치는 읽어서 환불만 실행합니다';
+  '처리 가능 여부·과금 대상 여부의 정본은 판정층 trops_a(lib/precheck/intake-route.ts · ' +
+  'precheck_intake_route · lib/payment/precheck-paid-gate.ts · precheck_nda_run)입니다 — ' +
+  '이 배치는 읽어서 환불만 실행합니다';
 
 const NOT_CONFIGURED =
   'INTAKE_SUPABASE_URL · INTAKE_SUPABASE_SECRET_KEY 가 이 환경에 없습니다. ' +
@@ -127,47 +148,71 @@ module.exports = async (req, res) => {
     return;
   }
 
-  let result;
-  try {
-    result = await ROUTE_REFUND.refundBlockedRoutes(config, {
+  /*
+   * 한 잡이 던져도 다른 잡을 막지 않습니다(cleanup-expired.js guarded() 와 같은
+   * 이유) — 두 축은 서로 다른 표를 보고, 한쪽 표가 부서졌다고 다른 쪽 환불까지
+   * 멈출 이유가 없습니다. 던진 경우만 hardError:true 를 붙여 구분합니다 —
+   * 함수가 정상 반환한 available:false(표 없음)와 실패 신호를 섞지 않습니다.
+   */
+  async function runGuarded(promise, label) {
+    try {
+      return await promise;
+    } catch (err) {
+      const message = err && err.message ? err.message : String(err);
+      console.error(label + ' failed: ' + message);
+      return {
+        available: false, hardError: true, error: message,
+        checked: 0, candidates: 0, refunded: 0, already: 0, reversed: 0,
+        deferred: [], failed: [], notified: 0, errors: [],
+      };
+    }
+  }
+
+  const result = await runGuarded(
+    ROUTE_REFUND.refundBlockedRoutes(config, {
       apply: true,          // 정기 실행입니다. 미리보기는 scripts/refund-blocked.js 몫입니다.
       log: (m) => console.log('[refund-blocked-cron] ' + m),
-    });
-  } catch (err) {
-    // 환불 컬럼 선행 검사(0-F 미실행) 등이 여기로 옵니다 — 돈을 건드리기 전에 멈춘 상태입니다.
-    const message = err && err.message ? err.message : String(err);
-    console.error('refund-blocked cron failed: ' + message);
-    res.status(502).json({ ok: false, configured: true, error: message, note: NOT_OURS });
-    return;
-  }
+    }),
+    'refund-blocked(route) cron'
+  );
 
-  /*
-   * 표를 못 읽은 것은 ②(env 미등록)와 같은 「아직 붙어 있지 않다」입니다 —
-   * ①②와 다른 상한을 매길 이유가 없습니다. 0건으로 200 을 돌려줍니다.
-   */
+  const ndaOutcome = await runGuarded(
+    OUTCOME_REFUND.refundNonChargeableOutcomes(config, {
+      apply: true,          // 정기 실행입니다. 미리보기는 scripts/refund-nda-outcome.js 몫입니다.
+      log: (m) => console.log('[refund-nda-outcome-cron] ' + m),
+    }),
+    'refund-blocked(nda-outcome) cron'
+  );
+
   if (!result.available) {
-    console.error('refund-blocked cron table unavailable: ' + result.error);
-    res.status(200).json({ ok: true, configured: true, result: result, note: NOT_OURS });
-    return;
+    console.error('refund-blocked cron route-table unavailable: ' + result.error);
+  }
+  if (!ndaOutcome.available) {
+    console.error('refund-blocked cron nda-outcome-table unavailable: ' + ndaOutcome.error);
   }
 
   /*
-   * ok 는 「돌았다」가 아니라 「전건 성공했다」입니다.
+   * ok 는 「돌았다」가 아니라 「둘 다 전건 성공했다」입니다.
    *
    * ⚠️ deferred(전달 완료분)는 실패가 아닙니다 — 설계대로 사람에게 넘긴 것입니다.
    *    그것 때문에 502 를 내면 매일 빨간불이 켜지고 진짜 실패가 같은 색에 묻힙니다.
-   *    대신 사람이 봐야 하는 건이 남았다는 사실은 응답과 로그에 남습니다.
+   *    hardError(표가 부서짐이 아니라 배치 자체가 던짐)만 실패로 셉니다.
    */
-  const failed = result.failed.length > 0 || result.errors.length > 0;
+  const failed =
+    Boolean(result.hardError) || result.failed.length > 0 || result.errors.length > 0 ||
+    Boolean(ndaOutcome.hardError) || ndaOutcome.failed.length > 0 || ndaOutcome.errors.length > 0;
   if (failed) {
-    console.error('refund-blocked cron partial failure: ' +
-      JSON.stringify({ available: result.available, failed: result.failed, errors: result.errors }));
+    console.error('refund-blocked cron partial failure: ' + JSON.stringify({
+      route: { hardError: result.hardError, failed: result.failed, errors: result.errors },
+      ndaOutcome: { hardError: ndaOutcome.hardError, failed: ndaOutcome.failed, errors: ndaOutcome.errors },
+    }));
   }
 
   res.status(failed ? 502 : 200).json({
     ok: !failed,
     configured: true,
     result: result,
+    ndaOutcome: ndaOutcome,
     note: NOT_OURS,
   });
 };
