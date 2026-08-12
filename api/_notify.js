@@ -341,6 +341,14 @@ async function sendDeliveryMail(info) {
 async function sendRouteRefundMail(info) {
   const notice = String(info.notice || '').trim();
   const magicLink = info.magicLink ? String(info.magicLink) : '';
+  /*
+   * 이 함수 이름은 「route」지만 구현은 범용입니다 — 사후 자동환불 배치가 늘 때마다
+   * (E5 · outcome_kind 축) 새 메일 함수를 복제하지 않으려고 판정 표·소스 파일을
+   * 인자로 받습니다. 기본값은 이 함수의 원래 호출부(api/_route-refund.js)와
+   * 같아 하위 호환됩니다.
+   */
+  const canonTable = info.canonTable || 'precheck_intake_route';
+  const canonSourceFile = info.canonSourceFile || 'api/_route-refund.js';
 
   try {
     const { error } = await resendApi().emails.send({
@@ -387,8 +395,8 @@ async function sendRouteRefundMail(info) {
         <p><strong>금액:</strong> ${escapeHtml(formatWon(info.amount))}</p>
         <p><strong>이용자에게 나간 문장:</strong> ${escapeHtml(notice)}</p>
         <p style="color:#64748B;font-size:13px">
-          판단의 정본은 판정층 trops_a 입니다(precheck_intake_route). 이 저장소는 그것을
-          읽어 환불만 실행했습니다 — api/_route-refund.js.
+          판단의 정본은 판정층 trops_a 입니다(${escapeHtml(canonTable)}). 이 저장소는 그것을
+          읽어 환불만 실행했습니다 — ${escapeHtml(canonSourceFile)}.
         </p>
       `,
     });

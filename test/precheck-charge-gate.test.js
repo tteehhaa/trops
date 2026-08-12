@@ -475,3 +475,17 @@ test('정가·런칭가가 정본과 같다 — 값 사본의 드리프트', { s
   assert.strictEqual(payment.PRICE, Number(launch[1].replace(/_/g, '')),
     'PRICE 가 정본과 다릅니다 — 실제 청구 금액입니다');
 });
+
+/* ── ④ isNdaOutcomeChargeable — 같은 정본 파일의 두 번째 함수 〔E5〕 ────────── */
+
+test('정본에 isNdaOutcomeChargeable 이 그대로 있다 — 사라지면 사본이 낡은 것을 베낀 상태다', { skip: !hasCanon && '옆 저장소(trops_a) 없음 — 대조를 건너뜁니다' }, () => {
+  const src = canonSource();
+  assert.ok(/export function isNdaOutcomeChargeable/.test(src),
+    '정본에서 isNdaOutcomeChargeable 이 사라졌습니다 — 정본을 다시 읽고 이 사본을 맞추십시오');
+});
+
+test('isNdaOutcomeChargeable 사본의 판정이 정본과 같다 — ok 만 과금 대상', () => {
+  assert.strictEqual(gate.isNdaOutcomeChargeable('ok'), true);
+  assert.strictEqual(gate.isNdaOutcomeChargeable('not_supported'), false);
+  assert.strictEqual(gate.isNdaOutcomeChargeable('failed'), false);
+});

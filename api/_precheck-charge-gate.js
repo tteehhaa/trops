@@ -246,8 +246,30 @@ function rejectIfChargeBlocked(res, where, declaration) {
   }
 }
 
+/* ──────────────────────────────────────────────────────────────────────────────
+ * 「이 건의 NDA 판정 결과가 과금 대상인가」〔E5 · 신설 2026-08-12〕
+ *
+ * ⚠️ 위 축①·②와 다른 자리에서 씁니다. 축①·②는 결제 승인 **전**
+ *    (rejectIfChargeBlocked, api/intake.js)에서 묻는 것이고, 이건 결제 승인
+ *    **후**에만 답이 생깁니다 — outcome_kind 는 NDA 대조 엔진이 실행된 뒤(트리거
+ *    배치 자체가 payment_status='paid' 인 건만 고름 · api/_nda-outcome.js 머리주석)
+ *    에야 나옵니다. 그래서 이 함수를 assertPrecheckChargeAllowed() 에 묶지
+ *    않았습니다 — 묶으면 그 함수가 도는 시점엔 언제나 「아직 없음」만 보게 되어
+ *    죽은 코드가 됩니다. 실제로 쓰는 자리는 api/_nda-outcome-refund.js
+ *    (사후 환불 배치)뿐입니다.
+ *
+ * 정본은 위 CANON 과 같은 파일입니다 — trops_a lib/payment/precheck-paid-gate.ts
+ * 의 isNdaOutcomeChargeable(). 값을 여기서 바꾸지 않습니다(위 CANON 규칙과 동일).
+ * ────────────────────────────────────────────────────────────────────────────── */
+
+/** 정본 isNdaOutcomeChargeable() 의 문자 그대로의 사본. 'ok' 만 과금 대상. */
+function isNdaOutcomeChargeable(outcomeKind) {
+  return outcomeKind === 'ok';
+}
+
 module.exports = {
   CANON: CANON,
+  isNdaOutcomeChargeable: isNdaOutcomeChargeable,
   PRECHECK_PAID_FLAGS: PRECHECK_PAID_FLAGS,
   LAWYER_CONFIRMATION: LAWYER_CONFIRMATION,
   INTAKE_INELIGIBLE_REASONS: INTAKE_INELIGIBLE_REASONS,

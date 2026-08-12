@@ -13,6 +13,8 @@
     "refund:apply": "node --env-file=.env.local scripts/refund.js --apply",
     "refund:blocked:preview": "node --env-file=.env.local scripts/refund-blocked.js",
     "refund:blocked:apply": "node --env-file=.env.local scripts/refund-blocked.js --apply",
+    "refund:nda-outcome:preview": "node --env-file=.env.local scripts/refund-nda-outcome.js",
+    "refund:nda-outcome:apply": "node --env-file=.env.local scripts/refund-nda-outcome.js --apply",
     "deliver": "node --env-file=.env.local scripts/deliver.js"
   },
   "dependencies": {
