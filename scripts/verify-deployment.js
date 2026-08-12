@@ -109,6 +109,43 @@ function sameRule(html, file, selector, props) {
 
 const TYPO = ['font-size', 'font-weight', 'line-height', 'letter-spacing'];
 
+/**
+ * api/cron/ 을 훑어 실재하는 cron 라우트를 찾습니다 〔2026-08-12 · 하드코딩 제거〕.
+ *
+ * ⚠️ 전에는 '/api/cron/cleanup-expired' 하나만 박아 뒀습니다 — refund-blocked 가
+ *    생긴 뒤에도 이 검사는 그것을 모른 채로 남았고, 새 cron 라우트가 또 생겨도
+ *    이 파일을 손으로 고치지 않으면 조용히 검사에서 빠집니다.
+ *
+ *    test/cron-registration.test.js 의 routeFiles() 와 같은 규칙(밑줄로 시작하는
+ *    파일은 Vercel 이 엔드포인트로 만들지 않으므로 제외)을 씁니다.
+ */
+const CRON_DIR = path.join(ROOT, 'api', 'cron');
+const CRON_ROUTES = fs.existsSync(CRON_DIR)
+  ? fs.readdirSync(CRON_DIR)
+      .filter((f) => f.endsWith('.js') && !f.startsWith('_'))
+      .map((f) => '/api/cron/' + f.replace(/\.js$/, ''))
+      .sort()
+  : [];
+
+// 조용히 0개로 빠지면 "전부 통과"로 보입니다 — 탐지가 깨진 것과 검사할 게
+// 없는 것을 구분하지 못하므로 여기서 죽입니다(이 저장소는 cron 이 최소 1개입니다).
+if (CRON_ROUTES.length === 0) {
+  throw new Error('api/cron/ 에서 cron 라우트를 하나도 찾지 못했습니다 — CRON_DIR 탐지가 깨졌을 수 있습니다: ' + CRON_DIR);
+}
+
+/**
+ * cron 라우트는 전부 같은 약속을 지켜야 합니다 — 무인증 호출에 404, 본문 없음.
+ * 라우트마다 배치 결과 필드 이름이 다르므로(expired/orphans · checked/refunded …)
+ * 필드 이름을 나열하는 대신 **본문이 비어 있는가**로 봅니다 — 새 라우트가 생겨도
+ * 이 검사를 손보지 않아도 됩니다.
+ */
+function cronPrivacyCheck(res) {
+  if (res.status === 401) return '401 을 줬습니다 — 경로의 존재가 드러납니다 (404 이어야 함)';
+  if (res.status !== 404) return `무인증 호출에 ${res.status} 를 줬습니다 (404 이어야 함)`;
+  if (res.body) return `무인증 호출에 본문이 있습니다 — 배치 결과가 샐 수 있습니다: ${res.body.slice(0, 100)}`;
+  return true;
+}
+
 const CHECKS = [
   /* ── C-1 ① V5 (H3 계층) ─────────────────────────────────────────── */
   {
@@ -351,19 +388,17 @@ const CHECKS = [
       return true;
     },
   },
-  {
-    id: 'cron-비공개',
-    label: 'cron 라우트가 무인증 호출에 404 로 답한다',
+  /*
+   * api/cron/ 의 라우트 수만큼 자동으로 만들어집니다 — 새 cron 파일을 추가하면
+   * 이 배열을 손대지 않아도 다음 실행부터 검사 대상에 들어갑니다.
+   */
+  ...CRON_ROUTES.map((route) => ({
+    id: 'cron-비공개' + route.replace(/\//g, '-'),
+    label: `cron 라우트가 무인증 호출에 404 로 답한다 (${route})`,
     page: null,
-    raw: '/api/cron/cleanup-expired',
-    check: (res) => {
-      // 401 이면 「여기 뭔가 있다」를 알려 줍니다. 삭제 경로라 존재를 알리지 않습니다.
-      if (res.status === 401) return '401 을 줬습니다 — 경로의 존재가 드러납니다 (404 이어야 함)';
-      if (res.status !== 404) return `무인증 호출에 ${res.status} 를 줬습니다 (404 이어야 함)`;
-      if (/configured|expired|orphans/.test(res.body)) return '무인증 호출에 배치 결과를 실었습니다';
-      return true;
-    },
-  },
+    raw: route,
+    check: cronPrivacyCheck,
+  })),
 ];
 
 /* ──────────────────────────────────────────────────────────────
