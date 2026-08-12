@@ -372,6 +372,7 @@
 
   .form-msg { min-height: 24px; margin: 0; font-size: 14.5px; line-height: 1.7; color: var(--ink-64); }
   .form-msg.is-error { color: var(--warning); }
+  .form-msg a { text-decoration: underline; text-underline-offset: 2px; }
 
   /* ---------- Closed notice ---------- */
   .closed {
@@ -1688,10 +1689,14 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
       unlockPaidPlanForFile();
       setBusy(true);
       msg.classList.remove('is-error');
-      msg.textContent = '접수되었습니다 (' + body.slotNo + '/20). ' +
+      // 확인메일이 늦거나 스팸함에 들어가도, 화면에서 바로 접수 내용을 볼 수 있어야 합니다 —
+      // 메일이 유일한 확인 경로면 메일이 늦는 순간 이용자는 접수 여부를 알 방법이 없습니다.
+      var receiptLink = '/precheck?r=' + encodeURIComponent(body.token);
+      msg.innerHTML = '접수되었습니다 (' + body.slotNo + '/20). ' +
         (body.mailed === false
-          ? '확인메일 발송이 지연되고 있습니다. 접수는 정상적으로 기록되었습니다.'
-          : '확인메일을 보내드렸습니다. 메일의 링크에서 접수 내용을 확인하실 수 있습니다.');
+          ? '확인메일 발송이 지연되고 있습니다. 접수는 정상적으로 기록되었습니다. '
+          : '확인메일을 보내드렸습니다. 메일의 링크에서 접수 내용을 확인하실 수 있습니다. ') +
+        '<a href="' + receiptLink + '">지금 접수 내용 확인하기</a>';
       submitBtn.textContent = '접수 완료';
     }
 
