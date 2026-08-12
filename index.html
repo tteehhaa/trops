@@ -572,7 +572,12 @@
   .assure-note { margin: 0; font-size: 12.5px; line-height: 1.7; color: var(--muted); }
 
   /* ---------- 04 2층 카드 (문구 §4 · 정본 C-2) ----------
-     6:4는 폭으로만 표현하고 높이는 맞추지 않습니다(align-items:start).
+     6:4는 폭으로만 표현합니다. 높이는 2026-08-13까지 align-items:start로 맞추지
+     않았으나, CEPA 데모 블록(01 카드 전용)이 생긴 뒤 02 카드보다 눈에 띄게 길어져
+     "AVAILABLE NOW"·"COMING SOON" 두 박스 높이가 어긋나 보인다는 지적에 따라
+     align-items:stretch로 바꿨습니다. 늘어난 여백은 각 카드 마지막 자식(CTA)의
+     margin-top:auto가 흡수합니다 — 버튼이 항상 카드 하단에 붙습니다.
+     en.html과 글자 그대로 같은 블록입니다 — 한쪽만 고치지 마십시오.
      02 카드에 가격을 쓰지 않습니다. 「준비 중」은 회색조 — 경고색 금지. */
   .cards-sec { border-top: 1px solid var(--line); }
   .cards-inner { padding-block: clamp(60px, 8vw, 96px); }
@@ -588,7 +593,7 @@
     font-weight: 700;
     max-width: 30ch;
   }
-  .cards { display: grid; grid-template-columns: 6fr 4fr; gap: 24px; align-items: start; }
+  .cards { display: grid; grid-template-columns: 6fr 4fr; gap: 24px; align-items: stretch; }
   .card {
     display: flex;
     flex-direction: column;
@@ -633,6 +638,9 @@
   .cepa p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--ink-64); }
   /* 한 카드 안에 액센트 배경 CTA가 둘이면 위계가 무너지므로 CEPA는 텍스트 버튼(C-1 3종) */
   .cepa .btn-text { font-size: 14px; min-height: 0; padding: 0; align-self: flex-start; }
+  /* stretch로 카드 높이가 늘어난 만큼, 마지막 자식(CTA를 담은 무클래스 div)을
+     카드 하단에 고정합니다 — 두 카드 다 CTA가 마지막 자식입니다. */
+  .card > div:last-child { margin-top: auto; }
 
   /* ---------- 06 신뢰 (문구 §6 · 정본 C-5) ----------
      페이지 유일한 다크 본문 섹션입니다(푸터와 둘뿐).
@@ -840,14 +848,15 @@
   <nav class="nav">
     <div class="container nav-inner">
       <a href="/" class="wordmark" aria-label="TROPS 홈">TROPS</a>
-      <!-- 「자주 묻는 질문」은 정본 §2-3이 요구하는 앵커입니다(헤더 → 09 QnA).
-           나머지 3개는 기존 링크를 그대로 뒀습니다 — 확정본 §1의 헤더 앵커 3종
-           (서비스 · 이용 방법 · 자주 묻는 질문)으로 맞추는 것은 헤더 개편 몫입니다. -->
+      <!-- 확정본 §1의 헤더 앵커 3종(서비스 · 이용 방법 · 자주 묻는 질문)으로 맞춘
+           헤더 개편입니다(2026-08-13) — /en 이 이미 이 구조(Service · How it works ·
+           FAQ, en.html #nav)이고, 국문만 「대조 방법 · 준비 중인 것 · 자주 묻는 질문 ·
+           문의」 4개짜리 옛 구조에 남아 있었습니다. #service·#how·#qna 는 이미
+           존재하는 섹션이라 새 앵커가 아니라 라벨만 맞춘 것입니다. -->
       <div class="nav-links">
-        <a href="#how">대조 방법</a>
-        <a href="#next">준비 중인 것</a>
+        <a href="#service">서비스</a>
+        <a href="#how">이용 방법</a>
         <a href="#qna">자주 묻는 질문</a>
-        <a href="#interest">문의</a>
       </div>
       <div class="nav-right">
         <a class="nav-quiet" href="https://app.trops.kr/" target="_self">트롭스 앱 살펴보기(준비중)</a>
@@ -1261,13 +1270,16 @@
       </div>
     </section>
 
-    <!-- ===== 09 마감 CTA (문구 §9 · 정본 §2 10번) =====
+    <!-- ===== 09 마감 CTA (정본 §2 10번 → 2026-08-13 재확정) =====
          주 CTA는 페이지에서 3회 나옵니다 — 히어로(풀) · 04 01카드(인라인, 한 단계 아래) ·
          여기(풀). 크기로 위계를 가르는 것이 C-1의 규칙입니다.
-         ⚠️ 리드 문장을 추가하지 마십시오. 안심 문구(03)와 톤이 겹칩니다. -->
+         ⚠️ 리드 문장을 추가하지 마십시오. 안심 문구(03)와 톤이 겹칩니다.
+         H2는 원래 확정본 §9 「상담 전에, 한 번 더 확인하세요.」였습니다. 「상담」이
+         이 서비스를 유상 자문으로 오해하게 한다는 지적에 따라 「수출 전 자가 점검」
+         포지셔닝(히어로 §2 eyebrow와 같은 프레이밍)으로 교체했습니다. -->
     <section class="close-cta" aria-labelledby="close-cta-title">
       <div class="container narrow-c close-cta-inner">
-        <h2 id="close-cta-title">상담 전에, 한 번 더 확인하세요.</h2>
+        <h2 id="close-cta-title">수출 전에, 한 번 더 점검하세요.</h2>
         <div class="close-cta-row">
           <a class="btn btn-primary btn-full" href="/precheck">무료로 비교해 보기</a>
           <a class="btn btn-secondary btn-full" href="#interest">거래 절차 트래킹 알림 받기</a>
@@ -1281,13 +1293,13 @@
          precheck 결과지 페이지 하단 몫이므로 여기에 끌어오지 마십시오. -->
     <section class="interest" id="interest">
       <div class="container interest-inner">
-        <!-- H2·보조 문구 둘 다 확정본 v3.1 §10 원문입니다. 한 글자도 바꾸지 마십시오.
-             이전 H2 는 「트롭스 무역 관리 서비스 출시 알림 받기」였습니다 — 히어로(§2)·
-             HOW(§5)와 같은 종류의 누락이었고 2026-08-11 에 교체했습니다.
-             영문 /en §10 이 대응합니다:
-               H2   We'll let you know the moment trade procedure tracking opens.
-               보조 Early free slots go to the KOTRA mentor network first. -->
-        <h2>거래 절차 트래킹이 열리면 가장 먼저 알려드립니다.</h2>
+        <!-- 보조 문구는 확정본 v3.1 §10 원문 그대로입니다. H2는 2026-08-13 재교체 —
+             기존 「거래 절차 트래킹이 열리면 가장 먼저 알려드립니다.」(2026-08-11,
+             §10 원문)는 "알려드립니다"로 끝나 수동적으로 읽혔습니다. 사용자가 지금
+             행동하도록 "시작하세요"로 능동형을 씁니다.
+             영문 /en §10 은 옛 국문 문구를 옮긴 채 그대로 둡니다(이번 배치는 국문
+             한정) — We'll let you know the moment trade procedure tracking opens. -->
+        <h2>수출 시작하면, 가장 먼저 거래 트래킹을 시작하세요.</h2>
         <p class="interest-sub">초기 무료 서비스는 KOTRA 멘토 네트워크에 먼저 배정됩니다.</p>
         <form class="interest-form" id="interest-form" novalidate>
           <div class="form-row">
