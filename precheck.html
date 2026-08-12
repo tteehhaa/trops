@@ -1837,10 +1837,32 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
         .then(readJson)
         .then(function (r) {
           if (r.status === 200 && r.body.ok) {
-            // 주소창에서 결제 파라미터를 지우고 접수 확인으로 넘어갑니다.
+            // 주소창에서 결제 파라미터를 지우고 접수 확인 주소로 맞춥니다(뒤로가기·새로고침 대비 —
+            // 공식 접수 확인 경로는 그대로 살아 있습니다. 아래 리다이렉트는 별개의 미리보기입니다).
             try {
               window.history.replaceState(null, '', '/precheck?r=' + encodeURIComponent(r.body.token));
             } catch (e) { /* 주소만 못 바꿀 뿐이라 그대로 진행합니다. */ }
+
+            /*
+             * 2026-08-13 추가 — trops_a NDA 대조 미리보기로 즉시 이동.
+             *
+             * ⚠️ 이건 "공식 전달"이 아닙니다 — delivered_at(환불 기준선)은 그대로 사람이
+             *    scripts/deliver.js 를 돌려야 찍힙니다(api/_delivery.js 주석 참조). 여기서
+             *    하는 일은 "결제가 끝난 사람을 대조 결과 화면으로 바로 보내는" 것뿐입니다.
+             *    그 화면(app.trops.kr/c/{intakeId})은 검수 게이트가 있어, 운영자가 검수
+             *    완료로 표시하기 전까지는 "결과 확인 중"만 보여줍니다 — 원문·대조 내용이
+             *    검수 없이 새는 경로가 아닙니다.
+             * ⚠️ intakeId 가 없으면(구버전 응답·일시적 오류) 기존 접수 확인 화면으로 그대로
+             *    남습니다 — 새 문구를 억지로 보여주지 않습니다.
+             */
+            if (r.body.intakeId) {
+              var box = openStatusPanel('결제 확인', '결과 확인 화면으로 이동합니다.');
+              var goNote = document.getElementById('receipt-msg');
+              goNote.textContent = '잠시 후 대조 결과 화면으로 이동합니다…';
+              window.location.href = 'https://app.trops.kr/c/' + encodeURIComponent(r.body.intakeId);
+              return;
+            }
+
             showReceipt(r.body.token);
             return;
           }

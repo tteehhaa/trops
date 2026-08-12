@@ -7,7 +7,13 @@
  *
  * POST /api/payment-confirm
  *   body: { paymentKey, orderId, amount }
- *   → 200 { ok:true, token, status:'received', amount, alreadyConfirmed? }
+ *   → 200 { ok:true, token, intakeId, status:'received', amount, alreadyConfirmed? }
+ *
+ * ⚠️ intakeId(= intake.id, uuid) 는 2026-08-13 추가 — trops_a 결과 미리보기
+ *    (app.trops.kr/c/{intakeId})로 리다이렉트하기 위한 값입니다. token(access_token)과는
+ *    다른 식별자입니다 — token 은 이 저장소 자신의 공식 접수 확인/매직링크(§/precheck?r=)에
+ *    쓰이고, intakeId 는 trops_a 쪽 NDA 대조 미리보기 링크를 만드는 데만 씁니다. 둘을 섞지
+ *    않습니다 — 미리보기는 delivered_at(환불 기준선)을 움직이지 않는 별개의 경로입니다.
  *   → 400 { error:'invalid input' | 'amount-mismatch' }
  *   → 404 { error:'order-not-found' }
  *   → 409 { error:'already-failed' }
@@ -85,6 +91,7 @@ module.exports = async (req, res) => {
       ok: true,
       alreadyConfirmed: true,
       token: row.access_token,
+      intakeId: row.id,
       status: row.status,
       amount: row.amount,
     });
@@ -189,6 +196,7 @@ module.exports = async (req, res) => {
   res.status(200).json({
     ok: true,
     token: row.access_token,
+    intakeId: row.id,
     status: 'received',
     amount: trustedAmount,
     mailed: mail.confirmationSent,
