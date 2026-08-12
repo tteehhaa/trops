@@ -235,46 +235,6 @@
     max-width: 40ch;
   }
 
-  /* ---------- HS lookup (협정 세율 · NDA 흐름의 보조 단계) ---------- */
-  .hs-box { max-width: 468px; }
-  .hs-group {
-    display: flex;
-    align-items: stretch;
-    padding: 5px;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    background: var(--bg);
-  }
-  .hs-group:focus-within { border-color: var(--muted); }
-  .hs-country {
-    display: flex;
-    align-items: center;
-    padding: 0 14px;
-    margin-right: 5px;
-    border-right: 1px solid var(--line);
-    font-size: 15.5px;
-    font-weight: 500;
-    color: var(--ink-70);
-    white-space: nowrap;
-  }
-  .hs-group input {
-    flex: 1 1 auto;
-    min-width: 0;
-    height: 42px;
-    border: 0;
-    background: transparent;
-    padding: 0 6px;
-    font: inherit;
-    font-size: 16px;
-    color: var(--ink);
-  }
-  .hs-group input:focus { outline: none; }
-  .hs-group input::placeholder { color: var(--muted); }
-  /* 입력 그룹 안에서는 옆 input(42px)과 높이를 맞춰야 하므로 min-height를 되돌립니다.
-     그룹 전체가 하나의 44px 이상 타깃이라 터치 크기는 유지됩니다. */
-  .hs-group .btn { flex: 0 0 auto; min-height: 42px; height: 42px; padding: 0 20px; }
-  .hs-meta { margin: 10px 0 0; font-size: 13.5px; line-height: 1.65; color: var(--muted); }
-
   .cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 30px; }
   /* 마이크로카피 — --muted는 --bg 위 2.56:1로 WCAG AA(4.5:1) 미달이라 --ink-62(5.03:1)로 교체.
      --muted 토큰 값 자체는 그대로 둡니다. */
@@ -331,8 +291,6 @@
   }
   .flow-num { font-size: 13px; font-weight: 600; color: var(--muted); line-height: 1.95; }
   .flow-desc { margin: 0; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); max-width: 46ch; }
-  .flow-extra { grid-column: 2; margin-top: 20px; }
-  .flow-extra-label { margin: 0 0 12px; font-size: 14.5px; line-height: 1.7; color: var(--ink-64); max-width: 46ch; }
 
   /* ---------- Roadmap (예정 항목) ---------- */
   /* 위가 신뢰 섹션(--surface-dark)이라 경계는 배경 대비로 이미 완결됩니다.
@@ -624,20 +582,6 @@
     border-radius: 6px;
     background: var(--surface);
   }
-  /* CEPA 데모 — 01 카드 내부의 보조 블록입니다. 독립 섹션으로 올리지 마십시오.
-     와이어프레임의 #F8FAFC는 v2 이전 --surface 값이라, 토큰인 --surface로 옮겼습니다. */
-  .cepa {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 16px;
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    background: var(--surface);
-  }
-  .cepa p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--ink-64); }
-  /* 한 카드 안에 액센트 배경 CTA가 둘이면 위계가 무너지므로 CEPA는 텍스트 버튼(C-1 3종) */
-  .cepa .btn-text { font-size: 14px; min-height: 0; padding: 0; align-self: flex-start; }
   /* stretch로 카드 높이가 늘어난 만큼, 마지막 자식(CTA를 담은 무클래스 div)을
      카드 하단에 고정합니다 — 두 카드 다 CTA가 마지막 자식입니다. */
   .card > div:last-child { margin-top: auto; }
@@ -791,20 +735,9 @@
   /* ---------- Responsive ---------- */
   @media (max-width: 900px) {
     .flow-row { grid-template-columns: 1fr; }
-    .flow-extra { grid-column: auto; }
   }
   @media (max-width: 640px) {
     .nav-links { display: none; }
-    .hs-box { max-width: none; }
-    .hs-group { flex-wrap: wrap; }
-    .hs-country {
-      width: 100%;
-      margin: 0 0 5px;
-      padding: 6px 8px;
-      border-right: 0;
-      border-bottom: 1px solid var(--line);
-    }
-    .hs-group input { flex: 1 1 110px; padding-left: 8px; }
     .rm-row { grid-template-columns: 1fr; gap: 6px; padding: 22px 2px; }
     .rm-meta { grid-column: auto; }
     .cta-row { flex-direction: column; align-items: stretch; gap: 12px; }
@@ -819,8 +752,6 @@
     .card .btn { width: 100%; }
     .badge-soon { font-size: 18px; }
     .card-title { font-size: 18px; }
-    .cepa { padding: 14px; }
-    .cepa p, .cepa .btn-text { font-size: 13.5px; }
     /* 신뢰 이미지 2컷: 세로 스택, 크롭이 아래 (겹침·들여쓰기 해제) */
     .shot-crop { width: 100%; margin-left: 0; margin-top: 16px; box-shadow: none; }
     /* QnA: 질문이 길어 셰브론과 같은 줄에서 눌리므로 위 정렬로 바꿉니다 */
@@ -926,8 +857,8 @@
          01:02 = 6:4 는 폭으로만 표현하고 높이는 맞추지 않습니다 — 내용 길이가 다릅니다.
          ⚠️ 02 카드에 가격을 쓰지 마십시오.
          ⚠️ 「준비 중」 라벨은 회색조입니다. 경고색(--warning)을 쓰지 마십시오.
-         CEPA 조회는 독립 섹션이 아니라 01 카드 내부 블록입니다 — 밖으로 올리면
-         NDA 비교와 병렬 상품처럼 읽힙니다. -->
+         2026-08-13: 협정 세율(CEPA/UAE) 조회 노출을 걷어냈습니다 — 결과지 화면이
+         아직 없어 지금은 제거만 합니다. 되살리려면 결과단으로 옮기십시오. -->
     <section class="cards-sec" id="service" aria-labelledby="cards-title">
       <div class="container cards-inner">
         <h2 id="cards-title">거래를 시작하기 전에 한 번, 시작한 후에 한 번.</h2>
@@ -942,10 +873,6 @@
             <div class="card-bullets">
               <p>· 로그인 없이 바로</p>
               <p>· 선착순 20건 무료</p>
-            </div>
-            <div class="cepa">
-              <p>수출 국가가 있으면, 해당국 협정 세율도 함께 확인해 드립니다.</p>
-              <a class="btn btn-text" href="/uae">아랍에미리트(UAE) 관세율 조회 →</a>
             </div>
             <!-- 01 카드 CTA는 섹션 CTA가 아니라 카드 내부 요소라 위계가 아래입니다.
                  히어로·마감(btn-full 32px)보다 한 단계 작은 기본 22px를 씁니다 (C-1). -->
@@ -968,8 +895,7 @@
       </div>
     </section>
 
-    <!-- ===== How it works (지금 파는 것: NDA 사전확인 v1) =====
-         협정 세율 조회(/uae)는 병렬 상품이 아니라 3단계의 보조 항목으로만 노출합니다. -->
+    <!-- ===== How it works (지금 파는 것: NDA 사전확인 v1) ===== -->
     <section class="how" id="how">
       <div class="container how-inner">
         <p class="kicker">HOW IT WORKS</p>
@@ -996,20 +922,6 @@
                  없었습니다. §5 로 교체되면서 생겼습니다. 영문 /en §5 도 같은 구절
                  (where to ask)에 #orgs 를 겁니다. 문구는 그대로 두고 링크만 겁니다. -->
             <p class="flow-desc">판단이 남는 사안은 <a href="#orgs">어디에 물어보시면</a> 되는지 안내합니다.</p>
-
-            <div class="flow-extra">
-              <p class="flow-extra-label">거래 대상국이 있으면, 해당국 협정 세율도 함께 확인해 드립니다.</p>
-              <div class="hs-box">
-                <form class="hs-group" action="/uae" method="get">
-                  <span class="hs-country">아랍에미리트</span>
-                  <input id="hs-input" type="text" name="hs" inputmode="numeric" pattern="[0-9]{8}" maxlength="8"
-                         placeholder="HS 8단위 입력" aria-label="HS 코드 8단위"
-                         title="HS 코드 8자리 숫자를 입력하세요" required>
-                  <button class="btn btn-secondary" type="submit">조회</button>
-                </form>
-                <p class="hs-meta">아랍에미리트 · 한-UAE CEPA 기준 · 무료 · 로그인 없이 조회</p>
-              </div>
-            </div>
           </div>
         </div>
 

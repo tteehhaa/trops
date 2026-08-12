@@ -617,20 +617,6 @@
     border-radius: 6px;
     background: var(--surface);
   }
-  /* CEPA 데모 — 01 카드 내부의 보조 블록입니다. 독립 섹션으로 올리지 마십시오.
-     와이어프레임의 #F8FAFC는 v2 이전 --surface 값이라, 토큰인 --surface로 옮겼습니다. */
-  .cepa {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 16px;
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    background: var(--surface);
-  }
-  .cepa p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--ink-64); }
-  /* 한 카드 안에 액센트 배경 CTA가 둘이면 위계가 무너지므로 CEPA는 텍스트 버튼(C-1 3종) */
-  .cepa .btn-text { font-size: 14px; min-height: 0; padding: 0; align-self: flex-start; }
   /* stretch로 카드 높이가 늘어난 만큼, 마지막 자식(CTA를 담은 무클래스 div)을
      카드 하단에 고정합니다 — 두 카드 다 CTA가 마지막 자식입니다. */
   .card > div:last-child { margin-top: auto; }
@@ -812,8 +798,6 @@
     .card .btn { width: 100%; }
     .badge-soon { font-size: 18px; }
     .card-title { font-size: 18px; }
-    .cepa { padding: 14px; }
-    .cepa p, .cepa .btn-text { font-size: 13.5px; }
     /* 신뢰 이미지 2컷: 세로 스택, 크롭이 아래 (겹침·들여쓰기 해제) */
     .shot-crop { width: 100%; margin-left: 0; margin-top: 16px; box-shadow: none; }
     /* QnA: 질문이 길어 셰브론과 같은 줄에서 눌리므로 위 정렬로 바꿉니다 */
@@ -944,14 +928,6 @@
             <div class="card-bullets">
               <p>· No sign-up</p>
               <p>· First 20 free</p>
-            </div>
-            <!-- CEPA 블록은 독립 섹션이 아니라 01 카드 내부입니다 — 밖으로 올리면
-                 NDA comparison 과 병렬 상품처럼 읽힙니다.
-                 "show you" 를 "check for you" 로 바꾸지 마십시오. 우리가 판정한다는
-                 함의가 생깁니다(v2 번역노트 ①). -->
-            <div class="cepa">
-              <p>Tell us the destination country and we'll show you the agreement tariff rate that applies there.</p>
-              <a class="btn btn-text" href="/uae">Check UAE tariff rates →</a>
             </div>
             <div><a class="btn btn-primary" href="/precheck?lang=en">Compare my NDA — free →</a></div>
           </div>
