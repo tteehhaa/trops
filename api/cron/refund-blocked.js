@@ -61,9 +61,13 @@
  *   ② 설정 — INTAKE_SUPABASE_* 가 없으면 configured:false 로 **아무것도 하지
  *      않고** 200 을 돌려줍니다. 매일 500 이 나면 경보가 무뎌집니다.
  *
- *   ③ 표 — precheck_intake_route 를 못 읽으면 available:false 로 **0건**입니다.
- *      「표가 없다」를 「환불할 것이 없다」로 읽지 않습니다. 표는 판정층 trops_a
- *      소관이고 이 글을 쓰는 시점에 아직 없습니다.
+ *   ③ 표 — precheck_intake_route 를 못 읽으면 available:false 로 **0건**이고
+ *      200 을 돌려줍니다〔2026-08-12 정정〕. 표는 판정층 trops_a 소관이고 아직
+ *      없거나 만드는 중일 수 있습니다 — 그 상태는 ②(env 미등록)와 같은 「아직
+ *      붙어 있지 않다」이지 「돌다가 죽었다」가 아닙니다. 매일 502 가 나면
+ *      경보가 무뎌지고, 표가 실제로 생긴 뒤에 생기는 진짜 실패(개별 건 실패 ·
+ *      환불 오류)가 같은 색에 묻힙니다. 「표가 없다」를 「환불할 것이 없다」로
+ *      읽지 않는다는 원칙은 그대로입니다 — 0건으로 끝내되 성공으로 보고합니다.
  *
  * ── 이 라우트가 하지 않는 것 ────────────────────────────────────────────────
  *   · 「처리 가능한가」를 정하지 않습니다 (정본: trops_a intake-route)
@@ -73,8 +77,9 @@
  *
  * ── 응답 ────────────────────────────────────────────────────────────────────
  *   200 { ok:true,  configured:false, note }                    env 미등록 — 무동작
+ *   200 { ok:true,  configured:true, result:{available:false} } 표 없음/읽기 실패 — 0건
  *   200 { ok:true,  configured:true, result }                   전건 성공(0건 포함)
- *   502 { ok:false, configured:true, result }                    한 건이라도 실패
+ *   502 { ok:false, configured:true, result }                    표는 있는데 한 건이라도 실패
  *   404 (본문 없음)                                              인증 불일치 · 미설정
  *   405 { error }                                                인증 통과 · GET 아님
  */
@@ -137,13 +142,23 @@ module.exports = async (req, res) => {
   }
 
   /*
+   * 표를 못 읽은 것은 ②(env 미등록)와 같은 「아직 붙어 있지 않다」입니다 —
+   * ①②와 다른 상한을 매길 이유가 없습니다. 0건으로 200 을 돌려줍니다.
+   */
+  if (!result.available) {
+    console.error('refund-blocked cron table unavailable: ' + result.error);
+    res.status(200).json({ ok: true, configured: true, result: result, note: NOT_OURS });
+    return;
+  }
+
+  /*
    * ok 는 「돌았다」가 아니라 「전건 성공했다」입니다.
    *
    * ⚠️ deferred(전달 완료분)는 실패가 아닙니다 — 설계대로 사람에게 넘긴 것입니다.
    *    그것 때문에 502 를 내면 매일 빨간불이 켜지고 진짜 실패가 같은 색에 묻힙니다.
    *    대신 사람이 봐야 하는 건이 남았다는 사실은 응답과 로그에 남습니다.
    */
-  const failed = !result.available || result.failed.length > 0 || result.errors.length > 0;
+  const failed = result.failed.length > 0 || result.errors.length > 0;
   if (failed) {
     console.error('refund-blocked cron partial failure: ' +
       JSON.stringify({ available: result.available, failed: result.failed, errors: result.errors }));

@@ -405,7 +405,7 @@ test('env 미등록이면 configured:false 로 아무것도 환불하지 않는�
   assert.match(String(got.body.note), /trops_a/, '판정층 소관 경계가 응답에 없습니다');
 });
 
-test('표를 못 읽으면 라우트가 502 로 말한다 — 0건을 초록으로 적지 않는다', async () => {
+test('표를 못 읽으면 라우트가 200 으로 말한다 — 「표가 없다」를 실패로 적지 않는다', async () => {
   await withFakes({ routeTableFails: true }, async () => {
     const got = await invokeCron({
       CRON_SECRET: SECRET,
@@ -413,10 +413,27 @@ test('표를 못 읽으면 라우트가 502 로 말한다 — 0건을 초록으�
       INTAKE_SUPABASE_SERVICE_ROLE_KEY: 'test-service-role-key',
     }, { authorization: 'Bearer ' + SECRET });
 
-    assert.strictEqual(got.code, 502);
-    assert.strictEqual(got.body.ok, false);
+    // env 미등록(configured:false)과 같은 원칙 — 매일 502 가 나면 경보가 무뎌집니다.
+    assert.strictEqual(got.code, 200);
+    assert.strictEqual(got.body.ok, true);
     assert.strictEqual(got.body.result.available, false);
     assert.strictEqual(got.body.result.refunded, 0);
+  });
+});
+
+test('🔴 표는 있는데 개별 건이 실패하면 그대로 502 — 200 통일이 진짜 실패까지 가리면 안 된다', async () => {
+  await withFakes({}, async () => {
+    mailFails = true; // available:true 인 채로 errors 가 1건 생기게 만듭니다.
+    const got = await invokeCron({
+      CRON_SECRET: SECRET,
+      INTAKE_SUPABASE_URL: 'https://example.supabase.co',
+      INTAKE_SUPABASE_SERVICE_ROLE_KEY: 'test-service-role-key',
+    }, { authorization: 'Bearer ' + SECRET });
+
+    assert.strictEqual(got.code, 502, '표는 읽었고 실제 실패가 있는데도 200 을 줬습니다');
+    assert.strictEqual(got.body.ok, false);
+    assert.strictEqual(got.body.result.available, true);
+    assert.strictEqual(got.body.result.errors.length, 1);
   });
 });
 
