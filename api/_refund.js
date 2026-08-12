@@ -52,17 +52,22 @@
  *   ③ 취소       토스에 멱등키를 붙여 전액 취소.
  *   ④ 기록       payment_status='refunded' · refunded_at · refund_reason ·
  *                status='cancelled'.
- *   ⑤ 남는 일    이용자에게 보내는 안내 메일은 **사람이 부른 경우** 아직 자동이
- *                아닙니다 — 스크립트가 출력으로 그 사실을 알립니다.
- *                (사유를 사람이 적으므로 코드가 문면을 만들 수 없습니다.)
- *                판정층 판단으로 돈 건은 api/_route-refund.js 가 사유 문면을 알고
- *                있어 안내메일까지 보냅니다.
+ *   ⑤ 안내메일   환불 뒤에 이용자에게 사람이 적은 사유를 그대로 실어 보냅니다
+ *                〔M-3 후속 · 2026-08-12〕(api/_notify.js sendManualRefundMail).
+ *                실패해도 환불을 되돌리지 않습니다 — 돈은 이미 돌아갔고, 메일은
+ *                사람이 다시 보낼 수 있습니다(⑦ 아래 옵션 notify 참조).
+ *
+ *                판정층 판단으로 돈 건(api/_route-refund.js)은 이미 자체 사유
+ *                문면으로 sendRouteRefundMail 을 보내므로, 그쪽이 이 함수를 부를
+ *                때는 `notify: false` 를 넘겨 같은 이용자에게 메일이 두 번 가지
+ *                않게 합니다.
  */
 
 'use strict';
 
 const { safeText } = require('./_supabase.js');
 const { cancelPayment } = require('./_payment.js');
+const NOTIFY = require('./_notify.js');
 
 /** 환불 기록 컬럼이 있는지 확인합니다. 없으면 돈을 건드리지 않고 멈춥니다. */
 async function assertRefundColumns(config) {
@@ -113,7 +118,10 @@ async function patchOrder(config, orderId, patch) {
 /**
  * 한 건을 환불합니다.
  *
- * options: { orderId, reason, apply, log }
+ * options: { orderId, reason, apply, log, notify }
+ *   notify=false  환불 성공 뒤에도 이용자 안내 메일을 보내지 않습니다.
+ *                 api/_route-refund.js 전용입니다 — 그쪽은 이미 자체 안내메일을
+ *                 보내므로, 기본값(true)대로 두면 같은 이용자에게 두 통이 갑니다.
  * 돌려주는 값의 outcome:
  *   'not-found'      그 주문번호가 없습니다
  *   'not-paid'       결제되지 않은 건입니다(환불할 것이 없습니다)
@@ -193,10 +201,30 @@ async function refundOrder(config, options) {
   log('환불 완료 — ' + orderId + ' | 취소금액=' +
     (result.cancel.cancelledAmount != null ? result.cancel.cancelledAmount + '원' : '전액') +
     ' | 시각=' + result.cancel.cancelledAt);
-  log('⚠️ 이용자에게 보내는 안내 메일은 아직 자동이 아닙니다 — ' + row.email +
-    ' 로 사유를 알려 주십시오.');
 
-  return { outcome: 'refunded', row: row, cancel: result.cancel };
+  /*
+   * ⑤ 안내메일. 🔴 **환불 뒤에** 보냅니다 — 먼저 보내면 취소가 거절됐을 때
+   * 「환불했습니다」만 남습니다. 실패해도 환불은 되돌리지 않습니다.
+   */
+  const notify = options.notify !== false;
+  let mail = { sent: false, error: null };
+  if (notify) {
+    try {
+      mail = await NOTIFY.sendManualRefundMail({
+        email: row.email, amount: row.amount, reason: reason, orderId: orderId,
+      });
+    } catch (err) {
+      mail = { sent: false, error: err && err.message ? err.message : String(err) };
+    }
+    if (mail.sent) {
+      log('환불 안내 메일을 보냈습니다 — ' + row.email);
+    } else {
+      log('⚠️ 환불 안내 메일 발송에 실패했습니다 — ' + row.email +
+        ' 로 사유를 직접 알려 주십시오.' + (mail.error ? ' (' + mail.error + ')' : ''));
+    }
+  }
+
+  return { outcome: 'refunded', row: row, cancel: result.cancel, notified: notify ? mail.sent : undefined };
 }
 
 module.exports = {

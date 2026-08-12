@@ -400,6 +400,71 @@ async function sendRouteRefundMail(info) {
   return { sent: true, error: null };
 }
 
+/**
+ * 사람이 판단해 돌린 환불의 안내메일 〔M-3 후속 · 2026-08-12〕.
+ *
+ * 🔴 **환불이 끝난 뒤에만** 부릅니다(api/_refund.js refundOrder). 돈이 돌아가지
+ *    않은 상태에서 이 메일이 나가면 지키지 못한 약속이 됩니다.
+ *
+ * ⚠️ api/_route-refund.js 가 부르는 sendRouteRefundMail 과 다른 함수입니다.
+ *    그쪽은 문면이 정해진 「범위 밖」 통보이고, 이쪽은 사람이 적은 자유 사유를
+ *    그대로 보여 줍니다 — 문면을 하나로 합치면 사람이 적은 사유가 사라지거나
+ *    반대로 판정층 통보에 사람 손을 타야 하는 자리가 생깁니다.
+ *
+ * @returns {Promise<{sent: boolean, error: string|null}>}
+ */
+async function sendManualRefundMail(info) {
+  const reason = String(info.reason || '').trim();
+
+  try {
+    const { error } = await resendApi().emails.send({
+      from: `TROPS <${CONTACT_ADDRESS}>`,
+      to: [info.email],
+      subject: '[TROPS] 결제하신 금액을 전액 환불했습니다',
+      html: `
+        <p><strong>결제하신 ${escapeHtml(formatWon(info.amount))} 을 전액 환불했습니다.</strong>
+          카드사에 따라 실제 입금까지 며칠 걸릴 수 있습니다.</p>
+        <p><strong>환불 사유:</strong> ${escapeHtml(reason || '미기재')}</p>
+        <p>서류를 다시 보내주시면 새로 접수됩니다. 접수 자체에는 비용이 들지 않습니다.</p>
+        <p style="color:#64748B;font-size:13px">주문번호 ${escapeHtml(info.orderId || '-')}</p>
+        <p style="color:#64748B;font-size:13px">
+          환불규정은 <a href="${escapeHtml(origin())}/refund">${escapeHtml(origin().replace(/^https?:\/\//, ''))}/refund</a> 에서 보실 수 있습니다.
+          문의는 ${escapeHtml(CONTACT_ADDRESS)} 으로 주십시오.
+        </p>
+      `,
+    });
+    if (error) {
+      console.error('manual refund email error', error);
+      return { sent: false, error: String(error.message || error) };
+    }
+  } catch (err) {
+    console.error('manual refund email exception', err);
+    return { sent: false, error: err && err.message ? err.message : String(err) };
+  }
+
+  // 운영자 알림. 실패해도 이용자 안내가 나갔으면 sent 는 true 입니다.
+  try {
+    const { error } = await resendApi().emails.send({
+      from: `TROPS 환불 <${CONTACT_ADDRESS}>`,
+      to: [CONTACT_ADDRESS],
+      replyTo: info.email,
+      subject: `[TROPS] 환불 처리 완료 - ${info.orderId || '-'}`,
+      html: `
+        <p><strong>사람이 판단하여 환불했습니다.</strong></p>
+        <p><strong>주문번호:</strong> ${escapeHtml(info.orderId || '-')}</p>
+        <p><strong>이메일:</strong> ${escapeHtml(info.email)}</p>
+        <p><strong>금액:</strong> ${escapeHtml(formatWon(info.amount))}</p>
+        <p><strong>사유:</strong> ${escapeHtml(reason || '미기재')}</p>
+      `,
+    });
+    if (error) console.error('manual refund operator email error', error);
+  } catch (err) {
+    console.error('manual refund operator email exception', err);
+  }
+
+  return { sent: true, error: null };
+}
+
 /* ──────────────────────────────────────────────────────────────
  * 거래 정보 · 협정 세율 (선택 항목)
  * ────────────────────────────────────────────────────────────── */
@@ -504,6 +569,7 @@ module.exports = {
   sendErasureMails: sendErasureMails,
   sendDeliveryMail: sendDeliveryMail,
   sendRouteRefundMail: sendRouteRefundMail,
+  sendManualRefundMail: sendManualRefundMail,
   formatWon: formatWon,
   escapeHtml: escapeHtml,
 };

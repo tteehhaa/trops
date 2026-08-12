@@ -200,6 +200,9 @@ async function refundBlockedRoutes(config, options) {
         orderId: row.order_id,
         reason: refundReasonText(now.row.reason),
         apply: true,
+        // 이 파일 아래 ⑦ 이 sendRouteRefundMail 로 자체 안내메일을 보냅니다 —
+        // refundOrder 의 기본 발송(api/_refund.js ⑤)까지 켜 두면 두 통이 갑니다.
+        notify: false,
         log: (m) => log('  ' + m),
       });
     } catch (err) {
@@ -228,9 +231,10 @@ async function refundBlockedRoutes(config, options) {
      * 반대로 메일이 실패해도 환불은 되돌리지 않습니다 — 돈은 이미 돌아갔고,
      * 메일은 사람이 다시 보낼 수 있습니다. 실패는 errors 에 실어 보고합니다.
      *
-     * (M-3 이 남겨 둔 「안내 메일이 아직 자동이 아니다」가 **이 경로에서만**
-     *  닫힙니다. 사람이 직접 돌리는 scripts/refund.js 는 그대로입니다 —
-     *  그쪽 사유는 코드가 모르는 것이라 문면을 만들 수 없습니다.)
+     * 사유가 정해진 문면(ROUTE.noticeFor)이라 여기서만 그 문면으로 보냅니다.
+     * refundOrder 호출부(위 ⑥)에 `notify: false` 를 넘겨 사람이 직접 돌리는
+     * scripts/refund.js 쪽 기본 발송(api/_refund.js ⑤ · 자유 사유 문면)과
+     * 겹치지 않게 합니다 — 안 그러면 같은 이용자에게 메일이 두 통 갑니다.
      */
     try {
       const sent = await sendRouteRefundMail({

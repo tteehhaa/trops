@@ -171,6 +171,72 @@ test('취소는 됐는데 기록이 실패하면 크게 남긴다 — 사람이 
   }, { patchFails: true });
 });
 
+/* ── ⑤ 안내메일 〔M-3 후속 · 2026-08-12〕 ──────────────────────────────────── */
+
+test('환불 완료 뒤 이용자에게 안내 메일을 보낸다', async () => {
+  const NOTIFY = require('../api/_notify.js');
+  const original = NOTIFY.sendManualRefundMail;
+  const sent = [];
+  NOTIFY.sendManualRefundMail = async (info) => { sent.push(info); return { sent: true, error: null }; };
+
+  try {
+    await withFakes(async () => {
+      const result = await REFUND.refundOrder(CONFIG, {
+        orderId: PAID_ROW.order_id, reason: '판별 불가 — 이용자 요청', apply: true, log: logs().log,
+      });
+      assert.strictEqual(result.outcome, 'refunded');
+      assert.strictEqual(result.notified, true);
+    });
+    assert.strictEqual(sent.length, 1, '환불 완료 뒤 안내 메일 발송을 부르지 않았습니다');
+    assert.strictEqual(sent[0].email, 'buyer@example.com');
+    assert.strictEqual(sent[0].orderId, 'precheck_abcdef');
+    assert.strictEqual(sent[0].reason, '판별 불가 — 이용자 요청');
+  } finally {
+    NOTIFY.sendManualRefundMail = original;
+  }
+});
+
+test('notify:false 로 부르면 안내 메일을 보내지 않는다 — api/_route-refund.js 가 자체 메일을 쓰는 경로', async () => {
+  const NOTIFY = require('../api/_notify.js');
+  const original = NOTIFY.sendManualRefundMail;
+  const sent = [];
+  NOTIFY.sendManualRefundMail = async (info) => { sent.push(info); return { sent: true, error: null }; };
+
+  try {
+    await withFakes(async () => {
+      const result = await REFUND.refundOrder(CONFIG, {
+        orderId: PAID_ROW.order_id, reason: '판별 불가', apply: true, notify: false, log: logs().log,
+      });
+      assert.strictEqual(result.outcome, 'refunded');
+      assert.strictEqual(result.notified, undefined);
+    });
+    assert.strictEqual(sent.length, 0, 'notify:false 인데 안내 메일을 보냈습니다');
+  } finally {
+    NOTIFY.sendManualRefundMail = original;
+  }
+});
+
+test('🔴 안내 메일이 실패해도 환불 결과는 그대로다 — 돈은 이미 돌아갔다', async () => {
+  const NOTIFY = require('../api/_notify.js');
+  const original = NOTIFY.sendManualRefundMail;
+  NOTIFY.sendManualRefundMail = async () => { throw new Error('resend down'); };
+
+  try {
+    await withFakes(async (calls) => {
+      const out = logs();
+      const result = await REFUND.refundOrder(CONFIG, {
+        orderId: PAID_ROW.order_id, reason: '판별 불가', apply: true, log: out.log,
+      });
+      assert.strictEqual(result.outcome, 'refunded', '메일 실패가 환불 결과를 바꿨습니다');
+      assert.strictEqual(result.notified, false);
+      assert.strictEqual(patchCalls(calls).length, 1, '메일 실패로 기록까지 건너뛰면 안 됩니다');
+      assert.ok(out.some((m) => m.indexOf('발송에 실패') !== -1));
+    });
+  } finally {
+    NOTIFY.sendManualRefundMail = original;
+  }
+});
+
 /* ── ③ 멱등 ───────────────────────────────────────────────────────────────── */
 
 test('이미 환불된 건은 다시 취소하지 않는다', async () => {
