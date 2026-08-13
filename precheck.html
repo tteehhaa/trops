@@ -3,7 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>바이어 서류 사전 확인 — TROPS</title>
+<title>수출 사전점검 — TROPS</title>
+<!-- 상품명 「바이어 서류 사전 확인」 → 「수출 사전점검」 〔2026-08-13 · 흐름 md §1〕.
+     md 는 「상위 카테고리명은 '수출 사전점검'으로 통일」로 확정했고, 이 페이지의 <title>·
+     og:title·플랜명이 랜딩(index.html 05 카드)과 서로 다른 이름을 쓰고 있었습니다 —
+     검색결과에서 온 사람과 랜딩에서 넘어온 사람이 서로 다른 상품을 본 셈입니다.
+     ✅ NDA 비노출 원칙(§1)과 충돌하지 않습니다 — 「수출 사전점검」에는 NDA 가 없습니다.
+     ⛔ 「문서 대조」·「바이어 서류 사전 확인」으로 되돌리지 마십시오. -->
 <!-- 「NDA」→「서류」 〔2026-08-13〕. 흐름 md §1 은 이 원칙의 적용 범위를 CTA 버튼뿐 아니라
      <title>·meta description·og:title·헤드라인 전체로 명시합니다. 이유가 확장성이 아니라
      전환율입니다 — 검색결과·공유카드에 「NDA」가 보이는 순간 「기밀서류를 대놓고 요구하는 곳」
@@ -14,7 +20,7 @@
         둡니다. 흐름 md §1 이 「접수 화면 안에서만 범위를 명시」로 지정한 자리입니다. -->
 <meta name="description" content="바이어가 보낸 서류, 우리 회사 기준과 뭐가 다른지 한눈에 안 보이실 때. 자사 서식이 있으면 그대로 대조하고, 없으면 공개 라이선스로 배포되는 표준 서식으로 대조해 당일 요약 자료로 정돈해 드립니다.">
 <link rel="canonical" href="https://trops.kr/precheck">
-<meta property="og:title" content="바이어 서류 사전 확인 — TROPS">
+<meta property="og:title" content="수출 사전점검 — TROPS">
 <meta property="og:description" content="자사 서식이 있으면 그대로 대조하고, 없으면 공개 라이선스로 배포되는 표준 서식으로 대조해 당일 요약 자료로 정돈해 드립니다.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://trops.kr/precheck">
@@ -245,8 +251,17 @@
        onPlanChange 등)가 여전히 getElementById 로 이 안의 요소를 참조하고, 값을 그대로
        읽습니다(기본값 free · checked). 지금은 항상 무료(₩0) 경로만 실제로 쓰입니다.
        과금 게이트가 잠긴 동안 유료 카드는 어차피 선택되지 않습니다 〔R-2〕.
-       ⚠️ scripts/verify-deployment.js 의 R1-취소선 검사가 "₩99,000 문자열이
-          배포본에 남아 있는가"를 봅니다 — 안의 가격 문구를 지우지 마십시오. */
+
+       🔴 **닫힘이 두 겹입니다** 〔2026-08-13 · 가격 노출 시점〕.
+          종전에는 이 `display: none` **한 줄**이 전부였습니다 — 그 한 줄을 지우면 접수를
+          시작하기도 전에 가격이 다시 그려지고, 그것을 잡는 검사가 없었습니다. 그래서
+          마크업에 `hidden` 속성을 함께 붙였고 test/price-exposure.test.js 가 **두 겹
+          모두**를 단정합니다. 흐름 md §0-2 는 「비용 노출 없음」을 원칙으로 둡니다.
+       ⛔ 한 겹만 떼서 열지 마십시오. 과금 게이트를 여는 사람은 두 겹을 다 떼야 하고,
+          그때 검사가 빨개져 「가격을 언제 보여줄 것인가」를 다시 결정하게 됩니다.
+          그 결정의 설계는 docs/03-analysis/price-gate-teaser-restructure.md 에 있습니다.
+       ⚠️ scripts/verify-deployment.js 의 R1-취소선 검사가 "판매가 문자열이 배포본에
+          남아 있는가"를 봅니다 — 안의 가격 문구를 지우지 마십시오. */
   .plans { display: none; }
   .plan {
     display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 14px;
@@ -313,6 +328,11 @@
     font-size: 27px; font-weight: 700; letter-spacing: -0.03em;
     font-variant-numeric: tabular-nums;
   }
+  /* 부가세 병기 〔2026-08-13 · 흐름 md §4 「₩300,000(VAT별도)」〕.
+     금액과 **한 묶음**으로 읽혀야 하므로 .pay-refund 보다 위, 금액 바로 아래입니다 —
+     환불·SLA 문구 사이에 끼우면 별개 안내로 읽히고 결제 직전에 세액이 늘어납니다.
+     ⛔ 이 줄을 지우지 마십시오. md §4 가 표기에 「VAT별도」를 함께 못질했습니다. */
+  .pay-vat { margin: 6px 0 0; font-size: 13.5px; line-height: 1.7; color: var(--ink-62); text-align: right; }
   .pay-refund { margin: 14px 0 0; font-size: 13.5px; line-height: 1.7; color: var(--muted); }
   .pay-refund a { color: var(--ink-64); text-decoration: underline; text-underline-offset: 2px; }
   /* 검수 SLA (2026-08-13 · 흐름 md §3 · §5-1 1번).
@@ -766,8 +786,12 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
                흐름으로 합쳤습니다(위 .plans 규칙이 숨김). 라디오·태그·가격 요소는
                지우지 않았습니다 — free 가 기본 checked 이고, JS 는 그대로 이 값을
                읽어 지금과 같이 항상 무상(₩0) 경로로 접수를 처리합니다. 과금 게이트가
-               열리기 전까지 유료 카드는 화면에도, 선택지에도 나오지 않습니다. -->
-          <div class="plans" id="plans" role="radiogroup" aria-label="이용 방식">
+               열리기 전까지 유료 카드는 화면에도, 선택지에도 나오지 않습니다.
+
+               🔴 `hidden` 이 **두 번째 겹**입니다 〔2026-08-13〕. CSS `.plans{display:none}`
+                  한 겹만 두면 그 한 줄을 지우는 것으로 접수 전 가격 노출이 되살아납니다.
+                  ⛔ 이 속성을 떼서 열지 마십시오 — 위 CSS 주석과 함께 읽으십시오. -->
+          <div class="plans" id="plans" role="radiogroup" aria-label="이용 방식" hidden>
             <label class="plan plan-on" id="plan-free-card">
               <input type="radio" name="plan" value="free" id="plan-free" checked>
               <div>
@@ -785,8 +809,10 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
               <div>
                 <!-- id 는 과금 게이트가 잠글 때 문구를 바꾸기 위한 것입니다 〔R-2〕. -->
                 <span class="plan-tag plan-tag-quiet" id="plan-paid-tag">바로 신청</span>
-                <p class="plan-name">바이어 서류 사전 확인</p>
-                <p class="plan-price">₩99,000</p>
+                <!-- 상품명 「수출 사전점검」 〔2026-08-13 · 흐름 md §1 상위 카테고리명 통일〕.
+                     ⛔ 「NDA」를 넣지 마십시오 — 서류 종류는 아래 폼의 문서종류 필드가 말합니다. -->
+                <p class="plan-name">수출 사전점검</p>
+                <p class="plan-price">₩300,000</p>
                 <p class="plan-desc" id="plan-paid-desc">
                   남은 자리와 관계없이 오늘 접수됩니다. 신용·체크카드로 건별 1회 결제하며, 정기결제가 아닙니다.
                 </p>
@@ -796,7 +822,7 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
 
           <!-- 마감 알림 — 자리가 없을 때만 나옵니다.
 
-               2026-08-13: 단일 흐름 배치로 "지금은 ₩99,000으로 신청하실 수 있습니다"
+               2026-08-13: 단일 흐름 배치로 "지금은 (금액)으로 신청하실 수 있습니다"
                류의 가격·경로 안내를 걷어냈습니다 — 유료 카드 자체가 화면에 없어졌으므로
                "다른 경로가 있다"고 안내할 수 없습니다. 지금은 숫자·가격 없이 마감·재개
                사실만 말합니다.
@@ -924,7 +950,12 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
                          읽어주는 도구에는 checkbox 의 required 속성이 이미 같은 사실을 전달하므로
                          이 표시는 aria-hidden 으로 중복 안내를 막습니다. -->
                     <span class="consent-tag" aria-hidden="true">*</span>
-                    <span>서비스 이용약관 및 문서 대조 요청 동의</span>
+                    <!-- 상품명 통일 〔2026-08-13 · 흐름 md §1〕. 「문서 대조 요청 동의」였는데,
+                         같은 화면의 <title>·플랜명이 「수출 사전점검」이라 동의 문면만 옛 이름을
+                         쓰고 있었습니다 — 무엇에 동의하는지가 화면의 상품명과 갈립니다.
+                         ⚠️ 동의의 **내용**은 한 글자도 바뀌지 않았습니다(아래 .consent-body 가
+                            여전히 「대조 및 당일 자료 전달」이라고 서술합니다). 바뀐 것은 이름뿐입니다. -->
+                    <span>서비스 이용약관 및 수출 사전점검 요청 동의</span>
                   </label>
                   <!-- 2026-08-11: 「데이터 처리」에 방침 링크를 걸었습니다.
                        문구는 한 글자도 바꾸지 않았습니다 — 링크 추가는 문구 변경이
@@ -955,10 +986,20 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
               <p class="pay-mode" id="pay-mode" hidden></p>
               <div id="payment-method"></div>
               <div id="agreement"></div>
+              <!-- 🔴 **가격이 실제로 보이는 유일한 자리입니다** 〔2026-08-13〕.
+                   #pay-area 는 유료 경로를 고른 뒤에만 열립니다(onPlanChange). 위 .plans 는
+                   두 겹으로 닫혀 있으므로, 지금 이 저장소에서 이용자가 금액을 보는 시점은
+                   **결제수단을 입력하는 화면** 하나뿐입니다.
+                   ⛔ 가격을 이 영역 밖으로 옮기지 마십시오 — 접수를 시작하기도 전에 금액을
+                      마주치는 구조로 되돌아갑니다(흐름 md §0-2 「비용 노출 없음」).
+                   ⚠️ 금액 숫자를 여기 손으로 적어 둔 것은 위젯이 그려지기 전에도 고지가
+                      보여야 하기 때문입니다. 실제 청구액은 서버(api/_payment.js PRICE)가
+                      가진 값이고, 두 값이 갈리면 test/price-exposure.test.js 가 잡습니다. -->
               <div class="pay-summary">
                 <span class="pay-summary-label">결제 금액</span>
-                <span class="pay-summary-value">₩99,000</span>
+                <span class="pay-summary-value">₩300,000</span>
               </div>
+              <p class="pay-vat">부가세(VAT) 별도입니다.</p>
               <p class="pay-refund">
                 요약 자료를 받으시기 전에는 전액 환불해 드립니다. <a href="/refund">환불규정 보기</a>
               </p>
@@ -1299,7 +1340,9 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
       payArea.hidden = !paid;
       // free 분기 문구는 화면 단일 흐름과 맞춥니다. paid 분기는 실제 결제 버튼이라
       // 결제 금액을 그대로 둡니다 — 결제 시점의 금액 고지는 표시 정리 대상이 아닙니다.
-      submitBtn.textContent = paid ? '₩99,000 결제하고 보내기' : '서류 보내기';
+      // ⚠️ 금액은 .pay-summary-value 와 **같은 문자열**이어야 합니다. 한쪽만 고치면 같은
+      //    화면이 두 금액을 말합니다 — test/price-exposure.test.js 가 둘을 대조합니다.
+      submitBtn.textContent = paid ? '₩300,000 결제하고 보내기' : '서류 보내기';
 
       // 위젯은 컨테이너가 보인 뒤에 그립니다. 숨긴 채 그리면 높이가 0으로 잡힙니다.
       if (paid) renderWidgets();

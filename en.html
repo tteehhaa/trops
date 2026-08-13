@@ -713,18 +713,10 @@
     border-radius: 50%;
     background: var(--accent);
   }
-  .feat-pin-meta { font-size: 12.5px; color: var(--ink-62); }
-  /* 순차 등장 — 패널이 열린 뒤에만 돕니다.
-     ⚠️ .feat[data-open="1"] 하위 선택자를 지우지 마십시오. 접힌 채로 돌면 펼쳤을 때
-        이미 끝나 있어 아무 움직임도 보이지 않습니다. */
-  @keyframes pin-drop {
-    from { opacity: 0; transform: translateY(-8px); }
-    to   { opacity: 1; transform: none; }
-  }
-  .feat[data-open="1"] .feat-pin {
-    animation: pin-drop .34s ease-out both;
-    animation-delay: calc(var(--i, 0) * 160ms);
-  }
+  /* ⛔ **핀 수치 규칙(.feat-pin-meta)과 순차 등장(pin-drop)을 걷어냈습니다**
+        〔2026-08-13 · trops_a `tests/guardrails/world-map-boundary.test.ts` 정책〕.
+        2개국만 · 애니메이션 0 · 점에 수치 0. 국문 index.html 의 같은 자리에 사유를
+        ①②③ 으로 적어 두었습니다 — 한쪽만 되돌리면 언어별로 예시가 갈립니다. */
 
   /* ---------- 06 신뢰 (문구 §6 · 정본 C-5) ----------
      페이지 유일한 다크 본문 섹션입니다(푸터와 둘뿐).
@@ -937,7 +929,8 @@
        ⚠️ display:none 으로 끄지 마십시오. 움직임을 원치 않는 사람에게 내용을 감추는 것은
           접근성 설정을 콘텐츠 검열로 바꾸는 것입니다(index.html 과 같은 규칙). */
     .feat-panel { transition: none; }
-    .feat[data-open="1"] .feat-pin { animation: none; }
+    /* ✅ 핀 순차 등장의 예외가 여기 있었으나, 그 애니메이션 자체가 제품 정책에 맞춰
+       걷혔으므로(위 .feat-map 주석) 끌 것이 없어져 함께 지웠습니다 〔2026-08-13〕. */
   }
 </style>
 <style>
@@ -1053,11 +1046,13 @@
           <div class="card">
             <div class="card-head">
               <span class="card-title">AVAILABLE NOW</span>
-              <!-- "NDA comparison" → "Document comparison" 〔2026-08-13〕.
+              <!-- "NDA comparison" → "Document comparison" → "Export pre-check" 〔2026-08-13〕.
                    흐름 md §1: 「NDA」를 CTA·헤드라인·배지에 박지 않습니다. 본문(.card-body)의
                    NDA 는 무엇을 올리는지 설명하는 자리라 그대로 둡니다.
-                   국문 index.html 의 같은 자리도 「문서 대조」로 맞췄습니다. -->
-              <p class="eyebrow-quiet">Before the deal · Document comparison</p>
+                   국문 index.html 의 같은 자리가 「수출 사전점검」(상위 카테고리명 통일)이고,
+                   그 영문 정본이 "Export pre-check" 입니다 — 한쪽만 고치면 언어별로 상품이
+                   달라 보입니다(test/naming-consistency.test.js 가 양쪽을 함께 봅니다). -->
+              <p class="eyebrow-quiet">Before the deal · Export pre-check</p>
             </div>
             <p class="card-body">Upload the NDA your buyer sent. We compare it line by line<br>against a public standard form and mark where they differ.</p>
             <div class="card-bullets">
@@ -1117,15 +1112,17 @@
                          있는지도 모른다」는 통제감 상실이고, 설명형 문구는 여기서 훅이 되지
                          않습니다(흐름 md §1). 국문 .feat-hook 과 같은 문장의 번역입니다. -->
                     <p class="feat-hook">Do you know how many deadlines are hidden in a single contract?</p>
-                    <!-- 국문 index.html 과 같은 마스킹 샘플 3건입니다. --i 가 등장 순서입니다.
+                    <!-- 국문 index.html 과 같은 마스킹 샘플 **2건**입니다 〔2026-08-13〕.
                          ⚠️ 가짜 지도를 그려 넣지 마십시오 — 윤곽·대륙을 그리는 순간 제품 화면이
-                            아닌 것이 제품 화면처럼 보입니다. 실제 캡처가 오면 그때 얹습니다. -->
+                            아닌 것이 제품 화면처럼 보입니다. 실제 캡처가 오면 그때 얹습니다.
+                         🔴 제품(trops_a) 확정정책: 2개국만 · 애니메이션 0 · 점에 수치 0.
+                            ⛔ Vietnam·D-day·순차 등장을 되돌리지 마십시오. 국문 index.html 의
+                               .feat-map CSS 주석에 사유가 ①②③ 으로 있습니다. -->
                     <div class="feat-map">
                       <p class="feat-map-note">A capture of the actual screen is on the way. Once you register a deal, it shows up by destination country like this.</p>
                       <ul class="feat-pins">
-                        <li class="feat-pin" style="--i:0">France <span class="feat-pin-meta">Shipment D-12</span></li>
-                        <li class="feat-pin" style="--i:1">United Arab Emirates <span class="feat-pin-meta">Payment D-5</span></li>
-                        <li class="feat-pin" style="--i:2">Vietnam <span class="feat-pin-meta">Customs documents D-2</span></li>
+                        <li class="feat-pin">France</li>
+                        <li class="feat-pin">United Arab Emirates</li>
                       </ul>
                     </div>
                     <p class="feat-cap">Sample entries, not real customer deals.</p>
@@ -1264,8 +1261,9 @@
             <p class="rm-name"><span class="rm-num">01</span>Item comparison sheet</p>
             <p class="rm-desc">We lay out the items to check for each product category as a document, with the source for each</p>
             <!-- 구분 문구 〔2026-08-13 신설 · 국문 .rm-diff 와 같은 역할〕. 이름만 보면 지금
-                 파는 Document comparison 의 유료판으로 읽혀서, 가르는 축(**대상**)을 밝힙니다. -->
-            <p class="rm-diff">A different product from the Document comparison you can use today. It doesn't compare a document you were sent — it lays out, ahead of time and without any document, what needs checking for your product category.</p>
+                 파는 Export pre-check 의 유료판으로 읽혀서, 가르는 축(**대상**)을 밝힙니다.
+                 ⚠️ 지금 파는 상품의 이름이 바뀌면 이 문장도 함께 바뀝니다. -->
+            <p class="rm-diff">A different product from the Export pre-check you can use today. It doesn't compare a document you were sent — it lays out, ahead of time and without any document, what needs checking for your product category.</p>
             <p class="rm-meta">₩99,000 · Opens September</p>
           </div>
           <div class="rm-row">

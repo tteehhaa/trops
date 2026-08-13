@@ -415,7 +415,7 @@
       </div>
 
       <nav class="footer-links" aria-label="정책">
-        <a href="/precheck">바이어 서류 사전 확인</a>
+        <a href="/precheck">수출 사전점검</a>
         <a href="/refund">환불규정</a>
         <a href="/privacy">개인정보처리방침</a>
       </nav>
@@ -472,13 +472,13 @@
   const DIAGNOSIS_PRICE = '99,000원';
   // 확인 항목 요약 자료(품목별 확인 항목 문서) 발급 플로우는 아직 열지 않았습니다.
   // 그때까지 비활성 버튼으로 세워두는 대신, 지금 실제로 신청할 수 있는
-  // /precheck(바이어 서류 사전 확인)로 보냅니다.
+  // /precheck(수출 사전점검)로 보냅니다.
   // 오픈 시 LABEL 을 '확인 항목 요약 자료 신청 · ' + DIAGNOSIS_PRICE 로,
   // HREF 를 '/uae/diagnosis?hs=…' 로 되돌리면 됩니다.
   // ⚠️ 상수 이름(DIAGNOSIS_*)은 그대로 둡니다 — 내부 식별자이고, 바꾸면 이 파일 안
   //    참조 5곳을 함께 옮겨야 하는데 §4-7 은 **대외 문구** 규칙입니다(화면에 안 찍힙니다).
   const DIAGNOSIS_CTA_HREF = '/precheck';
-  const DIAGNOSIS_CTA_LABEL = '바이어 서류 사전 확인 신청';
+  const DIAGNOSIS_CTA_LABEL = '수출 사전점검 신청';
   // 항목 수는 빌드가 채웁니다 — site.config.json 의 precheck.itemCount 가 원본입니다.
   // ⚠️ 문자열 리터럴 안이지만 숫자라 따옴표 문제가 없습니다. 토큰을 따옴표로 감싸지 마십시오.
   const DIAGNOSIS_CTA_NOTE = '확인 항목 요약 자료는 준비 중입니다. 바이어가 보낸 서류의 {{precheck.itemCount}}개 항목 대조는 지금 신청하실 수 있습니다.';

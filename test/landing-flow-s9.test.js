@@ -130,22 +130,54 @@ test('🔴 JS 가 죽으면 인용문이 그대로 보인다 — 숨김은 JS �
     '지원 확인보다 먼저 숨김을 켭니다 — 미지원 브라우저에서 문장이 사라집니다');
 });
 
-test('기한관리 카드에 핀 마커가 순차로 등장한다', () => {
+/*
+ * 🔄 **단언을 갈아 적었습니다** 〔2026-08-13 · price-300k-naming-map-s9〕.
+ *
+ * 종전 이름은 「기한관리 카드에 핀 마커가 **순차로 등장한다**」였고 흐름 md §1
+ * 「다이나믹함」 2번을 근거로 삼았습니다. 그 요구를 **제품(trops_a)의 확정정책이
+ * 덮었습니다** — `tests/guardrails/world-map-boundary.test.ts`(D2 · 2026-08-12)가
+ * 세계지도 패널에 대해 ① 예시 2개국(FR·AE) ② 「⛔ 항로선·애니메이션 0」 ③ 「예시 점에
+ * 건수를 적지 않는다」를 검사로 못질해 두었습니다.
+ *
+ * 랜딩의 이 자리는 **그 화면을 미리 보여주는 자리**입니다. 같은 예시가 두 곳에서 다르게
+ * 보이면 「랜딩에서 본 것」과 「들어가서 본 것」이 갈립니다 — 그래서 랜딩을 제품에 맞춥니다.
+ *
+ * ⛔ 이 검사를 「순차 등장」으로 되돌리지 마십시오. 되돌리려면 trops_a 의 그 검사를 먼저
+ *    바꿔야 하고, 그것은 제품 정책 변경입니다(스케치 md 로는 뒤집지 않습니다).
+ */
+test('🔴 기한관리 예시가 제품 정책과 같다 — 2개국 · 애니메이션 0 · 점에 수치 0', () => {
   const pins = (M.match(/class="feat-pin"/g) || []).length;
-  assert.ok(pins >= 2, '핀 마커가 ' + pins + '개입니다 — 순차 등장은 2개 이상이어야 보입니다');
+  assert.strictEqual(pins, 2,
+    '핀이 ' + pins + '개입니다 — trops_a 예시는 프랑스·아랍에미리트 2건입니다');
 
-  // 등장 순서는 마크업의 --i 가 정합니다(CSS 에 순서를 박지 않습니다).
-  const orders = (M.match(/class="feat-pin" style="--i:(\d+)"/g) || [])
-    .map((s) => Number(s.match(/--i:(\d+)/)[1]));
-  assert.strictEqual(orders.length, pins, '모든 핀에 --i 가 붙어 있어야 합니다');
-  assert.deepStrictEqual(orders, orders.slice().sort((a, b) => a - b), '--i 가 순서대로가 아닙니다');
-  assert.strictEqual(new Set(orders).size, orders.length, '--i 가 겹칩니다 — 두 핀이 같이 나타납니다');
+  const timeline = M.slice(M.indexOf('id="feat-timeline"'));
+  const card = timeline.slice(0, timeline.indexOf('</section>'));
+  for (const c of ['프랑스', '아랍에미리트']) {
+    assert.ok(card.indexOf(c) !== -1, c + ' 핀이 없습니다');
+  }
+  assert.ok(card.indexOf('베트남') === -1,
+    '베트남 핀이 남아 있습니다 — 제품 예시는 2개국이고 3번째 나라를 늘리지 않습니다');
 
-  const css = CSS;
-  assert.match(css, /@keyframes pin-drop/, '핀 등장 키프레임이 없습니다');
-  assert.match(css, /\.feat\[data-open="1"\] \.feat-pin \{[^}]*animation: pin-drop/,
-    '펼쳐진 카드에서만 돌아야 합니다 — 접힌 채로 돌면 펼쳤을 때 이미 끝나 있습니다');
-  assert.match(css, /animation-delay: calc\(var\(--i[^)]*\) \* \d+ms\)/, '순차 지연이 없습니다');
+  /*
+   * ⚠️ 아래는 **CSS 주석까지 걷어낸** 원문으로 봅니다. 이 저장소는 「무엇을 지웠고 왜
+   *    지웠는지」를 주석으로 남기므로, 걷지 않으면 그 설명이 곧 오탐이 됩니다
+   *    (실제로 `.feat-pin-meta` 를 지운 사유 주석이 이 검사를 한 번 빨갛게 만들었습니다).
+   */
+  const cssCode = CSS.replace(/\/\*[\s\S]*?\*\//g, '');
+  const markup = M.replace(/<style[\s\S]*?<\/style>/g, '');
+
+  // ② 점에 수치 0 — D-day·건수를 적으면 예시가 집계처럼 읽힙니다.
+  assert.ok(!/feat-pin-meta/.test(markup) && !/feat-pin-meta/.test(cssCode),
+    '핀에 수치 캡션(.feat-pin-meta)이 남아 있습니다 — 숫자를 적으면 집계로 읽힙니다');
+  assert.ok(!/D-\d+/.test(card), 'D-day 표기가 남아 있습니다');
+
+  // ③ 애니메이션 0 — 키프레임·규칙·순서값 세 겹을 함께 봅니다.
+  //    하나만 지우면 되살리기가 쉬워서, 세 겹이 다 없어야 「지웠다」입니다.
+  assert.ok(!/@keyframes pin-drop/.test(cssCode), 'pin-drop 키프레임이 남아 있습니다');
+  assert.ok(!/\.feat-pin[^{]*\{[^}]*animation/.test(cssCode),
+    '핀 애니메이션 규칙이 남아 있습니다');
+  assert.ok(!/class="feat-pin"[^>]*--i:/.test(M),
+    '등장 순서(--i)가 남아 있습니다 — 순차 등장의 흔적입니다');
 });
 
 test('🔴 가짜 지도를 그리지 않았다 — 자리표시자는 자리표시자로 남는다', () => {
@@ -182,7 +214,13 @@ test('움직임을 줄이는 설정에서 내용이 사라지지 않는다', () 
 
   assert.match(block[0], /\.reveal-armed \.reveal \{[^}]*opacity: 1/,
     '움직임을 끄면서 문장을 숨긴 채 둡니다');
-  assert.match(block[0], /\.feat-pin \{ animation: none/, '핀 애니메이션을 끄지 않습니다');
+  /*
+   * 🔄 핀 애니메이션 예외 단언을 걷었습니다 〔2026-08-13〕. 끌 애니메이션 자체가 없어졌으므로
+   *    (위 「제품 정책과 같다」 검사) 여기서 그것을 요구하면 서로 반대되는 두 검사가 됩니다.
+   *    ⚠️ 슬라이드·페이드는 그대로 남아 있어야 하므로 아래 두 단언은 유지합니다.
+   */
+  assert.match(block[0], /\.feat-panel[^{]*\{[^}]*transition: none/,
+    '아코디언 슬라이드를 끄지 않습니다');
   assert.ok(!/display: none/.test(block[0]),
     '접근성 설정을 콘텐츠 검열로 바꾸지 마십시오');
 });

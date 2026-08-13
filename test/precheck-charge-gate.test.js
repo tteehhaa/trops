@@ -237,7 +237,13 @@ test('payment-config 는 게이트 상태를 알린다 — 화면이 잠글 근�
 
     assert.strictEqual(res.body.chargeEnabled, false);
     assert.strictEqual(res.body.displayEnabled, true, '게시는 계속 열려 있어야 합니다');
-    assert.strictEqual(res.body.amount, 99000, '금액은 종전 그대로입니다');
+    /*
+     * 🔄 99,000 → 300,000 〔2026-08-13 · 흐름 md §4 1차 테스트가〕. 화면이 이 값을 받아
+     *    금액을 그리게 될 자리라, 낡으면 「보여준 값」과 「청구할 값」이 갈립니다.
+     * ⚠️ 위 두 fixture(orderRow.amount = 99000)는 **지난 접수 건의 저장값**이므로 그대로
+     *    둡니다 — 옛 가격으로 결제된 건의 조회가 계속 열려야 합니다.
+     */
+    assert.strictEqual(res.body.amount, 300000, '판매가가 흐름 md §4 값과 다릅니다');
     assert.strictEqual(res.body.listPrice, 290000, '정가 값을 지우지 않았습니다');
   });
 });

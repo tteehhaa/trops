@@ -121,15 +121,77 @@ test('기한관리 「지금은 무료」가 배지에서 빠지고 본문에 �
 
 /* ══ 2. 04 2층카드 ↔ 05 아코디언 명칭 통일 ══════════════════════════════════ */
 
+/*
+ * 🔄 **상품명이 「문서 대조」→「수출 사전점검」으로 바뀌었습니다**
+ *    〔2026-08-13 · 흐름 md §1 「상위 카테고리명은 '수출 사전점검'으로 통일」〕.
+ *
+ * 「문서 대조」는 **하는 일**의 서술이었고 상품명이 아니었습니다. 그래서 같은 상품이
+ * 세 이름으로 불렸습니다 — 랜딩은 「문서 대조」, /precheck 는 「바이어 서류 사전 확인」,
+ * 흐름 md 는 「수출 사전점검」. 이 사이클이 셋을 하나로 모았습니다.
+ *
+ * ⛔ 폐기 문자열을 되살리지 마십시오: 문서 대조 · 바이어 서류 사전 확인 ·
+ *    Document comparison · Buyer document pre-check.
+ */
+const RETIRED_KO = ['문서 대조', '바이어 서류 사전 확인'];
+const RETIRED_EN = ['Document comparison', 'Buyer document pre-check'];
+
 test('04 카드가 05 와 같은 이름을 쓴다', () => {
   const cards = section(M.index, 'cards-sec');
 
-  assert.ok(cards.indexOf('거래 시작 전 · 문서 대조') !== -1,
-    '01 카드가 「문서 대조」가 아닙니다 (구 「NDA 비교」)');
+  assert.ok(cards.indexOf('거래 시작 전 · 수출 사전점검') !== -1,
+    '01 카드가 「수출 사전점검」이 아닙니다 (구 「문서 대조」 · 구구 「NDA 비교」)');
   assert.ok(cards.indexOf('거래 시작 후 · 기한 관리') !== -1,
     '02 카드가 「기한 관리」가 아닙니다 (구 「거래 절차 트래킹」)');
   assert.ok(cards.indexOf('NDA 비교') === -1, '옛 이름 「NDA 비교」가 남아 있습니다');
   assert.ok(cards.indexOf('거래 절차 트래킹') === -1, '옛 이름 「거래 절차 트래킹」이 남아 있습니다');
+});
+
+test('05 아코디언 01 카드 제목이 04 와 같은 이름이다', () => {
+  const titles = (M.index.match(/<span class="feat-title">([^<]*)<\/span>/g) || [])
+    .map((s) => s.replace(/<[^>]*>/g, '').trim());
+  assert.deepStrictEqual(titles, ['수출 사전점검', '바이어 확인', '기한 관리'],
+    '05 세 카드 제목이 용어 정본과 다릅니다: ' + JSON.stringify(titles));
+});
+
+test('🔴 폐기된 상품명이 어느 페이지 본문에도 없다', () => {
+  for (const [file, text] of [['index.html', B.index], ['precheck.html', B.precheck]]) {
+    for (const w of RETIRED_KO) {
+      assert.ok(text.indexOf(w) === -1,
+        file + ' 에 폐기된 상품명 「' + w + '」이 남아 있습니다 — 한 상품이 다시 두 이름이 됩니다');
+    }
+  }
+  for (const w of RETIRED_EN) {
+    assert.ok(B.en.indexOf(w) === -1, 'en.html 에 폐기된 상품명 「' + w + '」이 남아 있습니다');
+  }
+});
+
+test('/precheck 의 title·og:title·플랜명이 랜딩과 같은 이름이다', () => {
+  const head = RAW.precheck.slice(0, RAW.precheck.indexOf('</head>'));
+  const title = (head.match(/<title>([^<]*)<\/title>/) || [])[1] || '';
+  const og = (head.match(/property="og:title" content="([^"]*)"/) || [])[1] || '';
+
+  assert.strictEqual(title, '수출 사전점검 — TROPS', '<title> 이 상품명 정본과 다릅니다: ' + title);
+  assert.strictEqual(og, '수출 사전점검 — TROPS', 'og:title 이 <title> 과 다릅니다: ' + og);
+  // 결제창·카드 명세서에 찍히는 주문명도 같은 이름이어야 합니다.
+  const payment = require('../api/_payment.js');
+  assert.strictEqual(payment.ORDER_NAME, '수출 사전점검',
+    '결제창 주문명이 화면의 상품명과 다릅니다: ' + payment.ORDER_NAME);
+  assert.ok(payment.ORDER_NAME.indexOf('NDA') === -1,
+    '주문명에 NDA 가 들어왔습니다 — 카드 명세서까지 노출됩니다 (흐름 md §1)');
+});
+
+test('푸터 /precheck 링크 라벨이 그 페이지 이름과 같다 — 전 페이지', () => {
+  const files = ['index.html', 'nda.html', 'uae.html', 'refund.html', 'privacy.html'];
+  for (const f of files) {
+    const m = strip(read(f));
+    const labels = (m.match(/<a href="\/precheck">([^<]*)<\/a>/g) || [])
+      .map((s) => s.replace(/<[^>]*>/g, '').trim());
+    assert.ok(labels.length > 0, f + ' 에 /precheck 링크가 없습니다');
+    for (const l of labels) {
+      assert.strictEqual(l, '수출 사전점검',
+        f + ' 의 /precheck 링크 라벨이 「' + l + '」입니다 — 페이지 이름과 갈립니다');
+    }
+  }
 });
 
 test('04 기한관리 카드에 「준비 중」 배지가 없다', () => {
@@ -194,8 +256,9 @@ test('로드맵 두 항목이 지금 파는 상품과 어떻게 다른지 밝힌
   const diffs = (block.match(/class="rm-diff"/g) || []).length;
   assert.strictEqual(diffs, 2, '구분 문구가 ' + diffs + '개입니다 — 두 항목 모두에 필요합니다');
 
-  assert.ok(block.indexOf('「문서 대조」와는 다른 상품입니다') !== -1,
-    '「확인 항목 요약 자료」가 「문서 대조」와 다른 상품이라는 문구가 없습니다');
+  assert.ok(block.indexOf('「수출 사전점검」과는 다른 상품입니다') !== -1,
+    '「확인 항목 요약 자료」가 「수출 사전점검」과 다른 상품이라는 문구가 없습니다 — ' +
+    '지금 파는 상품 이름이 바뀌면 이 구분 문구도 함께 바뀝니다(안 바꾸면 없는 상품과 비교합니다)');
   assert.ok(block.indexOf('「기한 관리」의 확장판입니다') !== -1,
     '「거래 운영」과 「기한 관리」의 관계(확장판)가 명시되지 않았습니다');
 });
@@ -282,8 +345,8 @@ test('법적 문구가 페이지에 남아 있다 — 위치와 무관하게 필
 test('en.html 04 카드가 국문과 같은 이름을 쓴다', () => {
   const cards = section(M.en, 'cards-sec');
 
-  assert.ok(cards.indexOf('Before the deal · Document comparison') !== -1,
-    '01 카드가 Document comparison 이 아닙니다 (구 NDA comparison)');
+  assert.ok(cards.indexOf('Before the deal · Export pre-check') !== -1,
+    '01 카드가 Export pre-check 이 아닙니다 (구 Document comparison · 구구 NDA comparison)');
   assert.ok(cards.indexOf('After the deal starts · Deadline management') !== -1,
     '02 카드가 Deadline management 가 아닙니다 (구 Trade procedure tracking)');
   assert.ok(cards.indexOf('NDA comparison') === -1, '옛 이름이 남아 있습니다');
