@@ -135,6 +135,54 @@ test('환불 — 취소 1회 · 사유와 시각을 남긴다', async () => {
   });
 });
 
+/* ── 환불 피드백 후속 컨택 시각 (2026-08-14 · 0-I) ─────────────────────────── */
+
+test('환불 뒤 피드백 요청 시각을 별도 PATCH 로 남긴다 — 기록 PATCH 와 섞지 않는다', async () => {
+  await withFakes(async (calls) => {
+    await REFUND.refundOrder(CONFIG, {
+      orderId: PAID_ROW.order_id, reason: '판별 불가', apply: true, log: logs().log,
+    });
+
+    assert.strictEqual(patchCalls(calls).length, 2, '기록 PATCH 와 피드백 시각 PATCH, 정확히 둘입니다');
+
+    const recordPatch = JSON.parse(patchCalls(calls)[0].body);
+    assert.strictEqual(
+      Object.prototype.hasOwnProperty.call(recordPatch, 'refund_feedback_requested_at'),
+      false,
+      '피드백 시각을 기록 PATCH 에 섞으면 컬럼 미적용 환경에서 환불 기록 자체가 거절됩니다'
+    );
+
+    const feedbackPatch = JSON.parse(patchCalls(calls)[1].body);
+    assert.deepStrictEqual(Object.keys(feedbackPatch), ['refund_feedback_requested_at']);
+    assert.ok(!Number.isNaN(Date.parse(feedbackPatch.refund_feedback_requested_at)));
+  });
+});
+
+test('🔴 피드백 시각 PATCH 가 실패해도 환불 결과는 그대로다 — 컬럼 미적용 환경', async () => {
+  const originalFetch = globalThis.fetch;
+  await withFakes(async (calls) => {
+    const wrapped = globalThis.fetch;
+    globalThis.fetch = async (url, init) => {
+      const isFeedbackPatch = (init && init.method) === 'PATCH' &&
+        String(init.body || '').indexOf('refund_feedback_requested_at') !== -1;
+      if (isFeedbackPatch) {
+        return { ok: false, status: 400, json: async () => ({}), text: async () => '{"code":"PGRST204"}' };
+      }
+      return wrapped(url, init);
+    };
+    try {
+      const out = logs();
+      const result = await REFUND.refundOrder(CONFIG, {
+        orderId: PAID_ROW.order_id, reason: '판별 불가', apply: true, log: out.log,
+      });
+      assert.strictEqual(result.outcome, 'refunded', '피드백 시각 기록 실패가 환불 결과를 바꿨습니다');
+      assert.ok(out.some((m) => m.indexOf('무해') !== -1));
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  });
+});
+
 test('전달까지 끝난 건은 status 를 덮지 않는다 — 환불 기준선이 지워진다', async () => {
   await withFakes(async (calls) => {
     const result = await REFUND.refundOrder(CONFIG, {
@@ -229,7 +277,8 @@ test('🔴 안내 메일이 실패해도 환불 결과는 그대로다 — 돈�
       });
       assert.strictEqual(result.outcome, 'refunded', '메일 실패가 환불 결과를 바꿨습니다');
       assert.strictEqual(result.notified, false);
-      assert.strictEqual(patchCalls(calls).length, 1, '메일 실패로 기록까지 건너뛰면 안 됩니다');
+      // 기록 PATCH(①) + 피드백 요청 시각 PATCH(②, 2026-08-14 · 0-I) — 메일 실패로 둘 다 건너뛰면 안 됩니다.
+      assert.strictEqual(patchCalls(calls).length, 2, '메일 실패로 기록까지 건너뛰면 안 됩니다');
       assert.ok(out.some((m) => m.indexOf('발송에 실패') !== -1));
     });
   } finally {

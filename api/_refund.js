@@ -203,6 +203,22 @@ async function refundOrder(config, options) {
     ' | 시각=' + result.cancel.cancelledAt);
 
   /*
+   * ④-1 환불 피드백 후속 컨택 시각 〔2026-08-14 · 흐름 md §5-1 14번〕.
+   *
+   * 🔴 **위 ④ 기록과 같은 PATCH 에 넣지 않습니다** — 이 컬럼(0-I)이 아직 없는 환경에서
+   *    한 요청에 같이 넣으면 PostgREST 가 요청 전체를 거절해 환불 기록까지 안 됩니다.
+   *    그래서 별도 PATCH 로 두고, 실패해도 삼킵니다(0-F 와 같은 "이 절 없어도 돈다" 원칙) —
+   *    안내메일(아래 ⑤)이 이미 피드백을 묻는 줄을 싣고 있으니, 시각 기록 실패가 그 발송을
+   *    막을 이유는 없습니다.
+   */
+  try {
+    await patchOrder(config, orderId, { refund_feedback_requested_at: new Date().toISOString() });
+  } catch (err) {
+    log('⚠️ 피드백 요청 시각 기록에 실패했습니다(무해 — 0-I 절 미적용일 수 있습니다): ' +
+      (err && err.message ? err.message : err));
+  }
+
+  /*
    * ⑤ 안내메일. 🔴 **환불 뒤에** 보냅니다 — 먼저 보내면 취소가 거절됐을 때
    * 「환불했습니다」만 남습니다. 실패해도 환불은 되돌리지 않습니다.
    */

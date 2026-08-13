@@ -435,6 +435,7 @@ async function sendRouteRefundMail(info) {
         <p><strong>결제하신 ${escapeHtml(formatWon(info.amount))} 을 전액 환불했습니다.</strong>
           카드사에 따라 실제 입금까지 며칠 걸릴 수 있습니다.</p>
         <p>서류를 다시 보내주시면 새로 접수됩니다. 접수 자체에는 비용이 들지 않습니다.</p>
+        <p style="color:#64748B;font-size:13px">괜찮으시다면 왜 환불하셨는지 알려주시면 도움이 됩니다. 이 메일에 회신해 주시면 됩니다.</p>
         ${magicLink
           ? `<p style="color:#64748B;font-size:13px">
              접수 내용은 <a href="${escapeHtml(magicLink)}">여기</a>에서 확인하실 수 있습니다.<br>
@@ -509,6 +510,7 @@ async function sendManualRefundMail(info) {
           카드사에 따라 실제 입금까지 며칠 걸릴 수 있습니다.</p>
         <p><strong>환불 사유:</strong> ${escapeHtml(reason || '미기재')}</p>
         <p>서류를 다시 보내주시면 새로 접수됩니다. 접수 자체에는 비용이 들지 않습니다.</p>
+        <p style="color:#64748B;font-size:13px">괜찮으시다면 왜 환불하셨는지 알려주시면 도움이 됩니다. 이 메일에 회신해 주시면 됩니다.</p>
         <p style="color:#64748B;font-size:13px">주문번호 ${escapeHtml(info.orderId || '-')}</p>
         <p style="color:#64748B;font-size:13px">
           환불규정은 <a href="${escapeHtml(origin())}/refund">${escapeHtml(origin().replace(/^https?:\/\//, ''))}/refund</a> 에서 보실 수 있습니다.
