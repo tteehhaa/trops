@@ -263,3 +263,115 @@ test('🔴 접수 화면에 로그인·계정 필드가 없다 — 회원가입 
     '무로그인 약속 문면(.pay-note)이 사라졌습니다'
   );
 });
+
+/* ── ⑤ 마이그레이션 순서에 의존하지 않는가 ───────────────────────────────── */
+
+/*
+ * 🔴 이 절이 배포 안전장치입니다.
+ *
+ * doc_type 은 접수 경로가 **실제로 insert 하는** 컬럼입니다. 컬럼이 없는 환경에
+ * 이 코드가 먼저 배포되면 PostgREST 가 PGRST204 로 거절하고 **모든 접수가 502** 가
+ * 됩니다. precheck-schema.sql 「0-F」 절이 세워 둔 원칙이 그것을 금합니다 —
+ * 「마이그레이션을 잊었을 때 깨지는 것이 운영 도구 하나이지 접수 전체가 아니어야
+ * 합니다」. 그래서 「그런 칸 없다」는 응답에는 그 칸을 떼고 한 번 더 넣습니다.
+ *
+ * ⚠️ 이 테스트가 「스키마를 실행하지 않아도 된다」는 뜻은 아닙니다. 폴백으로 저장된
+ *    행은 doc_type 이 DB 기본값으로 남습니다.
+ */
+
+/** 첫 insert 만 「그런 칸 없다」로 거절하는 가짜 Supabase. */
+function withMissingColumn(body, run) {
+  const calls = [];
+  const originalFetch = globalThis.fetch;
+  const originalError = console.error;
+  const errors = [];
+  console.error = (...args) => errors.push(args.map(String).join(' '));
+
+  process.env.INTAKE_SUPABASE_URL = 'https://example.supabase.co';
+  process.env.INTAKE_SUPABASE_SERVICE_ROLE_KEY = 'test-service-role-key';
+
+  let inserts = 0;
+
+  globalThis.fetch = async (url, init) => {
+    const call = { url: String(url), method: (init && init.method) || 'GET', body: init && init.body };
+    calls.push(call);
+    const okJson = (json) => ({ ok: true, status: 200, json: async () => json, text: async () => JSON.stringify(json) });
+
+    if (call.url.indexOf('/rpc/claim_slot') !== -1) return okJson([{ claimed: true, used: 3, slot_limit: 20 }]);
+
+    const isInsert = call.method === 'POST' && /\/rest\/v1\/intake(\?|$)/.test(call.url);
+    if (isInsert) {
+      inserts += 1;
+      if (inserts === 1) {
+        return {
+          ok: false, status: 400,
+          json: async () => ({}),
+          text: async () => JSON.stringify({
+            code: 'PGRST204',
+            message: "Could not find the 'doc_type' column of 'intake' in the schema cache",
+          }),
+        };
+      }
+    }
+    return okJson({});
+  };
+
+  mails.length = 0;
+
+  return Promise.resolve(run(calls, errors, () => inserts)).finally(() => {
+    globalThis.fetch = originalFetch;
+    console.error = originalError;
+    delete process.env.INTAKE_SUPABASE_URL;
+    delete process.env.INTAKE_SUPABASE_SERVICE_ROLE_KEY;
+  });
+}
+
+test('🔴 doc_type 컬럼이 아직 없어도 접수는 성공한다 — 502 를 내지 않는다', () =>
+  withMissingColumn(base(), async (calls, errors, insertCount) => {
+    const res = fakeRes();
+    await intake(post(base()), res);
+
+    assert.strictEqual(res.statusCode, 201,
+      '컬럼 하나가 없어서 접수 전체를 잃었습니다: ' + JSON.stringify(res.body));
+    assert.strictEqual(insertCount(), 2, '떼고 한 번 더 넣는 재시도가 없습니다');
+
+    const bodies = calls
+      .filter((c) => c.method === 'POST' && /\/rest\/v1\/intake(\?|$)/.test(c.url))
+      .map((c) => JSON.parse(c.body));
+    assert.ok('doc_type' in bodies[0], '첫 시도는 doc_type 을 넣어야 합니다');
+    assert.ok(!('doc_type' in bodies[1]), '재시도가 doc_type 을 떼지 않았습니다');
+    // 접수 성립에 필요한 값은 그대로 남아야 합니다.
+    assert.strictEqual(bodies[1].email, 'buyer@example.com');
+    assert.ok(Array.isArray(bodies[1].file_paths) && bodies[1].file_paths.length > 0);
+  }));
+
+test('폴백으로 저장했으면 로그에 크게 남긴다 — 잊은 것을 조용히 넘기지 않는다', () =>
+  withMissingColumn(base(), async (calls, errors) => {
+    const res = fakeRes();
+    await intake(post(base()), res);
+
+    assert.strictEqual(res.statusCode, 201);
+    const note = errors.join('\n');
+    assert.match(note, /doc_type/, '어느 컬럼이 없었는지가 로그에 없습니다');
+    assert.match(note, /0-H/, '무엇을 실행해야 하는지가 로그에 없습니다');
+  }));
+
+test('재시도는 한 번뿐이다 — 컬럼을 떼어 가며 성공을 쫓지 않는다', () => {
+  // 무한 재시도는 「어느 칸이 사라졌는지 모르는 채 행이 저장되는」 상태를 만듭니다.
+  // 재시도 대상 목록이 비어 있으면(=뗄 것이 없으면) 그대로 던져야 합니다.
+  assert.deepStrictEqual(intake.OPTIONAL_COLUMNS, ['doc_type'],
+    '재시도 대상은 「없어도 사실이 어긋나지 않는」 컬럼만입니다');
+});
+
+test('「그런 칸 없다」와 진짜 실패를 가린다', () => {
+  const missing = JSON.stringify({ code: 'PGRST204', message: "Could not find the 'doc_type' column" });
+  assert.strictEqual(intake.isUnknownColumnError(400, missing), true);
+  assert.strictEqual(intake.isUnknownColumnError(400, 'column intake.doc_type does not exist'), true);
+  assert.strictEqual(intake.isUnknownColumnError(400, '{"code":"42703"}'), true);
+
+  // 아래는 컬럼 문제가 아닙니다 — 떼고 다시 넣으면 안 됩니다.
+  assert.strictEqual(intake.isUnknownColumnError(400, '{"code":"23505","message":"duplicate key"}'), false,
+    '중복키 오류에 컬럼을 떼고 재시도하면 안 됩니다');
+  assert.strictEqual(intake.isUnknownColumnError(500, missing), false, '서버 오류는 재시도 대상이 아닙니다');
+  assert.strictEqual(intake.isUnknownColumnError(401, ''), false);
+});

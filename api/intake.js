@@ -347,21 +347,40 @@ async function handleReceipt(req, res) {
 
   try {
     // id 는 내보내지 않습니다 — precheck_intake_route 를 서버에서 짚기 위해서만 읽습니다.
-    const select = 'id,status,received_at,file_count,slot_no,delete_after,intake_path,amount,payment_status,paid_at,' +
-      'erasure_requested_at,own_form_path,target_country,hs_code,delivered_at,doc_type';
-    const response = await fetch(
-      config.restUrl + '/intake?access_token=eq.' + encodeURIComponent(token) + '&select=' + select,
-      { headers: config.headers }
-    );
+    /*
+     * 🔴 select 도 컬럼이 없으면 400 입니다 — insertIntake 와 **같은 위험**입니다.
+     *    doc_type 을 목록에 넣은 뒤 스키마 절을 실행하지 않은 환경에서는 이 조회가
+     *    통째로 실패해 **접수 확인 화면 전체를 잃습니다.** 그래서 여기도 「그런 칸
+     *    없다」는 응답에는 뒤에 붙은 컬럼을 떼고 한 번 더 묻습니다.
+     * ⚠️ 재시도는 한 번입니다. 폴백으로 읽은 행에는 doc_type 이 없고, 아래에서
+     *    'nda' 로 눕습니다 — 지금은 그 값이 사실입니다(받는 종류가 하나뿐).
+     */
+    const BASE_SELECT = 'id,status,received_at,file_count,slot_no,delete_after,intake_path,amount,' +
+      'payment_status,paid_at,erasure_requested_at,own_form_path,target_country,hs_code,delivered_at';
 
-    if (!response.ok) {
-      console.error('intake receipt supabase error: HTTP ' + response.status +
-        ' | 응답: ' + (await safeText(response)).slice(0, 300));
+    async function askFor(select) {
+      const r = await fetch(
+        config.restUrl + '/intake?access_token=eq.' + encodeURIComponent(token) + '&select=' + select,
+        { headers: config.headers }
+      );
+      return { ok: r.ok, status: r.status, json: r.ok ? await r.json() : null, text: r.ok ? '' : await safeText(r) };
+    }
+
+    let got = await askFor(BASE_SELECT + ',' + OPTIONAL_COLUMNS.join(','));
+    if (!got.ok && isUnknownColumnError(got.status, got.text)) {
+      console.error('intake receipt: ' + OPTIONAL_COLUMNS.join(', ') +
+        ' 컬럼이 없어 그 값 없이 조회했습니다. precheck-schema.sql 「0-H」 절을 실행하십시오.');
+      got = await askFor(BASE_SELECT);
+    }
+
+    if (!got.ok) {
+      console.error('intake receipt supabase error: HTTP ' + got.status +
+        ' | 응답: ' + got.text.slice(0, 300));
       res.status(502).json({ error: 'lookup failed' });
       return;
     }
 
-    const rows = await response.json();
+    const rows = got.json;
     const row = Array.isArray(rows) ? rows[0] : null;
     if (!row) {
       res.status(404).json({ error: 'not-found' });
@@ -807,18 +826,86 @@ async function uploadOne(config, path, file) {
  * 저장
  * ────────────────────────────────────────────────────────────── */
 
-async function insertIntake(config, row) {
+/**
+ * 접수 뒤에 붙은 컬럼들. **스키마 절이 아직 실행되지 않은 환경에서 접수를 잃지 않기
+ * 위해** 이 이름들은 실패 시 한 번 떼고 다시 넣습니다 (아래 insertIntake 참조).
+ *
+ * ⚠️ 여기에 **접수 성립에 필요한 컬럼을 넣지 마십시오.** 떼고 저장해도 되는,
+ *    즉 「없으면 기본값으로 남아도 사실이 어긋나지 않는」 컬럼만입니다.
+ *    doc_type 이 그렇습니다 — 지금 받는 값이 'nda' 하나뿐이고 DB 기본값도 'nda' 라,
+ *    떼고 넣어도 결과 행이 같습니다. 서류 종류가 둘 이상 되는 날 이 목록에서
+ *    doc_type 을 **빼야 합니다.** 그때는 떼고 저장하면 사실이 어긋납니다.
+ */
+const OPTIONAL_COLUMNS = ['doc_type'];
+
+/** PostgREST 가 「그런 칸 없다」고 답한 것인가. 컬럼명이 응답 본문에 실려 옵니다. */
+function isUnknownColumnError(status, text) {
+  if (status !== 400 && status !== 404) return false;
+  return /PGRST204/.test(text) ||
+    /42703/.test(text) ||
+    /column .* does not exist/i.test(text) ||
+    /Could not find the '[^']+' column/i.test(text);
+}
+
+async function postIntakeRow(config, row) {
   const response = await fetch(config.restUrl + '/intake', {
     method: 'POST',
     headers: Object.assign({}, config.headers, { Prefer: 'return=minimal' }),
     body: JSON.stringify(row),
   });
+  return { ok: response.ok, status: response.status, text: response.ok ? '' : await safeText(response) };
+}
 
-  if (!response.ok) {
-    throw new Error('intake insert HTTP ' + response.status +
-      ' | ' + (await safeText(response)).slice(0, 300) +
+/**
+ * 접수 행 저장.
+ *
+ * 🔴 **마이그레이션을 잊었을 때 깨지는 것이 접수 전체여서는 안 됩니다.**
+ *    이것은 이 파일이 새로 만든 원칙이 아니라 precheck-schema.sql 「0-F」 절이
+ *    이미 적어 둔 것입니다 — 「깨지는 것이 운영 도구 하나이지 접수 전체가 아니어야
+ *    합니다」. doc_type 이 붙으면서 그 원칙이 위험해졌습니다: 컬럼이 없는 환경에
+ *    이 코드가 배포되면 PostgREST 가 PGRST204 로 거절하고 **모든 접수가 502** 가
+ *    됩니다. 배포 순서(SQL 먼저 → 코드 나중)에 의존하는 상태였습니다.
+ *
+ *    그래서 「그런 칸 없다」는 응답에는 그 칸을 떼고 **한 번 더** 넣습니다.
+ *    접수는 살아남고, 잃는 것은 컬럼 하나의 값입니다. 잊었다는 사실은 로그에
+ *    크게 남겨 다음 사람이 스키마 절을 실행하도록 합니다.
+ *
+ * ⚠️ 이 폴백을 「그러니 스키마를 실행하지 않아도 된다」로 읽지 마십시오.
+ *    떼고 저장한 행은 doc_type 이 DB 기본값('nda')으로 남습니다 — 서류 종류가
+ *    둘 이상 되면 그 행은 **틀린 값**을 갖게 됩니다. OPTIONAL_COLUMNS 주석 참조.
+ * ⚠️ 재시도는 **한 번**입니다. 무한히 컬럼을 떼어 가며 성공을 쫓지 않습니다 —
+ *    그러면 어느 칸이 사라졌는지 모르는 채 행이 저장됩니다.
+ */
+async function insertIntake(config, row) {
+  const first = await postIntakeRow(config, row);
+  if (first.ok) return;
+
+  const missing = isUnknownColumnError(first.status, first.text)
+    ? OPTIONAL_COLUMNS.filter((name) => Object.prototype.hasOwnProperty.call(row, name))
+    : [];
+
+  if (missing.length === 0) {
+    throw new Error('intake insert HTTP ' + first.status +
+      ' | ' + first.text.slice(0, 300) +
       ' | 테이블이 없으면 precheck-schema.sql 을 먼저 실행하십시오.');
   }
+
+  const retry = Object.assign({}, row);
+  for (const name of missing) delete retry[name];
+
+  const second = await postIntakeRow(config, retry);
+  if (!second.ok) {
+    throw new Error('intake insert HTTP ' + second.status +
+      ' | ' + second.text.slice(0, 300) +
+      ' | 테이블이 없으면 precheck-schema.sql 을 먼저 실행하십시오.');
+  }
+
+  console.error(
+    'intake insert: ' + missing.join(', ') + ' 컬럼이 없어 그 값을 빼고 저장했습니다. ' +
+    '접수는 정상 처리됐습니다. ' +
+    'precheck-schema.sql 「0-H」 절을 실행하십시오 — 실행 전까지 이 값은 기록되지 않습니다. ' +
+    '| 원래 응답: ' + first.text.slice(0, 200)
+  );
 }
 
 /* ──────────────────────────────────────────────────────────────
@@ -844,3 +931,5 @@ module.exports.parseDocType = parseDocType;
 module.exports.docTypeLabel = docTypeLabel;
 module.exports.progressStage = progressStage;
 module.exports.DOC_TYPES = DOC_TYPES;
+module.exports.OPTIONAL_COLUMNS = OPTIONAL_COLUMNS;
+module.exports.isUnknownColumnError = isUnknownColumnError;
