@@ -211,6 +211,21 @@
   .nav-quiet { font-size: 14px; font-weight: 500; color: var(--muted); }
   .nav-quiet:hover { color: var(--ink-64); }
 
+  /* ---------- 접수 완료 배너 (2026-08-14 · 흐름 md §3) ----------
+     /precheck 에서 서류를 보낸 직후 이 페이지로 되돌아온 사람에게만 보입니다
+     (`?intake=ok`). 사유와 배선은 아래 마크업·JS 의 🔴 주석에 있습니다.
+
+     ⚠️ 배너지 히어로가 아닙니다 — 액센트 배경 한 겹과 본문급 글자까지입니다.
+        크게 만들면 랜딩 첫 화면을 접수 완료 화면이 덮어, 「둘러보게 한다」는
+        애초의 목적이 뒤집힙니다.
+     ⚠️ 기본값은 `hidden` 입니다. JS 만 엽니다 — 그냥 들어온 방문자에게 「접수
+        되었습니다」가 보이면 그 자체로 거짓말입니다. */
+  .intake-return { background: var(--accent-soft); border-bottom: 1px solid var(--line); }
+  .intake-return-inner { padding-block: 14px; display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; }
+  .intake-return p { margin: 0; font-size: 14.5px; line-height: 1.65; color: var(--ink); }
+  .intake-return .intake-return-sub { color: var(--ink-64); font-size: 13.5px; }
+  .intake-return a { color: var(--accent); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+
   /* ---------- Hero ---------- */
   /* 상하 108/104 → 96 (정본 §4-2 · 시각사양 4-2). 신설 6섹션은 처음부터
      clamp(60px, 8vw, 96px) 였는데 히어로·HOW·사전등록만 V7 이전 값으로 남아
@@ -1199,6 +1214,30 @@
   </nav>
 
   <main id="main">
+    <!-- ===== 접수 완료 배너 (2026-08-14 · 흐름 md §3) =====
+         🔴 **/precheck 가 이 페이지로 사람을 보냅니다.** 종전에는 서류를 보내도 화면이
+            precheck 에 그대로 머물렀습니다(무상은 폼 아래 문장만 바뀌고, 유상은 접수
+            확인 표가 떴습니다). md §3 은 그 반대를 적어 뒀습니다 — 「제출 즉시 랜딩(홈)
+            화면으로 복귀 / 정적인 "접수완료" 화면에 머물지 않음 / 대기시간 동안 곧바로
+            기한관리 미리보기 등 랜딩 콘텐츠를 자유롭게 둘러볼 수 있게 함」.
+
+         그래서 precheck 의 `returnToLanding()` 이 `/?intake=ok&r={token}` 으로 데려옵니다.
+         이 배너가 하는 일은 둘뿐입니다: ① 접수가 됐다는 사실을 잃지 않게 하고,
+         ② 접수 확인 표로 돌아가는 링크 하나를 남깁니다(메일의 매직링크와 같은 주소).
+
+         ⛔ 여기에 접수 내용(파일 수·금액·진행상태)을 그리지 마십시오. 그것은
+            /precheck?r={token} 한 곳의 일이고, 두 곳에서 그리면 언젠가 서로 다른 것을
+            말합니다. 이 배너는 **문 하나**입니다.
+         ⚠️ `hidden` 으로 내려옵니다. JS 가 `?intake=ok` 를 본 경우에만 엽니다 —
+            검색으로 들어온 사람에게 「접수되었습니다」가 보이면 그대로 거짓말입니다. -->
+    <div class="intake-return" id="intake-return" hidden>
+      <div class="container intake-return-inner">
+        <p><strong id="intake-return-head">서류가 접수되었습니다.</strong></p>
+        <p class="intake-return-sub" id="intake-return-sub">결과가 준비되는 동안 편하게 둘러보세요. 확인메일도 보내드렸습니다.</p>
+        <p><a id="intake-return-link" href="/precheck">접수 내용 확인하기</a></p>
+      </div>
+    </div>
+
     <!-- ===== Hero =====
          기준 우선순위(PRD-62 §3-3): 고객 보유 자사 서식이 1순위, 공개 라이선스로
          배포되는 표준 서식은 자사 서식이 없을 때만 쓰는 2순위 대체 기준입니다.
@@ -2177,6 +2216,58 @@
   </footer>
 
   <script>
+  /* ---------- 접수 완료 배너 (2026-08-14 · 흐름 md §3) ----------
+     /precheck 의 `returnToLanding()` 이 붙여 보내는 세 파라미터만 읽습니다:
+       · intake=ok   — 이것이 있을 때만 배너를 엽니다(유일한 조건).
+       · r={token}   — 접수 확인 표로 돌아가는 링크. 없으면 링크 줄을 지웁니다
+                       (`/precheck` 로만 보내면 빈 접수 폼이 열려 「내 접수는?」이 됩니다).
+       · mail=late   — 확인메일 발송이 늦은 건. 그 사실을 화면을 옮기며 잃지 않습니다.
+
+     🔴 **읽은 뒤 주소를 지웁니다**(replaceState → '/'). 두 가지 이유입니다:
+        ① 토큰이 주소창에 남으면 그 상태로 복사·공유될 수 있습니다. 링크의 href 는
+           DOM 에 이미 들어갔으므로 지워도 동작에는 영향이 없습니다.
+        ② 새로고침이나 북마크로 「접수되었습니다」가 되살아나지 않습니다.
+     ⚠️ 별도 IIFE 입니다 — 아래 폼 스크립트는 맨 위에서 `if (!form) return` 으로
+        빠져나가므로 같은 함수에 넣으면 폼이 없는 화면에서 조용히 죽습니다.
+     ⚠️ 배너를 CSS·마크업에서 미리 열지 마십시오. 그냥 들어온 방문자에게 접수
+        완료를 알리는 것은 사실이 아닙니다. */
+  (function () {
+    var box = document.getElementById('intake-return');
+    if (!box) return;
+
+    var params = new URLSearchParams(window.location.search);
+    if (params.get('intake') !== 'ok') return;
+
+    var token = params.get('r');
+    var link = document.getElementById('intake-return-link');
+    if (token) {
+      link.href = '/precheck?r=' + encodeURIComponent(token);
+    } else if (link && link.parentNode) {
+      link.parentNode.remove();
+      link = null;
+    }
+
+    /* ⚠️ 링크가 있는지를 **먼저** 보고 문장을 고릅니다. 「아래 링크를 열어 두시면」이라고
+       써 놓고 그 링크가 없는 조합(mail=late 인데 r 이 없는 경우)이 실제로 만들어집니다 —
+       토큰 없이 이 주소를 손으로 열면 그렇게 됩니다. 없는 것을 가리키지 않습니다. */
+    if (params.get('mail') === 'late') {
+      var sub = document.getElementById('intake-return-sub');
+      if (sub) {
+        sub.textContent = link
+          ? '접수는 정상적으로 기록되었습니다. 확인메일 발송이 조금 늦어지고 있어, ' +
+            '아래 링크를 열어 두시면 접수 내용을 바로 보실 수 있습니다.'
+          : '접수는 정상적으로 기록되었습니다. 확인메일 발송이 조금 늦어지고 있습니다 — ' +
+            '잠시 뒤 메일함을 다시 확인해 주십시오.';
+      }
+    }
+
+    box.hidden = false;
+
+    try {
+      window.history.replaceState(null, '', '/');
+    } catch (e) { /* 주소만 못 지울 뿐이라 배너는 그대로 둡니다. */ }
+  })();
+
   /* ---------- 스크롤 진입 등장 (2026-08-13 · 흐름 md §1 「다이나믹함」 1번) ----------
      또 하나의 독립 IIFE 입니다(아래 두 IIFE 와 같은 이유 — 폼 스크립트는 맨 위에서
      빠져나가므로 같은 함수에 넣으면 폼이 없는 화면에서 조용히 죽습니다).
