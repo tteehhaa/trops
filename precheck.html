@@ -1844,25 +1844,18 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
             } catch (e) { /* 주소만 못 바꿀 뿐이라 그대로 진행합니다. */ }
 
             /*
-             * 2026-08-13 추가 — trops_a NDA 대조 미리보기로 즉시 이동.
+             * 🔴 긴급 롤백(2026-08-13) — trops_a 미리보기 자동 리다이렉트를 되돌린다.
              *
-             * ⚠️ 이건 "공식 전달"이 아닙니다 — delivered_at(환불 기준선)은 그대로 사람이
-             *    scripts/deliver.js 를 돌려야 찍힙니다(api/_delivery.js 주석 참조). 여기서
-             *    하는 일은 "결제가 끝난 사람을 대조 결과 화면으로 바로 보내는" 것뿐입니다.
-             *    그 화면(app.trops.kr/c/{intakeId})은 검수 게이트가 있어, 운영자가 검수
-             *    완료로 표시하기 전까지는 "결과 확인 중"만 보여줍니다 — 원문·대조 내용이
-             *    검수 없이 새는 경로가 아닙니다.
-             * ⚠️ intakeId 가 없으면(구버전 응답·일시적 오류) 기존 접수 확인 화면으로 그대로
-             *    남습니다 — 새 문구를 억지로 보여주지 않습니다.
+             * 2026-08-13에 추가했던 "결제 확정 즉시 app.trops.kr/c/{intakeId}로 이동" 로직이
+             * 실제로는 trops_a 쪽 결과 저장(precheck_nda_run insert)이 프로덕션 환경에서만
+             * 조용히 실패하는 버그와 맞물려, 실사용자가 제출 직후 "링크가 유효하지 않습니다"
+             * 라는 에러처럼 보이는 화면을 보게 만들었다(실제로는 접수 자체는 정상). 원인이
+             * 밝혀지지 않은 채로 사용자 영향이 있어 즉시 원래 흐름으로 되돌린다.
+             *
+             * trops_a 쪽 즉석 실행·저장 코드는 그대로 둔다 — 이 되돌림은 "그리로 보내지
+             * 않는다"만 하고, trops_a 저장 버그 자체를 고치는 것은 아니다. 저장 버그가 해소된
+             * 뒤 이 블록을 다시 켤 수 있다(git history 참조 — 커밋 ffc9d01).
              */
-            if (r.body.intakeId) {
-              var box = openStatusPanel('결제 확인', '결과 확인 화면으로 이동합니다.');
-              var goNote = document.getElementById('receipt-msg');
-              goNote.textContent = '잠시 후 대조 결과 화면으로 이동합니다…';
-              window.location.href = 'https://app.trops.kr/c/' + encodeURIComponent(r.body.intakeId);
-              return;
-            }
-
             showReceipt(r.body.token);
             return;
           }
