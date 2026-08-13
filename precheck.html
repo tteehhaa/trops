@@ -307,6 +307,12 @@
   }
   .pay-refund { margin: 14px 0 0; font-size: 13.5px; line-height: 1.7; color: var(--muted); }
   .pay-refund a { color: var(--ink-64); text-decoration: underline; text-underline-offset: 2px; }
+  /* 검수 SLA (2026-08-13 · 흐름 md §3 · §5-1 1번).
+     .pay-refund 와 **같은 스케일**입니다 — 선결제 마찰의 두 축이 나란히 읽혀야 하므로
+     한쪽을 크게 만들지 않습니다. 색만 한 단계 진하게(--ink-64) 두어 두 줄이 붙어
+     보이지 않게 가릅니다.
+     ⚠️ 경고색·강조색을 쓰지 마십시오. 약속을 지키겠다는 문장이지 경고가 아닙니다. */
+  .pay-sla { margin: 6px 0 0; font-size: 13.5px; line-height: 1.7; color: var(--ink-64); }
 
   /* ---------- Form ---------- */
   .form { max-width: 520px; margin-top: clamp(32px, 4vw, 44px); display: flex; flex-direction: column; gap: 26px; }
@@ -320,6 +326,17 @@
   .field-hint { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--muted); }
   .field input[type="email"] {
     font: inherit; font-size: 16px; height: 48px; padding: 0 14px;
+    border: 1px solid var(--line); border-radius: 6px;
+    background-color: var(--bg); color: var(--ink);
+  }
+  /* 문서 종류 선택 (2026-08-13 · 흐름 md §5). 값은 위 email 입력과 같은 단계입니다 —
+     같은 폼 안에서 필드 높이가 갈리면 줄이 어긋나 보입니다.
+     .trade-row select 와 값을 맞추지 않은 것은 그쪽이 2개 나란히 놓는 flex 행이라
+     flex-basis 를 갖기 때문입니다. 여기는 단독 필드라 폭을 100% 로 둡니다.
+     ⚠️ disabled 옵션의 회색은 브라우저 기본값에 맡깁니다 — 직접 색을 주면 「고를 수 없다」는
+        신호가 OS 설정(고대비 모드 등)과 어긋날 수 있습니다. */
+  .field > select {
+    font: inherit; font-size: 16px; height: 48px; padding: 0 12px;
     border: 1px solid var(--line); border-radius: 6px;
     background-color: var(--bg); color: var(--ink);
   }
@@ -415,6 +432,65 @@
   .receipt-row:last-child { border-bottom: 0; }
   .receipt-key { color: var(--ink-64); }
   .receipt-val { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  /* ---------- 진행상태 3단계 (2026-08-13 · 흐름 md §5-1 10번) ----------
+     「접수됨 → 검토중 → 전달완료」. md 근거: 「검수 대기 공백 동안 불안감 완화.
+     텍스트 라벨 추가 수준, 거의 무비용」 — 그래서 진행바·퍼센트·남은시간을
+     그리지 않습니다. 지난 단계와 지금 단계를 가리는 것이 전부입니다.
+
+     ⚠️ 이 블록은 결제 전(awaiting_payment)·취소된 건에서는 **아예 없습니다.**
+        서버가 stage:null 을 주고 화면이 그리지 않습니다 — 없는 진행을 진행처럼
+        그리지 않는다는 이 페이지의 기존 처리(빈 세율 섹션 없음 · routeNotice
+        「확인 중」 없음)와 같은 원칙입니다.
+     ⚠️ 완료 표시에 초록·체크를 쓰지 마십시오. 판정 신호로 읽힙니다 —
+        흐름 md §1 이 색 토큰 레벨에서 초록·주황을 배제한 이유와 같습니다.
+        지난 단계는 --accent, 아직 안 온 단계는 --muted 로만 가릅니다.
+     ⚠️ 경고색을 쓰지 않습니다(--warning 은 .form-msg.is-error 전용).
+
+     🔴 클래스 이름이 `.progress-*` 인 이유 — **`.step`/`.steps` 를 쓰지 마십시오.**
+        이 파일 위쪽(「이용 방법」 3단계 · 이 주석 기준 200줄대)이 그 두 이름을 이미
+        쓰고 있습니다: `.steps { margin-top }` · `.step { display:grid;
+        grid-template-columns: … }`. 처음 이 블록을 `.steps`/`.step` 으로 썼다가
+        test/progress-stage.test.js 가 색 검사에서 걸렸고, 원인을 보니 색이 아니라
+        **선택자 충돌**이었습니다 — 나중에 선언된 `display:flex` 가 「이용 방법」
+        섹션의 그리드를 덮어써 그쪽 레이아웃이 깨집니다.
+        같은 페이지 안에서 이름을 다시 쓰기 전에 위쪽을 grep 하십시오. */
+  .progress {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0;
+    margin: 0 0 22px;
+    padding: 0 0 20px;
+    border-bottom: 1px solid var(--line);
+  }
+  .progress-step { flex: 1 1 0; min-width: 84px; display: flex; flex-direction: column; gap: 8px; }
+  /* 단계 사이를 잇는 선. 첫 단계 앞에는 선이 없어야 하므로 ::before 를 2번째부터만 켭니다. */
+  .progress-mark { position: relative; display: flex; align-items: center; }
+  .progress-step + .progress-step .progress-mark::before {
+    content: "";
+    position: absolute;
+    right: 100%;
+    width: 100%;
+    height: 1px;
+    background: var(--line);
+  }
+  .progress-dot {
+    flex: none;
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    background: var(--bg);
+    box-shadow: inset 0 0 0 1.5px var(--muted);
+  }
+  .progress-label { font-size: 13.5px; line-height: 1.5; color: var(--muted); }
+  /* 지난 단계 · 지금 단계 */
+  .progress-step.is-done .progress-dot,
+  .progress-step.is-now  .progress-dot { background: var(--accent); box-shadow: inset 0 0 0 1.5px var(--accent); }
+  .progress-step.is-done + .progress-step .progress-mark::before { background: var(--accent); }
+  .progress-step.is-done .progress-label { color: var(--ink-64); }
+  /* 지금 단계만 굵게 — 어디까지 왔는지가 이 블록이 답하는 유일한 질문입니다. */
+  .progress-step.is-now .progress-label { color: var(--ink); font-weight: 600; }
 
   /* ---------- 확인 범위 안내 (접수 확인 화면 · 「범위 밖」인 건에만) 〔M-2〕 ----------
      ⚠️ 경고색을 쓰지 않습니다. .textlayer(업로드 시점 안내)와 같은 이유입니다 —
@@ -731,6 +807,36 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
 
           <!-- 폼 -->
           <form class="form" id="intake-form" novalidate>
+            <!-- 문서 종류 (2026-08-13 신설 · 흐름 md §5 「확장 구조」).
+                 md 요구: 「"NDA 전용" 하드코딩이 아니라 "문서유형 파라미터" 구조로 구현」 —
+                 계약서·견적서를 추가할 때 **새 페이지 없이 <option> 한 줄만** 늘어나야 합니다.
+                 이 필드가 들어오기 전에는 `docType` 이라는 문자열이 저장소 전체에 0건이었고,
+                 NDA 라는 사실이 화면·API·DB 어디에도 값으로 남지 않았습니다.
+
+                 왜 이메일보다 **앞**인가: 「무슨 서류를 보내는가」가 「어디로 결과를 받는가」보다
+                 먼저 정해집니다. 폼의 논리 순서가 사용자의 판단 순서와 같아야 합니다.
+
+                 ⚠️ 준비중 옵션은 `disabled` 입니다 — 보이지만 고를 수 없습니다. 목록에서
+                    아예 빼지 않은 것은 의도입니다: 확장 예정임을 이 자리에서 보여주는 것이
+                    md §1 의 「NDA 는 현재 지원하는 첫 서류 종류일 뿐」과 같은 말입니다.
+                    ⛔ disabled 를 떼서 「받아 놓고 나중에 처리」하지 마십시오. 서버(parseDocType)
+                       와 DB(intake_doc_type_allowed)가 'nda' 외를 400/거절로 막습니다.
+                 ⚠️ **여기에 로그인·계정 필드를 추가하지 마십시오.** 「회원가입 불요」는 접수흐름의
+                    의도적 설계원칙이고 흐름 md §1 이 이번에도 유지 결정했습니다. 아래
+                    .pay-note 「로그인이나 회원가입은 필요 없습니다」가 그 약속의 문면입니다.
+                 ⚠️ 여기가 「NDA」라는 낱말이 화면에 나와도 되는 자리입니다 — md §1 이 접수화면
+                    안으로 한정했습니다. 랜딩 헤드라인·CTA·<title> 로 옮기지 마십시오. -->
+            <div class="field">
+              <label for="intake-doc-type">문서 종류 <span class="req" aria-hidden="true">*</span></label>
+              <select id="intake-doc-type" name="docType" required>
+                <option value="nda" selected>비밀유지계약서(NDA) — 현재 지원</option>
+                <option value="contract" disabled>거래계약서 — 준비중</option>
+                <option value="quotation" disabled>견적서 — 준비중</option>
+                <option value="po" disabled>발주서(PO) — 준비중</option>
+              </select>
+              <p class="field-hint">지금은 NDA만 대조할 수 있습니다. 나머지 서류는 준비 중입니다.</p>
+            </div>
+
             <div class="field">
               <label for="intake-email">이메일 <span class="req" aria-hidden="true">*</span></label>
               <input type="email" id="intake-email" name="email" autocomplete="email"
@@ -848,6 +954,21 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
               <p class="pay-refund">
                 요약 자료를 받으시기 전에는 전액 환불해 드립니다. <a href="/refund">환불규정 보기</a>
               </p>
+              <!-- 검수 SLA (2026-08-13 신설 · 흐름 md §3 · §5-1 1번).
+                   md 근거: 「선결제 구조에서는 환불정책보다 "언제 받는지" 가 더 큰 불안
+                   요소일 수 있음」. 그래서 환불 문구 **바로 아래**입니다 — 선결제 마찰의
+                   두 축(돌려받을 수 있는가 / 언제 받는가)이 한 자리에서 함께 답돼야 합니다.
+
+                   ⚠️ 「O시간」의 O = **24** 입니다. 지어낸 값이 아니라 이 저장소가 이미
+                      약속하고 있는 값을 영업일로 환산한 것입니다 — 위 #deliver 섹션과
+                      api/_notify.js 확인메일이 둘 다 「당일 안에」 로 적혀 있습니다.
+                      그보다 느슨한 숫자를 여기 새로 쓰면 세 문면이 서로 어긋납니다.
+                   ⚠️ 이 숫자를 바꿀 때 api/_notify.js 의 「당일 안에」 문장을 함께 보십시오.
+                   ⛔ 「즉시」·「바로」로 강화하지 마십시오. 운영자 검수가 사이에 있고,
+                      지금까지 실측된 정상완료 케이스가 없습니다(md §6-3).
+                   ⛔ 금지 동사 5(자문·판단·검토·평가·진단)를 이 문장에 쓰지 마십시오 —
+                      「검수」는 우리 내부 공정 이름이라 대외 문면에 올리지 않습니다. -->
+              <p class="pay-sla">영업일 기준 24시간 내에 전달해 드립니다.</p>
             </div>
 
             <div>
@@ -964,6 +1085,7 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
     var ownList    = document.getElementById('intake-own-form-list');
     var countrySel = document.getElementById('intake-country');
     var hsInput    = document.getElementById('intake-hs');
+    var docTypeSel = document.getElementById('intake-doc-type');
     var closedBox  = document.getElementById('closed-notice');
     var payArea    = document.getElementById('pay-area');
     var freeRadio  = document.getElementById('plan-free');
@@ -1590,6 +1712,13 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
       // 거래 정보도 선택입니다. 비어 있으면 null 로 보내고 세율 섹션이 나오지 않습니다.
       var country = countrySel.value;
       var hsCode = digitsOnly(hsInput.value);
+      /* 문서 종류 〔흐름 md §5〕. 선택 상자가 없는 옛 캐시본에서도 접수가 되어야 하므로
+         없으면 'nda' 로 봅니다 — 서버(api/intake.js parseDocType)도 **같은 폴백**을
+         갖습니다. 한쪽만 고치지 마십시오.
+         ⚠️ 여기서 지원 목록을 판정하지 않습니다. 준비중 값이 어떻게든 실려 오면 서버가
+            400 으로 막습니다 — 화면에서 조용히 'nda' 로 눕히면, 계약서를 보낸 사람의
+            서류가 NDA 기준으로 대조되고 아무도 그 사실을 모릅니다. */
+      var docType = docTypeSel && docTypeSel.value ? docTypeSel.value : 'nda';
 
       if (plan === 'free' && !freeAvailable) {
         return fail('지금은 접수가 마감되었습니다. 다시 열리면 안내드립니다.');
@@ -1668,6 +1797,8 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
             body: JSON.stringify({
               path: plan,
               email: email,
+              // 문서 종류 〔흐름 md §5 확장 구조〕. 지금은 'nda' 하나만 서버가 받습니다.
+              docType: docType,
               consentTerms: consentTerms,
               consentTraining: consentTraining,
               files: read[0],
@@ -1931,7 +2062,13 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
             return;
           }
           box.innerHTML = '';
+          // 진행상태 3단계가 표 맨 위입니다 — 이 화면에 온 사람이 가장 먼저 묻는 것이
+          // 「지금 어디까지 왔나」이고, 세부 항목은 그 다음입니다 〔흐름 md §5-1 10번〕.
+          addProgress(box, r.body.stage);
           addRow(box, '접수 상태', statusLabel(r.body.status));
+          // 서류 종류 〔흐름 md §5〕. 서버가 표기를 주므로 화면에서 코드값을 번역하지
+          // 않습니다 — 서류가 늘 때 고칠 곳을 한 곳(api/intake.js DOC_TYPE_LABEL)으로 둡니다.
+          addRow(box, '서류 종류', r.body.docTypeLabel || '비밀유지계약서(NDA)');
           addRow(box, '접수 시각', formatDate(r.body.receivedAt));
           addRow(box, '보내신 파일', r.body.fileCount + '개');
           // 무엇을 기준으로 대조하는지가 이 서비스의 약속입니다. 접수 확인에서도 밝힙니다.
@@ -2025,6 +2162,58 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
       row.appendChild(k);
       row.appendChild(v);
       box.appendChild(row);
+    }
+
+    /* ---------- 진행상태 3단계 (2026-08-13 · 흐름 md §5-1 10번) ----------
+       「접수됨 → 검토중 → 전달완료」 중 지금 단계를 표시합니다.
+
+       🔴 **단계를 여기서 정하지 않습니다.** 서버(api/intake.js progressStage)가 준
+          숫자만 그립니다. 그 함수가 2단계(검토중)의 근거를 `status` 가 아니라 판정층
+          precheck_nda_run 의 **행 존재 여부**에서 읽기 때문입니다 —
+          `status='in_progress'` 는 사람이 손도 안 댄 건에도 붙습니다(아래 statusLabel
+          주석의 실측). 화면에 조건문을 두면 그 판단이 두 곳으로 갈립니다.
+       ⚠️ stage 가 없으면(결제 전·취소) **아무것도 그리지 않습니다.** 「0단계」나
+          「대기중」을 만들지 마십시오 — 없는 진행을 진행처럼 그리지 않습니다.
+       ⚠️ 진행바·퍼센트·남은시간을 넣지 마십시오. md 가 「텍스트 라벨 추가 수준」으로
+          한정했고, 남은시간은 우리가 아직 실측으로 알지 못합니다(md §6-3).
+       ⚠️ 초록·체크 표시를 쓰지 마십시오 — 판정 신호로 읽힙니다.
+       ⚠️ 클래스는 `.progress-*` 입니다. `.step`/`.steps` 는 이 페이지의 「이용 방법」
+          3단계가 이미 쓰고 있어 충돌합니다 — CSS 쪽 🔴 주석에 경위가 있습니다.
+
+       읽어주는 도구에는 <ol> 순서와 aria-current="step" 두 개로 전달됩니다. */
+    var PROGRESS_STEPS = ['접수됨', '검토중', '전달완료'];
+
+    function addProgress(box, stage) {
+      var current = Number(stage);
+      if (!(current >= 1 && current <= PROGRESS_STEPS.length)) return;
+
+      var list = document.createElement('ol');
+      list.className = 'progress';
+      list.setAttribute('aria-label', '진행 상태');
+
+      for (var i = 0; i < PROGRESS_STEPS.length; i += 1) {
+        var n = i + 1;
+        var li = document.createElement('li');
+        li.className = 'progress-step' + (n < current ? ' is-done' : (n === current ? ' is-now' : ''));
+        if (n === current) li.setAttribute('aria-current', 'step');
+
+        var mark = document.createElement('span');
+        mark.className = 'progress-mark';
+        mark.setAttribute('aria-hidden', 'true');
+        var dot = document.createElement('span');
+        dot.className = 'progress-dot';
+        mark.appendChild(dot);
+
+        var label = document.createElement('span');
+        label.className = 'progress-label';
+        label.textContent = PROGRESS_STEPS[i];
+
+        li.appendChild(mark);
+        li.appendChild(label);
+        list.appendChild(li);
+      }
+
+      box.appendChild(list);
     }
 
     /* ---------- 협정 세율 (거래 정보를 넣으신 건에만) ----------

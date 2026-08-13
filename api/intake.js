@@ -9,10 +9,17 @@
  *
  * POST /api/intake
  *   body: { email, consentTerms, consentTraining, path,
+ *           docType: 'nda',                                  선택 · 서류 종류 (기본 'nda')
  *           files:   [{ name, type, size, data(base64) }],   필수 · 바이어가 보낸 서류
  *           ownForm:  { name, type, size, data(base64) },    선택 · 이용자의 자사 NDA 서식
  *           targetCountry: 'AE',                             선택 · 거래 상대국(ISO 2자리)
  *           hsCode:        '09011100' }                      선택 · HS 8단위
+ *
+ *   docType 은 흐름 md §5 「확장 구조」의 문서유형 파라미터입니다. 지금 받는 값은
+ *   'nda' 하나뿐이고(DOC_TYPES), 값을 안 보내면 'nda' 로 봅니다. **모르는 값은 400** 입니다 —
+ *   조용히 눕히지 않는 이유는 parseDocType 주석에 있습니다.
+ *   ⚠️ 서류 종류를 늘릴 때 DOC_TYPES · precheck-schema.sql 의 check · precheck.html 의
+ *      <option disabled> 세 곳을 함께 고쳐야 합니다.
  *
  *   기준 우선순위(PRD-62 §3-3): 자사 서식이 오면 그것이 1순위 기준입니다.
  *   오지 않으면 뒷단이 공개 표준 서식을 2순위 대체 기준으로 씁니다.
@@ -37,9 +44,13 @@
  *   → 503 { error:'not-configured' }    카운터/저장소 미설정 (fail-safe closed)
  *
  * GET /api/intake?r=<token>          Magic Link 조회
- *   → 200 { ok:true, status, receivedAt, fileCount, slotNo, deleteAfter, erasedAt,
- *           routeNotice }
+ *   → 200 { ok:true, status, stage, docType, docTypeLabel, receivedAt, fileCount,
+ *           slotNo, deleteAfter, erasedAt, routeNotice }
  *   → 404 { error:'not-found' }
+ *
+ *   stage 는 화면의 3단계 진행 라벨(1 접수됨 · 2 검토중 · 3 전달완료)이고 결제 전·취소된
+ *   건에서는 null 입니다 〔S7 · 흐름 md §5-1 10번〕. 2단계의 근거는 status 가 아니라
+ *   판정층 precheck_nda_run 의 **행 존재 여부**입니다 — 근거는 progressStage 주석에 있습니다.
  *
  *   routeNotice 는 「지금 확인할 수 있는 범위 밖」인 건에만 문자열이고, 그 밖에는
  *   전부 null 입니다 〔M-2 · api/_intake-route.js〕. 정본은 판정층 trops_a 이고
@@ -67,6 +78,8 @@ const { buildMagicLink, sendIntakeMails, RETENTION_DAYS } = require('./_notify.j
 const { agreementFor, normalizeHsCode } = require('./_agreements.js');
 const { rejectIfChargeBlocked } = require('./_precheck-charge-gate.js');
 const ROUTE = require('./_intake-route.js');
+// 진행상태 2단계(검토중)의 근거. 판정층 표를 **select 만** 합니다 〔S7〕.
+const OUTCOME = require('./_nda-outcome.js');
 
 const STORAGE_BUCKET = 'intake';
 
@@ -126,6 +139,15 @@ async function handleIntake(req, res) {
   // 무상 실증(free)과 건별 결제(paid)는 접수 시점이 다릅니다.
   // free 는 여기서 접수가 끝나고, paid 는 결제 승인까지 가야 끝납니다.
   const path = body.path === 'paid' ? 'paid' : 'free';
+
+  // 서류 종류 〔흐름 md §5 확장 구조 · 2026-08-13〕.
+  // ⛔ 틀린 값을 조용히 'nda' 로 눕히지 않습니다 — 아래 parseDocType 주석 참조.
+  const parsedDocType = parseDocType(body.docType);
+  if (!parsedDocType.ok) {
+    res.status(400).json({ error: 'invalid input', field: 'docType', detail: parsedDocType.error });
+    return;
+  }
+  const docType = parsedDocType.docType;
 
   /*
    * 브라우저가 신고한 기계적 사실 〔M-1 → M-3 · 2026-08-11〕.
@@ -229,6 +251,9 @@ async function handleIntake(req, res) {
       file_paths: allPaths,
       file_count: allPaths.length,
       own_form_path: ownFormPath,
+      // 서류 종류 〔흐름 md §5〕. 지금은 늘 'nda' 이지만 **값으로 남깁니다** —
+      // 하드코딩이 아니라 파라미터라는 것이 이 컬럼의 존재 이유입니다.
+      doc_type: docType,
       // 선택 항목이라 대부분 null 입니다. 둘 다 있을 때만 세율을 함께 보여 줍니다.
       target_country: trade.country,
       hs_code: trade.hsCode,
@@ -278,6 +303,8 @@ async function handleIntake(req, res) {
     fileNames: files.map((f) => f.name),
     // 운영자가 무엇과 대조해야 하는지 메일 본문에서 바로 보이도록 넘깁니다.
     ownFormName: ownForm ? ownForm.name : null,
+    // 서류 종류 표기 〔흐름 md §5〕. 서류가 늘면 운영자가 메일 한 줄로 구분해야 합니다.
+    docTypeLabel: docTypeLabel(docType),
     // 둘 다 있을 때만 확인메일에 협정 세율 항목이 붙습니다(api/_notify.js).
     targetCountry: trade.country,
     hsCode: trade.hsCode,
@@ -321,7 +348,7 @@ async function handleReceipt(req, res) {
   try {
     // id 는 내보내지 않습니다 — precheck_intake_route 를 서버에서 짚기 위해서만 읽습니다.
     const select = 'id,status,received_at,file_count,slot_no,delete_after,intake_path,amount,payment_status,paid_at,' +
-      'erasure_requested_at,own_form_path,target_country,hs_code,delivered_at';
+      'erasure_requested_at,own_form_path,target_country,hs_code,delivered_at,doc_type';
     const response = await fetch(
       config.restUrl + '/intake?access_token=eq.' + encodeURIComponent(token) + '&select=' + select,
       { headers: config.headers }
@@ -361,9 +388,38 @@ async function handleReceipt(req, res) {
       ? ROUTE.noticeFor(route.row.route, route.row.reason)
       : null;
 
+    /*
+     * 진행상태 3단계 〔S7 · 흐름 md §5-1 10번 · 2026-08-13〕.
+     *
+     * 🔴 **2단계(검토중)의 근거를 `status` 에서 읽지 않습니다.**
+     *    `status='in_progress'` 는 접수만 되고 **사람이 아직 손을 대지 않은 건에도**
+     *    붙습니다(precheck.html statusLabel 주석이 남긴 실측). 그것으로 「검토중」을
+     *    말하면 아무도 안 보고 있는데 보고 있다고 말하는 것이 됩니다.
+     *
+     *    대신 판정층 trops_a 의 `precheck_nda_run` **행 존재 여부**를 봅니다. 그 행은
+     *    NDA 대조 엔진이 실제로 돈 뒤에만 생기므로(api/_nda-outcome.js 머리주석),
+     *    있으면 「검토 단계에 들어갔다」가 사실입니다.
+     *
+     * ⚠️ 경계: 여기서도 **select 만** 합니다. outcome_kind 값 자체는 내보내지 않습니다 —
+     *    「실패」·「지원 안 됨」을 이용자 화면의 단계로 번역하는 것은 이 저장소 일이
+     *    아니고, 그 건은 자동 환불 배치가 따로 처리합니다(api/_nda-outcome-refund.js).
+     * ⚠️ 표를 못 읽어도 200 입니다. 단계가 하나 낮게 보일 뿐이고, 표 하나 때문에
+     *    접수 내용 전체를 잃게 하지 않습니다(위 route 처리와 같은 원칙).
+     */
+    const outcome = await OUTCOME.readOutcome(config, row.id);
+    if (!outcome.available) {
+      console.error('intake receipt nda-run lookup skipped: ' + outcome.error);
+    }
+    const stage = progressStage(row.status, outcome.available && Boolean(outcome.row));
+
     res.status(200).json({
       ok: true,
       status: row.status,
+      // 3단계 진행 라벨용. null 이면 화면이 트래커를 아예 그리지 않습니다.
+      stage: stage,
+      // 서류 종류 〔흐름 md §5〕. 옛 행에는 컬럼이 없을 수 있어 'nda' 로 폴백합니다.
+      docType: row.doc_type || 'nda',
+      docTypeLabel: docTypeLabel(row.doc_type || 'nda'),
       receivedAt: row.received_at,
       fileCount: row.file_count,
       // 자사 서식을 받았는지만 알려 줍니다(1순위 기준). 저장소 경로는 내보내지 않습니다.
@@ -505,6 +561,80 @@ function parseOwnForm(raw, bytesSoFar) {
   }
 
   return { ok: true, file: parsed.file };
+}
+
+/* ──────────────────────────────────────────────────────────────
+ * 진행상태 3단계 〔S7 · 흐름 md §5-1 10번 · 2026-08-13〕
+ * ────────────────────────────────────────────────────────────── */
+
+/**
+ * 화면에 그릴 단계 번호. 1 접수됨 · 2 검토중 · 3 전달완료.
+ *
+ * `null` 이면 **트래커를 그리지 않습니다.** 결제 전(awaiting_payment)과 취소된 건은
+ * 3단계 서사 위에 있지 않고, 그 상태는 이미 「접수 상태」·「결제 상태」 줄이 말합니다.
+ * 없는 진행을 진행처럼 그리지 않는 것이 이 저장소의 기존 처리(빈 세율 섹션·
+ * routeNotice 「확인 중」 없음)와 같은 원칙입니다.
+ *
+ * ⚠️ `in_progress` 를 2단계로 올리지 마십시오. 그 상태는 사람이 손대지 않은 건에도
+ *    붙습니다 — 2단계의 근거는 오직 대조 실행 증적(hasRun)입니다.
+ * ⚠️ 3단계는 `status='delivered'` 로만 옵니다. 대조가 끝난 것과 **자료를 보낸 것**은
+ *    다릅니다(운영자 검수가 사이에 있습니다). 검수 전에 「전달완료」를 그리면
+ *    환불규정 §02 의 전달 시점을 화면이 먼저 앞질러 말하게 됩니다.
+ *
+ * @param {string} status  intake.status
+ * @param {boolean} hasRun precheck_nda_run 에 이 건의 행이 있는가
+ * @returns {1|2|3|null}
+ */
+function progressStage(status, hasRun) {
+  if (status === 'delivered') return 3;
+  if (status !== 'received' && status !== 'in_progress') return null;
+  return hasRun ? 2 : 1;
+}
+
+/* ──────────────────────────────────────────────────────────────
+ * 서류 종류 〔흐름 md §5 확장 구조 · 2026-08-13〕
+ * ────────────────────────────────────────────────────────────── */
+
+/**
+ * 지금 대조할 수 있는 서류 종류. **여기가 정본입니다.**
+ *
+ * 늘릴 때 함께 고쳐야 하는 세 곳:
+ *   ① 이 배열
+ *   ② precheck-schema.sql 의 intake_doc_type_allowed check
+ *   ③ precheck.html 의 <option disabled> 에서 disabled 제거
+ * 셋 중 하나만 고치면 화면·서버·DB 가 서로 다른 목록을 말합니다.
+ */
+const DOC_TYPES = ['nda'];
+
+/** 화면·메일에 쓰는 표기. 코드값을 그대로 보여 주지 않습니다. */
+const DOC_TYPE_LABEL = {
+  nda: '비밀유지계약서(NDA)',
+};
+
+/**
+ * 서류 종류를 아는 값만 통과시킵니다.
+ *
+ * 🔴 **틀린 값은 400 입니다.** 이 저장소의 다른 allowlist(readDeclaration ·
+ *    _intake-route ROUTES · _nda-outcome OUTCOMES)는 모르는 값을 조용히 버리지만,
+ *    이것만은 막습니다. 그 셋은 「있으면 더 잘하는 부속 정보」인데 서류 종류는
+ *    **무엇과 대조할지를 정하는 값**입니다. 조용히 'nda' 로 눕히면 계약서를 보낸
+ *    사람의 서류가 NDA 기준으로 대조되고, 화면·메일·DB 어디에도 어긋난 흔적이
+ *    남지 않습니다. 그 침묵이 여기서 가장 나쁜 결과입니다.
+ *
+ * 값이 **아예 없으면** 'nda' 입니다 — 선택 상자가 없던 시절의 캐시된 화면과
+ * 기존 자동화가 그대로 접수될 수 있어야 합니다(precheck.html 도 같은 폴백).
+ */
+function parseDocType(raw) {
+  if (raw == null || raw === '') return { ok: true, docType: 'nda' };
+  if (typeof raw !== 'string') return { ok: false, error: 'bad-doc-type' };
+  const value = raw.trim().toLowerCase();
+  if (DOC_TYPES.indexOf(value) === -1) return { ok: false, error: 'unsupported-doc-type' };
+  return { ok: true, docType: value };
+}
+
+/** 코드값 → 표기. 모르는 값이 들어오면 코드값을 그대로 돌려줍니다(지어내지 않습니다). */
+function docTypeLabel(value) {
+  return DOC_TYPE_LABEL[value] || String(value || 'nda');
 }
 
 /* ──────────────────────────────────────────────────────────────
@@ -700,3 +830,17 @@ function parseBody(raw) {
   if (typeof raw === 'object') return raw;
   try { return JSON.parse(raw); } catch (e) { return {}; }
 }
+
+/*
+ * 순수 함수만 테스트용으로 내놓습니다 (2026-08-13).
+ *
+ * ⚠️ `module.exports` 자체는 **핸들러여야 합니다** — Vercel 이 이 파일의 기본 내보내기를
+ *    엔드포인트로 씁니다. 그래서 객체로 감싸지 않고 함수에 속성을 붙입니다. 이 순서를
+ *    뒤집어 `module.exports = { handler, … }` 로 만들면 /api/intake 가 조용히 죽습니다.
+ * 여기 붙는 것은 I/O 가 없는 판정 함수만입니다. 저장·업로드 함수를 내놓지 마십시오 —
+ * 테스트가 실제 Storage 를 건드리게 됩니다.
+ */
+module.exports.parseDocType = parseDocType;
+module.exports.docTypeLabel = docTypeLabel;
+module.exports.progressStage = progressStage;
+module.exports.DOC_TYPES = DOC_TYPES;

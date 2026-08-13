@@ -15,6 +15,8 @@
     "refund:blocked:apply": "node --env-file=.env.local scripts/refund-blocked.js --apply",
     "refund:nda-outcome:preview": "node --env-file=.env.local scripts/refund-nda-outcome.js",
     "refund:nda-outcome:apply": "node --env-file=.env.local scripts/refund-nda-outcome.js --apply",
+    "remind:preview": "node --env-file=.env.local scripts/payment-reminder.js",
+    "remind:apply": "node --env-file=.env.local scripts/payment-reminder.js --apply",
     "deliver": "node --env-file=.env.local scripts/deliver.js"
   },
   "dependencies": {

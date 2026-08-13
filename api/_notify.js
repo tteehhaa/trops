@@ -67,6 +67,46 @@ function buildMagicLink(token) {
 }
 
 /**
+ * 랜딩의 기한관리 카드 앵커 〔흐름 md §3 · §5-1 3번 · 2026-08-13〕.
+ *
+ * `#feat-timeline` 은 index.html 05 「핵심기능 3분류」 아코디언의 기한관리 카드 id 입니다.
+ * ⚠️ 앵커로 도착하면 카드는 **접힌 상태**입니다(펼침은 그 페이지 JS 의 [data-timeline-open]
+ *    트리거 몫). 카드 제목과 셰브론이 보이므로 죽은 링크는 아니고, 한 번 더 눌러 펼치는
+ *    형태입니다 — 메일에서 패널을 미리 펼칠 방법은 없습니다.
+ * ⚠️ id 를 바꾸면 이 링크가 조용히 페이지 맨 위로 떨어집니다. index.html 의
+ *    #feat-timeline 주석에 「id 를 바꾸지 마십시오」가 적혀 있는 이유 중 하나입니다.
+ */
+function buildTimelinePreviewLink() {
+  return origin() + '/#feat-timeline';
+}
+
+/**
+ * 대기 공백 동안의 제품 노출 블록 〔흐름 md §3 「결제확인 메일」 · §5-1 3번〕.
+ *
+ * md 근거: 「검수 대기 시간 동안 고객이 아무 접점도 없는 공백을 제품 노출 기회로 전환」.
+ * 훅 문장은 랜딩 `.feat-hook` 원문 그대로입니다 — 메일과 화면이 **같은 말**을 해야
+ * 클릭해서 도착한 자리가 낯설지 않습니다. 한쪽만 고치지 마십시오.
+ *
+ * ⚠️ 「무료」라고 쓰지 않고 「지금은 무료」로 씁니다 — md §4 Give/Get 표가 기한관리에만
+ *    무료 표기를 허용하되 「추후 유료화 여지를 남기는 문구로」 라고 못박았습니다.
+ *    (바이어확인 쪽에 「무료」를 쓰지 않는 것과는 다른 이유입니다.)
+ * ⚠️ 무상·유료 **양쪽 메일에 붙입니다.** md §3 은 결제확인 메일을 지목했지만 대기
+ *    공백은 무상 건도 같고, sendIntakeMails 는 두 경로가 공유하는 한 함수입니다.
+ */
+function waitingRoomHtml() {
+  return `
+        <hr>
+        <p><strong>결과 준비되는 동안, 기한관리 먼저 둘러보세요.</strong></p>
+        <p>계약서 하나에 기한이 몇 개나 숨어있는지 아세요?
+          거래가 시작되면 계약서에 적힌 기한과 통관·외환 절차를 한 화면에 모아
+          남은 날짜로 보여드립니다. 기한 7일 전과 1일 전에 메일로 알려드리고, 지금은 무료입니다.</p>
+        <p><a href="${escapeHtml(buildTimelinePreviewLink())}">기한관리 미리보기</a>
+          &nbsp;·&nbsp;
+          <a href="${escapeHtml(appOrigin() + '/')}">계약 등록해보기</a></p>
+  `;
+}
+
+/**
  * 운영자 검토 링크 〔2026-08-13〕 — trops_a 화면 C-05 목록의 **해당 접수를 강조한 상태**로 엽니다.
  *
  * `?new=` 가 그 강조를 켭니다(링크로 들어왔을 때만 색이 붙습니다 — 목록을 그냥 열면 아무 행도
@@ -123,6 +163,10 @@ async function sendIntakeMails(info) {
         ${paid ? `<p><strong>결제수단:</strong> ${escapeHtml(info.method || '-')}</p>` : ''}
         <p><strong>이메일:</strong> ${escapeHtml(info.email)}</p>
         <p><strong>파일 ${info.fileCount}건:</strong> ${escapeHtml((info.fileNames || []).join(', ') || '-')}</p>
+        <!-- 서류 종류 〔흐름 md §5〕. 지금은 늘 NDA 이지만 서류가 늘면 운영자가 이 한 줄로
+             무엇을 대조해야 하는지 가려야 합니다. 넘어오지 않으면 표기하지 않습니다 —
+             빈 항목을 남기지 않는 이 파일의 기존 처리(trade)와 같습니다. -->
+        ${info.docTypeLabel ? `<p><strong>서류 종류:</strong> ${escapeHtml(info.docTypeLabel)}</p>` : ''}
         <p><strong>대조 기준:</strong> ${escapeHtml(basis)}</p>
         ${trade ? `<p><strong>거래 정보:</strong> ${escapeHtml(trade.operatorLine)}</p>` : ''}
         <p><strong>동의 2(비식별 데이터 활용):</strong> ${info.consentTraining ? '동의' : '미동의'}</p>
@@ -156,6 +200,7 @@ async function sendIntakeMails(info) {
           ? '함께 보내주신 자사 서식을 기준으로 대조한 뒤, 당일 안에 요약 자료를 정돈해 아래 주소로 올려 드립니다.'
           : '자사 서식을 함께 받지 못했으므로 공개 라이선스로 배포되는 표준 서식을 기준으로 대조한 뒤, 당일 안에 요약 자료를 정돈해 아래 주소로 올려 드립니다.'}</p>
         <p><a href="${escapeHtml(info.magicLink)}">접수 내용 확인하기</a></p>
+        ${waitingRoomHtml()}
         ${trade ? trade.html : ''}
         <p style="color:#64748B;font-size:13px">
           이 링크는 접수하신 분만 여실 수 있습니다. 다른 사람에게 전달하지 마십시오.<br>
@@ -503,6 +548,66 @@ async function sendManualRefundMail(info) {
   return { sent: true, error: null };
 }
 
+/**
+ * 결제 미완료 리마인드 메일 〔흐름 md §3 · §5-1 6번 · 신설 2026-08-13〕.
+ *
+ * 파일까지 올리고 결제만 하지 않은 건에 **1회** 보냅니다. md 근거: 「이미 파일
+ * 업로드까지 한 고성의도 이탈자 회수」.
+ *
+ * 🔴 **돌려주는 값이 「1회」의 근거입니다.** 부르는 쪽(api/_payment-reminder.js)이
+ *    이 값을 보고 payment_reminder_sent_at 을 채웁니다 — 실패를 삼키면 보내지도 않은
+ *    건이 「보냈음」으로 굳어 영구히 회수 대상에서 빠집니다. sendDeliveryMail 과 같은
+ *    이유로 성공/실패를 정확히 돌려줘야 하는 함수입니다.
+ *
+ * ⛔ **「재업로드 불필요」라고 쓰지 않습니다.** md §3 은 그 문구를 적었지만, 현재 접수
+ *    폼은 파일을 다시 받는 구조이고 주문 재사용(결제 재개)은 구현돼 있지 않습니다.
+ *    지키지 못할 약속을 메일에 쓰면, 눌러 들어온 사람이 빈 폼을 보고 두 번 이탈합니다.
+ *    결제 재개가 붙는 날 이 문면과 아래 링크를 함께 고치십시오.
+ * ⛔ 독촉하지 않습니다. 기한·마감·불이익을 말하지 않고, 「멈춰 있다」는 사실과
+ *    「이어서 하실 수 있다」만 말합니다.
+ * ⛔ 운영자 알림을 함께 보내지 않습니다 — 하루에 여러 건이 몰리면 그 자체가 소음이고,
+ *    배치 응답(cron 로그)에 건수가 이미 남습니다.
+ *
+ * @returns {Promise<{sent: boolean, error: string|null}>}
+ */
+async function sendPaymentReminderMail(info) {
+  try {
+    const { error } = await resendApi().emails.send({
+      from: `TROPS <${CONTACT_ADDRESS}>`,
+      to: [info.email],
+      subject: '[TROPS] 업로드하신 서류, 결제만 하면 진행됩니다',
+      html: `
+        <p>보내주신 서류는 잘 도착했지만, 결제가 끝나지 않아 아직 대조를 시작하지 못했습니다.</p>
+        <p><strong>결제가 확인되면 그때부터 진행됩니다.</strong>
+          영업일 기준 24시간 내에 요약 자료를 보내드리고,
+          자료를 받으시기 전에는 언제든 전액 환불해 드립니다.</p>
+        <p><a href="${escapeHtml(origin() + '/precheck')}">이어서 신청하기</a></p>
+        <p style="color:#64748B;font-size:13px">
+          결제 화면으로 돌아가시면 서류를 한 번 더 올려주셔야 합니다.
+          이전에 보내주신 파일은 접수일로부터 ${RETENTION_DAYS}일 후 삭제됩니다.
+        </p>
+        <p style="color:#64748B;font-size:13px">
+          이 안내는 한 번만 보내드립니다. 진행하지 않기로 하셨다면 그냥 두셔도 됩니다 —
+          따로 하실 일은 없습니다.
+        </p>
+        <p style="color:#64748B;font-size:13px">
+          환불규정은 <a href="${escapeHtml(origin())}/refund">${escapeHtml(origin().replace(/^https?:\/\//, ''))}/refund</a> 에서 보실 수 있습니다.
+          문의는 ${escapeHtml(CONTACT_ADDRESS)} 으로 주십시오.
+        </p>
+      `,
+    });
+    if (error) {
+      console.error('payment reminder email error', error);
+      return { sent: false, error: String(error.message || error) };
+    }
+  } catch (err) {
+    console.error('payment reminder email exception', err);
+    return { sent: false, error: err && err.message ? err.message : String(err) };
+  }
+
+  return { sent: true, error: null };
+}
+
 /* ──────────────────────────────────────────────────────────────
  * 거래 정보 · 협정 세율 (선택 항목)
  * ────────────────────────────────────────────────────────────── */
@@ -603,7 +708,10 @@ module.exports = {
   CONTACT_ADDRESS: CONTACT_ADDRESS,
   RETENTION_DAYS: RETENTION_DAYS,
   buildMagicLink: buildMagicLink,
+  buildTimelinePreviewLink: buildTimelinePreviewLink,
+  waitingRoomHtml: waitingRoomHtml,
   sendIntakeMails: sendIntakeMails,
+  sendPaymentReminderMail: sendPaymentReminderMail,
   sendErasureMails: sendErasureMails,
   sendDeliveryMail: sendDeliveryMail,
   sendRouteRefundMail: sendRouteRefundMail,

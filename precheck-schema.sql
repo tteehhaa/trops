@@ -195,6 +195,43 @@
 --     where refunded_at is not null;
 
 
+-- ── 0-H. 서류 종류 + 결제 미완료 리마인드 (2026-08-13 · 흐름 md §5 · §5-1 6번) ──
+--
+-- 🔴 **이 절은 배포보다 먼저 실행하십시오.** 다른 0-* 절과 성질이 다릅니다:
+--    doc_type 은 **접수 경로가 실제로 insert 하는 컬럼**입니다(api/intake.js). 컬럼이
+--    없으면 PostgREST 가 PGRST204 로 거절하고 **접수 전체가 502 가 됩니다.** 0-F(환불
+--    컬럼)처럼 "운영 도구만 멈춘다" 가 아닙니다.
+--    payment_reminder_sent_at 쪽은 반대로 없어도 접수·결제가 그대로 돕니다 —
+--    리마인드 배치만 후보 조회에 실패해 0건으로 끝냅니다(fail-safe closed).
+--
+-- ⚠️ 이 절만 따로 실행하십시오(0-D·0-E·0-F 와 같습니다). 파일 전체를 붙여넣으면
+--    아래 1번의 create table public.intake 에서 42P07 로 멈춥니다.
+--
+-- 가산 변경만 합니다 — 기존 컬럼을 지우거나 형을 바꾸지 않습니다.
+--
+--   alter table public.intake
+--     add column if not exists doc_type                  text not null default 'nda',
+--     add column if not exists payment_reminder_sent_at   timestamptz;
+--
+--   alter table public.intake drop constraint if exists intake_doc_type_allowed;
+--   alter table public.intake add  constraint intake_doc_type_allowed
+--     check (doc_type in ('nda'));
+--
+--   create index if not exists intake_payment_reminder_idx
+--     on public.intake (received_at)
+--     where intake_path = 'paid'
+--       and payment_status = 'pending'
+--       and payment_reminder_sent_at is null;
+--
+-- ⚠️ check 를 ('nda') 로 **좁게** 둔 것이 의도입니다. 화면의 준비중 옵션이 실수로
+--    disabled 를 잃어도 DB 가 막습니다. 서류 종류를 늘릴 때 고칠 곳은 셋입니다 —
+--    이 check · api/intake.js DOC_TYPES · precheck.html 의 <option disabled>.
+--    한 곳만 고치면 화면·서버·DB 가 서로 다른 목록을 말합니다.
+--
+-- ⚠️ default 'nda' 를 지우지 마십시오. 이 컬럼이 붙기 전에 들어온 기존 행 전부가
+--    NDA 접수라 그 값이 사실이고, not null 을 붙일 수 있는 근거도 그것입니다.
+
+
 -- ── 0-G. 처리 가능 여부 표 — ⛔ **이 저장소 소관이 아닙니다** (2026-08-11 · M-2) ──
 --
 -- 🔴 **여기서 실행하지 마십시오. 참조본입니다.**
@@ -267,6 +304,15 @@ create table public.intake (
   --    여기에만 두면 30일 삭제와 즉시 삭제가 이 파일을 지나칩니다.
   own_form_path     text,
 
+  -- ── 서류 종류 (2026-08-13 추가 · 흐름 md §5 「확장 구조」) ────────────────
+  -- 무슨 서류를 대조하는가. 지금은 'nda' 하나뿐이지만 **값으로 남깁니다** —
+  -- md §5 가 「"NDA 전용" 하드코딩이 아니라 "문서유형 파라미터" 구조로」를 요구하고,
+  -- 계약서·견적서를 붙일 때 새 페이지도 새 컬럼도 없이 옵션만 늘어나야 합니다.
+  -- ⚠️ check 를 좁게 둡니다(아래 intake_doc_type_allowed). 화면의 준비중 옵션이
+  --    실수로 열려도 DB 가 막습니다. 늘릴 때 고칠 곳 셋: 이 check ·
+  --    api/intake.js DOC_TYPES · precheck.html 의 <option disabled>.
+  doc_type          text        not null default 'nda',
+
   -- ── 거래 정보 (2026-08-09 추가 · 선택) ────────────────────────────────────
   -- 접수 시 이용자가 골라 넣은 거래 상대국(ISO 2자리)과 HS 8단위입니다.
   -- NDA 대조와는 무관한 부속 항목이라 둘 다 null 이 정상이고, 그 편이 더 흔합니다.
@@ -320,6 +366,14 @@ create table public.intake (
   refunded_at       timestamptz,
   refund_reason     text,
 
+  -- ── 결제 미완료 리마인드 (2026-08-13 추가 · 흐름 md §3 · §5-1 6번) ────────
+  -- 파일까지 올리고 결제만 안 한 건에 1회 보내는 회수 메일의 발송 시각입니다.
+  -- 🔴 **이 컬럼이 「1회」의 근거이자 멱등의 근거입니다.** null 이면 아직 안 보냈고,
+  --    값이 있으면 다시 보내지 않습니다 — 배치가 두 번 돌아도 두 번 가지 않습니다.
+  -- ⚠️ 발송에 **성공한 뒤에만** 채웁니다(api/_payment-reminder.js). 미리 채우면
+  --    발송 실패한 건이 영구히 회수 대상에서 빠집니다.
+  payment_reminder_sent_at timestamptz,
+
   received_at       timestamptz not null default now(),
   -- 30일 보관 후 삭제. 확인메일에 PDF 를 첨부하지 않는 이유이기도 합니다
   -- (첨부한 파일에는 이 삭제 정책을 적용할 수 없습니다).
@@ -346,7 +400,11 @@ create table public.intake (
   constraint intake_target_country_shape
     check (target_country is null or target_country ~ '^[A-Z]{2}$'),
   constraint intake_hs_code_shape
-    check (hs_code is null or hs_code ~ '^[0-9]{8}$')
+    check (hs_code is null or hs_code ~ '^[0-9]{8}$'),
+  -- 지금 대조할 수 있는 서류 종류만 받습니다 〔흐름 md §5〕. 좁게 두는 것이 의도입니다 —
+  -- 화면·서버가 뚫려도 여기서 막습니다. 늘릴 때 세 곳(이 줄 · DOC_TYPES · <option>)을 함께.
+  constraint intake_doc_type_allowed
+    check (doc_type in ('nda'))
 );
 
 create index intake_received_at_idx  on public.intake (received_at desc);
@@ -368,6 +426,13 @@ create index intake_delivered_idx    on public.intake (delivered_at)
 -- 환불한 건은 드뭅니다. 부분 색인으로 두고, 「환불 이력」 조회에만 씁니다.
 create index intake_refunded_idx     on public.intake (refunded_at)
   where refunded_at is not null;
+-- 결제 미완료 리마인드 배치의 후보 조회용 〔흐름 md §5-1 6번〕. 조건이 곧 후보 정의이고
+-- 대부분의 행이 해당하지 않으므로 부분 색인으로 둡니다 — api/_payment-reminder.js 의
+-- where 절과 **같은 조건**입니다. 한쪽만 고치면 색인을 타지 않습니다.
+create index intake_payment_reminder_idx on public.intake (received_at)
+  where intake_path = 'paid'
+    and payment_status = 'pending'
+    and payment_reminder_sent_at is null;
 
 -- service role 로만 읽고 씁니다. anon/authenticated 접근은 막습니다.
 -- (정책을 만들지 않으면 service role 외 모든 접근이 차단됩니다.)

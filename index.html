@@ -432,9 +432,12 @@
     font-weight: 700;
     max-width: 24ch;
   }
-  /* 10 사전등록 폼의 보조 문구 (확정본 §10). 리드 계열이라 .rm-lead 와 같은 값입니다.
-     index.html · en.html 두 페이지가 같이 씁니다 — 공유 블록이므로 한쪽만 고치지 마십시오. */
-  .interest-sub { margin: 16px 0 0; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); max-width: 46ch; }
+  /* 🔴 .interest-sub 규칙은 2026-08-13 에 **여기서만** 제거했습니다.
+     그 문구(KOTRA 멘토 네트워크)가 09 마감 CTA 로 옮겨가면서 index.html 에는 쓰는 곳이
+     남지 않았습니다 — 근거는 마크업 쪽 .close-cta-kotra 주석에 있습니다.
+     ⚠️ en.html 은 자기 <style> 에 같은 규칙 사본과 마크업(.interest-sub)을 **그대로**
+        갖고 있습니다. 이번 배치는 국문 한정이라 그쪽은 손대지 않았습니다 — 영문을
+        맞출 때 CSS·마크업 두 곳을 함께 옮기십시오. */
   .interest-form {
     max-width: 440px;
     margin-top: 32px;
@@ -745,14 +748,22 @@
      (현재 img/ 에는 c03-result.jpg · c03-result-detail.jpg 2장뿐).
      깨진 <img> 를 내보내지 않으려고 자리표시 블록으로 둡니다. 캡처를 받으면
      마크업에 함께 둔 주석 처리된 <img> 한 줄을 살리고 이 <div> 와 이 규칙을 지우십시오.
-     흐름 md §1 「다이나믹함」 2번의 핀 순차 애니메이션도 에셋 종속이라 함께 보류입니다.
      ⚠️ 여기에 가짜 지도를 그려 넣지 마십시오 — 실제 제품 화면이 아닌 것을 제품 화면처럼
-        보이게 하는 것은 이 페이지가 지키는 근거 표기 원칙과 어긋납니다. */
+        보이게 하는 것은 이 페이지가 지키는 근거 표기 원칙과 어긋납니다.
+
+     🔴 2026-08-13: 흐름 md §1 「다이나믹함」 2번의 **핀 순차 애니메이션은 여기서 켰습니다.**
+        이전 판 주석은 "에셋 종속이라 함께 보류" 라고 적었지만, 보류할 필요가 없었습니다 —
+        순차 등장은 **지도 이미지가 아니라 핀 마커의 동작**이고, 마커는 지도 없이도 섭니다.
+        그래서 위 「가짜 지도 금지」를 지키면서(지도 윤곽·대륙·좌표 0건) 목적국 이름만 붙은
+        추상 마커 3개를 순서대로 떨어뜨립니다. 캡처를 받으면 이 애니메이션을 지우지 말고
+        마커를 실제 지도 위 좌표로 옮기십시오 — 동작은 그대로 재사용됩니다.
+        ⚠️ 마커에 지도처럼 보이는 배경(윤곽선·격자·대륙 실루엣)을 넣지 마십시오. 그 순간
+           위 금지에 걸립니다. 지금 형태(세로 목록형 마커)는 지도로 오독되지 않는 형태입니다.
+        표본 국가는 md §1 이 예시로 든 마스킹 샘플(프랑스1/아랍에미리트1)과 같은 계열입니다. */
   .feat-map {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+    flex-direction: column;
+    gap: 16px;
     min-height: 180px;
     padding: 24px;
     border: 1px dashed var(--line);
@@ -761,6 +772,40 @@
     font-size: 12.5px;
     line-height: 1.7;
     color: var(--ink-62);
+  }
+  .feat-map-note { margin: 0; }
+  .feat-pins { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+  /* 핀 하나. 점(●)은 ::before 로 그립니다 — 텍스트 불릿으로 두면 읽어주는 도구가
+     국가명 앞에 기호를 읽습니다. */
+  .feat-pin {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+  .feat-pin::before {
+    content: "";
+    flex: none;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .feat-pin-meta { font-size: 12.5px; color: var(--ink-62); }
+  /* 순차 등장 — 패널이 열린 뒤에만 돕니다.
+     ⚠️ .feat[data-open="1"] 하위 선택자를 지우지 마십시오. 접힌 패널에서 미리 돌면
+        펼쳤을 때 이미 끝나 있어 아무 움직임도 보이지 않습니다.
+     both 를 쓰는 이유: 지연 중(0→160→320ms)에도 시작 상태(투명)를 유지해야
+     세 개가 한꺼번에 보였다가 사라지는 깜빡임이 생기지 않습니다. */
+  @keyframes pin-drop {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: none; }
+  }
+  .feat[data-open="1"] .feat-pin {
+    animation: pin-drop .34s ease-out both;
+    animation-delay: calc(var(--i, 0) * 160ms);
   }
 
   /* ---------- 06 신뢰 (문구 §6 · 정본 C-5) ----------
@@ -792,6 +837,30 @@
      만들지 않습니다. 시각사양 3-4 가 「H1·H2만 스케일」이라 clamp 도 쓰지 않습니다. */
   .stat-line { margin: 0 0 12px; max-width: 30ch; color: var(--d-ink-primary); }
   .stat-src { margin: 0 0 40px; font-size: 12.5px; line-height: 1.7; color: var(--d-ink-tertiary); }
+
+  /* ---------- 스크롤 진입 등장 (2026-08-13 · 흐름 md §1 「다이나믹함」 1번) ----------
+     md 는 이 자리에 「숫자 0→목표값 카운트업」을 적었지만, 이 블록은 숫자가 아니라
+     문장입니다(위 ⚠️ 참조 — 확인 안 된 숫자를 크게 띄우지 않기로 한 결정). 그래서
+     같은 「스크롤 진입 시 등장」 요구를 **문장 페이드인 + 슬라이드업**으로 대체합니다.
+
+     🔴 **초기 숨김을 CSS 가 단독으로 하지 않습니다.** .reveal 만으로 opacity:0 을 걸면
+        JS 가 죽거나 IntersectionObserver 가 없는 브라우저에서 **이 문장이 영구히 보이지
+        않습니다** — 하필 페이지에서 가장 중요한 인용문 하나가 사라집니다. 그래서 숨김은
+        JS 가 .reveal-armed 를 <html> 에 붙인 뒤에만 적용됩니다(no-JS = 항상 보임).
+     ⚠️ 이 두 규칙을 하나로 합치지 마십시오. 합치는 순간 위 안전장치가 사라집니다.
+     ⚠️ 다른 섹션에 .reveal 을 남발하지 마십시오. 페이지 전체가 스크롤마다 움직이면
+        「차분하게 근거를 밝힌다」는 이 사이트의 태도와 어긋납니다 — 이 한 블록만입니다. */
+  .reveal-armed .reveal {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  .reveal-armed .reveal.is-in {
+    opacity: 1;
+    transform: none;
+    transition: opacity .42s ease-out, transform .42s ease-out;
+  }
+  /* 출처는 인용문보다 한 박자 늦게 옵니다 — 문장을 먼저 읽게 하려는 순서입니다. */
+  .reveal-armed .reveal.is-in.reveal-late { transition-delay: .14s; }
   .trust-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 48px; }
   .trust-list p { margin: 0; font-size: 16.5px; line-height: 1.76; color: var(--d-ink-secondary); }
   .trust-list .sub { color: var(--d-ink-tertiary); }
@@ -939,6 +1008,12 @@
     font-weight: 700;
   }
   .close-cta-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 12px; }
+  /* KOTRA 신뢰신호 (2026-08-13 · 흐름 md §1 「KOTRA 문구 재배치」 · §4).
+     .close-cta-note 보다 한 단계 위입니다 — 절차 안내가 아니라 신뢰신호라서
+     본문 스케일(16.5px)을 쓰고, 색은 --ink-64 로 note(--ink-62/12.5px)와 가릅니다.
+     ⚠️ 액센트색·굵기로 강조하지 마십시오. 이 자리에서 눈에 띄어야 하는 것은
+        버튼([문의하기])이고, 이 문장은 그 버튼을 뒤에서 받쳐 주는 역할입니다. */
+  .close-cta-kotra { margin: 16px 0 8px; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); }
   .close-cta-note { margin: 0; font-size: 12.5px; line-height: 1.7; color: var(--ink-62); }
 
   /* ---------- 11 기관 안내 (문구 §11 · 정본 C-4) ----------
@@ -1025,6 +1100,12 @@
     .qchev { transition: none; }
     /* 아코디언도 같은 원칙 — 펼침 자체는 남기고 슬라이드만 끕니다 */
     .feat-chev, .feat-panel { transition: none; }
+    /* 2026-08-13 신규 애니메이션 2종. 원칙은 위와 같습니다 — **내용은 남기고 움직임만 끕니다.**
+       ⚠️ display:none 으로 끄지 마십시오. 움직임을 원치 않는 사람에게 내용을 감추는 것은
+          접근성 설정을 콘텐츠 검열로 바꾸는 것입니다. */
+    .reveal-armed .reveal { opacity: 1; transform: none; }
+    .reveal-armed .reveal.is-in { transition: none; }
+    .feat[data-open="1"] .feat-pin { animation: none; }
   }
 </style>
 </head>
@@ -1360,12 +1441,29 @@
                 <div class="feat-panel-pad">
                   <p class="feat-hook">계약서 하나에 기한이 몇 개나 숨어있는지 아세요?</p>
                   <!-- TODO-ASSET: app.trops.kr 대시보드 세계지도 마스킹 캡처가 아직 img/ 에 없습니다.
-                       캡처를 받으면 아래 <div class="feat-map"> 를 지우고 이 <img> 한 줄을 살리십시오
-                       (.feat-map CSS 규칙도 함께 지우십시오). width/height 는 실제 캡처 크기로 맞추십시오.
+                       캡처를 받으면 아래 <div class="feat-map"> 를 지우고 이 <img> 한 줄을 살리십시오.
+                       width/height 는 실제 캡처 크기로 맞추십시오.
                        <span class="feat-shot"><img src="/img/timeline-map-sample.jpg" alt="기한관리 대시보드 — 등록된 거래가 목적국 위에 표시된 세계지도" width="1383" height="904" loading="lazy"></span>
-                       흐름 md §1 「다이나믹함」 2번의 핀 순차 애니메이션도 이 에셋에 종속이라 함께 보류입니다.
-                       ⚠️ 가짜 지도를 그려 넣지 마십시오. -->
-                  <div class="feat-map">실제 기한관리 화면 캡처를 준비하고 있습니다.<br>지금은 아래 버튼으로 화면을 직접 둘러보실 수 있습니다.</div>
+                       ⚠️ 가짜 지도를 그려 넣지 마십시오 — 지도 윤곽·대륙·좌표를 그리는 순간
+                          제품 화면이 아닌 것이 제품 화면처럼 보입니다.
+                       🔴 다만 **핀 순차 애니메이션은 보류가 풀렸습니다**(2026-08-13). 순차 등장은
+                          지도가 아니라 마커의 동작이라 지도 없이도 성립합니다. 아래 .feat-pins 가
+                          그것이고, CSS 는 .feat[data-open="1"] .feat-pin 에 있습니다.
+                          캡처를 반영할 때 이 애니메이션을 **지우지 말고** 마커를 지도 위 좌표로
+                          옮기십시오 — pin-drop 키프레임과 --i 지연은 그대로 재사용됩니다.
+                       ⚠️ 국가 3개는 마스킹 샘플입니다(흐름 md §1 「프랑스1/아랍에미리트1」 계열).
+                          실제 고객 거래가 아니라는 사실을 아래 .feat-cap 이 밝힙니다 — 지우지 마십시오. -->
+                  <div class="feat-map">
+                    <p class="feat-map-note">실제 기한관리 화면 캡처를 준비하고 있습니다. 등록되면 이렇게 목적국별로 찍힙니다.</p>
+                    <!-- --i 가 등장 순서입니다(0·1·2 → 0·160·320ms). 순서를 바꾸려면 이 값만
+                         고치십시오 — CSS 에는 순서가 들어 있지 않습니다. -->
+                    <ul class="feat-pins">
+                      <li class="feat-pin" style="--i:0">프랑스 <span class="feat-pin-meta">선적 기한 D-12</span></li>
+                      <li class="feat-pin" style="--i:1">아랍에미리트 <span class="feat-pin-meta">대금 회수 D-5</span></li>
+                      <li class="feat-pin" style="--i:2">베트남 <span class="feat-pin-meta">통관 서류 D-2</span></li>
+                    </ul>
+                  </div>
+                  <p class="feat-cap">예시로 만든 표기입니다. 실제 고객 거래가 아닙니다.</p>
                   <p class="feat-desc">계약서에 적힌 기한과 통관·외환 절차를 한 화면에 모아 남은 날짜로 보여드립니다. 기한 7일 전과 1일 전에 메일로 알려드립니다. 지금은 무료입니다.</p>
                   <div><a class="btn btn-secondary" href="https://app.trops.kr/" target="_self">계약 등록해보기</a></div>
                 </div>
@@ -1411,8 +1509,14 @@
              ⚠️ 출처 표기를 지우지 마십시오 — 출처 없는 단정으로 남습니다.
              ⚠️ 아래 기존 3줄(비교 기준·비교 항목·근거 5종)과 캡처 2컷은 그대로입니다.
                 이 블록은 그 앞에 추가된 것이고, 무엇도 대체하지 않았습니다. -->
-        <p class="h3 stat-line">거래처 한두 곳에 매출이 집중된 수출 초기 기업은, 대금 미회수 단 한 번으로 자금난에 빠질 수 있습니다.</p>
-        <p class="stat-src">— 한국무역보험공사</p>
+        <!-- .reveal — 스크롤 진입 시 페이드인+슬라이드업 (2026-08-13 · 흐름 md §1 「다이나믹함」 1번).
+             md 원문은 「숫자 카운트업」이지만 이 자리는 숫자가 아니라 문장이라(위 ⚠️) 같은
+             요구를 등장 애니메이션으로 대체했습니다. 근거는 .reveal CSS 주석에 있습니다.
+             ⚠️ 이 클래스만으로는 숨겨지지 않습니다 — <html> 에 .reveal-armed 가 붙어야
+                숨김이 켜지고, 그것을 붙이는 것은 JS 입니다. JS 가 죽으면 그냥 보입니다.
+             ⚠️ .reveal-late 는 출처를 한 박자 늦추는 것뿐입니다. 인용문에 붙이지 마십시오. -->
+        <p class="h3 stat-line reveal">거래처 한두 곳에 매출이 집중된 수출 초기 기업은, 대금 미회수 단 한 번으로 자금난에 빠질 수 있습니다.</p>
+        <p class="stat-src reveal reveal-late">— 한국무역보험공사</p>
 
         <div class="body-w trust-list">
           <p>· 비교 기준은 공개 라이선스로 배포되는 표준 서식을 씁니다.<br>
@@ -1502,8 +1606,14 @@
     </section>
 
     <!-- ===== 08 QnA (문구 §8 · 정본 C-3) =====
-         3묶음 14문항입니다. 확정본 v3.1이 원문 15문항에서 서명 관련 1문항
-         (「NDA에 서명해도 되나요?」)을 뺀 결과입니다 — 되살리지 마십시오.
+         3묶음 14문항입니다 (3 + 6 + 5).
+         ⚠️ 2026-08-13 실측 정정: 이 자리에 오래 적혀 있던 「14문항」은 **틀린 수였습니다.**
+            실제 `.qitem` 은 13개였습니다(3+5+5). 확정본 v3.1이 원문에서 서명 관련 1문항
+            (「NDA에 서명해도 되나요?」)을 뺀 결과가 13이고, 주석만 14로 남아 있었습니다.
+            같은 배치에서 채널분기 문항(qa-14)을 2묶음에 더해 **지금 실제로 14문항**입니다.
+            수를 고칠 때 세어 보고 적으십시오 — 이 줄이 3주 동안 조용히 틀려 있었습니다.
+         ⚠️ 뺀 서명 문항을 되살리지 마십시오. 늘어난 것은 채널분기 1건뿐입니다
+            (흐름 md §5-1 13번이 문면까지 지정한 항목).
          ⚠️ 기본값은 전부 접힘입니다.
          ⚠️ 여러 개 동시 펼침을 허용합니다. 하나만 열리는 방식은 비교가 안 되므로 금지(C-3).
          ⚠️ 셰브론에 액센트를 쓰지 마십시오.
@@ -1593,6 +1703,30 @@
               </button>
               <div class="qans" id="qa-8">
                 <p>문구를 찾는 데 씁니다. 판단에는 쓰지 않습니다.</p>
+              </div>
+            </div>
+            <!-- 채널분기 혼동 보완 (2026-08-13 신설 · 흐름 md §4 · §5-1 13번).
+                 md 가 "지금까지 필요하다는 언급만 있었고 실제 문구가 없어 작성 시 누락
+                 위험" 이라고 적어 문면까지 명문화해 둔 항목입니다. 답 문장은 그 원문
+                 그대로이고, 「상담신청」만 「문의하기」로 바꿨습니다 — md §2 CTA 표가
+                 명칭을 확정했고(유상 자문 오인 이력), 화면의 버튼 라벨과 같아야 합니다.
+                 ⚠️ 「상담」이라는 낱말을 되살리지 마십시오.
+
+                 1묶음(처음이신가요=용어)·3묶음(믿을 수 있나요=신뢰)이 아니라 여기
+                 2묶음(어떻게 쓰나요)에 넣은 이유: **어느 경로로 시작하는가는 사용법
+                 질문**입니다. 「무엇을 해주나요 → 어떻게 시작하나요 → 결과는 어떻게
+                 받나요」 흐름 끝에 「그럼 문의하기는 뭐죠」가 오는 것이 읽는 순서입니다.
+
+                 ⚠️ id 는 qa-14 입니다. 3묶음이 이미 qa-9~13 을 쓰고 있어 문서 순서와
+                    번호가 어긋나지만, 번호는 aria-controls 짝만 맞으면 됩니다 —
+                    9~13 을 밀어 다시 매기면 관계없는 5곳이 함께 바뀝니다. -->
+            <div class="qitem" data-open="0">
+              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-14">
+                <span>셀프서브 사전점검이랑 문의하기는 뭐가 달라요?</span>
+                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+              </button>
+              <div class="qans" id="qa-14">
+                <p>지금 바로 결과를 받고 싶으시면 사전점검, 저희 대표님과 먼저 상황을 얘기하고 싶으시면 문의하기입니다.</p>
               </div>
             </div>
           </div>
@@ -1688,6 +1822,18 @@
           <a class="btn btn-secondary btn-full" href="#interest" data-purpose="inquiry">문의하기</a>
           <button class="btn btn-text" type="button" data-timeline-open aria-controls="feat-timeline-panel">기한관리 미리보기</button>
         </div>
+        <!-- KOTRA 신뢰신호 — 2026-08-13 이 자리로 옮겼습니다 (흐름 md §1 「KOTRA 문구 재배치」 · §4).
+             전에는 아래 #interest 폼의 .interest-sub 였습니다. 그 자리가 틀린 이유는 두 가지입니다:
+               ① #interest 는 [기한관리 출시 알림 받기]도 받는 폼입니다. 거기에 두면 이 문구가
+                  **알림 신청의 신뢰신호로 읽힙니다** — md §4 가 "기존 랜딩에서 트래킹 대기자
+                  등록에 붙어있던 문구를 이 자리로 재배치" 라고 적은 그 잘못된 위치입니다.
+               ② 신뢰신호는 **누르기 직전에** 필요합니다. 폼까지 스크롤한 사람은 이미 눌렀습니다.
+             히어로가 아니라 마감 CTA 를 고른 이유: 히어로의 마이크로카피 자리는 주버튼
+             ([비교해 보기])의 .hero-note("로그인 없이 바로")가 이미 쓰고 있고, 마감 CTA 는
+             h2 자체가 문의 전용("편하게 물어보세요")이라 이 문구가 그 버튼을 직접 지원합니다.
+             ⚠️ 이 문구를 #interest 에 되살려 두 곳에 두지 마십시오 — ①의 오독이 다시 생깁니다.
+             ⚠️ 「상담」이라는 낱말을 쓰지 마십시오 (유상 자문 오인 이력). -->
+        <p class="close-cta-kotra">초기 서비스는 KOTRA 멘토 네트워크에 먼저 배정됩니다.</p>
         <p class="close-cta-note">보내주시면 순서대로 메일로 회신드립니다.</p>
       </div>
     </section>
@@ -1706,10 +1852,15 @@
         <!-- 2026-08-13: h2 를 두 목적 모두 받는 문장으로 바꿨습니다. 히어로·마감 CTA 의
              [문의하기]가 이 섹션으로 들어오므로, 제목이 기한관리 알림만 말하면 문의하러
              온 사람이 잘못 온 줄 압니다.
-             .interest-sub(KOTRA 멘토 네트워크)는 그대로 둡니다 — 흐름 md §4 가 이 문구를
-             문의/인터뷰 채널 자리의 신뢰신호로 지정했고, 그 자리가 지금 여기입니다. -->
+             🔴 2026-08-13 정정: 여기 있던 .interest-sub(KOTRA 멘토 네트워크)를 09 마감 CTA 의
+                [문의하기] 버튼 아래로 **옮겼습니다**(.close-cta-kotra). 이전 판 주석은 "그 자리가
+                지금 여기입니다" 라고 적었지만 틀렸습니다 — 이 폼은 [기한관리 출시 알림 받기]도
+                함께 받으므로, 그 문구가 여기 있으면 **알림 신청의 신뢰신호로 읽힙니다.** 그것이
+                흐름 md §4 가 "트래킹 대기자 등록에 붙어있던 문구를 재배치" 라고 지적한 바로 그
+                상태였습니다. 신뢰신호는 폼이 아니라 **버튼 옆**에 있어야 합니다.
+             ⚠️ 여기에 KOTRA 문구를 되살리지 마십시오. 두 곳에 두면 같은 오독이 다시 생깁니다.
+                근거 주석은 09 마감 CTA 의 .close-cta-kotra 위에 있습니다. -->
         <h2>출시 알림 신청과 문의, 여기서 받습니다.</h2>
-        <p class="interest-sub">초기 서비스는 KOTRA 멘토 네트워크에 먼저 배정됩니다.</p>
         <form class="interest-form" id="interest-form" novalidate>
           <!-- 목적 선택 (2026-08-13 신설 · 흐름 md §2 CTA 표).
                ⚠️ 항상 하나가 켜져 있어야 합니다 — tracking 이 기본값입니다. required 를 붙이지
@@ -1843,6 +1994,40 @@
   </footer>
 
   <script>
+  /* ---------- 스크롤 진입 등장 (2026-08-13 · 흐름 md §1 「다이나믹함」 1번) ----------
+     또 하나의 독립 IIFE 입니다(아래 두 IIFE 와 같은 이유 — 폼 스크립트는 맨 위에서
+     빠져나가므로 같은 함수에 넣으면 폼이 없는 화면에서 조용히 죽습니다).
+
+     🔴 **순서가 안전장치입니다.**
+        ① IntersectionObserver 가 없으면 여기서 그냥 return 합니다 — .reveal-armed 를
+           붙이지 않으므로 CSS 의 숨김 규칙이 아예 켜지지 않고, 문장은 처음부터 보입니다.
+        ② 있으면 .reveal-armed 를 붙여 숨김을 켠 **직후에** 관찰을 시작합니다.
+     ⚠️ .reveal-armed 를 CSS 나 마크업으로 미리 붙이지 마십시오. 그 순간 이 안전장치가
+        무력화되고, 관찰이 실패한 브라우저에서 인용문 한 블록이 영구히 사라집니다.
+     ⚠️ 한 번 보이면 관찰을 끊습니다(unobserve) — 스크롤을 오르내릴 때마다 다시
+        사라지는 것은 읽는 사람을 방해합니다.
+     prefers-reduced-motion 은 CSS 가 처리합니다(움직임만 끄고 내용은 남깁니다) —
+     여기서 따로 분기하지 않습니다. 08 QnA·05 아코디언과 같은 방침입니다. */
+  (function () {
+    var targets = document.querySelectorAll('.reveal');
+    if (!targets.length) return;
+    if (typeof window.IntersectionObserver !== 'function') return;
+
+    document.documentElement.classList.add('reveal-armed');
+
+    var io = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i += 1) {
+        if (!entries[i].isIntersecting) continue;
+        entries[i].target.classList.add('is-in');
+        io.unobserve(entries[i].target);
+      }
+      /* 화면 아래쪽 12% 가 들어오면 켭니다 — 요소가 화면에 완전히 들어온 뒤에 시작하면
+         이미 읽고 있는 문장이 움직입니다. */
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.01 });
+
+    Array.prototype.forEach.call(targets, function (el) { io.observe(el); });
+  })();
+
   /* ---------- 08 QnA 아코디언 (정본 C-3) ----------
      별도 IIFE 입니다. 아래 폼 스크립트는 맨 위에서 `if (!form) return` 으로 빠져나가므로
      같은 함수 안에 넣으면 폼이 없는 화면에서 QnA 가 조용히 죽습니다.

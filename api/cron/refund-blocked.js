@@ -1,17 +1,29 @@
 /*
- * GET /api/cron/refund-blocked — 사후 자동환불 배치 2종 (Vercel Cron)
- * 〔M-2 · 신설 2026-08-11 · E5 후속 2026-08-12 로 배치 병합〕
+ * GET /api/cron/refund-blocked — 일 1회 사후 배치 3종 (Vercel Cron)
+ * 〔M-2 · 신설 2026-08-11 · E5 후속 2026-08-12 병합 · S9 리마인드 2026-08-13 병합〕
  *
- * 배치 본체는 둘입니다 — 이름은 옛날 그대로지만 이제 두 축을 함께 봅니다:
- *   api/_route-refund.js         route(ok/blocked) 축 〔M-2〕
- *   api/_nda-outcome-refund.js   outcome_kind(ok/not_supported/failed) 축 〔E5〕
+ * 배치 본체는 셋입니다 — 이름은 옛날 그대로지만 이제 세 가지를 함께 돌립니다:
+ *   api/_route-refund.js         route(ok/blocked) 축 환불 〔M-2〕
+ *   api/_nda-outcome-refund.js   outcome_kind(ok/not_supported/failed) 축 환불 〔E5〕
+ *   api/_payment-reminder.js     결제 미완료 리마인드 메일 〔S9 · 흐름 md §5-1 6번〕
  *
  * 🔴 **왜 파일을 새로 안 만들고 여기 합쳤는가.** Hobby 플랜 cron 상한(2개)을
  *    cleanup-expired · 이 라우트가 이미 다 씁니다(아래 스케줄 절 참조). 세 번째
  *    배치(E5)가 생겨서 플랜을 올리는 대신 이 라우트 안에서 두 번째 잡으로
  *    돌립니다 — 이 파일이 스스로 예고했던 대로입니다(🔴 표 아래 옛 문단).
+ *    2026-08-13 의 리마인드 배치도 **같은 이유로 세 번째 잡**이 됐습니다.
  *
- * 두 잡은 **서로 독립**입니다 — 한쪽이 죽어도 다른 쪽은 돕니다
+ * 🔴 **리마인드는 환불이 아닙니다 — 그런데 왜 「refund-blocked」 라우트에 있는가.**
+ *    이 라우트는 이제 이름보다 넓습니다. 이름을 바꾸지 않은 이유는 vercel.json 의
+ *    crons 경로 · test/cron-registration.test.js 의 단정 · 운영 기록의 로그 접두어가
+ *    모두 이 경로에 묶여 있어서입니다 — 이름 하나를 고치려고 그 넷을 함께 흔드는 것이
+ *    더 위험합니다. **하는 일의 정본은 이 머리주석**이고, 이름은 역사적 유물입니다.
+ *    ⚠️ 네 번째 잡을 여기 더 붙이기 전에 플랜 상향을 먼저 검토하십시오. 한 라우트가
+ *       서로 무관한 일을 계속 받으면 실패 원인을 응답에서 가려내기 어려워집니다.
+ *    시각도 리마인드에 나쁘지 않습니다 — 22:40 UTC = **07:40 KST**, 업무 시작 무렵입니다
+ *    (cleanup-expired 쪽 06:20 KST 보다 메일 받는 시각으로 적절합니다).
+ *
+ * 세 잡은 **서로 독립**입니다 — 한쪽이 죽어도 다른 쪽은 돕니다
  * (api/cron/cleanup-expired.js guarded() 와 같은 양식). 판정 표가 다르고
  * (precheck_intake_route ↔ precheck_nda_run), 후보 집합도 겹칠 수 있지만
  * api/_refund.js refundOrder() 자체가 「이미 환불됨」을 멱등으로 걸러 두
@@ -90,10 +102,10 @@
  *     판단이 필요해 사람에게 넘깁니다. 두 결과의 deferred 에 각각 실려 나옵니다.
  *   · 무상 건은 다루지 않습니다 (환불할 돈이 없습니다 — 문면은 확인 화면이 합니다)
  *
- * ── 응답 (result = route 축, ndaOutcome = outcome_kind 축) ─────────────────
+ * ── 응답 (result = route 축, ndaOutcome = outcome_kind 축, paymentReminder = S9) ──
  *   200 { ok:true,  configured:false, note }                             env 미등록 — 무동작
- *   200 { ok:true,  configured:true, result, ndaOutcome }                둘 다 전건 성공(0건 포함)
- *   502 { ok:false, configured:true, result, ndaOutcome }                한쪽이라도 실패
+ *   200 { ok:true,  configured:true, result, ndaOutcome, paymentReminder } 셋 다 전건 성공(0건 포함)
+ *   502 { ok:false, configured:true, result, ndaOutcome, paymentReminder } 하나라도 실패
  *   404 (본문 없음)                                                      인증 불일치 · 미설정
  *   405 { error }                                                        인증 통과 · GET 아님
  *
@@ -108,6 +120,8 @@
 const { readConfig } = require('../_supabase.js');
 const ROUTE_REFUND = require('../_route-refund.js');
 const OUTCOME_REFUND = require('../_nda-outcome-refund.js');
+// 세 번째 잡 〔S9〕. 환불이 아니라 메일 한 통입니다 — 위 🔴 참조.
+const PAYMENT_REMINDER = require('../_payment-reminder.js');
 
 /** 다음 사람이 「이거 하나면 되는구나」로 읽지 않도록 응답에 박아 둡니다. */
 const NOT_OURS =
@@ -184,11 +198,37 @@ module.exports = async (req, res) => {
     'refund-blocked(nda-outcome) cron'
   );
 
+  /*
+   * 세 번째 잡 〔S9 · 흐름 md §5-1 6번〕. 위 둘과 성질이 다릅니다 —
+   * 돈을 움직이지 않고 메일 한 통을 보냅니다. 그래서 결과 모양도 다릅니다
+   * (deferred·reversed·refunded 가 없고 candidates·sent 만 있습니다).
+   * ⚠️ runGuarded 의 폴백 모양을 이 잡에 맞춰 쓰지 마십시오 — 아래 별도 폴백을 씁니다.
+   *    한 모양으로 억지로 합치면 「환불 0건」과 「메일 0통」이 같은 칸에 섞입니다.
+   */
+  let paymentReminder;
+  try {
+    paymentReminder = await PAYMENT_REMINDER.remindUnpaidIntakes(config, {
+      apply: true,          // 정기 실행입니다. 미리보기는 scripts/payment-reminder.js 몫입니다.
+      log: (m) => console.log('[payment-reminder-cron] ' + m),
+    });
+  } catch (err) {
+    const message = err && err.message ? err.message : String(err);
+    console.error('refund-blocked(payment-reminder) cron failed: ' + message);
+    paymentReminder = {
+      available: false, hardError: true, error: message,
+      truncated: false, candidates: 0, sent: 0, errors: [],
+    };
+  }
+
   if (!result.available) {
     console.error('refund-blocked cron route-table unavailable: ' + result.error);
   }
   if (!ndaOutcome.available) {
     console.error('refund-blocked cron nda-outcome-table unavailable: ' + ndaOutcome.error);
+  }
+  if (!paymentReminder.available) {
+    // 컬럼이 아직 없으면 여기로 옵니다 — 「아직 안 붙었다」이지 실패가 아닙니다.
+    console.error('refund-blocked cron payment-reminder unavailable: ' + paymentReminder.error);
   }
 
   /*
@@ -200,11 +240,18 @@ module.exports = async (req, res) => {
    */
   const failed =
     Boolean(result.hardError) || result.failed.length > 0 || result.errors.length > 0 ||
-    Boolean(ndaOutcome.hardError) || ndaOutcome.failed.length > 0 || ndaOutcome.errors.length > 0;
+    Boolean(ndaOutcome.hardError) || ndaOutcome.failed.length > 0 || ndaOutcome.errors.length > 0 ||
+    /*
+     * 리마인드 쪽은 failed 배열이 없습니다(건별 실패가 errors 한 곳에 모입니다).
+     * available:false(컬럼 미생성)는 **실패로 세지 않습니다** — 위 두 축의
+     * 「표가 없다」와 같은 처리입니다. hardError(함수가 던짐)만 실패입니다.
+     */
+    Boolean(paymentReminder.hardError) || paymentReminder.errors.length > 0;
   if (failed) {
     console.error('refund-blocked cron partial failure: ' + JSON.stringify({
       route: { hardError: result.hardError, failed: result.failed, errors: result.errors },
       ndaOutcome: { hardError: ndaOutcome.hardError, failed: ndaOutcome.failed, errors: ndaOutcome.errors },
+      paymentReminder: { hardError: paymentReminder.hardError, errors: paymentReminder.errors },
     }));
   }
 
@@ -213,6 +260,7 @@ module.exports = async (req, res) => {
     configured: true,
     result: result,
     ndaOutcome: ndaOutcome,
+    paymentReminder: paymentReminder,
     note: NOT_OURS,
   });
 };
