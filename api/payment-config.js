@@ -4,7 +4,15 @@
  * ⚠️ 경계: 접수·저장·알림·결제 처리만. LLM 호출·상태 판정 코드 없음.
  *
  * GET /api/payment-config
- *   → { ok, clientKey, mode, amount, listPrice, orderName }
+ *   → { ok, clientKey, mode, amount, orderName, chargeEnabled, displayEnabled, … }
+ *
+ * 🔴 **`listPrice` 를 응답에서 뺐습니다** 〔2026-08-13〕. 화면은 이 값을 한 번도 쓰지
+ *    않았고(R-1 이 2026-08-11 에 취소선 표기를 걷은 뒤로), ₩290,000 은 2026-08-13 에
+ *    판매가(₩300,000)보다 **낮아졌습니다** — 「정가」로 쓸 수 없는 값이 됐습니다.
+ *    ⛔ 되살리지 마십시오. 응답에 실려 브라우저까지 가 있으면 「이미 내려오는 값이니
+ *       그려도 되겠지」로 읽힙니다. 값 자체는 api/_payment.js 에 사본 좌표로 남아
+ *       있으므로 드리프트 검출은 그대로 삽니다 — 끊은 것은 **화면으로 가는 길**입니다.
+ *    ⚠️ 다시 게시하려면 그것이 결정 사안입니다(종전거래가격 표시 요건).
  *
  * clientKey 는 브라우저에 노출되는 것이 정상입니다(결제위젯이 쓰는 공개 키).
  * 시크릿 키는 이 응답에 절대 넣지 않습니다 — 승인은 서버(api/payment-confirm.js)에서만 합니다.
@@ -13,7 +21,8 @@
  * 실키로 바꿀 때 Vercel 환경변수만 고치면 되고, 페이지를 다시 배포하지 않아도 됩니다.
  */
 
-const { PRICE, LIST_PRICE, ORDER_NAME, readTossConfig } = require('./_payment.js');
+// LIST_PRICE 는 **일부러 가져오지 않습니다** — 응답에 실을 값이 아닙니다(머리주석).
+const { PRICE, ORDER_NAME, readTossConfig } = require('./_payment.js');
 const { precheckChargeBlockers, isPrecheckPaidDisplayEnabled } = require('./_precheck-charge-gate.js');
 
 module.exports = async (req, res) => {
@@ -49,7 +58,7 @@ module.exports = async (req, res) => {
     // 실키를 넣었는데 test-docs 가 내려온다면 키 형식이 틀린 것입니다(서버 로그에 원인이 남습니다).
     mode: toss.mode,
     amount: PRICE,
-    listPrice: LIST_PRICE,
+    // ⛔ listPrice 를 여기 되살리지 마십시오 — 이 파일 머리주석 참조.
     orderName: ORDER_NAME,
 
     /*

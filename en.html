@@ -1239,9 +1239,15 @@
          v2 §7 은 「이름 · 상태 · 가격」 세 값만 줍니다. 이름·상태·가격은 v2 원문이고,
          리드(.rm-lead)와 항목 설명(.rm-desc)은 국문 index.html 에 실제로 쓰이고 있는
          문장을 옮긴 것입니다(2026-08-11 지시). 새로 지어낸 문장은 없습니다.
-           리드  아래는 아직 이용할 수 없습니다. 오픈 시점과 가격을 함께 적어둡니다.
+           리드  아래는 아직 이용할 수 없습니다. 준비가 되면 이 자리에서 알려드립니다.
            01    품목별 확인 항목을 근거와 함께 문서로 정리해 드립니다
            02    계약이 성사된 뒤 통관·대금회수까지 거래 단위로 이어서 관리합니다
+         🔴 **v2 §7 의 「가격」 값이 걷혔습니다** 〔2026-08-13 · 대표 결정〕. 01 행이
+            「₩99,000 · Opens September」였는데 ① 실체가 결정되지 않은 모듈에 정확한 가격이
+            있을 수 없고 ② 옆에서 파는 Export pre-check(₩300,000)의 **역앵커**로 작동했습니다.
+            리드도 함께 고쳤습니다 — 두 행이 다 「미정」인데 리드만 「가격을 적어둔다」고
+            말하면 화면이 하지 않는 약속이 됩니다. 국문 index.html 과 같은 변경입니다.
+            ⛔ 두 행 어디에도 금액·오픈월을 적지 마십시오(test/roadmap-no-price.test.js).
          ⚠️ 항목 이름은 국문과 다릅니다 — 국문은 「확인 항목 요약 자료」·「거래 운영」이고,
             영문은 v3.1 §7 을 따라간 v2 원문(Item comparison sheet · Trade procedure
             tracking)입니다. 같은 상품의 다른 표기라 설명은 그대로 맞습니다.
@@ -1254,7 +1260,7 @@
     <section class="how" id="next" aria-label="What's next">
       <div class="container how-inner how-inner-tight">
         <h2 class="rm-h2">What's next</h2>
-        <p class="rm-lead">The items below aren't available yet. We list the opening date and the price with each one.</p>
+        <p class="rm-lead">The items below aren't available yet. We'll let you know here once they're ready.</p>
 
         <div class="rm">
           <div class="rm-row">
@@ -1264,7 +1270,9 @@
                  파는 Export pre-check 의 유료판으로 읽혀서, 가르는 축(**대상**)을 밝힙니다.
                  ⚠️ 지금 파는 상품의 이름이 바뀌면 이 문장도 함께 바뀝니다. -->
             <p class="rm-diff">A different product from the Export pre-check you can use today. It doesn't compare a document you were sent — it lays out, ahead of time and without any document, what needs checking for your product category.</p>
-            <p class="rm-meta">₩99,000 · Opens September</p>
+            <!-- 「₩99,000 · Opens September」에서 바뀌었습니다 〔2026-08-13〕. 아래 02 행과
+                 같은 표기입니다. 사유는 섹션 머리주석. ⛔ 금액·오픈월을 다시 적지 마십시오. -->
+            <p class="rm-meta">Pricing to follow · Coming soon</p>
           </div>
           <div class="rm-row">
             <!-- 🔴 "Trade procedure tracking" → "Trade operations" 〔2026-08-13〕.
