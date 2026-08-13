@@ -173,9 +173,13 @@ trops_a 쪽에 **"방금 INSERT 한 행을 같은 요청 안에서 바로 재조
 |---|---|---|---|
 | main_web_page | `precheck.html` | 리다이렉트 복원 + 이력·근거·20건 주석 | 커밋 `bfbd722` · **푸시·배포됨** |
 | main_web_page | `docs/pdca/03-nda-redirect-resume.md` | 이 문서 | 커밋 `bfbd722` |
-| trops_a | `lib/precheck/nda/review-gate.ts` | 해제 임계치 20건 전수 명시(주석만) | 커밋 `103102a` · **푸시 안 함** |
+| trops_a | `lib/precheck/nda/review-gate.ts` | 해제 임계치 20건 전수 명시(주석만) | 커밋 `103102a` · **푸시·배포됨** |
 
-trops_a 커밋을 푸시하지 않은 이유: 주석 전용이라 동작 변화는 없지만, 푸시하면
-프로덕션 재배포가 걸립니다. 방금 안정화된 시스템이고 이번 작업이 요청받은 배포 범위는
-main_web_page 였으므로, 재배포 시점은 사람이 고르도록 남겨 둡니다
-(`cd ../trops_a && git push origin main`).
+trops_a 푸시는 재배포가 걸리는 일이라 사람 승인을 받고 진행했습니다〔2026-08-13 승인〕.
+주석 전용이라 `NDA_RESULT_REVIEW_GATE_ENABLED` 값(`true`)과 동작은 그대로입니다.
+pre-push 훅이 전체 테스트를 돌려 **3831개 통과**(264 파일)했고, 재배포 후
+`app.trops.kr` HTTP 200 정상 확인했습니다.
+
+이로써 20건 임계치가 세 곳(이 문서 §4 · `precheck.html` 주석 · trops_a
+`review-gate.ts`)에 같은 값으로 배포된 상태입니다. 셋이 어긋나면 `review-gate.ts` 가
+정본입니다 — 스위치가 실제로 있는 자리이므로.
