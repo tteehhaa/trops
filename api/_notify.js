@@ -47,14 +47,37 @@ function resendApi() {
 
 const CONTACT_ADDRESS = 'contact@theo-ne.com';
 const DEFAULT_ORIGIN = 'https://trops.kr';
+/**
+ * 판정층(trops_a) 주소. `DEFAULT_ORIGIN`(이 저장소의 사이트)과 **다른 호스트**입니다 —
+ * 운영자 검토 화면은 trops_a 에 있습니다. 두 값을 섞지 마십시오.
+ */
+const DEFAULT_APP_ORIGIN = 'https://app.trops.kr';
 const RETENTION_DAYS = 30;
 
 function origin() {
   return (process.env.PRECHECK_ORIGIN || DEFAULT_ORIGIN).trim().replace(/\/+$/, '');
 }
 
+function appOrigin() {
+  return (process.env.PRECHECK_APP_ORIGIN || DEFAULT_APP_ORIGIN).trim().replace(/\/+$/, '');
+}
+
 function buildMagicLink(token) {
   return origin() + '/precheck?r=' + encodeURIComponent(token);
+}
+
+/**
+ * 운영자 검토 링크 〔2026-08-13〕 — trops_a 화면 C-05 목록의 **해당 접수를 강조한 상태**로 엽니다.
+ *
+ * `?new=` 가 그 강조를 켭니다(링크로 들어왔을 때만 색이 붙습니다 — 목록을 그냥 열면 아무 행도
+ * 강조되지 않습니다). 접수 시점에는 아직 대조가 실행되지 않았으므로 그 화면의 「처리 대기」
+ * 구획에 **미실행**으로 서 있고, 운영자가 거기서 [대조 실행]을 누릅니다.
+ *
+ * ⚠️ 접수 번호(`intake.id`)가 곧 trops_a 의 `run_id` 입니다 — 실행하면 같은 값으로 증적이
+ *    생기므로 링크가 그대로 유효합니다.
+ */
+function buildReviewLink(intakeId) {
+  return appOrigin() + '/admin/nda-runs?new=' + encodeURIComponent(intakeId);
 }
 
 /**
@@ -105,6 +128,13 @@ async function sendIntakeMails(info) {
         <p><strong>동의 2(비식별 데이터 활용):</strong> ${info.consentTraining ? '동의' : '미동의'}</p>
         <p><strong>접수 시각:</strong> ${escapeHtml(toIso(info.receivedAt))}</p>
         <p>파일은 Supabase Storage <code>${escapeHtml(bucket)}/${escapeHtml(info.intakeId)}/</code> 에 있습니다.</p>
+        <p style="margin-top:16px">
+          <a href="${escapeHtml(buildReviewLink(info.intakeId))}"><strong>이 건 대조 실행·검수하기 →</strong></a>
+        </p>
+        <p style="color:#64748B;font-size:13px">
+          목록에서 이 접수가 강조돼 보입니다. 아직 대조 전이라 「처리 대기 · 미실행」에 있고,
+          [대조 실행]을 누르면 그 자리에서 돌아갑니다. 검수 완료로 표시해야 고객이 결과를 봅니다.
+        </p>
       `,
     });
     if (error) console.error('intake operator email error', error);
