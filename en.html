@@ -624,7 +624,7 @@
   /* ---------- 06 신뢰 (문구 §6 · 정본 C-5) ----------
      페이지 유일한 다크 본문 섹션입니다(푸터와 둘뿐).
      ⚠️ 카운터·숫자 자리는 비워둡니다 — 넣을 숫자가 없습니다 (C-5 · §8).
-     ⚠️ 이미지는 8/20 실물 캡처 대기 중입니다. 목업으로 채우지 마십시오. */
+     이미지 2컷은 2026-08-13 실물 캡처 반영 완료(img/c03-result.jpg · img/c03-result-detail.jpg). */
   .trust { background: var(--surface-dark); }
   .trust-inner { padding-block: clamp(60px, 8vw, 96px); }
   .trust h2 {
@@ -638,32 +638,25 @@
   .trust-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 48px; }
   .trust-list p { margin: 0; font-size: 16.5px; line-height: 1.76; color: var(--d-ink-secondary); }
   .trust-list .sub { color: var(--d-ink-tertiary); }
-  /* 이미지 자리 — 테두리는 --line 대신 흰색 헤어라인 (C-5) */
+  /* 이미지 자리 — 테두리는 --line 대신 흰색 헤어라인 (C-5). 실물 캡처(2026-08-13) 반영 완료. */
   .shot {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+    display: block;
     aspect-ratio: 16 / 10;
-    padding: 10px;
-    text-align: center;
+    overflow: hidden;
     border: 1px solid var(--d-line);
     border-radius: 6px;
-    background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.05) 0 10px, transparent 10px 20px);
+    background: var(--surface-dark);
   }
-  /* 토큰 정식 등재(§3-1) 전에는 .78/.45 생값을 썼습니다. 토큰 3종으로 맞췄습니다 —
-     같은 다크 섹션 안에서 잉크 단계가 둘 갈리면 나중에 한쪽만 바뀝니다.
-     (플레이스홀더는 8/20 실물 캡처가 오면 이 블록째로 사라집니다) */
-  .shot-ph  { font-size: 12.5px; line-height: 1.7; font-weight: 600; letter-spacing: .04em; color: var(--d-ink-secondary); }
-  .shot-phs { font-size: 12.5px; line-height: 1.7; color: var(--d-ink-tertiary); }
-  /* 크롭 컷이 "위 결과지의 확대"로 읽히도록 겹쳐 놓습니다 */
+  .shot img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .shot-caption { margin: 16px 0 0; font-size: 12.5px; line-height: 1.7; color: var(--d-ink-tertiary); }
+  /* 크롭 컷이 "위 결과지의 확대"로 읽히도록 겹쳐 놓습니다. 종횡비는 크롭 이미지
+     원본 그대로(886×278) — .shot 의 16/10 을 그대로 쓰면 object-fit: cover 가
+     상태 열을 잘라낸다. */
   .shot-crop {
     width: 56%;
+    aspect-ratio: 886 / 278;
     margin-left: 120px;
     margin-top: -56px;
-    background-color: var(--surface-dark);
-    background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 10px, transparent 10px 20px);
     box-shadow: 0 12px 40px rgba(0, 0, 0, .45);
   }
 
@@ -989,10 +982,9 @@
          ⚠️ 저작권 표기는 라이선스 조건이라 의무입니다. "© Crown copyright" 와 확인일을
             빼지 마십시오. "Open Government Licence" 는 고유명사라 영국식 철자를
             유지하고, 본문의 일반명사 "license" 와 철자가 다른 것은 의도입니다(v2 §6).
-         ⚠️ 이미지 2컷은 실물 캡처 대기 중입니다. 목업으로 채우지 마십시오.
-         ⚠️ 플레이스홀더에 내부 일정(수령일·담당 부서)을 적지 마십시오. 국문 쪽은
-            「8/20 수령」·「크롭 지점 마케팅팀 표시」가 화면에 그대로 읽히는 상태입니다 —
-            같은 것을 영문에 옮기지 않았습니다.
+         이미지 2컷은 2026-08-13 실물 캡처로 채웠습니다 — 국문 index.html §6 과 같은
+         이미지 두 장을 그대로 쓰며(같은 화면이라 언어별로 다시 캡처하지 않는다), 가상의
+         NDA(실제 고객 문서 아님)로 생성했습니다. 개인정보·거래정보 0건.
          🚫 절대 금지: 재현율·정밀도 수치 · "15 patterns" · 사내 계약서 건수 ·
             ICC · "international standard" -->
     <section class="trust" aria-labelledby="trust-title">
@@ -1006,17 +998,16 @@
           <p>· We show five fields alongside every item —<br>&nbsp;&nbsp;jurisdiction · statute · article · effective date · date checked</p>
         </div>
         <div class="body-w">
-          <!-- ⚠️ 플레이스홀더 문구에 내부 정보를 쓰지 마십시오 — 날짜·담당 부서·
-               크롭 지점·화면비 전부 안 됩니다. 이 자리는 주석이 아니라 화면에 보이는
-               본문이라, 배포 단계의 주석 제거가 걷어내지 못합니다.
-               국문 index.html §6 이 같은 이유로 같은 형태입니다(「실제 서비스 화면 ·
-               준비 중」) — 한쪽만 고치면 두 페이지의 같은 섹션이 다르게 보입니다. -->
+          <!-- 실물 캡처 반영 완료(2026-08-13) — 국문 index.html §6 과 같은 이미지 두 장을
+               쓴다(같은 화면이므로 언어별로 다시 캡처하지 않는다). trops_a 결과지(C-03)를
+               가상의 NDA(실제 고객 문서 아님)로 생성해 캡처했다. -->
           <div class="shot">
-            <p class="shot-ph">Actual service screen · coming soon</p>
+            <img src="/img/c03-result.jpg" alt="NDA wording check result — reference clauses and counterparty clauses shown side by side with a check status per item" width="1344" height="840" loading="lazy">
           </div>
           <div class="shot shot-crop">
-            <p class="shot-ph">Actual service screen · coming soon</p>
+            <img src="/img/c03-result-detail.jpg" alt="Check status close-up — confirmed vs. not stated shown per item" width="886" height="278" loading="lazy">
           </div>
+          <p class="shot-caption">Sample screen built from a fictional NDA. Not an actual customer document.</p>
         </div>
       </div>
     </section>

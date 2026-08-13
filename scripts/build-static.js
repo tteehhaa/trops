@@ -60,7 +60,7 @@ const STATIC = {
     { file: 'privacy.html', locale: 'ko' },
     { file: 'en-privacy.html', locale: 'en' },
   ],
-  dirs: ['data'],
+  dirs: ['data', 'img'],
 };
 
 /** 배포되지 않는 것. api/ 는 Vercel 이 소스 루트에서 직접 함수로 잡습니다. */

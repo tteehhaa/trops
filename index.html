@@ -589,7 +589,7 @@
   /* ---------- 06 신뢰 (문구 §6 · 정본 C-5) ----------
      페이지 유일한 다크 본문 섹션입니다(푸터와 둘뿐).
      ⚠️ 카운터·숫자 자리는 비워둡니다 — 넣을 숫자가 없습니다 (C-5 · §8).
-     ⚠️ 이미지는 8/20 실물 캡처 대기 중입니다. 목업으로 채우지 마십시오. */
+     이미지 2컷은 2026-08-13 실물 캡처 반영 완료(img/c03-result.jpg · img/c03-result-detail.jpg). */
   .trust { background: var(--surface-dark); }
   .trust-inner { padding-block: clamp(60px, 8vw, 96px); }
   .trust h2 {
@@ -603,32 +603,25 @@
   .trust-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 48px; }
   .trust-list p { margin: 0; font-size: 16.5px; line-height: 1.76; color: var(--d-ink-secondary); }
   .trust-list .sub { color: var(--d-ink-tertiary); }
-  /* 이미지 자리 — 테두리는 --line 대신 흰색 헤어라인 (C-5) */
+  /* 이미지 자리 — 테두리는 --line 대신 흰색 헤어라인 (C-5). 실물 캡처(2026-08-13) 반영 완료. */
   .shot {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+    display: block;
     aspect-ratio: 16 / 10;
-    padding: 10px;
-    text-align: center;
+    overflow: hidden;
     border: 1px solid var(--d-line);
     border-radius: 6px;
-    background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.05) 0 10px, transparent 10px 20px);
+    background: var(--surface-dark);
   }
-  /* 토큰 정식 등재(§3-1) 전에는 .78/.45 생값을 썼습니다. 토큰 3종으로 맞췄습니다 —
-     같은 다크 섹션 안에서 잉크 단계가 둘 갈리면 나중에 한쪽만 바뀝니다.
-     (플레이스홀더는 8/20 실물 캡처가 오면 이 블록째로 사라집니다) */
-  .shot-ph  { font-size: 12.5px; line-height: 1.7; font-weight: 600; letter-spacing: .04em; color: var(--d-ink-secondary); }
-  .shot-phs { font-size: 12.5px; line-height: 1.7; color: var(--d-ink-tertiary); }
-  /* 크롭 컷이 "위 결과지의 확대"로 읽히도록 겹쳐 놓습니다 */
+  .shot img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .shot-caption { margin: 16px 0 0; font-size: 12.5px; line-height: 1.7; color: var(--d-ink-tertiary); }
+  /* 크롭 컷이 "위 결과지의 확대"로 읽히도록 겹쳐 놓습니다. 종횡비는 크롭 이미지
+     원본 그대로(886×278) — .shot 의 16/10 을 그대로 쓰면 object-fit: cover 가
+     상태 열을 잘라낸다. */
   .shot-crop {
     width: 56%;
+    aspect-ratio: 886 / 278;
     margin-left: 120px;
     margin-top: -56px;
-    background-color: var(--surface-dark);
-    background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.07) 0 10px, transparent 10px 20px);
     box-shadow: 0 12px 40px rgba(0, 0, 0, .45);
   }
 
@@ -936,8 +929,7 @@
     </section>
 
     <!-- ===== 06 신뢰 (문구 §6 · 정본 C-5) =====
-         현재 이미지 0장이라 "뭘 받는지" 안 보입니다. 전환에 가장 크게 작용하는 자리로
-         정본 §2-2가 우선순위 3번에 올려둔 섹션입니다.
+         전환에 가장 크게 작용하는 자리로 정본 §2-2가 우선순위 3번에 올려둔 섹션입니다.
          페이지 유일한 다크 본문 섹션입니다(푸터와 둘뿐) — 다른 섹션을 다크로 만들지 마십시오.
 
          ⚠️ 이 자리에 있던 강조 밴드(.band · 기준을 우리가 만들지 않는다는 선언)는
@@ -945,11 +937,14 @@
             정본 §2 3번의 「히어로 직하로 승격」이 뜻하는 것이 이 이동입니다. 둘을 같이
             두면 「판단하지 않는다」 선언이 한 페이지에 두 번 나옵니다.
 
-         ⚠️ 이미지 2컷은 8/20 실물 캡처 대기 중입니다(정본 미결 L-2).
-            목업으로 채우지 마십시오 — C-5는 실물 캡처만 허용합니다.
+         이미지 2컷은 2026-08-13 실물 캡처로 채웠습니다(정본 미결 L-2 해소) — trops_a
+         결과지(C-03)를 가상의 NDA(Alpha Trading Co./Beta Sourcing Inc. · 실제 고객
+         문서 아님)로 생성해 캡처했습니다. 개인정보·거래정보 0건.
          ⚠️ 카운터·숫자 자리는 비워둡니다. 넣을 숫자가 없습니다(C-5 · §8).
-         ⚠️ 정본 §7 — 이 캡처는 준거법·관할이 「차이」로 찍히면 안 됩니다.
-            미결 L-1(정본 §7 — 준거법·관할의 4상태 매핑)이 캡처보다 먼저 확정돼야 합니다. -->
+         정본 §7 우려(준거법·관할이 「차이」로 찍히면 안 됨)는 이 캡처에서 실제로 발생하지
+         않습니다 — 결과지 코드(`lib/precheck/nda/result-view.ts` ⑤ 분리 항목)가 준거법·
+         체결형식을 애초에 비교 상태 없이 "미포함"으로만 표시하도록 짜여 있어, 미결 L-1
+         (4상태 매핑)과 무관하게 이 두 항목은 항상 무상태로 나옵니다(캡처로 실측 확인). -->
     <section class="trust" aria-labelledby="trust-title">
       <div class="container trust-inner">
         <h2 id="trust-title">무엇을 근거로 비교하는지 밝힙니다.</h2>
@@ -961,20 +956,15 @@
           <p>· 근거는 다섯 가지를 함께 보여드립니다 —<br>&nbsp;&nbsp;관할 · 법령명 · 조문 · 시행일 · 확인일자</p>
         </div>
         <div class="body-w">
-          <!-- ⚠️ 플레이스홀더 문구에 내부 정보를 쓰지 마십시오 — 날짜·담당 부서·
-               크롭 지점·화면비 전부 안 됩니다. 이 자리는 주석이 아니라 화면에 보이는
-               본문이라, 배포 단계의 주석 제거가 걷어내지 못합니다. 실제로 「8/20 수령」·
-               「크롭 지점 마케팅팀 표시」가 trops.kr 에서 그대로 읽히던 상태였습니다
-               (2026-08-11 제거). 캡처 일정은 docs/README.md 에만 적습니다 —
-               거기는 .vercelignore 라 배포되지 않습니다.
-               두 자리가 같은 문구인 것은 의도입니다. 서로 다르게 쓰면 그 차이가
-               다시 내부 정보가 됩니다. -->
+          <!-- 실물 캡처 반영 완료(2026-08-13) — trops_a 결과지(C-03)를 가상의 NDA(실제
+               고객 문서 아님)로 생성해 캡처했다. 두 이미지 다 개인정보·거래정보 0건. -->
           <div class="shot">
-            <p class="shot-ph">실제 서비스 화면 · 준비 중</p>
+            <img src="/img/c03-result.jpg" alt="NDA 문언 확인 결과지 — 참조 서식과 조항을 나란히 놓고 항목별 확인 상태를 표시합니다" width="1344" height="840" loading="lazy">
           </div>
           <div class="shot shot-crop">
-            <p class="shot-ph">실제 서비스 화면 · 준비 중</p>
+            <img src="/img/c03-result-detail.jpg" alt="확인 상태 확대 — 확인됨과 미기재 표시가 항목별로 갈립니다" width="886" height="278" loading="lazy">
           </div>
+          <p class="shot-caption">가상의 NDA로 만든 예시 화면입니다. 실제 고객 문서가 아닙니다.</p>
         </div>
       </div>
     </section>
