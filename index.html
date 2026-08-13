@@ -604,14 +604,16 @@
   .trust-list p { margin: 0; font-size: 16.5px; line-height: 1.76; color: var(--d-ink-secondary); }
   .trust-list .sub { color: var(--d-ink-tertiary); }
   /* 이미지 자리 — 테두리는 --line 대신 흰색 헤어라인 (C-5). 실물 캡처(2026-08-13 · 재캡처
-     2026-08-13 앱 프레임 포함 · 2번째 컷 교체 2026-08-13) 반영 완료.
+     2026-08-13 앱 프레임 포함 · 2번째 컷 교체 2026-08-13 · 겹침 배치 2026-08-13) 반영 완료.
      실제 화면은 셸이 없으므로(C-03 정본 — 로그인 없는 공개 페이지) 사이드바·헤더를
      지어 넣지 않고, 대신 일반적인 브라우저 창 프레임(주소창·점 3개)으로 "떠 있는 표"
      느낌을 없앤다. 브라우저 창 특정 제품을 흉내내지 않는다(범용 표현).
-     ⚠️ 두 컷은 "본문 → 확대" 관계가 아니라 C-03 안의 서로 다른 두 구획(①문언 대조 표 ·
-     ②확인해볼 질문)이라 겹쳐 놓지 않는다 — 세로로 쌓는다(.shot-stack). 종횡비는 각
-     캡처 원본 그대로(1383×904 · 1487×523)라 두 값이 다르다. */
-  .shot-stack { display: flex; flex-direction: column; gap: 20px; }
+     ⚠️ 두 컷(①문언 대조 표 · ②확인해볼 질문)은 "본문 → 확대" 관계가 아니라 C-03 안의
+     서로 다른 두 구획이다. 세로로 순서대로 쌓으면 "따로 떨어진 창 두 개"로 읽혀서,
+     ①을 크게 뒤에 두고 ②를 우측 하단에 살짝 걸치듯 겹치는 콜라주 배치로 바꿨다 —
+     미세한 회전각 + 그림자로 "여러 화면을 한번에 훑어보는" 느낌을 낸다. 공간이 좁은
+     화면(640px 이하)에서는 겹침이 어색해지므로 세로 스택으로 되돌아간다. */
+  .shot-stack { position: relative; padding-bottom: 56px; }
   .shot {
     display: block;
     aspect-ratio: 1383 / 904;
@@ -622,7 +624,28 @@
   }
   .shot img { display: block; width: 100%; height: 100%; object-fit: cover; }
   .shot-caption { margin: 16px 0 0; font-size: 12.5px; line-height: 1.7; color: var(--d-ink-tertiary); }
-  .shot-second { aspect-ratio: 1487 / 523; }
+  .shot-stack > .shot:first-child {
+    position: relative;
+    z-index: 1;
+    width: 86%;
+    transform: rotate(-1.3deg);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, .38);
+  }
+  .shot-second {
+    aspect-ratio: 1487 / 523;
+    position: absolute;
+    z-index: 2;
+    right: 0;
+    bottom: -28px;
+    width: 56%;
+    transform: rotate(2deg);
+    box-shadow: 0 16px 34px rgba(0, 0, 0, .42);
+  }
+  @media (max-width: 640px) {
+    .shot-stack { display: flex; flex-direction: column; gap: 20px; padding-bottom: 0; }
+    .shot-stack > .shot:first-child { position: static; width: 100%; transform: none; box-shadow: none; }
+    .shot-second { position: static; width: 100%; transform: none; box-shadow: none; }
+  }
 
   /* ---------- 08 QnA (문구 §8 · 정본 C-3) ----------
      3묶음 14문항. 기본 전부 접힘. 여러 개 동시 펼침 허용 —
@@ -953,10 +976,12 @@
           <p>· 근거는 다섯 가지를 함께 보여드립니다 —<br>&nbsp;&nbsp;관할 · 법령명 · 조문 · 시행일 · 확인일자</p>
         </div>
         <div class="body-w">
-          <!-- 실물 캡처 반영 완료(2026-08-13 · 2번째 컷 교체 2026-08-13) — trops_a
-               결과지(C-03)를 가상의 NDA(실제 고객 문서 아님)로 생성해 캡처했다. 두 컷은
-               같은 화면의 서로 다른 두 구획(①문언 대조 표 · ②확인해볼 질문)이라 세로로
-               나란히 쌓는다("확대" 관계 아님). 개인정보·거래정보 0건. -->
+          <!-- 실물 캡처 반영 완료(2026-08-13 · 2번째 컷 교체 · 겹침 배치 2026-08-13) —
+               trops_a 결과지(C-03)를 가상의 NDA(실제 고객 문서 아님)로 생성해 캡처했다.
+               두 컷은 같은 화면의 서로 다른 두 구획(①문언 대조 표 · ②확인해볼 질문)이라
+               "확대" 관계는 아니지만, 순서대로 세로로만 쌓으면 따로 떨어진 두 창처럼
+               보여서 ①을 크게 뒤에 두고 ②를 우측 하단에 겹치는 콜라주로 배치한다
+               (.shot-stack — CSS 참조). 개인정보·거래정보 0건. -->
           <div class="shot-stack">
             <div class="shot">
               <img src="/img/c03-result.jpg" alt="NDA 문언 확인 결과지 — 참조 서식과 조항을 나란히 놓고 항목별 확인 상태를 표시합니다" width="1383" height="904" loading="lazy">
