@@ -638,10 +638,14 @@
   .trust-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 48px; }
   .trust-list p { margin: 0; font-size: 16.5px; line-height: 1.76; color: var(--d-ink-secondary); }
   .trust-list .sub { color: var(--d-ink-tertiary); }
-  /* 이미지 자리 — 테두리는 --line 대신 흰색 헤어라인 (C-5). 실물 캡처(2026-08-13) 반영 완료. */
+  /* 이미지 자리 — 테두리는 --line 대신 흰색 헤어라인 (C-5). 실물 캡처(2026-08-13 · 재캡처
+     2026-08-13 앱 프레임 포함) 반영 완료. 종횡비는 캡처 원본 그대로(1383×904) —
+     실제 화면은 셸이 없으므로(C-03 정본 — 로그인 없는 공개 페이지) 사이드바·헤더를
+     지어 넣지 않고, 대신 일반적인 브라우저 창 프레임(주소창·점 3개)으로 "떠 있는 표"
+     느낌을 없앤다. 브라우저 창 특정 제품을 흉내내지 않는다(범용 표현). */
   .shot {
     display: block;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 1383 / 904;
     overflow: hidden;
     border: 1px solid var(--d-line);
     border-radius: 6px;
@@ -650,11 +654,11 @@
   .shot img { display: block; width: 100%; height: 100%; object-fit: cover; }
   .shot-caption { margin: 16px 0 0; font-size: 12.5px; line-height: 1.7; color: var(--d-ink-tertiary); }
   /* 크롭 컷이 "위 결과지의 확대"로 읽히도록 겹쳐 놓습니다. 종횡비는 크롭 이미지
-     원본 그대로(886×278) — .shot 의 16/10 을 그대로 쓰면 object-fit: cover 가
+     원본 그대로(888×258) — .shot 의 종횡비를 그대로 쓰면 object-fit: cover 가
      상태 열을 잘라낸다. */
   .shot-crop {
     width: 56%;
-    aspect-ratio: 886 / 278;
+    aspect-ratio: 888 / 258;
     margin-left: 120px;
     margin-top: -56px;
     box-shadow: 0 12px 40px rgba(0, 0, 0, .45);
