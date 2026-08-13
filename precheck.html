@@ -1844,18 +1844,42 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
             } catch (e) { /* 주소만 못 바꿀 뿐이라 그대로 진행합니다. */ }
 
             /*
-             * 🔴 긴급 롤백(2026-08-13) — trops_a 미리보기 자동 리다이렉트를 되돌린다.
+             * trops_a NDA 대조 결과 화면으로 즉시 이동 〔2026-08-13 재개〕
              *
-             * 2026-08-13에 추가했던 "결제 확정 즉시 app.trops.kr/c/{intakeId}로 이동" 로직이
-             * 실제로는 trops_a 쪽 결과 저장(precheck_nda_run insert)이 프로덕션 환경에서만
-             * 조용히 실패하는 버그와 맞물려, 실사용자가 제출 직후 "링크가 유효하지 않습니다"
-             * 라는 에러처럼 보이는 화면을 보게 만들었다(실제로는 접수 자체는 정상). 원인이
-             * 밝혀지지 않은 채로 사용자 영향이 있어 즉시 원래 흐름으로 되돌린다.
+             * ── 이력 ──────────────────────────────────────────────────────────────
+             * ffc9d01(08-13 07:59) 최초 도입 → 2bb1087(09:08) 긴급 롤백 → 지금 재개.
+             * 롤백 사유는 이 코드가 아니라 trops_a 쪽 저장 버그였다: Vercel 프로덕션의
+             * PRECHECK_SUPABASE_URL 이 http:// 라서 Supabase REST 가 301로 https 를 돌려줬고,
+             * Node fetch 가 리다이렉트를 따라가며 POST 를 GET 으로 깎아 본문을 버렸다 —
+             * precheck_nda_run 삽입이 "성공처럼" 보이면서 행을 안 만들었고, 그래서 제출 직후
+             * 방문자가 "링크가 유효하지 않습니다"를 봤다. trops_a ab14653 에서 원인 확정 ·
+             * env 정정 · normalizeSupabaseUrl 방어까지 끝났다(origin/main 반영 확인).
              *
-             * trops_a 쪽 즉석 실행·저장 코드는 그대로 둔다 — 이 되돌림은 "그리로 보내지
-             * 않는다"만 하고, trops_a 저장 버그 자체를 고치는 것은 아니다. 저장 버그가 해소된
-             * 뒤 이 블록을 다시 켤 수 있다(git history 참조 — 커밋 ffc9d01).
+             * ── 재개 전 확인한 것 ─────────────────────────────────────────────────
+             * · intakeId(= intake.id)는 trops_a 의 ndaTriggerFor 가 intake 를 .eq("id", …) 로
+             *   조회하는 값과 같다 — 식별자가 어긋나지 않는다.
+             * · 위 5)단계 patchOrder 가 status='received' 를 이 응답보다 **먼저** 확정하므로,
+             *   이동 시점엔 trops_a 의 intakeReadyForPipeline 이 이미 통과한다.
+             *
+             * ⚠️ 이건 "공식 전달"이 아니다 — delivered_at(환불 기준선)은 그대로 사람이
+             *    scripts/deliver.js 를 돌려야 찍힌다(api/_delivery.js 주석 참조). 여기서 하는
+             *    일은 "결제가 끝난 사람을 결과 화면으로 보내는" 것뿐이다.
+             * ⚠️ 그 화면에는 검수 게이트(NDA_RESULT_REVIEW_GATE_ENABLED)가 있어, 운영자가
+             *    검수 완료로 표시하기 전까지는 실제 대조 내용 대신 "결과 확인 중입니다"만
+             *    보인다 — 원문·판정이 검수 없이 새는 경로가 아니다. 게이트 해제 조건은
+             *    **초반 실증 20건 전부 검수 통과**다(일부만 보고 넘어가지 않는다 — 1건이라도
+             *    걸리면 카운트를 다시 시작한다). docs/pdca/03-nda-redirect-resume.md §4 ·
+             *    trops_a lib/precheck/nda/review-gate.ts 에 같은 숫자가 적혀 있다.
+             * ⚠️ intakeId 가 없으면(구버전 응답·일시적 오류) 기존 접수 확인 화면으로 그대로
+             *    남는다 — 새 경로가 실패해도 원래 경로가 살아 있다.
              */
+            if (r.body.intakeId) {
+              openStatusPanel('결제 확인', '결과 확인 화면으로 이동합니다.');
+              note.textContent = '잠시 후 대조 결과 화면으로 이동합니다…';
+              window.location.href = 'https://app.trops.kr/c/' + encodeURIComponent(r.body.intakeId);
+              return;
+            }
+
             showReceipt(r.body.token);
             return;
           }
