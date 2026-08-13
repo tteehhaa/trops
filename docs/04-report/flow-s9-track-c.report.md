@@ -1,10 +1,11 @@
 # flow-s9-track-c 완료 보고서
 
 > **Date**: 2026-08-13
-> **Match Rate**: **97 / 100** (게이트 90 통과)
+> **Match Rate**: **98 / 100** (게이트 90 통과 · 스키마 적용 후 상향)
 > **Commits**: `6f2a32a` (기능 9건) · `d5063fb` (배포 안전장치)
 > **Deploy**: `dpl_76RUzy6o4fP1WEGKBBehHUaJvjWK` → https://www.trops.kr (READY)
 > **Tests**: 244 → **322 전건 통과**
+> **Schema**: 「0-H」 절 적용 완료 (2026-08-13, 사용자 실행 · 라이브 실측 통과)
 > **Docs**: plan / design / analysis — `flow-s9-track-c.*`
 
 ---
@@ -70,41 +71,40 @@ md 문구는 그대로 쓰고, **근거만** 판정층 `precheck_nda_run` 행 �
 
 ---
 
-## 🔴 사용자가 해야 할 일 (배포는 끝났지만 남은 선행 작업)
+## ✅ 스키마 적용 후 실측 (2026-08-13 · 완료)
 
-### 1. Supabase SQL Editor 에서 「0-H」 절 실행 — **지금 해야 함**
+사용자가 「0-H」 절을 실행했고, **읽기 전용** 조회로 전부 확인했다(쓰기·DDL 0건).
 
-`precheck-schema.sql` 의 `── 0-H` 절만 복사해 실행하십시오(파일 전체를 붙여넣으면 `create table` 에서 42P07 로 멈춥니다).
+| 확인 | 결과 |
+|---|---|
+| `doc_type` · `payment_reminder_sent_at` 컬럼 | ✅ 둘 다 조회됨 |
+| 기존 행 백필 | ✅ 12행 전부 `doc_type='nda'` · null 0건 |
+| 리마인드 배치 (`remind:preview`) | ✅ 프로덕션 DB 실행 — 후보 0건 · 오류 0 |
+| 접수확인 API 라이브 | ✅ `delivered → stage=3` / `received → stage=2`, `label="비밀유지계약서(NDA)"` |
+| `intake_doc_type_allowed` check | ⚠️ 미확정 — 탐침이 오래된 제약에 먼저 걸렸고, 확정에는 실제 쓰기가 필요해 하지 않았다(행 미생성). 서버가 이미 400 으로 막는다 |
 
-```sql
-alter table public.intake
-  add column if not exists doc_type                  text not null default 'nda',
-  add column if not exists payment_reminder_sent_at   timestamptz;
+`received → stage=2` 가 나온 것은 **판정층 `precheck_nda_run` 을 프로덕션에서 실제로 읽었다**는 뜻이다 — S7 에서 가장 위험했던 저장소 간 조회가 라이브에서 동작함을 확인했다.
 
-alter table public.intake drop constraint if exists intake_doc_type_allowed;
-alter table public.intake add  constraint intake_doc_type_allowed
-  check (doc_type in ('nda'));
+---
 
-create index if not exists intake_payment_reminder_idx
-  on public.intake (received_at)
-  where intake_path = 'paid'
-    and payment_status = 'pending'
-    and payment_reminder_sent_at is null;
+## 🔴 라이브 실측으로 드러난 구조적 사실 — 9번은 지금 발화할 수 없다
+
+프로덕션 `intake` 12행이 **전부 `free/none`** 이고 `awaiting_payment` 는 0건이다. 결함이 아니라 설계다:
+
+```
+유상 과금 게이트: isPrecheckPaidChargeEnabled() === false
+막고 있는 것    : ['paid_charge_enabled', 'S62-44', 'S62-03']
 ```
 
-**실행 전까지 무슨 일이 일어나는가**: 접수는 **정상 동작합니다**(위 안전장치). 다만 ① `doc_type` 값이 기록되지 않고 ② 리마인드 배치가 매일 0건으로 끝납니다. 두 경우 모두 Vercel 로그에 「0-H 절을 실행하십시오」가 남습니다.
+`api/intake.js` 가 유상 경로를 접수 시점에 거절하므로(`rejectIfChargeBlocked`) `intake_path='paid'` 행이 생기지 않는다. `awaiting_payment` 는 유상 경로에서만 나오는 상태이므로, **과금 게이트가 열리기 전까지 리마인드 후보는 구조적으로 0건**이다.
 
-### 2. 리마인드 첫 실행 전 미리보기
+- 배치는 매일 정상적으로 돌아 0건을 보고한다(오늘 실측이 그것을 보였다)
+- **게이트가 열리는 날 자동으로 살아난다** — 추가 코드 작업 없음. 그날 첫 실행 전에 `npm run remind:preview` 한 번만 돌릴 것
+- 반면 **8번은 지금 발화한다** — `sendIntakeMails` 안에 있고 무상 경로가 그 함수를 부르므로, 다음 무상 접수의 확인메일에 기한관리 링크가 들어간다
 
-```bash
-npm run remind:preview
-```
+## 남은 확인 1건 (−2점)
 
-72시간 상한이 오래된 잔행을 막고 있지만, 그 상한이 실제로 몇 건을 남기는지 세어 보고 켜는 것이 맞습니다. `--apply` 는 **실제 고객에게 메일을 보냅니다.**
-
-### 3. 라이브 발송 1건 실측 (−3점의 내용)
-
-8·9번 메일은 가짜 `fetch`/Resend 대역 위에서만 검증됐습니다. 스키마 실행 후 실제 접수 1건으로 확인메일의 기한관리 링크와 리마인드 발송을 실측해야 이 축이 닫힙니다.
+Resend 가 실제로 렌더·발송한 메일 본문을 눈으로 본 적이 없다. **8번은 다음 무상 접수 1건**으로, **9번은 과금 게이트 개방 후**에 각각 닫힌다. 그때까지는 문면 단정(테스트 12건)이 근거다.
 
 ---
 
