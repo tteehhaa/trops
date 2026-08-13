@@ -639,10 +639,14 @@
   .trust-list p { margin: 0; font-size: 16.5px; line-height: 1.76; color: var(--d-ink-secondary); }
   .trust-list .sub { color: var(--d-ink-tertiary); }
   /* 이미지 자리 — 테두리는 --line 대신 흰색 헤어라인 (C-5). 실물 캡처(2026-08-13 · 재캡처
-     2026-08-13 앱 프레임 포함) 반영 완료. 종횡비는 캡처 원본 그대로(1383×904) —
+     2026-08-13 앱 프레임 포함 · 2번째 컷 교체 2026-08-13) 반영 완료.
      실제 화면은 셸이 없으므로(C-03 정본 — 로그인 없는 공개 페이지) 사이드바·헤더를
      지어 넣지 않고, 대신 일반적인 브라우저 창 프레임(주소창·점 3개)으로 "떠 있는 표"
-     느낌을 없앤다. 브라우저 창 특정 제품을 흉내내지 않는다(범용 표현). */
+     느낌을 없앤다. 브라우저 창 특정 제품을 흉내내지 않는다(범용 표현).
+     ⚠️ 두 컷은 "본문 → 확대" 관계가 아니라 C-03 안의 서로 다른 두 구획(①문언 대조 표 ·
+     ②확인해볼 질문)이라 겹쳐 놓지 않는다 — 세로로 쌓는다(.shot-stack). 종횡비는 각
+     캡처 원본 그대로(1383×904 · 1487×523)라 두 값이 다르다. */
+  .shot-stack { display: flex; flex-direction: column; gap: 20px; }
   .shot {
     display: block;
     aspect-ratio: 1383 / 904;
@@ -653,16 +657,7 @@
   }
   .shot img { display: block; width: 100%; height: 100%; object-fit: cover; }
   .shot-caption { margin: 16px 0 0; font-size: 12.5px; line-height: 1.7; color: var(--d-ink-tertiary); }
-  /* 크롭 컷이 "위 결과지의 확대"로 읽히도록 겹쳐 놓습니다. 종횡비는 크롭 이미지
-     원본 그대로(888×258) — .shot 의 종횡비를 그대로 쓰면 object-fit: cover 가
-     상태 열을 잘라낸다. */
-  .shot-crop {
-    width: 56%;
-    aspect-ratio: 888 / 258;
-    margin-left: 120px;
-    margin-top: -56px;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, .45);
-  }
+  .shot-second { aspect-ratio: 1487 / 523; }
 
   /* ---------- 08 QnA (문구 §8 · 정본 C-3) ----------
      3묶음 14문항. 기본 전부 접힘. 여러 개 동시 펼침 허용 —
@@ -795,8 +790,6 @@
     .card .btn { width: 100%; }
     .badge-soon { font-size: 18px; }
     .card-title { font-size: 18px; }
-    /* 신뢰 이미지 2컷: 세로 스택, 크롭이 아래 (겹침·들여쓰기 해제) */
-    .shot-crop { width: 100%; margin-left: 0; margin-top: 16px; box-shadow: none; }
     /* QnA: 질문이 길어 셰브론과 같은 줄에서 눌리므로 위 정렬로 바꿉니다 */
     .qbtn { align-items: flex-start; gap: 12px; padding: 16px 0; }
     .qbtn > span:first-child { font-size: 18px; }
@@ -1002,14 +995,18 @@
           <p>· We show five fields alongside every item —<br>&nbsp;&nbsp;jurisdiction · statute · article · effective date · date checked</p>
         </div>
         <div class="body-w">
-          <!-- 실물 캡처 반영 완료(2026-08-13) — 국문 index.html §6 과 같은 이미지 두 장을
-               쓴다(같은 화면이므로 언어별로 다시 캡처하지 않는다). trops_a 결과지(C-03)를
-               가상의 NDA(실제 고객 문서 아님)로 생성해 캡처했다. -->
-          <div class="shot">
-            <img src="/img/c03-result.jpg" alt="NDA wording check result — reference clauses and counterparty clauses shown side by side with a check status per item" width="1383" height="904" loading="lazy">
-          </div>
-          <div class="shot shot-crop">
-            <img src="/img/c03-result-detail.jpg" alt="Check status close-up — confirmed vs. not stated shown per item" width="888" height="258" loading="lazy">
+          <!-- 실물 캡처 반영 완료(2026-08-13 · 2번째 컷 교체 2026-08-13) — 국문
+               index.html §6 과 같은 이미지 두 장을 쓴다(같은 화면이므로 언어별로 다시
+               캡처하지 않는다). trops_a 결과지(C-03)를 가상의 NDA(실제 고객 문서 아님)로
+               생성해 캡처했다. 두 컷은 같은 화면의 서로 다른 두 구획(①문언 대조 표 ·
+               ②확인해볼 질문)이라 세로로 나란히 쌓는다("확대" 관계 아님). -->
+          <div class="shot-stack">
+            <div class="shot">
+              <img src="/img/c03-result.jpg" alt="NDA wording check result — reference clauses and counterparty clauses shown side by side with a check status per item" width="1383" height="904" loading="lazy">
+            </div>
+            <div class="shot shot-second">
+              <img src="/img/c03-result-detail.jpg" alt="Questions to check — a list of verification questions generated from the comparison result" width="1487" height="523" loading="lazy">
+            </div>
           </div>
           <p class="shot-caption">Sample screen built from a fictional NDA. Not an actual customer document.</p>
         </div>
