@@ -68,6 +68,9 @@ const NOT_DEPLOYED = new Set([
   'api',                  // 서버리스 함수 — Vercel 이 별도로 처리
   'scripts', 'test',      // .vercelignore
   'docs',                 // 정본·와이어프레임. 공개되면 안 됩니다
+  // 사용자 흐름·결정 문서(doc/s9/…). docs 와 별개 폴더이고 성격은 같습니다 —
+  // 가격·채널 전략이 들어 있어 공개되면 안 됩니다. .vercelignore 도 함께 보십시오.
+  'doc',
   'node_modules', 'dist',
   'package.json', 'package-lock.json',
   'precheck-schema.sql',  // .vercelignore
