@@ -135,18 +135,40 @@ test('기한관리 「지금은 무료」가 배지에서 빠지고 본문에 �
 const RETIRED_KO = ['문서 대조', '바이어 서류 사전 확인'];
 const RETIRED_EN = ['Document comparison', 'Buyer document pre-check'];
 
-test('04 카드가 05 와 같은 이름을 쓴다', () => {
+/*
+ * 🔄 **단언을 새 구조 위에 다시 적었습니다** 〔2026-08-14 · landing-flow-restructure-s9〕.
+ *
+ * 종전 이름은 「04 카드가 05 와 같은 이름을 쓴다」였고, 04 2층카드의 .eyebrow-quiet
+ * (「거래 시작 전 · 수출 사전점검」)과 05 아코디언의 .feat-title 이 같은 상품을 같은
+ * 이름으로 부르는지 봤습니다. **04 와 05 가 한 섹션으로 합쳐지면서 그 대조쌍이
+ * 사라졌습니다** — 지금은 한 카드가 생애주기(.feat-meta)와 상품명(.feat-title)을
+ * 나란히 갖습니다. 그래서 「두 자리가 같은 이름인가」가 아니라 「한 자리가 용어
+ * 정본과 같은가」를 봅니다. 지키려는 것은 그대로입니다: **한 상품을 두 이름으로
+ * 부르지 않는다.**
+ * ⛔ 이 검사를 04/05 두 섹션 대조로 되돌리지 마십시오. 되돌리려면 섹션을 먼저 다시
+ *    갈라야 하고, 그것은 이 사이클이 없앤 중복을 되살리는 일입니다.
+ */
+test('상품 카드가 용어 정본대로 생애주기 + 상품명을 갖는다', () => {
   const cards = section(M.index, 'cards-sec');
 
-  assert.ok(cards.indexOf('거래 시작 전 · 수출 사전점검') !== -1,
-    '01 카드가 「수출 사전점검」이 아닙니다 (구 「문서 대조」 · 구구 「NDA 비교」)');
-  assert.ok(cards.indexOf('거래 시작 후 · 기한 관리') !== -1,
-    '02 카드가 「기한 관리」가 아닙니다 (구 「거래 절차 트래킹」)');
+  const metas = (cards.match(/<span class="feat-meta">([^<]*)<\/span>/g) || [])
+    .map((s) => s.replace(/<[^>]*>/g, '').trim());
+  assert.deepStrictEqual(metas, ['거래 시작 전', '거래 시작 전', '거래 시작 후'],
+    '생애주기 축이 용어 정본과 다릅니다: ' + JSON.stringify(metas));
+
   assert.ok(cards.indexOf('NDA 비교') === -1, '옛 이름 「NDA 비교」가 남아 있습니다');
   assert.ok(cards.indexOf('거래 절차 트래킹') === -1, '옛 이름 「거래 절차 트래킹」이 남아 있습니다');
+
+  // 상품명이 카드마다 한 번씩만 나오는지 — 머리와 패널이 이름을 두 번 말하면
+  // 통합의 목적(한 상품 = 한 번의 설명)이 카드 안에서 다시 깨집니다.
+  for (const name of ['수출 사전점검', '바이어 확인', '기한 관리']) {
+    const hits = (cards.match(new RegExp(name, 'g')) || []).length;
+    assert.strictEqual(hits, 1,
+      '「' + name + '」이 상품소개 섹션에 ' + hits + '번 나옵니다 (1번이어야 합니다)');
+  }
 });
 
-test('05 아코디언 01 카드 제목이 04 와 같은 이름이다', () => {
+test('상품 카드 3장의 제목이 용어 정본과 같다', () => {
   const titles = (M.index.match(/<span class="feat-title">([^<]*)<\/span>/g) || [])
     .map((s) => s.replace(/<[^>]*>/g, '').trim());
   assert.deepStrictEqual(titles, ['수출 사전점검', '바이어 확인', '기한 관리'],
@@ -194,32 +216,56 @@ test('푸터 /precheck 링크 라벨이 그 페이지 이름과 같다 — 전 �
   }
 });
 
-test('04 기한관리 카드에 「준비 중」 배지가 없다', () => {
+test('기한관리 카드에 「준비 중」 배지가 없다', () => {
   const cards = section(M.index, 'cards-sec');
   assert.ok(cards.indexOf('badge-soon') === -1,
     '「준비 중」 배지가 남아 있습니다 — app.trops.kr 은 이미 무로그인으로 열립니다');
 });
 
-test('04 두 카드 모두 상태줄을 갖는다 — 배지를 지운 자리를 비워두지 않는다', () => {
-  // 「준비 중」 배지가 .card-title 자리를 쓰고 있었습니다. 지우고 비워 두면 두 가지가
-  // 한꺼번에 깨집니다: ① 두 카드의 첫 줄 높이가 어긋나고 ② 01 에만 「지금 쓸 수
-  // 있습니다」가 남아 02 는 못 쓴다는 뜻이 되어 방금 지운 배지가 암시로 되살아납니다.
-  for (const [file, markup] of [['index.html', M.index], ['en.html', M.en]]) {
-    const cards = section(markup, 'cards-sec');
-    const titles = (cards.match(/<span class="card-title">([^<]*)<\/span>/g) || []);
-    assert.strictEqual(titles.length, 2,
-      file + ' 의 04 카드 상태줄이 ' + titles.length + '개입니다 — 두 카드 모두 필요합니다');
-  }
+/*
+ * 🔄 **단언 대상이 .card-title 에서 .feat-avail 로 바뀌었습니다**
+ *    〔2026-08-14 · landing-flow-restructure-s9〕. 상태줄이 옛 04 2층카드에서 통합
+ *    카드의 머리로 옮겨 갔고, 카드 수도 2 → 3 이 됐습니다(바이어 확인이 합류).
+ *    en.html 은 이번 배치 밖이라 옛 구조(.card-title × 2) 그대로입니다.
+ *
+ * 지키려는 것은 그대로입니다: **상태줄이 빠진 카드를 만들지 않는다.** 「준비 중」
+ * 배지를 걷어낸 자리를 비워 두면 ① 카드 첫 줄 높이가 어긋나고 ② 상태줄이 있는
+ * 카드만 쓸 수 있다는 뜻이 되어 방금 지운 배지가 암시로 되살아납니다.
+ */
+test('상품 카드 3장이 모두 상태줄을 갖는다 — 배지를 지운 자리를 비워두지 않는다', () => {
+  const cards = section(M.index, 'cards-sec');
+  const avails = (cards.match(/<span class="feat-avail">([^<]*)<\/span>/g) || [])
+    .map((s) => s.replace(/<[^>]*>/g, '').trim());
+  assert.strictEqual(avails.length, 3,
+    'index.html 의 상태줄이 ' + avails.length + '개입니다 — 세 카드 모두 필요합니다');
+  assert.strictEqual(new Set(avails).size, 3,
+    '상태줄 3개가 서로 다르지 않습니다 — 세 상품의 실제 상태가 다릅니다: ' + JSON.stringify(avails));
+  // 「무료」는 덤처럼 보여 가치를 저평가시킵니다(흐름 md §4 Give/Get 은 「포함」 계열).
+  assert.ok(!avails.some((a) => /무료/.test(a)), '상태줄에 「무료」가 들어왔습니다: ' + JSON.stringify(avails));
+
+  // en.html 은 아직 04 2층카드 구조입니다 — 그쪽 단언은 옛 형태 그대로 둡니다.
+  const enCards = section(M.en, 'cards-sec');
+  const enTitles = (enCards.match(/<span class="card-title">([^<]*)<\/span>/g) || []);
+  assert.strictEqual(enTitles.length, 2,
+    'en.html 의 04 카드 상태줄이 ' + enTitles.length + '개입니다 — 두 카드 모두 필요합니다');
 });
 
-test('04 기한관리 버튼이 인라인 확장이다 — 페이지 이동이 아니다', () => {
+/*
+ * 🔄 **「04 카드의 [기한관리 미리보기] 버튼」이 사라졌습니다** 〔2026-08-14〕.
+ *    그 카드가 아코디언 카드로 흡수됐고, 자기 자신을 펼치는 버튼은 뜻이 없기 때문입니다.
+ *    지키려던 것(= 기한관리 소개가 페이지 이동이 아니라 그 자리 확장이다)은 이제
+ *    카드 자신의 .feat-btn 이 집니다. 그것을 확인합니다.
+ */
+test('기한관리 카드가 그 자리에서 펼쳐진다 — 페이지 이동이 아니다', () => {
   const cards = section(M.index, 'cards-sec');
-
-  assert.ok(cards.indexOf('기한관리 미리보기') !== -1, '버튼 라벨이 「기한관리 미리보기」가 아닙니다');
   assert.ok(cards.indexOf('알림 받기') === -1, '옛 라벨 「알림 받기」가 남아 있습니다');
-  assert.ok(/<button[^>]*data-timeline-open/.test(cards),
-    '<button data-timeline-open> 이 아닙니다 — <a href> 면 페이지 이동이 됩니다');
   assert.ok(!/<a[^>]*href="#interest"[^>]*>\s*알림/.test(cards), '사전등록 폼으로 보내는 링크가 남아 있습니다');
+
+  const start = cards.indexOf('id="feat-timeline"');
+  assert.ok(start !== -1, '기한관리 카드가 상품소개 섹션 안에 없습니다');
+  const block = cards.slice(start);
+  assert.ok(/aria-controls="feat-timeline-panel"/.test(block), '펼침 버튼이 패널을 가리키지 않습니다');
+  assert.ok(block.indexOf('id="feat-timeline-panel"') !== -1, '인라인 패널이 없습니다');
 });
 
 test('기한관리 패널은 페이지에 하나뿐이다 — 트리거만 늘린다', () => {
@@ -227,17 +273,33 @@ test('기한관리 패널은 페이지에 하나뿐이다 — 트리거만 늘�
   assert.strictEqual(panels, 1,
     '패널이 ' + panels + '개입니다 — 복제하면 지도 에셋이 여러 번 로드되고 상태가 갈립니다');
 
-  const triggers = (M.index.match(/data-timeline-open/g) || []).length;
-  assert.ok(triggers >= 4,
-    '트리거가 ' + triggers + '개입니다 — 히어로·04 카드·로드맵·마감 CTA 네 곳이어야 합니다');
+  /*
+   * 🔄 4 → 3. 옛 04 2층카드의 트리거가 위 사유로 사라졌습니다.
+   * ⚠️ **B.index(본문)로 셉니다.** M.index 는 HTML 주석만 걷으므로 <style>·<script>
+   *    안의 주석에 인용된 [data-timeline-open] 이 그대로 섞여 들어옵니다 — 그러면
+   *    트리거를 지워도 이 검사가 통과합니다(실제로 그런 상태였습니다).
+   */
+  const triggers = (B.index.match(/data-timeline-open/g) || []).length;
+  assert.strictEqual(triggers, 3,
+    '트리거가 ' + triggers + '개입니다 — 히어로·로드맵·마감 CTA 세 곳이어야 합니다');
 });
 
-test('04 h2 아래 층위 구분 한 줄이 있다 — 05 와 중복으로 읽히지 않게', () => {
+/*
+ * 🔄 **「04→05 로 넘기는 링크」 단언을 걷었습니다** 〔2026-08-14〕. 넘길 05 가 없습니다.
+ *    .cards-lead 는 남습니다 — 역할이 「두 섹션은 중복이 아니다」라는 변명에서
+ *    「카드를 펼쳐 보라」는 조작 안내로 바뀌었고, 옛 05 h2 의 문면을 흡수했습니다.
+ *    id="feats" 앵커도 남깁니다(과거 링크가 죽지 않도록).
+ */
+test('상품소개 h2 아래 조작 안내 한 줄이 있고, 옛 앵커가 살아 있다', () => {
   const cards = section(M.index, 'cards-sec');
-  assert.ok(cards.indexOf('class="cards-lead"') !== -1,
-    '.cards-lead 가 없습니다 — 04 와 05 가 다시 같은 말의 반복으로 읽힙니다');
-  assert.ok(cards.indexOf('href="#feats"') !== -1, '05 아코디언으로 넘기는 링크가 없습니다');
-  assert.ok(M.index.indexOf('id="feats"') !== -1, '#feats 앵커가 없습니다 — 죽은 링크가 됩니다');
+  assert.ok(cards.indexOf('class="cards-lead"') !== -1, '.cards-lead 가 없습니다');
+  assert.ok(cards.indexOf('펼쳐보세요') !== -1,
+    '리드가 카드를 펼치라고 안내하지 않습니다 — 옛 05 h2 가 하던 일을 이 줄이 받았습니다');
+  // ⚠️ B(본문)로 봅니다. M 은 HTML 주석만 걷으므로 CSS 주석의 「<a href="#feats"> 를
+  //    되살리지 마십시오」가 그대로 오탐이 됩니다(파일 머리 ⚠️ 와 같은 이유).
+  assert.ok(!/href="#feats"/.test(B.index),
+    '자기 섹션 안으로 가는 링크(#feats)가 남아 있습니다 — 넘길 「아래」가 없습니다');
+  assert.ok(M.index.indexOf('id="feats"') !== -1, 'feats 앵커가 없습니다 — 과거 링크가 죽습니다');
 });
 
 /* ══ 3. 정보 불일치 해소 ═════════════════════════════════════════════════════ */
@@ -315,16 +377,35 @@ test('접수 화면 안의 「NDA」는 그대로 남아 있다 — 범위 명�
  * 방어 문구가 기와 승 사이에 있으면 감정이 붙기 전에 선긋기를 먼저 합니다.
  */
 
-test('안심 문구가 경험담 뒤에 있다 — 히어로 직하가 아니다', () => {
+/*
+ * 🔄 **기준이 「경험담 뒤」에서 「결 CTA 뒤」로 바뀌었습니다** 〔2026-08-14 · 재배치〕.
+ *
+ * 종전 단언은 `stories < assure < HOW` 였습니다. 그때는 감정선(기-승-전-결)의 「전」과
+ * 「결」이 아직 페이지 뒤쪽에 있어서, 경험담 직후가 감정선 밖의 유일한 안전지대였습니다.
+ * 재배치로 감정선 넷이 히어로~결 CTA 로 앞당겨 모였으므로, 방어 문구가 들어갈 수 있는
+ * 자리는 **감정선이 끝난 다음**뿐입니다.
+ *
+ * 지키려는 것은 그대로입니다: **감정이 붙기 전에 선을 긋지 않는다.**
+ * ⛔ 히어로 직하로 되돌리지 마십시오. 그것이 2026-08-13 에 한 번 고쳐진 상태입니다.
+ */
+test('안심 문구가 결 CTA 뒤에 있다 — 감정선 안에 끼지 않는다', () => {
   const b = B.index;
   const hero = b.indexOf('<section class="container hero">');
   const stories = b.indexOf('class="stories"');
+  const trust = b.indexOf('id="trust-title"');
+  const act = b.indexOf('id="act-title"');
   const assure = b.indexOf('id="assure-title"');
   const how = b.indexOf('HOW IT WORKS');
 
-  assert.ok(hero !== -1 && stories !== -1 && assure !== -1 && how !== -1, '기준 블록을 찾지 못했습니다');
-  assert.ok(assure > stories,
-    '안심 문구가 아직 경험담보다 앞에 있습니다 — 감정몰입 전에 방어를 먼저 마주칩니다');
+  for (const [n, v] of [['hero', hero], ['stories', stories], ['trust', trust],
+    ['act', act], ['assure', assure], ['how', how]]) {
+    assert.ok(v !== -1, '기준 블록을 찾지 못했습니다: ' + n);
+  }
+  // 감정선 기 - 승 - 전 - 결이 끊기지 않고 이어지는가.
+  assert.ok(hero < stories && stories < trust && trust < act,
+    '감정선 순서가 기(히어로) - 승(경험담) - 전(신뢰) - 결(행동)이 아닙니다');
+  assert.ok(assure > act,
+    '안심 문구가 감정선 안에 끼어 있습니다 — 결(행동) 다음이어야 방어가 아니라 안심으로 읽힙니다');
   assert.ok(assure < how, '안심 문구가 HOW 설명보다 뒤로 밀렸습니다');
 });
 

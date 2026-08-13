@@ -1,0 +1,321 @@
+/*
+ * 랜딩 섹션 순서 · 배경 교차 테스트
+ *   〔landing-flow-restructure-s9 · 신설 2026-08-14〕
+ *
+ *   npm test        (node --test test/)
+ *
+ * 왜 있는가: 이 페이지는 2026-08 한 달 동안 섹션이 다섯 번 옮겨졌습니다. 옮길 때마다
+ * 「왜 이 순서인가」가 주석으로만 남아서, 다음 사람이 한 섹션을 옮기면 감정선이 조용히
+ * 뒤집혔습니다 — 실제로 신뢰증명이 상품소개 뒤로 밀려 「확신을 만든 뒤 상품을 보여준다」가
+ * 정확히 반대가 된 채 배포돼 있었습니다. 이 파일이 그 순서를 코드로 못질합니다.
+ *
+ * 정본: docs/02-design/features/landing-flow-restructure-s9.design.md §1 배치표.
+ * ⚠️ 섹션을 넣거나 옮길 때 **그 표와 이 파일을 함께** 고치십시오. 한쪽만 고치면 다음
+ *    사람이 어느 쪽이 정본인지 알 수 없습니다.
+ *
+ * ⚠️ 모든 검사는 **주석을 걷어낸 마크업**에 대해 합니다(이 저장소의 공통 규칙 —
+ *    주석을 인수인계 수단으로 쓰고 빌드가 떼어냅니다). 배경 검사만 <style> 원문을 봅니다.
+ */
+
+'use strict';
+
+const test = require('node:test');
+const assert = require('node:assert');
+const fs = require('node:fs');
+const path = require('node:path');
+
+const ROOT = path.resolve(__dirname, '..');
+const RAW = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+/** 주석 없는 마크업. */
+const M = RAW.replace(/<!--[\s\S]*?-->/g, '');
+/** 사람 눈에 보이는 본문만 — <style>·<script> 안 주석까지 걷습니다. */
+const B = M.replace(/<style[\s\S]*?<\/style>/g, '').replace(/<script[\s\S]*?<\/script>/g, '');
+/** <style> 안의 CSS(주석 제거). */
+const CSS = RAW.match(/<style[\s\S]*?<\/style>/)[0].replace(/\/\*[\s\S]*?\*\//g, '');
+
+/* ── 배치표 정본 ─────────────────────────────────────────────────────────────
+ * key   — 이 섹션을 찾는 문자열(마크업에 실제로 있는 것)
+ * bg    — 'bg' | 'surface' | 'dark'
+ */
+const LAYOUT = [
+  { name: '히어로',        key: '<section class="container hero">',        bg: 'bg' },
+  { name: '경험담(승)',    key: '<section class="stories-sec',             bg: 'surface' },
+  { name: '신뢰증명(전)',  key: '<section class="trust"',                  bg: 'dark' },
+  { name: '상품소개',      key: '<section class="cards-sec" id="service"', bg: 'bg' },
+  { name: '결 CTA',        key: '<section class="act"',                    bg: 'bg' },
+  { name: '안심문구',      key: '<section class="assure',                  bg: 'surface' },
+  { name: 'HOW IT WORKS',  key: '<section class="how" id="how">',          bg: 'bg' },
+  { name: '로드맵',        key: 'id="next"',                               bg: 'surface' },
+  { name: 'FAQ',           key: '<section class="qna"',                    bg: 'bg' },
+  { name: '마감CTA',       key: '<section class="close-cta',               bg: 'surface' },
+  { name: '사전등록폼',    key: '<section class="interest"',               bg: 'bg' },
+  { name: '기관안내',      key: '<section class="orgs-sec',                bg: 'surface' },
+  { name: '푸터',          key: '<footer class="footer">',                 bg: 'dark' },
+];
+
+/* ── O1 순서 ─────────────────────────────────────────────────────────────── */
+
+test('O1 섹션 순서가 배치표와 정확히 일치한다', () => {
+  const found = LAYOUT.map((s) => {
+    const at = M.indexOf(s.key);
+    assert.ok(at !== -1, s.name + ' 섹션을 찾지 못했습니다 (' + s.key + ')');
+    return { name: s.name, at };
+  });
+
+  const sorted = found.slice().sort((a, b) => a.at - b.at).map((s) => s.name);
+  assert.deepStrictEqual(sorted, LAYOUT.map((s) => s.name),
+    '섹션 순서가 배치표와 다릅니다.\n  실제: ' + sorted.join(' → ') +
+    '\n  정본: ' + LAYOUT.map((s) => s.name).join(' → '));
+});
+
+/*
+ * 이 사이클이 고친 문제 그 자체입니다. 위 O1 이 이미 잡지만, 뒤집혔을 때
+ * **무엇이 왜 잘못인지**를 실패 메시지로 남기려고 따로 둡니다.
+ */
+test('O2 신뢰증명이 상품소개보다 앞이다 — 확신을 만든 뒤 상품을 보여준다', () => {
+  const trust = M.indexOf('<section class="trust"');
+  const cards = M.indexOf('<section class="cards-sec" id="service"');
+  assert.ok(trust !== -1 && cards !== -1, '기준 섹션을 찾지 못했습니다');
+  assert.ok(trust < cards,
+    '신뢰증명이 상품소개 뒤에 있습니다 — 감정선(기-승-전-결)이 뒤집혀 「상품을 보여준 뒤 ' +
+    '확신을 만든다」가 됩니다. 이 섹션이 만드는 확신 없이 본 상품 카드는 그냥 기능 목록입니다.');
+});
+
+/* ── O3·O4 상품소개 중복 제거 ───────────────────────────────────────────── */
+
+test('O3 상품소개 섹션이 하나뿐이다 — 옛 05 껍데기가 없다', () => {
+  assert.ok(!/class="[^"]*\bfeats-sec\b/.test(M),
+    '.feats-sec 섹션이 남아 있습니다 — 상품소개가 다시 두 섹션으로 갈렸습니다');
+  assert.ok(B.indexOf('WHAT WE CHECK') === -1,
+    '옛 05 의 kicker(WHAT WE CHECK)가 화면에 남아 있습니다');
+  assert.strictEqual((M.match(/<section class="cards-sec/g) || []).length, 1,
+    '상품소개 섹션이 2개 이상입니다');
+
+  // 옛 2층카드 마크업이 되살아나지 않았는지 — 되살아나면 개요를 두 번 말하게 됩니다.
+  for (const cls of ['class="cards"', 'class="card"', 'class="card-head"',
+    'class="card-title"', 'class="card-body"', 'class="card-bullets"']) {
+    assert.ok(M.indexOf(cls) === -1,
+      '옛 2층카드 마크업(' + cls + ')이 남아 있습니다 — 상품 개요가 두 번 나옵니다');
+  }
+});
+
+test('O4 세 상품이 각각 한 번씩만 소개된다', () => {
+  const cards = M.slice(M.indexOf('<section class="cards-sec" id="service"'));
+  const block = cards.slice(0, cards.indexOf('</section>'));
+
+  // 카드 자체가 3개.
+  const feats = (block.match(/<div class="feat" id="/g) || []).length;
+  assert.strictEqual(feats, 3, '상품 카드가 ' + feats + '개입니다 — 3분류(사전점검·바이어확인·기한관리)입니다');
+
+  // 각 상품이 카드 머리에서 한 번만 이름 불린다.
+  const titles = (block.match(/<span class="feat-title">([^<]*)<\/span>/g) || [])
+    .map((s) => s.replace(/<[^>]*>/g, '').trim());
+  assert.deepStrictEqual(titles, ['수출 사전점검', '바이어 확인', '기한 관리'],
+    '상품 카드 제목이 용어 정본과 다릅니다: ' + JSON.stringify(titles));
+
+  // 한 카드 안에서 개요(.feat-sum)와 상세(.feat-desc)가 층을 나눠 갖는가.
+  assert.strictEqual((block.match(/class="feat-sum"/g) || []).length, 3,
+    '카드 머리의 한 줄 요약이 3개가 아닙니다 — 접힌 상태가 옛 2층카드 역할을 못 합니다');
+});
+
+test('O4-a 한 카드 안에서 머리와 패널이 같은 말을 하지 않는다', () => {
+  /*
+   * 두 섹션의 중복을 없애면서 한 카드 안에서 같은 중복을 남기면 아무것도 고치지 않은
+   * 것입니다. 실제로 첫 구현에서 세 카드 모두 .feat-sum 의 문장이 .feat-desc 첫 문장으로
+   * 그대로 반복됐습니다(2026-08-14 스크린샷 실측으로 발견).
+   *
+   * 층을 이렇게 나눕니다:
+   *   카드 머리(.feat-sum)  — 무엇을 하는가
+   *   패널(.feat-desc)      — 어디까지 · 무엇을 더
+   */
+  const cards = M.slice(M.indexOf('<section class="cards-sec" id="service"'));
+  const block = cards.slice(0, cards.indexOf('</section>'));
+
+  /** 문장 단위로 쪼갠 뒤 공백·기호를 지운 비교키. */
+  const keys = (s) => (s || '').split(/(?<=\.)\s+/)
+    .map((x) => x.replace(/[\s·,.]/g, ''))
+    .filter((x) => x.length > 12);
+
+  for (const id of ['feat-precheck', 'feat-buyer', 'feat-timeline']) {
+    const at = block.indexOf('id="' + id + '"');
+    assert.ok(at !== -1, id + ' 카드를 찾지 못했습니다');
+    const next = block.indexOf('<div class="feat" id=', at + 10);
+    const card = block.slice(at, next === -1 ? undefined : next);
+
+    const sum = (card.match(/<span class="feat-sum">([^<]*)<\/span>/) || [])[1];
+    const desc = (card.match(/<p class="feat-desc">([^<]*)<\/p>/) || [])[1];
+    assert.ok(sum && desc, id + ' 에 요약이나 설명이 없습니다');
+
+    const shared = keys(sum).filter((k) => keys(desc).includes(k));
+    assert.deepStrictEqual(shared, [],
+      id + ' 의 카드 머리와 패널이 같은 문장을 씁니다 — 한 카드 안에서 상품 설명이 두 번 나옵니다:\n' +
+      '  ' + JSON.stringify(shared));
+  }
+});
+
+test('O4-b 같은 스크린샷이 페이지에 두 번 나오지 않는다', () => {
+  /*
+   * 재배치로 신뢰증명과 상품소개가 이웃이 됐는데, 두 섹션이 같은 캡처 파일을 쓰고
+   * 있어서 한 화면 거리에 같은 그림이 두 번 났습니다. 「중복 제거」 배치에서 그것을
+   * 남기면 배치가 자기모순이라, 두 컷을 역할로 갈랐습니다:
+   *   c03-result.jpg        → 신뢰증명. 「무엇을 근거로 비교하는가」 = 대조의 근거
+   *   c03-result-detail.jpg → 사전점검 카드. 「무엇을 받는가」 = 대조의 결과물
+   */
+  const srcs = (B.match(/<img[^>]*src="([^"]*)"/g) || [])
+    .map((s) => (s.match(/src="([^"]*)"/) || [])[1]);
+  const dup = srcs.filter((s, i) => srcs.indexOf(s) !== i);
+  assert.deepStrictEqual(dup, [],
+    '같은 이미지가 페이지에 두 번 이상 나옵니다: ' + JSON.stringify(dup));
+});
+
+/* ── O5~O7 배경 교차 ─────────────────────────────────────────────────────── */
+
+/** #RRGGBB → CIE L* (0~100). */
+function lstar(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  const lin = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) => {
+    v /= 255;
+    return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+  });
+  const y = 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2];
+  return y > 0.008856 ? 116 * Math.pow(y, 1 / 3) - 16 : 903.3 * y;
+}
+/** :root 에 선언된 토큰 값. */
+function token(name) {
+  const m = CSS.match(new RegExp('--' + name + ':\\s*(#[0-9A-Fa-f]{6})'));
+  assert.ok(m, '--' + name + ' 토큰을 찾지 못했습니다');
+  return m[1];
+}
+
+test('O5 --surface 와 --bg 의 명도차가 눈에 보이는 수준이다', () => {
+  /*
+   * 옛값 #F1F5F9 는 ΔL* 3.65 였고 「교차가 안 느껴진다」는 것이 이 사이클의 문제 4번
+   * 이었습니다. 그 앞의 #F8FAFC(1.82)도 같은 이유로 한 번 기각된 적이 있습니다.
+   * 5.5 는 그 두 값을 확실히 넘기는 하한선입니다.
+   * ⚠️ 상한도 함께 봅니다 — 시각사양서가 「너무 진하면 얼룩져 보인다」고 경고했고,
+   *    slate-200(#E2E8F0 · 8.24)이 그 경고 구간의 시작입니다.
+   */
+  const d = lstar(token('bg')) - lstar(token('surface'));
+  assert.ok(d >= 5.5,
+    '--surface 명도차가 ' + d.toFixed(2) + ' 입니다 — 5.5 미만이면 섹션 교차가 안 보입니다');
+  assert.ok(d <= 8.3,
+    '--surface 명도차가 ' + d.toFixed(2) + ' 입니다 — 너무 진하면 큰 면이 얼룩져 보입니다');
+});
+
+test('O5-b --surface 위 구획선이 --bg 위와 같은 무게다', () => {
+  /*
+   * --surface 를 진하게 내린 대가로 --line(#E2E8F0)이 그 위에서 사라집니다(Δ1.38).
+   * .sec-surface 가 --line 을 --line-on-surface 로 갈아 끼우는 것이 그 대응이고,
+   * 두 배경에서 선의 대비가 비슷해야 페이지 전체의 선 굵기가 같게 읽힙니다.
+   */
+  const onBg = lstar(token('bg')) - lstar(token('line'));
+  const onSurface = lstar(token('surface')) - lstar(token('line-on-surface'));
+  assert.ok(onSurface >= onBg * 0.8,
+    '--surface 위 구획선 대비(' + onSurface.toFixed(2) + ')가 --bg 위(' + onBg.toFixed(2) +
+    ')보다 크게 약합니다 — 그 섹션에서만 선이 사라집니다');
+
+  assert.ok(/\.sec-surface\s*\{[^}]*--line:\s*var\(--line-on-surface\)/.test(CSS),
+    '.sec-surface 가 --line 을 갈아 끼우지 않습니다 — 규칙마다 손으로 적는 방식은 빠집니다');
+});
+
+test('O6 --surface 섹션은 전부 .sec-surface 로 칠한다', () => {
+  // 배경을 규칙에 직접 적으면 위 --line 교체가 함께 걸리지 않습니다.
+  const direct = (CSS.match(/^\s*\.[\w-]+[^{]*\{[^}]*background:\s*var\(--surface\)[^}]*\}/gm) || [])
+    .filter((r) => !/^\s*\.sec-surface/.test(r))
+    // 배경이 아니라 「면」으로 쓰는 것들 — 카드·자리표시·hover 표식은 교차와 무관합니다.
+    .filter((r) => !/\.feat-shot|\.feat-map|\.feat-avail|\.badge-soon|:hover/.test(r));
+  assert.deepStrictEqual(direct, [],
+    '섹션 배경을 .sec-surface 없이 직접 칠한 규칙이 있습니다:\n' + direct.join('\n'));
+
+  for (const s of LAYOUT.filter((x) => x.bg === 'surface')) {
+    const at = M.indexOf(s.key);
+    // key 가 태그 중간(예: id="next")을 가리킬 수 있으므로 여는 태그 시작으로 되돌아갑니다.
+    const open = M.lastIndexOf('<section', at);
+    const tag = M.slice(open, M.indexOf('>', open));
+    assert.ok(/\bsec-surface\b/.test(tag),
+      s.name + ' 섹션에 .sec-surface 가 없습니다 — 배경도 구획선도 따라오지 않습니다');
+  }
+});
+
+test('O7 배경이 연속인 이웃은 상품소개 → 결 한 쌍뿐이다', () => {
+  const pairs = [];
+  for (let i = 1; i < LAYOUT.length; i++) {
+    if (LAYOUT[i].bg === LAYOUT[i - 1].bg) pairs.push(LAYOUT[i - 1].name + ' → ' + LAYOUT[i].name);
+  }
+  assert.deepStrictEqual(pairs, ['상품소개 → 결 CTA'],
+    '배경이 같은 이웃이 배치표에 더 있습니다: ' + JSON.stringify(pairs) + '\n' +
+    '  이 한 쌍만 의도된 연속입니다(흐름 md §1 — 감정선을 끊지 않으려고 상품 다음 행동을 이어 붙임).');
+
+  // 결 CTA 에 구분선을 그으면 그 결정이 선 하나로 취소됩니다.
+  assert.ok(!/^\s*\.act\s*\{[^}]*border-top/m.test(CSS),
+    '.act 에 border-top 이 붙었습니다 — 상품소개와 한 덩어리로 읽히게 한 결정이 취소됩니다');
+});
+
+test('O9 다크 본문 섹션은 페이지에 하나뿐이다', () => {
+  const dark = (CSS.match(/background:\s*var\(--surface-dark\)/g) || []).length;
+  // 06 신뢰 · 푸터 두 곳입니다. .shot 이 이미지 뒤에 까는 것까지 세 곳.
+  assert.ok(dark <= 3, '--surface-dark 를 쓰는 규칙이 ' + dark + '개입니다 — 다크는 신뢰·푸터뿐입니다');
+  assert.strictEqual((M.match(/<section class="trust"/g) || []).length, 1,
+    '다크 본문 섹션이 하나가 아닙니다');
+});
+
+/* ── O8 앵커 ─────────────────────────────────────────────────────────────── */
+
+test('O8 헤더 앵커 3종의 도착지가 살아 있다', () => {
+  const nav = M.slice(M.indexOf('<nav class="nav">'), M.indexOf('</nav>'));
+  const hrefs = (nav.match(/href="#([\w-]+)"/g) || []).map((s) => s.match(/#([\w-]+)/)[1]);
+  assert.deepStrictEqual(hrefs, ['service', 'how', 'qna'],
+    '헤더 앵커가 서비스·이용 방법·자주 묻는 질문 3종이 아닙니다: ' + JSON.stringify(hrefs));
+
+  for (const id of hrefs) {
+    assert.ok(M.indexOf('id="' + id + '"') !== -1, '앵커 #' + id + ' 의 도착지가 없습니다');
+  }
+
+  // 「서비스」와 「이용 방법」이 같은 곳으로 가면 앵커 하나가 죽은 것과 같습니다.
+  assert.notStrictEqual(M.indexOf('id="service"'), M.indexOf('id="how"'),
+    '두 앵커의 도착지가 같습니다');
+});
+
+/* ── 무손실 ──────────────────────────────────────────────────────────────── */
+
+test('재배치로 콘텐츠가 사라지지 않았다 — 각 블록이 한 번씩 있다', () => {
+  const MUST = [
+    ['히어로 헤드라인', '첫 수출이라'],
+    ['경험담 질문', '이 조항, 본 적 있으신가요?'],
+    ['무지 안전장치', '모르시는 게 당연합니다.'],
+    ['예시 고지', '특정 기업의 실제 사례가 아닙니다'],
+    ['신뢰 인용', '대금 미회수 단 한 번으로 자금난에 빠질 수 있습니다'],
+    ['신뢰 출처', '한국무역보험공사'],
+    ['상품소개 h2', '거래를 시작하기 전에 한 번, 시작한 후에 한 번.'],
+    ['조작 안내', '하나씩 펼쳐보세요'],
+    ['결 h2', '받으신 서류부터, 하나 확인해 보세요.'],
+    ['안심 선언', '결정은 언제나 대표님 것입니다.'],
+    ['법적 고지', '법률 자문 서비스가 아닙니다'],
+    ['HOW h2', '제출하고, 비교하고, 정리합니다.'],
+    ['기한관리 훅', '계약서 하나에 기한이 몇 개나 숨어있는지 아세요?'],
+    ['바이어확인 안내', '사전점검 결과화면에서 바로 확인하실 수 있습니다'],
+    ['기한관리 무료 명시', '지금은 무료입니다.'],
+    ['KOTRA 신뢰신호', 'KOTRA 멘토 네트워크'],
+  ];
+  for (const [name, s] of MUST) {
+    assert.ok(B.indexOf(s) !== -1, name + ' 이(가) 페이지에서 사라졌습니다: 「' + s + '」');
+  }
+
+  // 한 번만 나와야 하는 것들 — 재배치 중 복사가 남으면 여기서 걸립니다.
+  for (const s of ['결정은 언제나 대표님 것입니다.', 'KOTRA 멘토 네트워크',
+    '거래를 시작하기 전에 한 번, 시작한 후에 한 번.']) {
+    const n = (B.match(new RegExp(s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
+    assert.strictEqual(n, 1, '「' + s + '」이 ' + n + '번 나옵니다 (1번이어야 합니다)');
+  }
+});
+
+test('인터랙션이 그대로다 — 아코디언 3장·FAQ·트리거·스크롤 등장', () => {
+  assert.strictEqual((M.match(/class="feat-btn"/g) || []).length, 3, '상품 카드 펼침 버튼이 3개가 아닙니다');
+  assert.strictEqual((M.match(/class="feat-panel"/g) || []).length, 3, '상품 카드 패널이 3개가 아닙니다');
+  assert.strictEqual((M.match(/aria-controls="qa-\d+"/g) || []).length, 14, 'FAQ 문항이 14개가 아닙니다');
+  assert.strictEqual((B.match(/data-timeline-open/g) || []).length, 3,
+    '기한관리 원격 트리거가 3곳(히어로·로드맵·마감 CTA)이 아닙니다');
+  assert.ok(/class="h3 stat-line reveal"/.test(M), '신뢰 인용의 스크롤 등장이 사라졌습니다');
+  assert.ok(/id="interest-form"/.test(M), '사전등록 폼이 사라졌습니다');
+  assert.ok(/id="intake-return"/.test(M), '접수 완료 배너가 사라졌습니다');
+});
