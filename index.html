@@ -408,6 +408,21 @@
   }
   .rm-num { font-size: 13px; font-weight: 600; color: var(--muted); }
   .rm-desc { margin: 0; font-size: 16.5px; line-height: 1.7; color: var(--ink-62); max-width: 44ch; }
+  /* 구분 문구 〔2026-08-13 신설〕 — 이 로드맵 상품이 지금 파는 어느 상품과 어떻게 다른지.
+     .rm-desc 보다 한 단계 작게 둡니다. 상품 설명이 아니라 혼동을 막는 주석이라
+     설명문과 같은 크기면 무엇이 본문인지 흐려집니다.
+     자리는 설명(2열) 바로 아래 2행 2열입니다 — .rm-meta 가 2행 1열이라 나란히 섭니다.
+     ⚠️ 아래 좁은 화면 미디어쿼리에서 1열로 되돌립니다. 여기만 고치면 모바일에서
+        존재하지 않는 2열이 만들어져 행이 어긋납니다. */
+  .rm-diff {
+    margin: 0;
+    grid-column: 2;
+    grid-row: 2;
+    font-size: 14.5px;
+    line-height: 1.75;
+    color: var(--ink-62);
+    max-width: 52ch;
+  }
   /* 「준비중」 라벨 — 마이크로카피와 같은 이유로 --ink-62. 회색조 유지, 경고색 금지 */
   .rm-meta { margin: 2px 0 0; grid-column: 1; font-size: 13.5px; line-height: 1.6; color: var(--ink-62); }
   a.rm-row:hover { background: var(--surface); }
@@ -609,6 +624,25 @@
     color: var(--ink-70);
   }
   .assure-note { margin: 0; font-size: 12.5px; line-height: 1.7; color: var(--muted); }
+  /* 🔴 안심 문구가 #how 안(.stories 뒤)으로 내려오면서 필요해진 상쇄 규칙입니다
+     〔2026-08-13〕. 원래 값은 독립 섹션(--surface 배경 + 위쪽 구분선)을 전제로 잡혀
+     있었는데, 지금은 이미 --surface 인 #how **안**에 있습니다:
+       · background 를 그대로 두면 같은 색을 같은 색 위에 한 번 더 칠합니다
+       · border-top 을 그대로 두면 바로 위 .stories 의 border-bottom 과 선이 2겹이 됩니다
+       · padding-block(60~96px)을 그대로 두면 #how 안에서 위아래로 두 번 벌어집니다
+     구분선은 아래 한 줄(border-bottom)만 남깁니다 — .stories 가 쓰는 것과 같은 값이라
+     경험담 / 안심문구 / HOW 세 덩어리가 같은 간격으로 끊깁니다.
+     ⚠️ .assure 원본 규칙을 고치지 마십시오. 그쪽은 en.html 이 아직 독립 섹션으로 쓰고
+        있고, 이 파일에서도 되돌릴 때 필요한 원형입니다. */
+  .assure-inline {
+    background: transparent;
+    border-top: 0;
+    max-width: 880px;
+    padding-bottom: 44px;
+    margin-bottom: 44px;
+    border-bottom: 1px solid var(--line);
+  }
+  .assure-inline .assure-inner { padding-block: 0; }
 
   /* ---------- 04 2층 카드 (문구 §4 · 정본 C-2) ----------
      6:4는 폭으로만 표현합니다. 높이는 2026-08-13까지 align-items:start로 맞추지
@@ -632,6 +666,21 @@
     font-weight: 700;
     max-width: 30ch;
   }
+  /* 04 h2 아래 층위 구분 한 줄 〔2026-08-13 신설〕. 04(무엇을 파는가)에서
+     05 WHAT WE CHECK(무엇을 확인하는가)로 넘기는 다리라, 두 섹션이 중복이 아니라
+     층위가 다르다는 것을 읽는 사람이 알게 합니다.
+     h2 의 아래 여백(28~40px)은 곧바로 카드가 올 때의 값이라 리드가 끼면 너무 벌어집니다.
+     :has() 로 리드가 있을 때만 좁힙니다 — 미지원 브라우저에서는 간격만 넓어지고
+     내용은 그대로입니다(깨지지 않습니다). */
+  .cards-sec h2:has(+ .cards-lead) { margin-bottom: 14px; }
+  .cards-lead {
+    margin: 0 0 clamp(28px, 3.5vw, 40px);
+    max-width: 62ch;
+    font-size: 16.5px;
+    line-height: 1.76;
+    color: var(--ink-64);
+  }
+  .cards-lead a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
   .cards { display: grid; grid-template-columns: 6fr 4fr; gap: 24px; align-items: stretch; }
   .card {
     display: flex;
@@ -1058,6 +1107,9 @@
   @media (max-width: 640px) {
     .nav-links { display: none; }
     .rm-row { grid-template-columns: 1fr; gap: 6px; padding: 22px 2px; }
+    /* 1열이 되면 2열·2행 고정이 성립하지 않습니다 — 풀어서 흐름대로 쌓습니다.
+       (마크업 순서: 이름 → 설명 → 구분문구 → 가격) */
+    .rm-diff { grid-column: 1; grid-row: auto; }
     .rm-meta { grid-column: auto; }
     .cta-row { flex-direction: column; align-items: stretch; gap: 12px; }
     .cta-row .btn { width: 100%; }
@@ -1129,7 +1181,13 @@
         <a href="#qna">자주 묻는 질문</a>
       </div>
       <div class="nav-right">
-        <a class="nav-quiet" href="https://app.trops.kr/" target="_self">트롭스 앱 살펴보기(준비중)</a>
+        <!-- 「(준비중)」을 걷었습니다 〔2026-08-13 · 실측〕. app.trops.kr 루트는 로그인 없이
+             열리고, 예시 지도(프랑스·아랍에미리트 2건)와 [계약 등록] 버튼이 실제로 그려집니다
+             — `AnonymousHomePreview` 가 샘플데이터로 이미 돌고 있습니다(흐름 md §6-5).
+             「준비중」은 사실과 달랐고, 볼 수 있는 것을 못 본다고 말해 클릭을 막고 있었습니다.
+             ⚠️ 로그인 게이트는 이 링크가 아니라 `/procedures` 이하에 있습니다(흐름 md §1).
+                여기 라벨을 「시작하기」류 실행어로 올리지 마십시오 — 미리보기까지가 무로그인입니다. -->
+        <a class="nav-quiet" href="https://app.trops.kr/" target="_self">트롭스 앱 미리보기</a>
         <!-- 언어 전환. en.html 에 「한국어」로 반대 방향이 있습니다 — 한쪽만 두면
              그쪽 독자가 상대 페이지를 찾지 못합니다. 둘 다 nav-quiet(강등된
              텍스트 링크)입니다. 버튼으로 올리지 마십시오. -->
@@ -1180,7 +1238,7 @@
            ② 처리 방식도 바뀌었습니다 — 페이지 이동이 아니라 같은 페이지 안에서 05 아코디언의
               기한관리 카드를 펼치고 그 자리로 스크롤합니다. 그래서 <a href> 가 아니라
               <button data-timeline-open> 입니다. 패널은 페이지에 하나뿐이고(05 #feat-timeline)
-              히어로·마감·로드맵 세 곳이 그 하나를 공유합니다 — 여기에 패널을 복제하지 마십시오.
+              히어로·04 카드·마감·로드맵 네 곳이 그 하나를 공유합니다 — 여기에 패널을 복제하지 마십시오.
            ③ 「문의하기」 신설. 인터뷰 채널 진입로입니다(흐름 md §2 · 4장).
               ⚠️ 「상담」이라는 낱말을 쓰지 마십시오 — 유상 자문으로 오인돼 제거된 이력이 있습니다.
 
@@ -1195,23 +1253,15 @@
       <p class="hero-note">로그인 없이 바로</p>
     </section>
 
-    <!-- ===== 03 안심 문구 (문구 §3 · 정본 §2 3번 · 히어로 직하로 승격) =====
-         경쟁사는 같은 말을 페이지 맨 아래 작은 글씨로 씁니다. 우리는 맨 위에서 합니다 —
-         정본 §2-2가 꼽은 우선순위 1번이고, 이게 차별점입니다.
-         중앙 정렬을 히어로와 연속으로 두는 것은 의도입니다(§2-1) — 안심 문구가
-         히어로의 일부처럼 읽혀야 「입장을 맨 위에서 한 번」이 성립합니다.
-         ⚠️ 이 블록은 how 아래에 있던 강조 밴드(.band)를 승격·대체한 것입니다.
-            같은 역할의 블록을 아래쪽에 다시 만들지 마십시오. -->
-    <section class="assure" aria-labelledby="assure-title">
-      <div class="container narrow-c assure-inner">
-        <h2 id="assure-title">결정은 언제나 대표님 것입니다.</h2>
-        <div class="assure-lines">
-          <p>공적 절차는 빠짐없이 모으고, 거래 문서에 있는 것은 있는 그대로 옮깁니다.</p>
-          <p>대표님이 빠르고 쉽게 결정하실 수 있도록, 정리해드립니다.</p>
-        </div>
-        <p class="assure-note">※ 법률 자문 서비스가 아닙니다.</p>
-      </div>
-    </section>
+    <!-- 🔴 03 안심 문구가 **여기 없습니다** 〔2026-08-13 이동〕.
+         히어로 직하에 있던 것을 #how 안 경험담(.stories) **뒤**로 내렸습니다.
+         이유: 흐름 md §1 의 감정선은 기(히어로) - 승(경험담) - 전(신뢰증명) - 결(행동)인데,
+         방어 문구가 기와 승 사이에 끼면 감정이 붙기 전에 방어를 먼저 마주칩니다.
+         「결정은 대표님 것」은 감정이 올라온 **뒤에** 놓아야 안심으로 읽히고, 그 전에 놓으면
+         읽는 사람이 아직 원하지도 않은 것에 대해 선을 긋는 말이 됩니다.
+         ⚠️ 이 자리에 같은 역할의 블록을 다시 만들지 마십시오. 아래 .assure-inline 하나뿐입니다.
+         ⚠️ 「※ 법률 자문 서비스가 아닙니다」도 그 블록과 함께 내려갔습니다 — 페이지에서
+            사라진 것이 아닙니다. 지우지 마십시오. -->
 
     <!-- ===== 04 2층 카드 (문구 §4 · 정본 C-2) =====
          이 페이지가 무엇을 파는지 정의하는 자리입니다(§2-2 우선순위 2번).
@@ -1223,12 +1273,27 @@
     <section class="cards-sec" id="service" aria-labelledby="cards-title">
       <div class="container cards-inner">
         <h2 id="cards-title">거래를 시작하기 전에 한 번, 시작한 후에 한 번.</h2>
+        <!-- 층위 구분 한 줄 〔2026-08-13 신설〕.
+             04 와 05(WHAT WE CHECK)는 같은 것을 두 번 말하는 것처럼 보이지만 묻는 질문이
+             다릅니다 — 04 는 「무엇을 파는가」(2카드·CTA 보유), 05 는 「무엇을 확인해
+             주는가」(3카드·실행버튼 금지·미리보기). 합치자는 판단이 나왔었고 유지로 결론이
+             났으므로(흐름 md §6-1 「10개 정본 리듬 안에 끼워넣는다」 · §4-1 이 이 h2 를
+             3분류 구조의 원문으로 지목), 둘이 중복이 아니라는 것을 문면으로 만듭니다.
+             ⚠️ 이 줄을 지우면 두 섹션이 다시 중복으로 읽힙니다. -->
+        <p class="cards-lead">지금 쓰실 수 있는 것부터 보여드립니다. 각각 무엇을 확인해 드리는지는 <a href="#feats">아래에서 하나씩 펼쳐</a> 보실 수 있습니다.</p>
         <div class="cards">
 
           <div class="card">
             <div class="card-head">
               <span class="card-title">지금 쓸 수 있습니다</span>
-              <p class="eyebrow-quiet">거래 시작 전 · NDA 비교</p>
+              <!-- 「NDA 비교」→「문서 대조」〔2026-08-13〕. 두 가지를 동시에 고칩니다:
+                   ① 05 아코디언의 같은 카드가 이미 「문서 대조」라 한 페이지가 같은 상품을
+                      두 이름으로 부르고 있었습니다.
+                   ② 흐름 md §1 은 「NDA」를 CTA·헤드라인에 박지 않습니다 — 보이는 순간
+                      「기밀서류를 대놓고 요구하는 곳」이라는 방어기제가 작동합니다.
+                   본문(.card-body)의 「NDA」는 남겨 둡니다. 거기는 무엇을 올리는지 설명하는
+                   자리라 범위를 밝히는 것이 맞습니다. -->
+              <p class="eyebrow-quiet">거래 시작 전 · 문서 대조</p>
             </div>
             <p class="card-body">바이어에게 받은 NDA를 올리시면<br>공개된 서식과 하나씩 비교해서<br>다른 부분을 표시해 드립니다.</p>
             <div class="card-bullets">
@@ -1244,17 +1309,39 @@
             <div><a class="btn btn-secondary" href="/precheck">비교해 보기 →</a></div>
           </div>
 
+          <!-- 🔴 이 카드에서 세 가지를 고쳤습니다 〔2026-08-13〕.
+               ① 「준비 중」 배지 삭제 — app.trops.kr 이 이미 무로그인으로 열리고 예시 지도가
+                  그려집니다(실측). 쓸 수 있는 것에 준비중을 붙이면 클릭을 막습니다.
+               ② 「거래 절차 트래킹」→「기한 관리」 — 05 아코디언·결제확인 메일이 전부
+                  「기한 관리」를 쓰는데 여기만 옛 이름이었습니다.
+               ③ [알림 받기]→[기한관리 미리보기], 처리도 페이지 이동에서 인라인 확장으로.
+                  「알림 받기」는 아직 없는 것을 기다리라는 말이라 ①과 모순이었습니다.
+               ⚠️ 배지 자리에는 생애주기(거래 시작 전/후)만 넣습니다. 개발상태도 가격도
+                  넣지 마십시오 — 개발상태는 로드맵(.rm-meta)이, 가격은 본문이 집니다. -->
           <div class="card">
             <div class="card-head">
-              <span class="badge-soon">준비 중</span>
-              <p class="eyebrow-quiet">거래 시작 후 · 거래 절차 트래킹</p>
+              <!-- 🔴 「준비 중」 배지를 걷어낸 자리에 상태 한 줄을 **반드시** 둡니다 〔2026-08-13〕.
+                   배지만 지우고 비워 뒀더니 01 카드에는 상태줄(「지금 쓸 수 있습니다」)이 있고
+                   02 에는 없어서 두 카드의 첫 줄 높이가 어긋났고, 더 나쁜 것은 **01 에만
+                   「지금 쓸 수 있습니다」가 붙어 02 는 아직 못 쓴다는 뜻이 되어** 방금 지운
+                   「준비 중」이 암시로 되살아났습니다.
+                   문구가 01 과 다른 이유: 기한관리는 미리보기까지가 무로그인이고 실제 계약
+                   등록에서 로그인이 걸립니다(흐름 md §1 · §3). 「쓸 수 있다」가 아니라
+                   「둘러볼 수 있다」가 지금 상태에 정확합니다.
+                   ⚠️ 이 줄을 지우지 마십시오. 지우면 위 두 문제가 같이 돌아옵니다. -->
+              <span class="card-title">지금 둘러보실 수 있습니다</span>
+              <p class="eyebrow-quiet">거래 시작 후 · 기한 관리</p>
             </div>
             <p class="card-body">거래 문서에 있는 기한과 통관·외환 절차를<br>한 화면에 모아<br>남은 날짜로 보여드립니다.</p>
             <div class="card-bullets">
               <p>· 계약서만 있으면 시작</p>
               <p>· 기한 7일 전, 1일 전 메일</p>
             </div>
-            <div><a class="btn btn-secondary" href="#interest">알림 받기</a></div>
+            <!-- 네 번째 [data-timeline-open] 트리거입니다(히어로·로드맵·마감 CTA 에 이어).
+                 ⚠️ 패널을 여기 복제하지 마십시오 — 페이지에 하나뿐이고(05 #feat-timeline)
+                    네 트리거가 그 하나를 공유합니다. 복제하면 상태가 갈립니다.
+                 ⚠️ btn-secondary 유지. btn-primary 로 올리면 주버튼이 3회가 됩니다. -->
+            <div><button class="btn btn-secondary" type="button" data-timeline-open aria-controls="feat-timeline-panel">기한관리 미리보기</button></div>
           </div>
         </div>
       </div>
@@ -1310,6 +1397,34 @@
           </div>
 
           <p class="story-note">※ 위 두 이야기는 이해를 돕기 위해 만든 예시입니다. 특정 기업의 실제 사례가 아닙니다.</p>
+        </div>
+
+        <!-- ===== 03 안심 문구 (문구 §3 · 정본 §2 3번) =====
+             🔴 히어로 직하에서 **여기로 내려왔습니다** 〔2026-08-13〕. 위 .stories 바로 뒤,
+                HOW 설명 바로 앞입니다.
+             왜 옮겼는가: 흐름 md §1 의 감정선은 기(히어로) - 승(경험담) - 전(신뢰증명) -
+             결(행동)입니다. 방어 문구가 기와 승 사이에 있으면, 아직 아무 감정도 생기지 않은
+             사람에게 「우리는 판단하지 않습니다」부터 말하는 셈이 됩니다. 경험담을 읽고
+             「우리 것도 그런가」가 올라온 **직후**에 놓아야 같은 문장이 안심으로 읽힙니다.
+             경쟁사는 이 말을 페이지 맨 아래 작은 글씨로 씁니다 — 우리가 본문 크기로 한 번
+             제대로 말한다는 차별점(정본 §2-2 우선순위 1번)은 이동해도 그대로입니다.
+
+             왜 <section> 이 아니라 #how 안의 <div> 인가: 04 카드(--bg)와 #how(--surface)
+             사이에 독립 섹션을 끼우면 어느 배경을 골라도 한쪽 이웃과 같은 색이 되어
+             --bg/--surface 교차가 끊깁니다. 위 .stories 가 같은 이유로 이미 #how 안에
+             들어와 있습니다(시각사양 4-1 · 흐름 md §6-1 「10개 정본 리듬」).
+             ⚠️ 독립 <section> 으로 다시 빼지 마십시오.
+             ⚠️ .assure-note(「※ 법률 자문 서비스가 아닙니다」)를 여기서 떼지 마십시오 —
+                이 문장은 위치와 무관하게 페이지 어딘가에 반드시 남아 있어야 합니다. -->
+        <div class="assure assure-inline">
+          <div class="narrow-c assure-inner">
+            <h2 id="assure-title">결정은 언제나 대표님 것입니다.</h2>
+            <div class="assure-lines">
+              <p>공적 절차는 빠짐없이 모으고, 거래 문서에 있는 것은 있는 그대로 옮깁니다.</p>
+              <p>대표님이 빠르고 쉽게 결정하실 수 있도록, 정리해드립니다.</p>
+            </div>
+            <p class="assure-note">※ 법률 자문 서비스가 아닙니다.</p>
+          </div>
         </div>
 
         <p class="kicker">HOW IT WORKS</p>
@@ -1409,7 +1524,12 @@
             <button class="feat-btn" type="button" aria-expanded="false" aria-controls="feat-buyer-panel">
               <span class="feat-head">
                 <span class="feat-title">바이어 확인</span>
-                <span class="feat-meta">거래 시작 전 · 준비 중</span>
+                <!-- 「· 준비 중」을 걷었습니다 〔2026-08-13〕. buyer-guard 라우트가 이미
+                     돌고 있어 사실과 달랐고, 아래 .feat-note 가 「사전점검 결과화면에서 바로
+                     확인하실 수 있습니다」라고 말하는 것과 정면으로 충돌했습니다 —
+                     쓸 수 있다고 하면서 준비중이라고 붙여 둔 상태였습니다.
+                     ⚠️ 이 자리에는 생애주기만 넣습니다(흐름 md §4-1 3분류). -->
+                <span class="feat-meta">거래 시작 전</span>
               </span>
               <span class="feat-chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
             </button>
@@ -1424,15 +1544,25 @@
           </div>
 
           <!-- 03 기한관리 — 유일하게 실행버튼을 갖는 카드입니다(결 섹션과 별도 흐름이라 중복 없음).
-               ⚠️ 이 카드의 패널이 페이지에서 유일한 기한관리 미리보기입니다. 히어로·마감 CTA·로드맵
-                  세 곳의 [data-timeline-open] 트리거가 모두 이 하나를 펼칩니다 —
-                  다른 자리에 패널을 복제하지 마십시오. id 를 바꾸면 세 트리거가 함께 죽습니다.
+               ⚠️ 이 카드의 패널이 페이지에서 유일한 기한관리 미리보기입니다. 히어로·04 2층카드·마감 CTA·
+                  로드맵 **네 곳**의 [data-timeline-open] 트리거가 모두 이 하나를 펼칩니다 —
+                  다른 자리에 패널을 복제하지 마십시오. id 를 바꾸면 네 트리거가 함께 죽습니다.
+                  (04 카드는 2026-08-13 에 [알림 받기] 를 걷어내고 네 번째 트리거가 됐습니다.)
                ⚠️ 실행버튼은 btn-secondary 입니다. btn-primary 로 올리면 주버튼이 3회가 됩니다. -->
           <div class="feat" id="feat-timeline" data-open="0">
             <button class="feat-btn" type="button" aria-expanded="false" aria-controls="feat-timeline-panel">
               <span class="feat-head">
                 <span class="feat-title">기한 관리</span>
-                <span class="feat-meta">거래 시작 후 · 지금은 무료</span>
+                <!-- 「· 지금은 무료」를 걷었습니다 〔2026-08-13〕. 가격 정책이 바뀐 것이
+                     **아닙니다** — 배지 자리에서 본문으로 내린 것뿐입니다. 세 카드의 이 자리는
+                     생애주기(거래 시작 전/후)를 말하는 축인데 여기만 가격이 섞여 있어서,
+                     세 배지를 나란히 읽으면 축이 하나 어긋나 보였습니다.
+                     ✅ 흐름 md §4 Give/Get 이 요구하는 「지금은 무료」 명시는 아래 .feat-desc
+                        마지막 문장(「지금은 무료입니다.」)이 계속 집니다. 그 문장을 지우면
+                        md 요구가 깨집니다 — 지우지 마십시오.
+                     (test/waiting-room-mail.test.js 가 단정하는 「지금은 무료」는 결제확인
+                      메일 쪽이라 이 변경과 무관합니다.) -->
+                <span class="feat-meta">거래 시작 후</span>
               </span>
               <span class="feat-chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
             </button>
@@ -1584,11 +1714,24 @@
                  ⛔ 여기서 새 이름을 짓지 마십시오. 바꿀 일이 생기면 그 어휘표가 먼저입니다. -->
             <p class="rm-name"><span class="rm-num">01</span>확인 항목 요약 자료</p>
             <p class="rm-desc">품목별 확인 항목을 근거와 함께 문서로 정리해 드립니다</p>
+            <!-- 구분 문구 〔2026-08-13 신설〕. 이 상품과 지금 파는 「문서 대조」가 서로 다른
+                 상품인데, 이름만 보면 둘 다 「확인해 주는 것」이라 같은 것의 유료판으로 읽혔습니다.
+                 가르는 축은 **대상**입니다 — 문서 대조는 받으신 서류를 대조하고, 이쪽은 서류가
+                 없어도 품목만으로 미리 정리합니다.
+                 ⚠️ 가격·상품명은 별도 로드맵 상품이라 건드리지 않습니다(이 섹션 머리주석). -->
+            <p class="rm-diff">지금 쓰실 수 있는 「문서 대조」와는 다른 상품입니다. 받으신 서류를 대조하는 것이 아니라, 품목별로 무엇을 확인해야 하는지를 서류 없이 미리 정리해 드리는 자료입니다.</p>
             <p class="rm-meta">99,000원 · 9월 오픈 예정</p>
           </div>
           <div class="rm-row">
             <p class="rm-name"><span class="rm-num">02</span>거래 운영</p>
             <p class="rm-desc">계약이 성사된 뒤 통관·대금회수까지 거래 단위로 이어서 관리합니다</p>
+            <!-- 구분 문구 〔2026-08-13 신설〕. 「거래 운영」과 「기한 관리」는 둘 다 거래 시작
+                 후를 맡아 관계가 불분명했습니다 — 다른 기능인지, 같은 것의 두 이름인지.
+                 확장판입니다. 기한 관리(지금 쓸 수 있음)가 기한을 모아 알려주는 데까지고,
+                 거래 운영은 그 위에 통관·대금회수 처리를 얹습니다.
+                 ⚠️ 이름을 겹치게 바꾸지 마십시오. 「기한 관리 Pro」류로 부르면 지금 무료로
+                    쓰는 것이 체험판처럼 보입니다. -->
+            <p class="rm-diff">지금 쓰실 수 있는 「기한 관리」의 확장판입니다. 기한을 모아 알려드리는 데까지가 기한 관리이고, 여기에 통관·대금회수 처리를 이어 붙인 것이 거래 운영입니다.</p>
             <p class="rm-meta">가격 미정 · 준비중</p>
           </div>
         </div>
@@ -1961,7 +2104,16 @@
       <p class="footer-tag">수출을 앞두고</p>
       <div class="footer-row">
         <span class="footer-mark">TROPS</span>
-        <span class="footer-meta">바이어 서류 사전 확인 · contact@theo-ne.com</span>
+        <!-- 태그라인 통일 〔2026-08-13〕. index 는 「바이어 서류 사전 확인」, precheck 는
+             「수출 거래 운영」으로 서로 달라서, 같은 회사의 두 페이지가 각각 다른 회사를
+             소개하는 것처럼 읽혔습니다. 둘 다 이 문구로 맞춥니다.
+             고른 이유: 3기능을 다 받습니다 — 「확인」이 문서 대조와 바이어 확인을,
+             「기한 관리」가 나머지를 받습니다. 어느 하나만 말하면 나머지 둘이 부록이 됩니다.
+             ⚠️ 아래 .footer-links 의 /precheck 링크 라벨은 그 페이지 <title> 과 맞춰야 해서
+                「바이어 서류 사전 확인」 그대로입니다. 태그라인과 링크라벨은 역할이 다릅니다.
+             ⚠️ 고칠 때 precheck.html .footer-meta 도 함께 고치십시오. 한쪽만 고치면 다시
+                어긋납니다(test/naming-consistency.test.js 가 막습니다). -->
+        <span class="footer-meta">수출 거래 확인과 기한 관리 · contact@theo-ne.com</span>
       </div>
       <nav class="footer-links" aria-label="정책">
         <a href="/precheck">바이어 서류 사전 확인</a>
@@ -2060,7 +2212,7 @@
      뒤집습니다. 마크업이 전부 접힌 상태로 내려오므로 JS 가 실패해도 카드 제목 3개는 보입니다.
 
      ⚠️ 다른 카드를 닫는 코드를 넣지 마십시오 — 동시 다중 펼침 허용입니다(08 FAQ C-3 과 같은 정책).
-     ⚠️ 기한관리 패널(#feat-timeline)은 페이지에 하나뿐이고 히어로·마감 CTA·로드맵 세 곳의
+     ⚠️ 기한관리 패널(#feat-timeline)은 페이지에 하나뿐이고 히어로·04 카드·마감 CTA·로드맵 네 곳의
         [data-timeline-open] 이 그 하나를 공유합니다. 트리거를 늘리는 것은 자유지만
         패널을 복제하지는 마십시오 — 지도 에셋이 세 번 로드되고 상태가 갈립니다. */
   (function () {
@@ -2086,7 +2238,7 @@
       });
     }
 
-    /* 히어로 · 09 마감 CTA · 로드맵의 「기한관리 미리보기」.
+    /* 히어로 · 04 2층카드 · 09 마감 CTA · 로드맵의 「기한관리 미리보기」(네 곳).
        페이지 이동이 아니라 같은 페이지 안에서 펼치고 그 자리로 옮겨 주는 것이 전부입니다
        (흐름 md §2 「같은 페이지 내 인라인 확장」). 이미 열려 있으면 닫지 않고 그대로 둡니다 —
        같은 버튼을 두 번 누른 사람이 방금 본 것을 잃지 않게 하려는 의도입니다.
