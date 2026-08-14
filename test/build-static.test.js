@@ -36,6 +36,9 @@ const PAGE_LOCALES = {
   'en.html': 'en',
   'nda.html': 'ko',
   'precheck.html': 'ko',
+  // 2026-08-14 신설(사전 확인 3문항). STATIC.html 과 함께 넣습니다 —
+  // 한쪽만 넣으면 그 페이지만 주석 검사를 못 받습니다(en.html 이 그랬습니다).
+  'check.html': 'ko',
   'refund.html': 'ko',
   'uae.html': 'ko',
   'privacy.html': 'ko',

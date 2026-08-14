@@ -55,6 +55,8 @@ const STATIC = {
     { file: 'en.html', locale: 'en' },
     { file: 'nda.html', locale: 'ko' },
     { file: 'precheck.html', locale: 'ko' },
+    // 사전 확인 3문항. cleanUrls 로 /check 에 붙습니다 〔2026-08-14 · doc/s10 1단계 작업 4〕.
+    { file: 'check.html', locale: 'ko' },
     { file: 'refund.html', locale: 'ko' },
     { file: 'uae.html', locale: 'ko' },
     { file: 'privacy.html', locale: 'ko' },
