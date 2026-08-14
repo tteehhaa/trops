@@ -359,7 +359,7 @@ test('폴백으로 저장했으면 로그에 크게 남긴다 — 잊은 것을 
 test('재시도는 한 번뿐이다 — 컬럼을 떼어 가며 성공을 쫓지 않는다', () => {
   // 무한 재시도는 「어느 칸이 사라졌는지 모르는 채 행이 저장되는」 상태를 만듭니다.
   // 재시도 대상 목록이 비어 있으면(=뗄 것이 없으면) 그대로 던져야 합니다.
-  assert.deepStrictEqual(intake.OPTIONAL_COLUMNS, ['doc_type'],
+  assert.deepStrictEqual(intake.OPTIONAL_COLUMNS, ['doc_type', 'pre_session_key'],
     '재시도 대상은 「없어도 사실이 어긋나지 않는」 컬럼만입니다');
 });
 

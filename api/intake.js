@@ -13,7 +13,14 @@
  *           files:   [{ name, type, size, data(base64) }],   필수 · 바이어가 보낸 서류
  *           ownForm:  { name, type, size, data(base64) },    선택 · 이용자의 자사 NDA 서식
  *           targetCountry: 'AE',                             선택 · 거래 상대국(ISO 2자리)
- *           hsCode:        '09011100' }                      선택 · HS 8단위
+ *           hsCode:        '09011100',                       선택 · HS 8단위
+ *           preSessionKey: '<uuid>' }                        선택 · 사전 확인(/check) 세션키
+ *
+ *   preSessionKey 〔bkit-7 · doc/s10 §5-3 「세션 연결」〕은 /check 를 거쳐 온 사람만 있고,
+ *   바로 /precheck 로 온 사람은 null 입니다 — 없다고 접수를 막지 않습니다. 이 저장소는
+ *   `intake.pre_session_key` 컬럼에 값을 그대로 옮겨 담기만 합니다. 그 값으로
+ *   `precheck_prestep_session.intake_id` 를 채우는 매칭·수신 로직은 trops_a 쪽 몫입니다
+ *   (크로스 레포 인계 — 이 파일은 값을 실어 보내는 것까지만 합니다).
  *
  *   docType 은 흐름 md §5 「확장 구조」의 문서유형 파라미터입니다. 지금 받는 값은
  *   'nda' 하나뿐이고(DOC_TYPES), 값을 안 보내면 'nda' 로 봅니다. **모르는 값은 400** 입니다 —
@@ -150,6 +157,19 @@ async function handleIntake(req, res) {
   const docType = parsedDocType.docType;
 
   /*
+   * 사전 확인(/check) 연결 세션키 〔bkit-7〕.
+   *
+   * ⚠️ 이 값은 **부가 필드**입니다. docType 처럼 형식을 어기면 400 으로 막는 값이 아닙니다 —
+   *    /check 를 거치지 않고 바로 온 사람은 애초에 값이 없고, 그것이 정상입니다. 형식이
+   *    이상해도(너무 길거나 예상 밖 문자) 접수를 막지 않고 조용히 잘라 담습니다. 이 값이
+   *    하는 일은 나중에 trops_a 가 사전 확인 세션과 이 접수를 잇는 것뿐이라, 잘못돼도
+   *    접수 자체에는 영향이 없습니다.
+   */
+  const preSessionKey = typeof body.preSessionKey === 'string' && body.preSessionKey.trim()
+    ? body.preSessionKey.trim().slice(0, 200)
+    : null;
+
+  /*
    * 브라우저가 신고한 기계적 사실 〔M-1 → M-3 · 2026-08-11〕.
    *
    * ⚠️ 여기서 **파일을 열지 않습니다.** 텍스트 레이어 유무는 브라우저가 PDF 구조를
@@ -254,6 +274,9 @@ async function handleIntake(req, res) {
       // 서류 종류 〔흐름 md §5〕. 지금은 늘 'nda' 이지만 **값으로 남깁니다** —
       // 하드코딩이 아니라 파라미터라는 것이 이 컬럼의 존재 이유입니다.
       doc_type: docType,
+      // 사전 확인(/check) 세션 연결 〔bkit-7〕. trops_a 가 읽어서 자기 쪽
+      // precheck_prestep_session.intake_id 를 채웁니다. 없으면 null — 정상입니다.
+      pre_session_key: preSessionKey,
       // 선택 항목이라 대부분 null 입니다. 둘 다 있을 때만 세율을 함께 보여 줍니다.
       target_country: trade.country,
       hs_code: trade.hsCode,
@@ -835,8 +858,12 @@ async function uploadOne(config, path, file) {
  *    doc_type 이 그렇습니다 — 지금 받는 값이 'nda' 하나뿐이고 DB 기본값도 'nda' 라,
  *    떼고 넣어도 결과 행이 같습니다. 서류 종류가 둘 이상 되는 날 이 목록에서
  *    doc_type 을 **빼야 합니다.** 그때는 떼고 저장하면 사실이 어긋납니다.
+ *
+ *    pre_session_key 도 같은 이유로 여기 있습니다 〔bkit-7〕 — 컬럼이 없으면 그 값만
+ *    잃고(trops_a 쪽 intake_id 역기입이 안 될 뿐) 접수 자체의 사실(이메일·파일·동의)은
+ *    전혀 어긋나지 않습니다.
  */
-const OPTIONAL_COLUMNS = ['doc_type'];
+const OPTIONAL_COLUMNS = ['doc_type', 'pre_session_key'];
 
 /** PostgREST 가 「그런 칸 없다」고 답한 것인가. 컬럼명이 응답 본문에 실려 옵니다. */
 function isUnknownColumnError(status, text) {

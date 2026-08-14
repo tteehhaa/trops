@@ -898,13 +898,12 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
               <p class="field-hint">지금은 NDA만 대조할 수 있습니다. 나머지 서류는 준비 중입니다.</p>
             </div>
 
-            <!-- 사전 확인 세션키 〔작업 8 · §5-3 「세션 연결」〕.
-                 /check 에서 `?pre=<session_key>` 로 넘어오면 아래 스크립트가 값을 심습니다.
-                 ⚠️ **지금은 서버로 가지 않습니다.** 이 폼의 제출은 onSubmit 이 JSON 본문을
-                    직접 조립하는 방식이라(FormData 가 아닙니다), hidden 필드를 둔 것만으로는
-                    전송되지 않습니다. 접수 성사 시 `intake_id` 역기입은 api/intake.js 와
-                    trops_a 쪽 수신이 함께 열려야 성립하므로 **별건**입니다.
-                    그때 여기에 손댈 것은 없고, onSubmit 의 본문에 한 줄 얹으면 됩니다. -->
+            <!-- 사전 확인 세션키 〔bkit-7 · §5-3 「세션 연결」〕.
+                 /check 에서 `?pre=<session_key>` 로 넘어오면 아래 스크립트가 값을 심고,
+                 onSubmit 이 이 값을 읽어 접수 요청 본문에 `preSessionKey` 로 함께 보냅니다
+                 (api/intake.js → intake.pre_session_key 컬럼). 값을 받아 `intake_id` 를
+                 `precheck_prestep_session.intake_id` 에 채워 넣는 것은 trops_a 쪽 수신
+                 로직 몫입니다 — 여기서는 값을 옮겨 담기만 합니다. -->
             <input type="hidden" id="intake-pre-session" name="preSessionKey" value="">
 
             <div class="field">
@@ -1244,7 +1243,8 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
     function applyPrestepHandoff() {
       var touched = false;
 
-      /* 세션키는 DOM 에만 심어 둡니다 — 전송 경로는 아직 없습니다(위 hidden 필드 주석). */
+      /* 세션키를 hidden 필드에 심습니다. 전송은 onSubmit 이 이 필드의 값을 읽어 담당합니다
+         (위 hidden 필드 주석 · bkit-7). */
       if (params.pre) {
         var slot = document.getElementById('intake-pre-session');
         if (slot) { slot.value = params.pre; touched = true; }
@@ -1896,6 +1896,10 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
             400 으로 막습니다 — 화면에서 조용히 'nda' 로 눕히면, 계약서를 보낸 사람의
             서류가 NDA 기준으로 대조되고 아무도 그 사실을 모릅니다. */
       var docType = docTypeSel && docTypeSel.value ? docTypeSel.value : 'nda';
+      /* 사전 확인 세션키 〔bkit-7〕. /check 를 거치지 않고 바로 온 사람은 hidden 필드가
+         비어 있으므로 null 로 보냅니다 — 없다고 접수를 막지 않습니다(부가 필드). */
+      var preSessionKeyEl = document.getElementById('intake-pre-session');
+      var preSessionKey = preSessionKeyEl && preSessionKeyEl.value ? preSessionKeyEl.value : null;
 
       if (plan === 'free' && !freeAvailable) {
         return fail('지금은 접수가 마감되었습니다. 다시 열리면 안내드립니다.');
@@ -1976,6 +1980,10 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
               email: email,
               // 문서 종류 〔흐름 md §5 확장 구조〕. 지금은 'nda' 하나만 서버가 받습니다.
               docType: docType,
+              // 사전 확인(/check) 연결 세션키 〔bkit-7〕. 없으면(=/check 를 거치지 않음) null.
+              // trops_a 가 이 값으로 precheck_prestep_session.intake_id 를 채웁니다 —
+              // 이 저장소는 값을 옮겨 담기만 하고 매칭은 하지 않습니다.
+              preSessionKey: preSessionKey,
               consentTerms: consentTerms,
               consentTraining: consentTraining,
               files: read[0],

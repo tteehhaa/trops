@@ -254,6 +254,35 @@
 --     add column if not exists refund_feedback_requested_at timestamptz;
 
 
+-- ── 0-J. 사전 확인 세션 연결 컬럼 (2026-08-14 · bkit-7 · doc/s10 §5-3 「세션 연결」) ──
+--
+-- `/check` 사전 확인을 거쳐 `/precheck?pre=<session_key>` 로 온 사람의 접수 건에,
+-- 어느 사전 확인 세션에서 왔는지를 남깁니다. api/intake.js 가 요청 본문의
+-- `preSessionKey` 를 그대로 옮겨 담을 뿐이고, 값을 검증하거나 매칭하지 않습니다.
+--
+-- 🔴 **읽는 쪽은 이 저장소가 아니라 trops_a 입니다** — 크로스 레포 인계.
+--    trops_a 가 이 값으로 자기 쪽 `precheck_prestep_session.intake_id` 를 채워야
+--    사전 확인 세션과 접수 건이 이어집니다. 그 수신 로직은 이 절 범위 밖입니다
+--    (0-G 와 같은 "계약만 여기 적어 둔다" 성격 — 단, 방향이 반대입니다: 0-G 는
+--    trops_a 가 쓰고 여기서 읽고, 이 컬럼은 여기서 쓰고 trops_a 가 읽습니다).
+--
+-- ⚠️ 이 절만 따로 실행하십시오(0-D·0-E·0-F·0-H·0-I 와 같습니다). 파일 전체를
+--    붙여넣으면 아래 1번의 create table public.intake 에서 42P07 로 멈춥니다.
+--
+-- 가산 변경만 합니다 — 기존 컬럼을 지우거나 형을 바꾸지 않습니다.
+--
+--   alter table public.intake
+--     add column if not exists pre_session_key text;
+--
+-- ⚠️ 이 컬럼은 **배포보다 먼저 실행할 필요가 없습니다**(0-H 의 doc_type 과 다릅니다).
+--    api/intake.js 의 OPTIONAL_COLUMNS 에 들어 있어, 컬럼이 없으면 그 값만 빼고
+--    한 번 더 저장합니다 — 접수 전체가 502 가 되지 않습니다. 잃는 것은
+--    `pre_session_key` 값 하나이고(=그 건의 intake_id 역기입이 안 됨), 접수
+--    사실(이메일·파일·동의)은 어긋나지 않습니다.
+-- ⚠️ /check 를 거치지 않고 바로 온 사람은 이 값이 null 입니다 — 정상입니다.
+--    NOT NULL 제약을 걸지 마십시오.
+
+
 -- ── 0-G. 처리 가능 여부 표 — ⛔ **이 저장소 소관이 아닙니다** (2026-08-11 · M-2) ──
 --
 -- 🔴 **여기서 실행하지 마십시오. 참조본입니다.**
@@ -334,6 +363,12 @@ create table public.intake (
   --    실수로 열려도 DB 가 막습니다. 늘릴 때 고칠 곳 셋: 이 check ·
   --    api/intake.js DOC_TYPES · precheck.html 의 <option disabled>.
   doc_type          text        not null default 'nda',
+
+  -- ── 사전 확인 세션 연결 (2026-08-14 추가 · bkit-7 · doc/s10 §5-3) ─────────
+  -- `/check` 를 거쳐 온 접수 건만 값이 있습니다. trops_a 가 이 값으로 자기 쪽
+  -- precheck_prestep_session.intake_id 를 채웁니다(크로스 레포 인계) — 이
+  -- 저장소는 옮겨 담기만 하고 매칭하지 않습니다. null 이 정상입니다(0-J 참조).
+  pre_session_key   text,
 
   -- ── 거래 정보 (2026-08-09 추가 · 선택) ────────────────────────────────────
   -- 접수 시 이용자가 골라 넣은 거래 상대국(ISO 2자리)과 HS 8단위입니다.
