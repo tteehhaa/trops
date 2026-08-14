@@ -37,11 +37,19 @@ const CSS = RAW.match(/<style[\s\S]*?<\/style>/)[0].replace(/\/\*[\s\S]*?\*\//g,
  * key   — 이 섹션을 찾는 문자열(마크업에 실제로 있는 것)
  * bg    — 'bg' | 'surface' | 'dark'
  */
+/*
+ * 🔄 **경고와 근거가 갈라졌고, 그 사이에 상품이 들어왔습니다** 〔2026-08-14 · basis-split-s13〕.
+ *    종전 3행 「신뢰증명(전) → 상품소개 → 결 CTA」가 4행이 됐습니다:
+ *      경고(무보 인용문 · 다크)  →  상품소개  →  근거(영국 OGL · 캡처)  →  결 CTA
+ *    한 섹션이 심박을 올렸다(경고) 내리는(근거) 일을 하지 않게 갈랐고, 「무엇을 근거로
+ *    비교하는지」가 **비교를 설명한 뒤**에 오도록 근거를 상품 뒤로 내렸습니다.
+ */
 const LAYOUT = [
   { name: '히어로',        key: '<section class="container hero">',        bg: 'bg' },
   { name: '경험담(승)',    key: '<section class="stories-sec',             bg: 'surface' },
-  { name: '신뢰증명(전)',  key: '<section class="trust"',                  bg: 'dark' },
+  { name: '경고(전)',      key: '<section class="trust"',                  bg: 'dark' },
   { name: '상품소개',      key: '<section class="cards-sec" id="service"', bg: 'bg' },
+  { name: '근거(전)',      key: '<section class="basis',                   bg: 'surface' },
   { name: '결 CTA',        key: '<section class="act"',                    bg: 'bg' },
   { name: '안심문구',      key: '<section class="assure',                  bg: 'surface' },
   { name: 'HOW IT WORKS',  key: '<section class="how" id="how">',          bg: 'bg' },
@@ -71,14 +79,53 @@ test('O1 섹션 순서가 배치표와 정확히 일치한다', () => {
 /*
  * 이 사이클이 고친 문제 그 자체입니다. 위 O1 이 이미 잡지만, 뒤집혔을 때
  * **무엇이 왜 잘못인지**를 실패 메시지로 남기려고 따로 둡니다.
+ *
+ * 🔄 **단언이 두 걸음이 됐습니다** 〔2026-08-14 · basis-split-s13〕. 종전에는
+ *    「신뢰증명 < 상품소개」 하나였고, 그때 신뢰증명은 경고와 근거를 **함께** 지고
+ *    있었습니다. 둘을 가르고 나니 두 블록이 상품을 사이에 두고 갈라 앉습니다.
  */
-test('O2 신뢰증명이 상품소개보다 앞이다 — 확신을 만든 뒤 상품을 보여준다', () => {
-  const trust = M.indexOf('<section class="trust"');
+test('O2 경고 → 상품 → 근거 순이다 — 각성시킨 뒤 답을 주고, 그 답의 기준을 밝힌다', () => {
+  const warn = M.indexOf('<section class="trust"');
   const cards = M.indexOf('<section class="cards-sec" id="service"');
-  assert.ok(trust !== -1 && cards !== -1, '기준 섹션을 찾지 못했습니다');
-  assert.ok(trust < cards,
-    '신뢰증명이 상품소개 뒤에 있습니다 — 감정선(기-승-전-결)이 뒤집혀 「상품을 보여준 뒤 ' +
-    '확신을 만든다」가 됩니다. 이 섹션이 만드는 확신 없이 본 상품 카드는 그냥 기능 목록입니다.');
+  const basis = M.indexOf('<section class="basis');
+  assert.ok(warn !== -1 && cards !== -1 && basis !== -1, '기준 섹션을 찾지 못했습니다');
+
+  assert.ok(warn < cards,
+    '경고(무보 인용문)가 상품소개 뒤에 있습니다 — 감정선(기-승-전-결)이 뒤집혀 「상품을 ' +
+    '보여준 뒤 각성시킨다」가 됩니다. 그 각성 없이 본 상품 탭은 그냥 기능 목록입니다.');
+
+  assert.ok(cards < basis,
+    '근거 섹션(「무엇을 근거로 비교하는지 밝힙니다」)이 상품소개보다 앞에 있습니다 — 그 h2 의 ' +
+    '「비교」가 가리킬 대상이 아직 화면에 없습니다. 읽는 사람은 「무슨 비교?」를 안은 채 ' +
+    '근거 3줄과 캡처를 지나게 됩니다. 상품 탭이 「공개된 서식과 하나씩 비교해서」라고 ' +
+    '말한 **뒤**라야 이 h2 가 그 문장에 대한 대답이 됩니다.');
+});
+
+test('O2-b 경고 섹션은 한 문장짜리다 — 근거가 다시 붙지 않았다', () => {
+  /*
+   * 가른 이유는 두 블록이 심박을 **반대 방향**으로 움직이기 때문입니다. 인용문은 올리고
+   * (「우리 얘기일 수 있다」), 근거는 내립니다(「함부로 판단하지 않는다」).
+   * landing-emphasis-s10 이 그 어긋남을 헤어라인 + 큰 여백(.trust-detail)으로 한 번
+   * 덮었고, **구획선으로 가려야 했다는 것 자체가** 두 블록이 한 섹션에 있으면 안 된다는
+   * 신호였습니다. 그래서 이 검사는 「무엇이 없는가」를 봅니다.
+   */
+  const trust = M.slice(M.indexOf('<section class="trust"'));
+  const block = trust.slice(0, trust.indexOf('</section>'));
+
+  assert.ok(block.indexOf('trust-detail') === -1,
+    '경고 섹션에 .trust-detail 구획이 돌아왔습니다 — 근거를 다시 안으로 들였다는 뜻입니다');
+  assert.ok(!/<h[1-6]/.test(block),
+    '경고 섹션에 제목이 생겼습니다 — 이 섹션의 제목은 05 근거가 가져갔고, 여기 이름은 ' +
+    'aria-label 이 집니다. h2 를 만들면 같은 문장이 페이지에 두 번 있게 됩니다');
+  assert.ok(!/<img/.test(block),
+    '경고 섹션에 캡처가 돌아왔습니다 — 캡처는 05 근거의 것입니다');
+  assert.ok(/aria-label="[^"]+"/.test(block.slice(0, block.indexOf('>') + 1)),
+    '경고 섹션이 이름을 잃었습니다 — h2 가 없으므로 aria-label 이 유일한 이름입니다');
+
+  // 본문은 인용문 한 문장 + 출처 한 줄, 딱 둘입니다.
+  const ps = (block.match(/<p /g) || []).length;
+  assert.strictEqual(ps, 2,
+    '경고 섹션의 <p> 가 ' + ps + '개입니다 — 인용문과 출처 둘뿐인 것이 이 섹션의 설계입니다');
 });
 
 /* ── O3·O4 상품소개 중복 제거 ───────────────────────────────────────────── */
@@ -203,7 +250,15 @@ test('O4-b 같은 스크린샷이 한 화면 거리에 두 번 나오지 않는�
 
   // ② 접힌 패널 안의 재등장은 허용하되, **아무거나 허용하지는 않습니다.**
   //    허용 목록을 명시해 두면 다음 사람이 「중복이 원래 되는구나」로 읽지 않습니다.
-  const ALLOWED_REUSE = ['/img/c03-result.jpg'];
+  /*
+   * ✅ **목록이 비었습니다** 〔2026-08-14 · basis-split-s13〕. s11 이 예외를 연 이유는
+   *    바이어확인 전용 캡처를 뜰 수 없었기 때문이고(위 문단), 그 미결이 닫혔습니다 —
+   *    `/deals/[id]/buyer-guard`(A-2)는 접수 토큰 없이 열려서 찍을 수 있었습니다.
+   *    지금 네 캡처는 전부 서로 다른 파일입니다.
+   * ⚠️ 여기에 다시 파일을 올리기 전에 **정말 그 캡처를 못 찍는지** 확인하십시오.
+   *    한 번 열린 예외는 다음 사람에게 「원래 되는 것」으로 읽힙니다.
+   */
+  const ALLOWED_REUSE = [];
   const inPanel = imgs.filter((t) => panels.indexOf(t) !== -1).map(srcOf);
   const reused = inPanel.filter((s) => exposed.indexOf(s) !== -1 || inPanel.indexOf(s) !== inPanel.lastIndexOf(s));
   for (const s of reused) {
@@ -283,24 +338,36 @@ test('O6 --surface 섹션은 전부 .sec-surface 로 칠한다', () => {
   }
 });
 
-test('O7 배경이 연속인 이웃은 상품소개 → 결 한 쌍뿐이다', () => {
+test('O7 배경이 연속인 이웃이 하나도 없다 — 페이지가 완전 교차다', () => {
+  /*
+   * 🔄 **연속 쌍이 1 → 0 이 됐습니다** 〔2026-08-14 · basis-split-s13〕.
+   *    종전의 유일한 연속은 「상품소개 → 결 CTA」(둘 다 --bg)였고, 사유는 흐름 md §1 의
+   *    「감정선과 무관한 기능섹션 없이 곧바로 행동으로 이어지도록」이었습니다.
+   *    그 사이에 05 근거가 들어왔는데, 근거는 **기능섹션이 아니라 「전」의 마지막 조각**
+   *    이므로 md 의 요구는 그대로 지켜집니다. 남은 선택은 배경뿐이었고 —
+   *      --bg      → bg·bg·bg 3연속. 경계가 두 곳 사라집니다
+   *      --surface → bg·surface·bg. 페이지 전체가 완전 교차가 됩니다   ← 이것을 골랐습니다
+   * ⚠️ 다시 연속을 만들지 마십시오. 「여기만 예외」가 한 번 생기면 다음 섹션도 같은
+   *    이유로 예외를 요구합니다.
+   */
   const pairs = [];
   for (let i = 1; i < LAYOUT.length; i++) {
     if (LAYOUT[i].bg === LAYOUT[i - 1].bg) pairs.push(LAYOUT[i - 1].name + ' → ' + LAYOUT[i].name);
   }
-  assert.deepStrictEqual(pairs, ['상품소개 → 결 CTA'],
-    '배경이 같은 이웃이 배치표에 더 있습니다: ' + JSON.stringify(pairs) + '\n' +
-    '  이 한 쌍만 의도된 연속입니다(흐름 md §1 — 감정선을 끊지 않으려고 상품 다음 행동을 이어 붙임).');
+  assert.deepStrictEqual(pairs, [],
+    '배경이 같은 이웃이 배치표에 있습니다: ' + JSON.stringify(pairs) + '\n' +
+    '  지금 페이지는 완전 교차입니다 — 연속을 만들려면 그 사유부터 여기 적으십시오.');
 
-  // 결 CTA 에 구분선을 그으면 그 결정이 선 하나로 취소됩니다.
+  // 배경이 갈리는데 선까지 그으면 경계가 두 겹이 됩니다.
   assert.ok(!/^\s*\.act\s*\{[^}]*border-top/m.test(CSS),
-    '.act 에 border-top 이 붙었습니다 — 상품소개와 한 덩어리로 읽히게 한 결정이 취소됩니다');
+    '.act 에 border-top 이 붙었습니다 — 위가 --surface 라 경계가 이미 있습니다');
 });
 
 test('O9 다크 본문 섹션은 페이지에 하나뿐이다', () => {
   const dark = (CSS.match(/background:\s*var\(--surface-dark\)/g) || []).length;
-  // 06 신뢰 · 푸터 두 곳입니다. .shot 이 이미지 뒤에 까는 것까지 세 곳.
-  assert.ok(dark <= 3, '--surface-dark 를 쓰는 규칙이 ' + dark + '개입니다 — 다크는 신뢰·푸터뿐입니다');
+  // 03 경고 · 푸터 두 곳입니다. (2026-08-14 까지 세 곳이었습니다 — .shot 이 다크 배경을
+  //  이미지 뒤에 깔고 있었고, 그 규칙은 근거 블록이 밝은 섹션으로 나가면서 사라졌습니다.)
+  assert.ok(dark <= 3, '--surface-dark 를 쓰는 규칙이 ' + dark + '개입니다 — 다크는 경고·푸터뿐입니다');
   assert.strictEqual((M.match(/<section class="trust"/g) || []).length, 1,
     '다크 본문 섹션이 하나가 아닙니다');
 });
@@ -322,6 +389,50 @@ test('O8 헤더 앵커 3종의 도착지가 살아 있다', () => {
     '두 앵커의 도착지가 같습니다');
 });
 
+test('O8-b 섹션을 옮겨도 밖에서 들어오는 앵커가 살아 있다', () => {
+  /*
+   * 🔴 **신설** 〔2026-08-14 · basis-split-s13〕. 이 저장소가 실제로 한 번 다친 실패입니다 —
+   *    이미 발송된 결제확인 메일이 `https://www.trops.kr/#feat-timeline` 을 싣고 있어서,
+   *    상품소개 안의 그 id 가 사라지거나 [hidden] 요소로 옮겨 가면 **링크는 살아 있는데
+   *    화면은 아무 데도 가지 않습니다.** 화면이 깨지지 않아 가장 늦게 발견되는 실패입니다.
+   *
+   * 섹션을 통째로 옮기는 배치에서는 id 가 함께 따라가므로 깨지지 않아야 정상입니다.
+   * 그 「정상」을 사람의 기억이 아니라 검사가 지킵니다.
+   * ⚠️ 아래 목록은 **index.html 밖에서 들어오는 것**만입니다. 안에서 자기 페이지로 거는
+   *    링크는 O8 이 봅니다. 새 유입 링크를 만들면 여기 한 줄을 더하십시오.
+   */
+  const INBOUND = [
+    ['#feat-timeline', '발송된 결제확인 메일(api/_notify.js buildTimelinePreviewLink)'],
+    ['#service', 'precheck.html 헤더 「제공되는 것」'],
+    ['#how', 'precheck.html 헤더 「진행 방식」'],
+    ['#interest', 'precheck.html 하단 「다음 회차 알림 받기」'],
+    ['#feats', '옛 05 섹션에 걸려 있을 수 있는 과거·외부 링크'],
+  ];
+
+  for (const [hash, from] of INBOUND) {
+    const id = hash.slice(1);
+    const at = M.indexOf('id="' + id + '"');
+    assert.notStrictEqual(at, -1,
+      '앵커 ' + hash + ' 의 도착지가 없습니다 — 출처: ' + from);
+
+    /*
+     * 도착지가 **항상 보이는 요소**여야 합니다. [hidden] 요소는 앵커 목표가 되지 못하고,
+     * 브라우저는 조용히 페이지 맨 위에 떨어뜨립니다. 여는 태그 안에 hidden 이 있는지만
+     * 봅니다 — 조상까지 볼 필요는 없습니다(탭 패널 3개가 유일한 hidden 이고 서로 형제).
+     */
+    const open = M.slice(M.lastIndexOf('<', at), M.indexOf('>', at) + 1);
+    assert.ok(!/\shidden[\s>]/.test(open),
+      '앵커 ' + hash + ' 가 [hidden] 요소를 가리킵니다 — 링크는 살아 있는데 화면은 ' +
+      '아무 데도 가지 않습니다. 출처: ' + from + '\n  태그: ' + open);
+  }
+
+  // 기한관리 앵커는 **탭 버튼**에 있어야 합니다(패널은 선택 전까지 [hidden]).
+  const tl = M.slice(M.lastIndexOf('<', M.indexOf('id="feat-timeline"')));
+  assert.ok(/^<button[^>]*role="tab"/.test(tl),
+    '#feat-timeline 이 탭 버튼이 아닌 요소로 옮겨 갔습니다 — 패널로 옮기면 [hidden] 이라 ' +
+    '메일 링크가 죽습니다');
+});
+
 /* ── 무손실 ──────────────────────────────────────────────────────────────── */
 
 test('재배치로 콘텐츠가 사라지지 않았다 — 각 블록이 한 번씩 있다', () => {
@@ -330,8 +441,14 @@ test('재배치로 콘텐츠가 사라지지 않았다 — 각 블록이 한 번
     ['경험담 질문', '이 조항, 본 적 있으신가요?'],
     ['무지 안전장치', '모르시는 게 당연합니다.'],
     ['예시 고지', '특정 기업의 실제 사례가 아닙니다'],
-    ['신뢰 인용', '대금 미회수 단 한 번으로 자금난에 빠질 수 있습니다'],
-    ['신뢰 출처', '한국무역보험공사'],
+    ['경고 인용', '대금 미회수 단 한 번으로 자금난에 빠질 수 있습니다'],
+    ['경고 출처', '한국무역보험공사'],
+    // 🔄 근거 3줄은 03 경고에서 05 근거로 **옮겨 갔을 뿐** 사라지지 않았습니다.
+    //    분리 배치에서 가장 쉽게 잃는 것이 「옮기다 흘린 문장」이라 여기서 셉니다.
+    ['근거 h2', '무엇을 근거로 비교하는지 밝힙니다.'],
+    ['비교 기준(영국 OGL)', 'Open Government Licence v3.0'],
+    ['판단배제 원칙', '비교 항목은 저희가 만들지 않습니다'],
+    ['근거 5종', '관할 · 법령명 · 조문 · 시행일 · 확인일자'],
     ['상품소개 h2', '거래를 시작하기 전에 한 번, 시작한 후에 한 번.'],
     ['조작 안내', '하나씩 눌러보세요'],
     ['결 h2', '받으신 서류부터, 하나 확인해 보세요.'],

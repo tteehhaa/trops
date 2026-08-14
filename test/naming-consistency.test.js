@@ -404,18 +404,24 @@ test('안심 문구가 결 CTA 뒤에 있다 — 감정선 안에 끼지 않는�
   const b = B.index;
   const hero = b.indexOf('<section class="container hero">');
   const stories = b.indexOf('class="stories"');
-  const trust = b.indexOf('id="trust-title"');
+  /*
+   * 🔄 「전」의 기준점을 `id="trust-title"` 에서 **인용문 자신**으로 바꿨습니다
+   *    〔2026-08-14 · basis-split-s13〕. 그 id 는 「무엇을 근거로 비교하는지 밝힙니다」
+   *    h2 의 것이고, 그 h2 는 상품소개 **뒤**의 05 근거 섹션으로 내려갔습니다
+   *    (지금 이름은 basis-title). 감정선의 「전」이 시작되는 지점은 경고 인용문입니다.
+   */
+  const warn = b.indexOf('class="stat-line');
   const act = b.indexOf('id="act-title"');
   const assure = b.indexOf('id="assure-title"');
   const how = b.indexOf('HOW IT WORKS');
 
-  for (const [n, v] of [['hero', hero], ['stories', stories], ['trust', trust],
+  for (const [n, v] of [['hero', hero], ['stories', stories], ['warn', warn],
     ['act', act], ['assure', assure], ['how', how]]) {
     assert.ok(v !== -1, '기준 블록을 찾지 못했습니다: ' + n);
   }
   // 감정선 기 - 승 - 전 - 결이 끊기지 않고 이어지는가.
-  assert.ok(hero < stories && stories < trust && trust < act,
-    '감정선 순서가 기(히어로) - 승(경험담) - 전(신뢰) - 결(행동)이 아닙니다');
+  assert.ok(hero < stories && stories < warn && warn < act,
+    '감정선 순서가 기(히어로) - 승(경험담) - 전(경고) - 결(행동)이 아닙니다');
   assert.ok(assure > act,
     '안심 문구가 감정선 안에 끼어 있습니다 — 결(행동) 다음이어야 방어가 아니라 안심으로 읽힙니다');
   assert.ok(assure < how, '안심 문구가 HOW 설명보다 뒤로 밀렸습니다');

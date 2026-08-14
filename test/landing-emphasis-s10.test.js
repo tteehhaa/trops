@@ -68,21 +68,37 @@ test('E1-a 「이 조항, 본 적 있으신가요?」가 그 문장 바로 뒤�
     '2026-08-14 이전 상태로 되돌아간 것입니다');
 });
 
-/* ══ E2~E5 신뢰증명 — 한마디와 근거 디테일 ═════════════════════════════════ */
+/* ══ E2~E5 경고와 근거 — 한마디가 먼저, 근거는 그 뒤 ═══════════════════════ */
 
-test('E2 인용문이 h2 보다 앞에 있다 — 제일 중요한 한마디가 먼저', () => {
-  const trust = M.slice(M.indexOf('<section class="trust"'));
-  const block = trust.slice(0, trust.indexOf('</section>'));
-  const quote = block.indexOf('class="stat-line');
-  const h2 = block.indexOf('id="trust-title"');
-  assert.ok(quote !== -1 && h2 !== -1, '인용문이나 h2 를 찾지 못했습니다');
+/*
+ * 🔄 **E2 가 「한 섹션 안의 순서」에서 「두 섹션의 순서」로 옮겨 갔습니다**
+ *    〔2026-08-14 · basis-split-s13〕.
+ *
+ * s10 이 세운 것은 「제일 중요한 한마디(무보 인용문)가 그것을 설명하는 h2 보다 **앞**」
+ * 이었고, 그때 둘은 같은 다크 섹션 안에 있었습니다. s13 이 그 섹션을 갈랐습니다 —
+ * 인용문은 03 경고에, h2 와 근거 3줄·캡처는 05 근거에. **지키려던 순서는 그대로**이고,
+ * 이제 섹션 경계가 그 순서를 집니다.
+ * ⛔ 둘을 한 섹션으로 되돌리지 마십시오 — 되돌리면 s10 이 헤어라인으로 덮었던 톤 충돌이
+ *    함께 돌아옵니다(사유는 test/landing-order-s9.test.js O2-b).
+ */
+test('E2 한마디가 그것을 설명하는 h2 보다 앞에 있다', () => {
+  const quote = M.indexOf('class="stat-line');
+  const h2 = M.indexOf('id="basis-title"');
+  assert.ok(quote !== -1 && h2 !== -1, '인용문이나 근거 h2 를 찾지 못했습니다');
   assert.ok(quote < h2,
-    'h2 가 인용문 위로 다시 올라갔습니다 — 그 h2(「무엇을 근거로 비교하는지 밝힙니다」)가 ' +
-    '소개하는 것은 인용문이 아니라 아래 근거 3줄과 캡처입니다');
+    '근거 h2(「무엇을 근거로 비교하는지 밝힙니다」)가 무보 인용문보다 앞에 있습니다 — ' +
+    '그 h2 가 소개하는 것은 인용문이 아니라 아래 근거 3줄과 캡처입니다');
 
-  // 자리만 옮긴 것이지 섹션 제목이 사라진 것이 아닙니다.
-  assert.ok(/aria-labelledby="trust-title"/.test(block), '섹션이 제목을 잃었습니다');
-  assert.ok(block.indexOf('class="trust-detail"') !== -1, '근거 디테일 묶음이 없습니다');
+  // 갈라진 두 섹션이 각자 이름을 갖고 있는가.
+  const trust = M.slice(M.indexOf('<section class="trust"'));
+  const warn = trust.slice(0, trust.indexOf('>') + 1);
+  assert.ok(/aria-label="[^"]+"/.test(warn),
+    '경고 섹션이 이름을 잃었습니다 — h2 가 없으므로 aria-label 이 유일한 이름입니다');
+
+  const basis = M.slice(M.indexOf('<section class="basis'));
+  assert.ok(/aria-labelledby="basis-title"/.test(basis.slice(0, basis.indexOf('>') + 1)),
+    '근거 섹션이 제목과 연결되지 않았습니다');
+  assert.ok(basis.indexOf('class="basis-list"') !== -1, '근거 3줄 묶음이 없습니다');
 });
 
 test('E3 인용문이 헤드라인급이다 — 섹션 제목보다 크다', () => {
@@ -108,8 +124,8 @@ test('E3 인용문이 헤드라인급이다 — 섹션 제목보다 크다', () 
     '사람이 이 문장을 H3 계층으로 읽습니다');
 });
 
-test('E4 근거 디테일이 본문보다 한 단계 작다', () => {
-  const list = rule('.trust-list p');
+test('E4 근거 3줄이 본문보다 한 단계 작다', () => {
+  const list = rule('.basis-list p');
   const size = parseFloat((list.match(/font-size:\s*([\d.]+)px/) || [])[1]);
   assert.ok(size < 16.5,
     '근거 3줄이 본문(16.5px)과 같은 무게입니다(' + size + 'px) — 한마디와 디테일의 ' +
@@ -118,10 +134,21 @@ test('E4 근거 디테일이 본문보다 한 단계 작다', () => {
     '근거 3줄이 ' + size + 'px 입니다 — 캡션 단계(12.5)까지 내리면 근거가 각주처럼 읽혀 ' +
     '「근거를 밝힌다」는 이 섹션의 목적이 약해집니다');
 
-  // 여백·헤어라인으로 갈라 놓았는가.
-  const detail = rule('.trust-detail');
-  assert.ok(/border-top:/.test(detail) && /margin-top:/.test(detail),
-    '.trust-detail 이 한마디와 디테일을 갈라 놓지 않습니다(구분선·여백 없음)');
+  /*
+   * 🔄 **구획선 검사가 사라졌습니다** 〔2026-08-14 · basis-split-s13〕.
+   *    `.trust-detail` 의 헤어라인 + 큰 여백은 「한 섹션 안에서 한마디와 디테일을 갈라
+   *    놓는」 장치였습니다. 지금은 **섹션 자체가 갈라져** 있고 배경까지 다릅니다
+   *    (다크 → --surface). 같은 일을 두 번 하면 경계가 두 겹이 됩니다.
+   * ⚠️ 대신 갈라짐이 **살아 있는지**를 봅니다 — 둘이 다시 한 섹션이 되면 여기서 걸립니다.
+   */
+  assert.ok(CSS.indexOf('.trust-detail') === -1,
+    '.trust-detail 규칙이 되살아났습니다 — 섹션이 갈린 지금 그 구획선은 경계를 두 겹으로 ' +
+    '만듭니다. 되살리려면 두 블록을 한 섹션으로 되돌린 이유부터 적으십시오');
+  const basis = M.slice(M.indexOf('<section class="basis'));
+  const warn = M.slice(M.indexOf('<section class="trust"'));
+  assert.ok(basis.indexOf('class="stat-line') === -1 &&
+    warn.slice(0, warn.indexOf('</section>')).indexOf('basis-list') === -1,
+    '한마디와 근거가 같은 섹션에 다시 들어갔습니다');
 });
 
 test('E5 근거 3줄이 화면에 그대로 있다 — 접지 않았다', () => {
@@ -133,8 +160,9 @@ test('E5 근거 3줄이 화면에 그대로 있다 — 접지 않았다', () => 
   for (const s of MUST) {
     assert.ok(B.indexOf(s) !== -1, '근거 디테일이 사라졌습니다: 「' + s + '」');
   }
-  const trust = B.slice(B.indexOf('<section class="trust"'));
-  assert.ok(trust.slice(0, trust.indexOf('</section>')).indexOf('<details') === -1,
+  // 🔄 대상 섹션이 03 경고에서 05 근거로 옮겨 갔습니다 〔2026-08-14 · basis-split-s13〕.
+  const basis = B.slice(B.indexOf('<section class="basis'));
+  assert.ok(basis.slice(0, basis.indexOf('</section>')).indexOf('<details') === -1,
     '근거를 <details> 로 접었습니다 — 「비교 항목은 저희가 만들지 않습니다」는 이 페이지의 ' +
     '차별점이라 기본 화면에서 사라지면 안 됩니다');
 });
