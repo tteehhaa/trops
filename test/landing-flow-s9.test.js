@@ -151,53 +151,72 @@ test('🔴 JS 가 죽으면 인용문이 그대로 보인다 — 숨김은 JS �
  * ⛔ 이 검사를 「순차 등장」으로 되돌리지 마십시오. 되돌리려면 trops_a 의 그 검사를 먼저
  *    바꿔야 하고, 그것은 제품 정책 변경입니다(스케치 md 로는 뒤집지 않습니다).
  */
-test('🔴 기한관리 예시가 제품 정책과 같다 — 2개국 · 애니메이션 0 · 점에 수치 0', () => {
-  const pins = (M.match(/class="feat-pin"/g) || []).length;
-  assert.strictEqual(pins, 2,
-    '핀이 ' + pins + '개입니다 — trops_a 예시는 프랑스·아랍에미리트 2건입니다');
-
+test('🔴 기한관리 예시가 제품 정책과 같다 — 손으로 흉내 내지 않고 그 화면을 싣는다', () => {
+  /*
+   * 🔄 **단언을 갈아 적었습니다** 〔2026-08-14 · card-shot-reveal-s11〕.
+   *
+   * 종전에는 랜딩이 제품 정책(FR·AE 2개국 · 애니메이션 0 · 점에 수치 0)을 **손으로
+   * 흉내 낸 결과**(`.feat-pin` 세로 목록)를 검사했습니다. 그 자리에 이제 app.trops.kr
+   * 홈의 「계약이 향하는 곳」 패널 **실제 캡처**(`img/timeline-map.jpg`)가 들어갔습니다.
+   *
+   * 그래서 검사할 것이 바뀌었습니다 — 세 정책은 **캡처 안에 이미 들어 있으므로**
+   * 여기서 다시 셀 것이 없습니다. 대신 지켜야 할 것은 **「손으로 그린 것으로 되돌아가지
+   * 않는다」** 하나입니다. 되돌아가는 순간 제품과 갈라질 통로가 다시 열립니다.
+   *
+   * ⛔ 이 검사를 핀 개수 세기로 되돌리지 마십시오 — 되돌리려면 캡처를 먼저 걷어내야
+   *    하고, 그것은 제품 화면을 손그림으로 바꾸는 일입니다.
+   * ⚠️ 제품 쪽 정본은 그대로입니다: trops_a `tests/guardrails/world-map-boundary.test.ts`.
+   */
   const timeline = M.slice(M.indexOf('id="feat-timeline"'));
   const card = timeline.slice(0, timeline.indexOf('</section>'));
-  for (const c of ['프랑스', '아랍에미리트']) {
-    assert.ok(card.indexOf(c) !== -1, c + ' 핀이 없습니다');
-  }
-  assert.ok(card.indexOf('베트남') === -1,
-    '베트남 핀이 남아 있습니다 — 제품 예시는 2개국이고 3번째 나라를 늘리지 않습니다');
 
-  /*
-   * ⚠️ 아래는 **CSS 주석까지 걷어낸** 원문으로 봅니다. 이 저장소는 「무엇을 지웠고 왜
-   *    지웠는지」를 주석으로 남기므로, 걷지 않으면 그 설명이 곧 오탐이 됩니다
-   *    (실제로 `.feat-pin-meta` 를 지운 사유 주석이 이 검사를 한 번 빨갛게 만들었습니다).
-   */
+  assert.ok(/<img[^>]*src="\/img\/timeline-map\.jpg"/.test(card),
+    '기한관리 카드에 실제 화면 캡처가 없습니다 — 이 자리는 제품 화면을 미리 보여주는 자리입니다');
+
   const cssCode = CSS.replace(/\/\*[\s\S]*?\*\//g, '');
   const markup = M.replace(/<style[\s\S]*?<\/style>/g, '');
 
-  // ② 점에 수치 0 — D-day·건수를 적으면 예시가 집계처럼 읽힙니다.
+  // 손으로 그리던 자리표시자가 마크업·CSS 양쪽에서 사라졌는지 함께 봅니다.
+  //   한쪽만 지우면 다음 사람이 남은 쪽을 보고 되살립니다.
+  for (const cls of ['feat-pin', 'feat-map']) {
+    assert.ok(!new RegExp(cls).test(markup),
+      '자리표시자(.' + cls + ')가 마크업에 남아 있습니다 — 실제 캡처와 손그림이 함께 있습니다');
+    assert.ok(!new RegExp('\\.' + cls).test(cssCode),
+      '자리표시자(.' + cls + ') 규칙이 CSS 에 남아 있습니다 — 쓰지 않는 클래스는 되살아납니다');
+  }
+
+  // 점에 수치 0 — D-day·건수를 적으면 예시가 집계처럼 읽힙니다.
   assert.ok(!/feat-pin-meta/.test(markup) && !/feat-pin-meta/.test(cssCode),
     '핀에 수치 캡션(.feat-pin-meta)이 남아 있습니다 — 숫자를 적으면 집계로 읽힙니다');
   assert.ok(!/D-\d+/.test(card), 'D-day 표기가 남아 있습니다');
 
-  // ③ 애니메이션 0 — 키프레임·규칙·순서값 세 겹을 함께 봅니다.
-  //    하나만 지우면 되살리기가 쉬워서, 세 겹이 다 없어야 「지웠다」입니다.
+  // 애니메이션 0 — 키프레임·규칙·순서값 세 겹을 함께 봅니다.
   assert.ok(!/@keyframes pin-drop/.test(cssCode), 'pin-drop 키프레임이 남아 있습니다');
-  assert.ok(!/\.feat-pin[^{]*\{[^}]*animation/.test(cssCode),
-    '핀 애니메이션 규칙이 남아 있습니다');
   assert.ok(!/class="feat-pin"[^>]*--i:/.test(M),
     '등장 순서(--i)가 남아 있습니다 — 순차 등장의 흔적입니다');
 });
 
-test('🔴 가짜 지도를 그리지 않았다 — 자리표시자는 자리표시자로 남는다', () => {
+test('🔴 가짜 지도를 그리지 않았다 — 그리는 대신 제품 화면을 싣는다', () => {
   const timeline = M.slice(M.indexOf('id="feat-timeline"'));
   const card = timeline.slice(0, timeline.indexOf('</section>'));
 
-  // 지도 이미지·SVG 경로가 새로 들어오지 않았는지.
-  assert.ok(card.indexOf('<svg') === -1 || card.indexOf('feat-chev') !== -1,
-    '기한관리 카드에 지도 그래픽이 들어왔습니다');
+  /*
+   * 🔄 **자리표시자 단계가 끝났습니다** 〔2026-08-14 · card-shot-reveal-s11〕.
+   * 이 검사의 이름은 「자리표시자는 자리표시자로 남는다」였고, 캡처가 없는 동안
+   * 가짜 지도를 그리지 못하게 막는 것이 일이었습니다. 캡처가 들어온 지금 지켜야 할
+   * 것은 **「직접 그린 지도가 다시 들어오지 않는다」** 로 좁혀집니다.
+   */
+  // 셰브론 말고 다른 SVG(직접 그린 지도 윤곽·대륙)가 들어오지 않았는지.
+  const svgs = (card.match(/<svg/g) || []).length;
+  const chevs = (card.match(/feat-chev/g) || []).length;
+  assert.strictEqual(svgs, chevs,
+    '기한관리 카드에 셰브론이 아닌 SVG 가 ' + (svgs - chevs) + '개 있습니다 — 지도를 직접 ' +
+    '그리면 제품 화면이 아닌 것이 제품 화면처럼 보입니다');
+
   assert.ok(card.indexOf('timeline-map-sample') === -1,
-    '아직 없는 캡처 파일을 참조합니다 — 깨진 이미지가 배포됩니다');
+    '없는 캡처 파일을 참조합니다 — 깨진 이미지가 배포됩니다');
 
   // 예시임을 밝히는 문장이 남아 있어야 합니다.
-  assert.ok(/캡처를 준비하고 있습니다/.test(card), '준비 중이라는 사실을 밝히지 않습니다');
   assert.ok(/실제 고객 거래가 아닙니다/.test(card), '예시 표기가 없습니다');
 });
 

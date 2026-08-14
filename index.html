@@ -819,6 +819,17 @@
      앞 두 장은 거래 **시작 전**, 이 한 장만 **시작 후**라 생애주기 축이 여기서 갈립니다.
      굵은 왼쪽 선은 경험담의 .story-side.is-case 가 이미 쓰는 표시법입니다 — 페이지 안에
      있는 언어를 재사용합니다. 폭과 무관하게(모바일 1열에서도) 그대로 남습니다.
+
+     🔄 **`border-left` → 안쪽 세로 막대(::before)** 〔2026-08-14 · card-shot-reveal-s11〕.
+        종전에는 `.feat` 의 1px 테두리 중 왼쪽만 3px --ink-70 으로 갈아 끼웠습니다. 뜻은
+        맞았지만 화면에서는 **「선택된 카드」로 읽혔습니다** — `border-radius: 6px` 때문에
+        3px 짙은 왼쪽 변이 위·아래 모서리 호를 타고 1px 연한 변으로 번지면서, 좌상·좌하에
+        짙은 갈고리가 생겨 카드 전체가 짙은 테두리로 **둘러싸인** 인상을 줍니다(2026-08-14
+        실측: 4배율 캡처에서 갈고리가 육안으로 잡힙니다).
+        그래서 테두리는 **세 카드가 똑같이 1px --line** 으로 되돌리고, 표시는 모서리에
+        닿지 않는 안쪽 막대로 그립니다. 위·아래를 10px 씩 띄우는 것이 핵심입니다 —
+        띄우는 순간 「테두리의 일부」가 아니라 「왼쪽에 붙은 표시」로 읽힙니다.
+     ⚠️ `border-left` 로 되돌리지 마십시오. 되돌리면 위 갈고리가 그대로 돌아옵니다.
      ⚠️ 액센트(--accent)·경고색(--warning)을 쓰지 마십시오 — 판정색 금지(시각사양 1-3).
      ⚠️ 배경을 --surface 로 채우지 마십시오. 세 카드의 「면」이 달라지면 같은 종류로
         안 읽히고, 이 카드만 다른 상품처럼 보입니다.
@@ -826,7 +837,20 @@
         `<div class="feat" id=` 를 정확히 찾고 있어 함께 깨집니다. 카드 순서(사전점검·
         바이어확인·기한관리)는 test/landing-order-s9.test.js O4 가 제목 배열로 못질하므로
         「마지막 = 기한관리」는 검사로 보장됩니다. **순서를 바꾸면 이 선이 따라갑니다.** */
-  .feats > .feat:last-child { border-left: 3px solid var(--ink-70); }
+  .feats > .feat:last-child { position: relative; }
+  .feats > .feat:last-child::before {
+    content: "";
+    position: absolute;
+    /* -1px 은 카드 자신의 1px 테두리를 덮는 값입니다. 0 으로 두면 연한 테두리가
+       막대 왼쪽에 한 줄 남아 두 겹으로 보입니다. */
+    left: -1px;
+    top: 10px;
+    bottom: 10px;
+    width: 3px;
+    background: var(--ink-70);
+    /* 막대가 카드 머리 클릭을 가로채지 않게 합니다 — .feat-btn 이 카드를 꽉 채웁니다. */
+    pointer-events: none;
+  }
   .feat-btn {
     width: 100%;
     display: flex;
@@ -915,70 +939,25 @@
   .feat-shot { display: block; overflow: hidden; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
   .feat-shot img { display: block; width: 100%; height: auto; }
   .feat-cap { margin: 0; font-size: 12.5px; line-height: 1.7; color: var(--muted); }
-  /* TODO-ASSET: app.trops.kr 대시보드 세계지도 마스킹 캡처가 아직 img/ 에 없습니다
-     (현재 img/ 에는 c03-result.jpg · c03-result-detail.jpg 2장뿐).
-     깨진 <img> 를 내보내지 않으려고 자리표시 블록으로 둡니다. 캡처를 받으면
-     마크업에 함께 둔 주석 처리된 <img> 한 줄을 살리고 이 <div> 와 이 규칙을 지우십시오.
-     ⚠️ 여기에 가짜 지도를 그려 넣지 마십시오 — 실제 제품 화면이 아닌 것을 제품 화면처럼
-        보이게 하는 것은 이 페이지가 지키는 근거 표기 원칙과 어긋납니다.
+  /* ✅ **TODO-ASSET 해소 — 자리표시자(.feat-map)를 실제 캡처로 갈았습니다**
+     〔2026-08-14 · card-shot-reveal-s11〕.
+     `img/timeline-map.jpg` 는 app.trops.kr 홈(화면 4)의 「계약이 향하는 곳」 패널을
+     그대로 찍은 것입니다(trops_a `components/l1/world-map-panel.tsx`, 로그아웃 상태).
+     그래서 랜딩이 그리던 예시와 제품 화면이 **같은 그림**이 됐습니다 — 이 자리가 지키려던
+     것이 바로 그것입니다.
 
-     ⚠️ 마커에 지도처럼 보이는 배경(윤곽선·격자·대륙 실루엣)을 넣지 마십시오. 그 순간
-        위 금지에 걸립니다. 지금 형태(세로 목록형 마커)는 지도로 오독되지 않는 형태입니다.
-
-     🔴 **예시데이터를 제품(trops_a)의 확정정책으로 되돌렸습니다** 〔2026-08-13〕.
-        정본: trops_a `tests/guardrails/world-map-boundary.test.ts`(D2 · 2026-08-12 신설).
-        그 검사가 못질한 세 가지를 이 자리도 그대로 따릅니다:
-          ① **2개국만** — `EXAMPLE_CODES = ["FR","AE"]`. 베트남을 뺐습니다.
-          ② **애니메이션 0** — 「⛔ 항로선·애니메이션 0」. pin-drop 키프레임과 --i 지연을
-             걷어냈습니다. 종전 주석은 「캡처를 받으면 이 애니메이션을 지우지 말고 마커를
-             지도 위 좌표로 옮기라」고 적었는데, 옮겨 갈 그 자리가 애니메이션을 금지합니다.
-          ③ **점에 수치 0** — 「예시 점에 건수를 적지 않는다 — 숫자를 적으면 집계처럼
-             읽힌다」. 핀마다 붙어 있던 D-day 캡션을 걷어냈습니다.
-        흐름 md §1 「다이나믹함」 2번이 핀 순차 애니메이션을 요구하지만, **검사로 못질된
-        제품 정책이 스케치보다 강합니다** — 같은 예시가 랜딩과 제품에서 다르게 보이면
-        「랜딩에서 본 것」과 「들어가서 본 것」이 갈립니다.
-        ⛔ D-day·건수·순차 등장을 되돌리지 마십시오. 되돌리려면 trops_a 의 그 검사를
-           먼저 바꿔야 하고, 그것은 제품 정책 변경입니다.
-        ⚠️ 아코디언 슬라이드·`.reveal` 스크롤 등장은 **지도가 아니라 섹션의 동작**이라
-           이 금지 대상이 아닙니다(md §1 「다이나믹함」 1·3번은 그대로 삽니다). */
-  .feat-map {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    min-height: 180px;
-    padding: 24px;
-    border: 1px dashed var(--line);
-    border-radius: 6px;
-    background: var(--surface);
-    font-size: 12.5px;
-    line-height: 1.7;
-    color: var(--ink-62);
-  }
-  .feat-map-note { margin: 0; }
-  .feat-pins { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
-  /* 핀 하나. 점(●)은 ::before 로 그립니다 — 텍스트 불릿으로 두면 읽어주는 도구가
-     국가명 앞에 기호를 읽습니다. */
-  .feat-pin {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 14px;
-    line-height: 1.6;
-    color: var(--ink);
-  }
-  .feat-pin::before {
-    content: "";
-    flex: none;
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: var(--accent);
-  }
-  /* ⛔ **핀에 수치를 적는 규칙(.feat-pin-meta)과 순차 등장 애니메이션(pin-drop)을
-        걷어냈습니다** 〔2026-08-13 · trops_a world-map-boundary 정책〕.
-        규칙을 남겨 두지 않은 것이 의도입니다 — 쓰지 않는 클래스가 남아 있으면 다음
-        사람이 「이 자리에 무엇을 적으라는 뜻」으로 읽고 D-day 를 되돌립니다.
-        되돌리려면 위 .feat-map 주석의 ①②③ 을 먼저 읽으십시오. */
+     🔴 **제품 정책이 캡처 안에 이미 들어 있습니다.** 정본은 trops_a
+        `tests/guardrails/world-map-boundary.test.ts`(D2 · 2026-08-12):
+          ① 2개국만(FR·AE) ② 항로선·애니메이션 0 ③ 예시 점에 건수를 적지 않는다.
+        캡처는 그 화면 자체이므로 세 가지가 자동으로 지켜집니다. 종전에는 랜딩이 이 정책을
+        **손으로 흉내 내야** 했고(.feat-pin 목록), 그래서 제품이 바뀌면 조용히 갈라졌습니다.
+     ⛔ 이 <img> 를 다시 손으로 그린 지도·핀 목록으로 되돌리지 마십시오. 되돌리는 순간
+        ① 제품과 갈라질 통로가 다시 열리고 ② 실제 화면이 아닌 것이 실제 화면처럼 보입니다.
+     ⚠️ 캡처 안의 「이 지도는 예시이며 실제 계약이 아닙니다」 고지는 제품 화면이 스스로
+        싣는 문장입니다. 그 위에 랜딩의 .feat-cap 이 한 겹 더 밝힙니다 — 지우지 마십시오.
+     (걷어낸 규칙: .feat-map · .feat-map-note · .feat-pins · .feat-pin · .feat-pin::before.
+      쓰지 않는 클래스를 남겨 두지 않는 것이 이 파일의 규칙입니다 — 남겨 두면 다음 사람이
+      「이 자리에 무엇을 적으라는 뜻」으로 읽습니다.) */
 
   /* ---------- 06 신뢰 (문구 §6 · 정본 C-5) ----------
      페이지 유일한 다크 본문 섹션입니다(푸터와 둘뿐).
@@ -1791,6 +1770,32 @@
                        문장이었습니다(위 사전점검 카드와 같은 사유). 남긴 절은 범위 한정이고,
                        이것은 머리가 말하지 않는 것입니다. -->
                   <p class="feat-desc">공개된 정보 안에서만 확인하고, 알선이나 소개는 하지 않습니다.</p>
+                  <!-- ✅ **결과화면 캡처를 대체로 씁니다** 〔2026-08-14 · card-shot-reveal-s11〕.
+                       바이어확인 전용 화면은 trops_a 의 화면 C-06(`/c/[token]/buyer`)이지만,
+                       그 화면은 **유효한 접수 토큰이 있어야 열립니다** — 캡처를 뜨려면 운영
+                       DB 에 접수 1건이 있어야 하므로 지금은 뜰 수 없습니다.
+                       그래서 이 카드가 실제로 주장하는 것(「사전점검 결과화면 안에서 진행된다」)을
+                       **그 결과화면 캡처로 뒷받침**합니다. 캡션이 그 관계를 말합니다.
+
+                       🔴 **이 캡처는 03 신뢰 섹션과 같은 파일입니다(c03-result.jpg).**
+                          test/landing-order-s9.test.js O4-b 가 종전에는 「같은 캡처가 페이지에
+                          두 번 나오지 않는다」를 무조건 금지했는데, 그 규칙이 지키려던 것은
+                          **「한 화면 거리에 같은 그림이 두 번 나지 않는다」**였습니다.
+                          이 자리는 접힌 패널 안이라 클릭해야 보이고, 03 신뢰의 그 그림과 한
+                          화면에 함께 놓이지 않습니다. 그래서 O4-b 를 **기본 노출 이미지끼리만**
+                          보도록 좁혔습니다(사유는 그 검사 주석에 있습니다).
+                       ⛔ 이 파일을 03 신뢰 쪽으로 옮기거나 그쪽과 바꿔치기하지 마십시오 —
+                          그 순간 기본 노출 상태에서 중복이 생겨 O4-b 가 걸립니다.
+                       ⏭️ C-06 전용 캡처를 받으면 이 <img> 와 캡션을 그것으로 갈고, O4-b 의
+                          예외 목록에서 이 항목을 지우십시오. -->
+                  <!-- ⚠️ alt·캡션에 상품명(「바이어 확인」)을 다시 적지 마십시오. 바로 위
+                       .feat-title 이 이미 그 이름을 말하고, test/naming-consistency.test.js
+                       가 **한 카드 안에서 상품명 1회**를 못질합니다(한 상품 = 한 번의 설명).
+                       이 자리에서 말할 것은 이름이 아니라 **어디서 진행되는가**입니다. -->
+                  <span class="feat-shot">
+                    <img src="/img/c03-result.jpg" alt="사전점검 결과화면 — 상대방 확인이 이 화면 안에서 이어집니다" width="1383" height="904" loading="lazy">
+                  </span>
+                  <p class="feat-cap">이 결과화면 안에서 그대로 진행됩니다. 가상의 서류로 만든 예시 화면입니다.</p>
                   <p class="feat-note">사전점검 결과화면에서 바로 확인하실 수 있습니다.</p>
                 </div>
               </div>
@@ -1837,31 +1842,19 @@
               <div class="feat-panel-inner">
                 <div class="feat-panel-pad">
                   <p class="feat-hook">계약서 하나에 기한이 몇 개나 숨어있는지 아세요?</p>
-                  <!-- TODO-ASSET: app.trops.kr 대시보드 세계지도 마스킹 캡처가 아직 img/ 에 없습니다.
-                       캡처를 받으면 아래 <div class="feat-map"> 를 지우고 이 <img> 한 줄을 살리십시오.
-                       width/height 는 실제 캡처 크기로 맞추십시오.
-                       <span class="feat-shot"><img src="/img/timeline-map-sample.jpg" alt="기한관리 대시보드 — 등록된 거래가 목적국 위에 표시된 세계지도" width="1383" height="904" loading="lazy"></span>
-                       ⚠️ 가짜 지도를 그려 넣지 마십시오 — 지도 윤곽·대륙·좌표를 그리는 순간
-                          제품 화면이 아닌 것이 제품 화면처럼 보입니다.
-                       🔴 **예시는 제품(trops_a) 확정정책과 같은 형태입니다** 〔2026-08-13〕:
-                          2개국(프랑스·아랍에미리트) · 애니메이션 0 · 점에 수치 0.
-                          정본은 trops_a `tests/guardrails/world-map-boundary.test.ts` 이고,
-                          이 자리의 사유는 .feat-map CSS 주석에 ①②③ 으로 적어 두었습니다.
-                          ⛔ 베트남·D-day·순차 등장을 되돌리지 마십시오.
-                          캡처를 반영할 때는 아래 두 나라를 지도 위 좌표로 옮기기만 하십시오 —
-                          옮겨 갈 그 화면도 같은 정책을 지킵니다.
-                       ⚠️ 국가 2개는 마스킹 샘플입니다(흐름 md §1 「프랑스1/아랍에미리트1」).
-                          실제 고객 거래가 아니라는 사실을 아래 .feat-cap 이 밝힙니다 — 지우지 마십시오. -->
-                  <div class="feat-map">
-                    <p class="feat-map-note">실제 기한관리 화면 캡처를 준비하고 있습니다. 등록되면 이렇게 목적국별로 찍힙니다.</p>
-                    <!-- ⛔ 핀에 남은 날짜·건수를 적지 마십시오. 숫자를 적으면 예시가 집계처럼
-                         읽힙니다(trops_a ③ 「예시 점에 건수를 적지 않는다」). 목적국 이름만 둡니다. -->
-                    <ul class="feat-pins">
-                      <li class="feat-pin">프랑스</li>
-                      <li class="feat-pin">아랍에미리트</li>
-                    </ul>
-                  </div>
-                  <p class="feat-cap">예시로 만든 표기입니다. 실제 고객 거래가 아닙니다.</p>
+                  <!-- ✅ **실제 화면 캡처** 〔2026-08-14 · card-shot-reveal-s11〕.
+                       app.trops.kr 홈(화면 4)의 「계약이 향하는 곳」 패널을 그대로 찍었습니다
+                       (trops_a `components/l1/world-map-panel.tsx`). 종전 자리표시자
+                       (`<div class="feat-map">` + 세로 핀 목록)는 이 캡처로 대체됐습니다 —
+                       손으로 흉내 내던 예시가 사라지고 제품 화면 자체가 들어왔습니다.
+                       ⛔ 핀 목록·가짜 지도로 되돌리지 마십시오. 사유는 CSS 쪽 주석에 있습니다.
+                       ⚠️ 캡처 안의 「프랑스 · 아랍에미리트 계약 2건을 예시로 표시했습니다」는
+                          제품이 스스로 싣는 고지입니다(trops_a world-map-boundary 정책 ①).
+                          그 위에 아래 .feat-cap 이 한 겹 더 밝힙니다 — 지우지 마십시오. -->
+                  <span class="feat-shot">
+                    <img src="/img/timeline-map.jpg" alt="기한관리 대시보드 — 등록된 계약이 목적국 위에 점으로 표시된 세계지도" width="1600" height="801" loading="lazy">
+                  </span>
+                  <p class="feat-cap">예시로 표시한 화면입니다. 실제 고객 거래가 아닙니다.</p>
                   <!-- 🔄 첫 문장을 걷었습니다 〔2026-08-14〕 — 카드 머리의 .feat-sum 과 같은
                        문장이었습니다(위 두 카드와 같은 사유).
                        ✅ 「지금은 무료입니다.」는 흐름 md §4 Give/Get 이 요구하는 명시입니다.
@@ -2589,6 +2582,64 @@
   (function () {
     var feats = document.querySelector('.feats');
 
+    /* sticky .nav 는 64px 이고, 이 파일은 앵커 도착지에 84px(64 + 여백 20)을 씁니다
+       (`#how, #next, … { scroll-margin-top: 84px }`). 같은 값을 씁니다 — 카드가 앵커와
+       다른 높이에 서면 같은 페이지 안에서 도착 위치가 두 종류가 됩니다. */
+    var NAV_OFFSET = 84;
+
+    /* 펼침 애니메이션(.feat-panel 의 grid-template-rows .24s)이 끝나야 카드의 **최종
+       높이**가 잡힙니다. 그 전에 재면 접힌 높이를 기준으로 옮겨서 덜 올라갑니다. */
+    var EXPAND_MS = 260;
+
+    /*
+     * 🔴 **펼친 카드를 화면 안으로 끌어옵니다** 〔2026-08-14 · card-shot-reveal-s11〕.
+     *
+     * 3열 배치에서 카드를 펼치면 전폭(`grid-column: 1 / -1`)으로 넓어지면서 패널이
+     * 아래로 자랍니다. 1440×900 실측에서 사전점검 카드는 펼친 뒤 높이 756px, 아래끝이
+     * y=1161 이라 **패널의 46%만 화면에 남았습니다** — 누른 사람이 스크롤을 해야
+     * 방금 연 것을 볼 수 있었습니다.
+     *
+     * 고른 방법: **카드 머리를 nav 바로 아래로 옮깁니다.**
+     *   ⛔ `block: 'center'` 는 답이 아닙니다. 카드가 화면보다 높으면 위아래가 함께
+     *      잘려서 **머리(상품명)까지 화면 밖으로 나갑니다.** 종전 [data-timeline-open]
+     *      경로가 그렇게 동작했고(실측 아래끝 y=965 > 900), 그래서 그 경로도 이 함수로
+     *      모았습니다.
+     *   ⛔ 패널만 3열 아래 전폭 영역으로 빼는 방식은 고르지 않았습니다 — 패널을 카드
+     *      밖으로 옮기면 「접힌 카드 = 옛 2층카드, 펼친 카드 = 옛 아코디언」이라는 이
+     *      섹션의 구조가 깨지고, aria-controls 로 묶인 머리-패널 관계와 동시 다중 펼침
+     *      정책이 함께 무너집니다.
+     *
+     * ⚠️ **이미 다 보이면 움직이지 않습니다.** 화면에 온전히 들어와 있는 카드를 누를
+     *    때까지 페이지가 튀면, 스크롤이 조작에 대한 응답이 아니라 방해가 됩니다.
+     * ⚠️ 부드러운 이동은 `html { scroll-behavior: smooth }` 가 담당합니다. behavior 를
+     *    직접 넘기지 마십시오 — 넘기는 순간 prefers-reduced-motion 에서 그 값을 auto 로
+     *    되돌리는 규칙(1362행)을 건너뛰어, 움직임을 원치 않는 사람에게 애니메이션이 갑니다.
+     *
+     * 🔴 **접을 때도 봅니다 — 다만 기준이 다릅니다.**
+     *    처음에는 「닫는 사람은 그 자리를 떠나려는 것이 아니다」로 접기를 제외했는데,
+     *    실측에서 **접은 카드가 화면 위로 사라졌습니다**: 펼친 카드는 전폭
+     *    (`grid-column: 1 / -1`)이라 자기 줄을 차지하고, 접으면 3열 줄로 **돌아가면서
+     *    위로 올라갑니다.** 1440×1600 실측에서 접은 직후 카드 머리가 y=-238 이었습니다 —
+     *    방금 접은 카드가 화면에 없으니 무엇을 접었는지 알 수 없습니다.
+     *    그래서 접을 때는 **카드 머리가 보이는가**만 봅니다(펼칠 때처럼 카드 전체를
+     *    요구하지 않습니다 — 접힌 카드는 원래 짧아서 그 조건이 거의 항상 참입니다).
+     * ⚠️ 두 기준을 하나로 합치지 마십시오. 접기에 「카드 전체」를 요구하면 3열에서
+     *    옆 카드가 길 때 불필요하게 따라 움직입니다.
+     */
+    function revealFeat(item, opening) {
+      window.setTimeout(function () {
+        var r = item.getBoundingClientRect();
+        var vh = window.innerHeight;
+        var settled = opening
+          // 펼침: 위는 nav 아래, 아래는 화면 안 — 둘 다 만족하면 손대지 않습니다.
+          ? (r.top >= NAV_OFFSET && r.bottom <= vh)
+          // 접힘: 카드 머리가 화면 안에 넉넉히(아래끝에서 80px 위) 있으면 그대로.
+          : (r.top >= NAV_OFFSET && r.top <= vh - 80);
+        if (settled) return;
+        window.scrollTo({ top: window.pageYOffset + r.top - NAV_OFFSET });
+      }, EXPAND_MS);
+    }
+
     /* 카드 하나의 펼침 상태를 정합니다. open 을 넘기지 않으면 토글입니다. */
     function setOpen(item, open) {
       if (!item) return;
@@ -2598,6 +2649,7 @@
         : (item.getAttribute('data-open') === '1' ? '0' : '1');
       item.setAttribute('data-open', next);
       if (btn) btn.setAttribute('aria-expanded', next === '1' ? 'true' : 'false');
+      revealFeat(item, next === '1');
     }
 
     /* 위임으로 한 번만 겁니다 — 세 카드에 각각 걸지 않습니다. */
@@ -2613,8 +2665,18 @@
        페이지 이동이 아니라 같은 페이지 안에서 펼치고 그 자리로 옮겨 주는 것이 전부입니다
        (흐름 md §2 「같은 페이지 내 인라인 확장」). 이미 열려 있으면 닫지 않고 그대로 둡니다 —
        같은 버튼을 두 번 누른 사람이 방금 본 것을 잃지 않게 하려는 의도입니다.
-       scrollIntoView 의 부드러운 이동은 html{scroll-behavior:smooth} 가 담당하고,
-       그 값은 prefers-reduced-motion 에서 auto 로 꺼집니다 — 여기서 따로 분기하지 않습니다. */
+
+       🔄 **이동을 revealFeat 으로 모았습니다** 〔2026-08-14 · card-shot-reveal-s11〕.
+          종전에는 여기서만 `scrollIntoView({ block: 'center' })` 를 불렀는데, 펼친
+          기한관리 카드는 640px 이라 900px 화면에서도 가운데 정렬이면 아래끝이 y=965 로
+          잘렸습니다. 카드를 누르는 경로와 이 버튼을 누르는 경로가 **같은 자리에 서야**
+          「어디를 눌러도 같은 곳에 도착한다」가 됩니다.
+       ⚠️ setOpen(…, true) 이 이미 revealFeat 을 부릅니다 — 여기서 또 부르지 마십시오.
+          두 번 부르면 260ms 뒤에 같은 계산이 두 번 돌아 스크롤이 한 번 튑니다.
+       ⚠️ focus 에 preventScroll 을 넘기는 것을 지우지 마십시오. 브라우저의 기본 포커스
+          스크롤은 revealFeat 이 정한 위치를 즉시 덮어씁니다(펼침을 기다리지 않으므로
+          접힌 높이 기준으로 옮겨 놓습니다). 읽어주는 도구를 위한 포커스 이동 자체는
+          그대로 필요하므로 focus() 를 없애지는 마십시오. */
     var openers = document.querySelectorAll('[data-timeline-open]');
     if (!openers.length) return;
 
@@ -2623,9 +2685,8 @@
         var target = document.getElementById('feat-timeline');
         if (!target) return;
         setOpen(target, true);
-        target.scrollIntoView({ block: 'center' });
         var btn = target.querySelector('.feat-btn');
-        if (btn) btn.focus();
+        if (btn) btn.focus({ preventScroll: true });
       });
     });
   })();

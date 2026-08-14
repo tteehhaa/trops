@@ -228,16 +228,53 @@ test('E10 펼친 카드는 전폭이다 — 3열에서도 캡처가 읽힌다', 
     '기한관리가 안 펼쳐집니다');
 });
 
-test('E11 「거래 시작 후」 카드가 다른 강조를 갖는다 — 판정색은 아니다', () => {
-  const mark = rule('.feats > .feat:last-child');
-  const border = (mark.match(/border-left:\s*([^;]+);/) || [])[1];
-  assert.ok(border, '마지막 카드(기한관리)에 구분 표시가 없습니다 — 생애주기가 갈리는 ' +
+/*
+ * 🔄 **단언을 갈아 적었습니다** 〔2026-08-14 · card-shot-reveal-s11〕.
+ *
+ * 종전에는 `.feats > .feat:last-child` 의 **`border-left: 3px`** 를 봤습니다. 뜻은
+ * 맞았지만 화면에서 그 방식이 실패했습니다 — `.feat` 은 `border-radius: 6px` 이라
+ * 3px 짙은 왼쪽 변이 위·아래 모서리 호를 타고 1px 연한 변으로 번지고, 좌상·좌하에
+ * 짙은 갈고리가 남습니다. 그 갈고리 탓에 카드가 **「짙은 테두리로 둘러싸인 = 선택된」**
+ * 것처럼 읽혔습니다(2026-08-14 4배율 실측에서 육안 확인).
+ *
+ * 그래서 테두리는 세 카드가 똑같이 1px --line 으로 되돌리고, 표시는 **모서리에 닿지
+ * 않는 안쪽 세로 막대**(`::before`, 위아래 10px 씩 띄움)로 그립니다. 지키려는 것은
+ * 그대로입니다: **생애주기가 갈리는 자리가 보이되, 판정색을 쓰지 않고, 세 카드의
+ * 「면」이 달라지지 않는다.**
+ *
+ * ⛔ `border-left` 로 되돌리지 마십시오 — 되돌리면 위 갈고리가 그대로 돌아옵니다.
+ * ⚠️ 위아래를 띄우는 것이 이 방식의 핵심입니다. 0 으로 붙이면 막대가 다시 테두리의
+ *    일부로 읽혀 종전 문제가 재발합니다 — 그래서 아래가 그 여백을 함께 봅니다.
+ */
+test('E11 「거래 시작 후」 카드가 다른 강조를 갖는다 — 판정색도, 테두리도 아니다', () => {
+  const mark = rule('.feats > .feat:last-child::before');
+  assert.ok(mark, '마지막 카드(기한관리)에 구분 표시가 없습니다 — 생애주기가 갈리는 ' +
     '자리(전 2 · 후 1)가 화면에서 안 보입니다');
-  assert.ok(/^3px/.test(border), '선이 1px 이면 다른 두 카드의 테두리와 구분되지 않습니다: ' + border);
 
-  assert.ok(!/--accent|--warning/.test(border),
-    '판정색을 썼습니다(' + border + ') — 액센트는 클릭 가능한 것에만, 경고색은 폼 오류에만 ' +
+  const width = (mark.match(/width:\s*([^;]+);/) || [])[1];
+  assert.ok(width && /^3px/.test(width),
+    '막대가 3px 가 아닙니다(' + width + ') — 1px 이면 다른 두 카드의 테두리와 구분되지 않습니다');
+
+  const bg = (mark.match(/background:\s*([^;]+);/) || [])[1];
+  assert.ok(bg, '막대에 색이 없습니다');
+  assert.ok(!/--accent|--warning/.test(bg),
+    '판정색을 썼습니다(' + bg + ') — 액센트는 클릭 가능한 것에만, 경고색은 폼 오류에만 ' +
     '씁니다(시각사양 1-3). 경험담 .story-side.is-case 와 같은 --ink-70 을 쓰십시오.');
+
+  // 모서리에서 떨어져 있어야 「테두리」가 아니라 「표시」로 읽힙니다.
+  for (const side of ['top', 'bottom']) {
+    const v = parseFloat((mark.match(new RegExp(side + ':\\s*(-?[\\d.]+)px')) || [])[1]);
+    assert.ok(v >= 6,
+      '막대의 ' + side + ' 여백이 ' + v + 'px 입니다 — border-radius(6px) 안쪽으로 들어와야 ' +
+      '모서리를 타고 번지지 않습니다. 0 으로 붙이면 다시 테두리로 읽힙니다.');
+  }
+
+  // 테두리는 세 카드가 같아야 합니다 — 마지막 카드만 왼쪽을 갈아 끼우지 않습니다.
+  const base = rule('.feats > .feat:last-child');
+  assert.ok(!/border-left/.test(base || ''),
+    '마지막 카드가 아직 border-left 로 표시합니다 — 6px 모서리를 타고 번져 카드가 ' +
+    '「선택됨」으로 읽힙니다(이 검사가 갈아 적힌 사유).');
+
   assert.ok(!/\.feats > \.feat:last-child\s*\{[^}]*background/.test(CSS),
     '마지막 카드를 다른 배경으로 채웠습니다 — 세 카드의 「면」이 달라지면 이 카드만 다른 ' +
     '상품처럼 보입니다');
