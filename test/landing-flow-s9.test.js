@@ -340,14 +340,20 @@ test('같은 곳으로 가는 버튼은 같은 말을 쓴다 — /precheck 는 �
    * 사전점검·바이어확인은 **같은 목적지**를 갖습니다. 바이어확인에 전용 진입로가 없기
    * 때문입니다(trops_a 의 buyer-guard 화면은 접수 1건이 있어야 열립니다). 목적지가 같은데
    * 라벨이 다르면 읽는 사람은 **다른 곳**으로 갑니다.
-   * ⚠️ 이 검사는 상품 탭만이 아니라 **페이지 전체**를 봅니다 — 히어로 · 탭1 · 탭2 ·
-   *    HOW 하단 · 06 결. 무게(주/보조/텍스트)만 자리에 따라 다릅니다.
+   * ⚠️ 이 검사는 상품 탭만이 아니라 **페이지 전체**를 봅니다 — 탭1 · 탭2 · HOW 하단 ·
+   *    06 결. 무게(주/보조/텍스트)만 자리에 따라 다릅니다.
+   *
+   * 🔴 2026-08-14 (s10 · bkit-5 작업 9): **히어로가 이 목록에서 빠졌습니다.** 히어로 주버튼은
+   *    이제 /check(사전 확인 3문항)로 갑니다 — 목적지가 달라졌으므로 라벨도 달라야 하고
+   *    (「30초 만에 알아보기」), 같은 이유로 이 검사의 대상이 아닙니다. 여기 규칙은 여전히
+   *    「같은 목적지면 같은 말」이고, 히어로는 더 이상 같은 목적지가 아닙니다.
+   *    따라서 자리는 넷, 그중 주버튼은 06 결 하나뿐입니다.
    */
   const links = (BODY.match(/<a[^>]*class="[^"]*\bbtn\b[^"]*"[^>]*>[^<]*<\/a>/g) || []);
   const toPrecheck = links.filter((a) => /href="\/precheck"/.test(a));
-  assert.ok(toPrecheck.length >= 5,
-    '/precheck 로 가는 버튼이 ' + toPrecheck.length + '개입니다 — 히어로 · 탭1 · 탭2 · ' +
-    'HOW 하단 · 06 결 다섯 자리가 있어야 합니다');
+  assert.ok(toPrecheck.length >= 4,
+    '/precheck 로 가는 버튼이 ' + toPrecheck.length + '개입니다 — 탭1 · 탭2 · ' +
+    'HOW 하단 · 06 결 네 자리가 있어야 합니다');
 
   for (const a of toPrecheck) {
     const label = a.replace(/<[^>]*>/g, '').trim();
@@ -356,10 +362,10 @@ test('같은 곳으로 가는 버튼은 같은 말을 쓴다 — /precheck 는 �
       '씁니다. 다른 말을 쓰면 다른 곳으로 읽힙니다');
   }
 
-  // 그 라벨이 붙은 버튼 중 **주버튼**은 여전히 둘뿐입니다.
+  // 그 라벨이 붙은 버튼 중 **주버튼**은 06 결 하나입니다(히어로는 /check 로 갔습니다).
   const primary = toPrecheck.filter((a) => /btn-primary/.test(a));
-  assert.strictEqual(primary.length, 2,
-    '주버튼이 ' + primary.length + '개입니다 — 히어로와 06 결 둘뿐이어야 합니다(시각사양 2)');
+  assert.strictEqual(primary.length, 1,
+    '주버튼이 ' + primary.length + '개입니다 — 06 결 하나여야 합니다(히어로는 /check 담당)');
 });
 
 test('바이어확인 카드 — 버튼이 생겨도 연결 안내문은 남아 있다', () => {
