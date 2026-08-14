@@ -881,20 +881,47 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
                       · 사전 확인의 `other`(용역·라이선스 + 이름 모르는 문서)에 대응하는 보기가
                         **없습니다.** 「기타」 칸이 없고, 발주서(PO)에 임의로 배정하면 그것이
                         바로 설계서가 금지한 「모르는 것을 아는 척 배정하기」입니다. 그래서
-                        `other` 에는 data-doctype 을 달지 않았고, 프리필은 조용히 아무것도
-                        하지 않습니다(기본값 NDA 가 그대로 남습니다).
+                        `other` 에는 data-doctype 을 달지 않았습니다.
                       · 준비중 세 보기는 `disabled` 라 프리필도 건너뜁니다. 억지로 고르게
                         하면 서버가 400 으로 막아 **접수 자체가 실패**합니다.
                     「기타」 보기가 생기거나 준비중 보기가 열리는 날, 그 <option> 에
-                    data-doctype 한 칸을 붙이면 그때부터 저절로 이어집니다. -->
+                    data-doctype 한 칸을 붙이면 그때부터 저절로 이어집니다.
+
+                 🔴 **첫 자리의 빈 보기가 「아직 안 고름」입니다** 〔2026-08-15 · 체험스토리 F-10〕.
+                    이것이 없던 동안 이 `<select>` 에는 **「안 고른 상태」가 존재하지 않았습니다** —
+                    HTML 은 첫 <option> 을 자동으로 고른 채 시작하고 그 첫 보기가 NDA 였습니다.
+                    결과: 사전 확인 Q2 에서 「이름을 잘 모르는 문서가 있어요」를 골라 **NDA 가
+                    아니라고 명시적으로 답한 사람**이 이 폼에 도착하면 문서 종류에 NDA 가 골라져
+                    있었고, 나머지 보기는 전부 `disabled` 라 고칠 수도 없었습니다. 설계서 §7 이
+                    결과 화면(F-7)에 적용한 원칙 —「모르는 것을 아는 척 배정하지 않는다」— 이
+                    접수 폼에서만 빠져 있던 자리입니다.
+                    ⚠️ **기본값은 그대로 NDA 입니다**(아래 `selected`). 사전 확인을 거치지 않고
+                       바로 온 사람에게 고르는 일을 하나 더 시키지 않기 위해서입니다 — 고친 것은
+                       「사전 확인의 답을 못 지키면서 지킨 척하는 것」이지 「기본값이 있는 것」이
+                       아닙니다. 빈 보기로 넘어가는 경로는 **프리필이 성립하지 못한 경우 하나**뿐입니다
+                       (아래 applyPrestepHandoff).
+                    ⚠️ `disabled` 입니다 — 사람이 도로 「안 고름」으로 되돌릴 수는 없고 프리필
+                       코드만 `value=''` 로 넣습니다. 화면에서 **고를 수 있는** 보기와 서버 목록
+                       (DOC_TYPES)을 대조하는 검사(test/doc-type.test.js)가 이 속성을 봅니다.
+                    ⛔ 값을 채우지 마십시오. 빈 값이라야 onSubmit 이 「안 고름」을 알아보고
+                       막습니다 — 값이 있으면 서버(parseDocType)가 그것을 다시 nda 로 눕힙니다. -->
             <div class="field">
               <label for="intake-doc-type">문서 종류 <span class="req" aria-hidden="true">*</span></label>
               <select id="intake-doc-type" name="docType" required>
+                <option value="" disabled>문서 종류를 골라 주십시오</option>
                 <option value="nda" data-doctype="nda" selected>비밀유지계약서(NDA) — 현재 지원</option>
                 <option value="contract" data-doctype="sales_contract" disabled>거래계약서 — 준비중</option>
                 <option value="quotation" data-doctype="quote_pi" disabled>견적서 — 준비중</option>
                 <option value="po" disabled>발주서(PO) — 준비중</option>
               </select>
+              <!-- 프리필이 성립하지 못했을 때만 켜집니다 〔F-10〕. 말하는 것은 **이 폼의 사실**
+                   하나입니다 —「그 서류에 해당하는 보기가 여기에 없다」. 사전 확인에서 무엇을
+                   골랐는지를 여기서 되읽지 않습니다(그 값은 화면에 오지도 않습니다 — `other` 는
+                   용역·라이선스와 이름 모르는 문서가 한 값으로 접힌 것입니다).
+                   ⛔ 이것을 연속성 문구(「방금 답하신 내용이 아래에 반영되어 있습니다」 · §5-3
+                      F-2 · E-4 승인 대기)로 키우지 마십시오. 그 문장은 **반영됐다**는 주장이고
+                      이 문장은 **반영하지 못했다**는 사실입니다. 층이 반대입니다. -->
+              <p class="field-hint" id="doc-type-unmatched" hidden>사전 확인에서 고르신 서류에 해당하는 보기가 아직 없습니다.</p>
               <p class="field-hint">지금은 NDA만 대조할 수 있습니다. 나머지 서류는 준비 중입니다.</p>
             </div>
 
@@ -1237,9 +1264,31 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
      *    문서 종류 한 칸만 맞춰졌는데 화면은 「답한 내용이 반영됐다」고 말하게 됩니다 —
      *    other 경로에서는 그 말이 사실이 아닙니다(위 <select> 주석).
      *
-     * ⚠️ 실패해도 조용합니다. 프리필은 편의이고, 안 되면 기본값(NDA)이 그대로 남습니다.
-     *    사전 확인 쪽 원칙(fail-open)과 같은 태도입니다.
+     * ⚠️ 세션키 심기는 실패해도 조용합니다(부가 필드). 문서 종류는 다릅니다 — 아래 참조.
      */
+
+    /*
+     * 넘어온 `docs` 중 **지금 고를 수 있는** 보기를 하나 고릅니다. 없으면 null 입니다.
+     *
+     * 순수 함수로 떼어 둔 것은 검사가 이 결정을 그대로 실행하기 위해서입니다
+     * (test/prestep-flow-s10.test.js §6). 「걸러내는 코드가 있다」와 「걸러낸다」는
+     * 다른 문장이고, 조건 한 줄이 뒤집혀도 원문 검사는 통과합니다.
+     */
+    function pickDocTypeOption(sel, docsParam) {
+      var wanted = String(docsParam || '').split(',');
+      for (var i = 0; i < wanted.length; i += 1) {
+        var key = wanted[i].trim();
+        if (!key) continue;
+        var opt = sel.querySelector('[data-doctype="' + key + '"]');
+        /* 대응 보기가 아예 없는 값(other)과 준비중(disabled) 보기를 함께 지나갑니다.
+           준비중을 골라 놓으면 서버(parseDocType)가 400 으로 막아 **접수 자체가 실패**합니다 —
+           프리필 편의가 접수를 깨뜨리는 것이 이 화면에서 가장 나쁜 결과입니다. */
+        if (!opt || opt.disabled) continue;
+        return opt;   // 단일 선택입니다 — 첫 번째로 고를 수 있는 것 하나만 반영합니다
+      }
+      return null;
+    }
+
     function applyPrestepHandoff() {
       var touched = false;
 
@@ -1251,19 +1300,19 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
       }
 
       if (params.docs && docTypeSel) {
-        var wanted = params.docs.split(',');
-        for (var i = 0; i < wanted.length; i += 1) {
-          var key = wanted[i].trim();
-          if (!key) continue;
-          var opt = docTypeSel.querySelector('[data-doctype="' + key + '"]');
-          /* 준비중(disabled) 보기는 건너뜁니다. 골라 놓으면 서버(parseDocType)가 400 으로
-             막아 **접수 자체가 실패**합니다 — 프리필 편의가 접수를 깨뜨리는 것이 이 화면에서
-             가장 나쁜 결과입니다. 대응 보기가 아예 없는 값(other)도 여기서 그냥 지나갑니다. */
-          if (!opt || opt.disabled) continue;
-          docTypeSel.value = opt.value;
-          touched = true;
-          break;   // 단일 선택입니다 — 첫 번째로 고를 수 있는 것 하나만 반영합니다
-        }
+        var picked = pickDocTypeOption(docTypeSel, params.docs);
+        /* 🔴 고를 수 있는 것이 하나도 없으면 **빈 보기로 둡니다** 〔F-10〕. 종전에는 여기서
+           아무것도 하지 않았고, 그러면 기본값 NDA 가 그대로 남아 「NDA 가 아니다」라고
+           답한 사람이 NDA 로 접수하게 됐습니다. 프리필이 못 지킨 답을 지킨 척하지 않습니다.
+           ⚠️ 이 경로는 `other`(이름 모르는 문서 · 용역·라이선스)뿐 아니라 준비중 서류만
+              고른 사람(sales_contract·quote_pi 단독)도 함께 받습니다 — 두 경우 모두
+              「이 폼에서 고를 수 있는 보기가 없다」는 같은 사실이기 때문입니다.
+           ⚠️ 여기서 막지 않습니다. 접수는 열려 있고 NDA 를 직접 고르면 그대로 진행됩니다
+              (차단 금지 · 설계서). 막는 것은 **안 고른 채로 보내는 것** 하나입니다(onSubmit). */
+        docTypeSel.value = picked ? picked.value : '';
+        var note = document.getElementById('doc-type-unmatched');
+        if (note) note.hidden = !!picked;
+        touched = true;
       }
 
       if (!touched) return;
@@ -1278,6 +1327,15 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
 
     loadSlots();
     loadPayConfig();
+
+    /* 고르고 나면 안내를 내립니다 〔F-10〕 — 「보기가 없어 비워 뒀다」는 사실은 고른 순간
+       끝납니다. 남겨 두면 채워진 칸 옆에서 화면이 사실과 다른 말을 하게 됩니다. */
+    if (docTypeSel) {
+      docTypeSel.addEventListener('change', function () {
+        var note = document.getElementById('doc-type-unmatched');
+        if (note && docTypeSel.value) note.hidden = true;
+      });
+    }
 
     fileInput.addEventListener('change', onFilesChanged);
     ownInput.addEventListener('change', renderOwnFormList);
@@ -1889,13 +1947,18 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
       // 거래 정보도 선택입니다. 비어 있으면 null 로 보내고 세율 섹션이 나오지 않습니다.
       var country = countrySel.value;
       var hsCode = digitsOnly(hsInput.value);
-      /* 문서 종류 〔흐름 md §5〕. 선택 상자가 없는 옛 캐시본에서도 접수가 되어야 하므로
-         없으면 'nda' 로 봅니다 — 서버(api/intake.js parseDocType)도 **같은 폴백**을
+      /* 문서 종류 〔흐름 md §5〕. **선택 상자가 없는 옛 캐시본**에서도 접수가 되어야 하므로
+         상자 자체가 없으면 'nda' 로 봅니다 — 서버(api/intake.js parseDocType)도 **같은 폴백**을
          갖습니다. 한쪽만 고치지 마십시오.
+         🔴 상자가 **있는데 비어 있는 것**은 다릅니다 〔F-10 · 2026-08-15〕. 그것은 프리필이
+            사전 확인의 답을 못 지켰다는 뜻이고, 여기서 'nda' 로 눕히면 고친 것이 도로
+            없어집니다 — 화면만 비어 보이고 접수는 NDA 로 들어갑니다. 아래에서 막습니다.
+            ⚠️ 서버는 빈 값을 'nda' 로 받습니다(옛 캐시본 때문에 그래야 합니다). 그래서
+               이 구분은 **화면만 할 수 있습니다** — 상자의 유무를 아는 쪽이 여기뿐입니다.
          ⚠️ 여기서 지원 목록을 판정하지 않습니다. 준비중 값이 어떻게든 실려 오면 서버가
             400 으로 막습니다 — 화면에서 조용히 'nda' 로 눕히면, 계약서를 보낸 사람의
             서류가 NDA 기준으로 대조되고 아무도 그 사실을 모릅니다. */
-      var docType = docTypeSel && docTypeSel.value ? docTypeSel.value : 'nda';
+      var docType = docTypeSel ? docTypeSel.value : 'nda';
       /* 사전 확인 세션키 〔bkit-7〕. /check 를 거치지 않고 바로 온 사람은 hidden 필드가
          비어 있으므로 null 로 보냅니다 — 없다고 접수를 막지 않습니다(부가 필드). */
       var preSessionKeyEl = document.getElementById('intake-pre-session');
@@ -1903,6 +1966,9 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
 
       if (plan === 'free' && !freeAvailable) {
         return fail('지금은 접수가 마감되었습니다. 다시 열리면 안내드립니다.');
+      }
+      if (!docType) {
+        return fail('문서 종류를 골라 주십시오.');
       }
       if (!email || email.indexOf('@') === -1) {
         return fail('이메일 주소를 확인해 주십시오.');

@@ -33,6 +33,7 @@ const test = require('node:test');
 const assert = require('node:assert');
 const fs = require('node:fs');
 const path = require('node:path');
+const vm = require('node:vm');
 
 const ROOT = path.resolve(__dirname, '..');
 const RAW = fs.readFileSync(path.join(ROOT, 'check.html'), 'utf8');
@@ -420,7 +421,7 @@ test('결과 화면이 내용을 보여주므로 noindex 가 걷혔다', () => {
 
 const PRE_RAW = fs.readFileSync(path.join(ROOT, 'precheck.html'), 'utf8');
 const PRE_M = PRE_RAW.replace(/<!--[\s\S]*?-->/g, '');
-const PRE_JS = PRE_M.slice(PRE_M.indexOf('function applyPrestepHandoff'));
+const PRE_JS = PRE_M.slice(PRE_M.indexOf('function pickDocTypeOption'));
 /** 사람 눈에 보이는 본문만 — 이 파일의 B 와 같은 방식입니다(주석·스크립트·CSS 제외). */
 const PRE_B = PRE_M.replace(/<style[\s\S]*?<\/style>/g, '').replace(/<script[\s\S]*?<\/script>/g, '');
 
@@ -440,10 +441,114 @@ test('문서유형 보기에 data-doctype 이 붙었고 name·value 는 그대�
     '배정하는 쪽이 근거 없는 주장입니다. 「기타」 보기가 생기면 그 <option> 에 붙이십시오');
 });
 
-test('준비중 보기를 프리필로 고르지 않는다 — 고르면 접수가 400 으로 실패한다', () => {
-  assert.ok(/opt\.disabled/.test(PRE_JS),
-    'disabled 보기를 걸러내지 않습니다 — 서버(parseDocType)가 nda 외를 400 으로 막으므로 ' +
-    '프리필 편의가 접수 자체를 깨뜨립니다');
+/*
+ * ── F-10 · 「안 고름」이 존재하는가 〔2026-08-15〕 ──────────────────────────
+ *
+ * 종전에는 이 <select> 에 「안 고른 상태」가 없었습니다. HTML 은 첫 <option> 을
+ * 자동으로 고른 채 시작하고 그 첫 보기가 NDA 였으므로, 사전 확인 Q2 에서
+ * 「이름을 잘 모르는 문서가 있어요」를 골라 **NDA 가 아니라고 답한 사람**이
+ * 이 폼에서 NDA 를 고른 상태로 시작했습니다(나머지 보기는 전부 disabled 라
+ * 고칠 수도 없었습니다). 설계서 §7 이 결과 화면(F-7)에 적용한 원칙 —
+ * 「모르는 것을 아는 척 배정하지 않는다」— 이 접수 폼에서만 빠져 있던 자리입니다.
+ *
+ * 여기서 잠그는 것은 셋입니다. ①「안 고름」 보기가 마크업에 있는가 ② 프리필이
+ * 성립하지 못하면 실제로 그리로 가는가 ③ 그 상태가 접수로 새지 않는가.
+ * ②는 원문 검사로 못 잡습니다 — 조건 한 줄이 뒤집혀도 낱말은 그대로이기
+ * 때문입니다. 그래서 판단 함수를 **그대로 실행**합니다.
+ */
+
+/** 실제 마크업에서 읽어낸 보기 표 — 손으로 적으면 화면과 갈립니다. */
+function docTypeOptionsFromMarkup() {
+  const at = PRE_M.indexOf('id="intake-doc-type"');
+  const sel = PRE_M.slice(at, PRE_M.indexOf('</select>', at));
+  const map = {};
+  for (const tag of sel.match(/<option[^>]*>/g) || []) {
+    const key = (tag.match(/data-doctype="([^"]*)"/) || [])[1];
+    if (!key) continue;
+    map[key] = { value: (tag.match(/value="([^"]*)"/) || [])[1], disabled: tag.indexOf('disabled') !== -1 };
+  }
+  return map;
+}
+
+/** pickDocTypeOption 하나만 떼어 실행합니다(DOM 대역은 querySelector 한 칸뿐). */
+function loadPicker() {
+  const at = PRE_RAW.indexOf('function pickDocTypeOption');
+  const end = PRE_RAW.indexOf('function applyPrestepHandoff', at);
+  assert.ok(at !== -1 && end > at, 'pickDocTypeOption 을 찾지 못했습니다 — 함수가 사라졌거나 순서가 바뀌었습니다');
+  const ctx = {};
+  vm.createContext(ctx);
+  vm.runInContext(PRE_RAW.slice(at, end), ctx);
+
+  const options = docTypeOptionsFromMarkup();
+  const sel = {
+    querySelector(q) {
+      const key = (q.match(/data-doctype="([^"]*)"/) || [])[1];
+      return Object.prototype.hasOwnProperty.call(options, key) ? options[key] : null;
+    },
+  };
+  return (docs) => ctx.pickDocTypeOption(sel, docs);
+}
+
+test('🔴 「안 고름」 보기가 첫 자리에 있고, 기본값은 그대로 NDA 다 (F-10)', () => {
+  const at = PRE_M.indexOf('id="intake-doc-type"');
+  const sel = PRE_M.slice(at, PRE_M.indexOf('</select>', at));
+  const options = sel.match(/<option[^>]*>/g) || [];
+
+  assert.match(options[0], /value=""/,
+    '첫 보기가 빈 값이 아닙니다 — HTML 은 첫 <option> 을 자동으로 고른 채 시작하므로, ' +
+    '첫 자리에 빈 보기가 없으면 「안 고른 상태」가 아예 존재하지 않습니다');
+  assert.ok(options[0].indexOf('disabled') !== -1,
+    '「안 고름」 보기가 사람에게 열려 있습니다 — 프리필만 넣는 자리이고, 화면에서 고를 수 있는 ' +
+    '보기와 서버 목록을 대조하는 검사(test/doc-type.test.js)가 이 속성을 봅니다');
+  assert.ok(options[0].indexOf('data-doctype') === -1,
+    '「안 고름」 보기에 data-doctype 이 붙었습니다 — 사전 확인의 어떤 값을 여기에 배정한 것이 됩니다. ' +
+    '프리필은 「고를 수 있는 것이 없다」는 결과로 이리 옵니다(pickDocTypeOption → null)');
+
+  assert.match(sel, /value="nda"[^>]*selected/,
+    'NDA 의 기본값이 사라졌습니다 — 고친 것은 「사전 확인의 답을 못 지키면서 지킨 척하는 것」이지 ' +
+    '「기본값이 있는 것」이 아닙니다. 바로 온 사람에게 고르는 일을 하나 더 시키지 않습니다');
+});
+
+test('🔴 고를 수 있는 보기가 없으면 프리필이 아무것도 고르지 않는다 (F-10)', () => {
+  const pick = loadPicker();
+
+  // other = 용역·라이선스 + 이름 모르는 문서. 이 폼에 대응 보기가 없습니다.
+  assert.strictEqual(pick('other'), null,
+    'other 를 어느 보기엔가 배정했습니다 — 여기서 null 이 아니면 NDA 가 남거나 남의 자리가 배정됩니다');
+  // 준비중 서류만 고른 사람도 같은 사실 위에 있습니다 — 「지금 고를 수 있는 보기가 없다」.
+  assert.strictEqual(pick('sales_contract'), null, '준비중(disabled) 보기를 골랐습니다 — 접수가 400 으로 실패합니다');
+  assert.strictEqual(pick('quote_pi'), null, '준비중(disabled) 보기를 골랐습니다 — 접수가 400 으로 실패합니다');
+  assert.strictEqual(pick('sales_contract,other'), null, '준비중과 other 만 있는데 무언가를 골랐습니다');
+  assert.strictEqual(pick(''), null);
+  assert.strictEqual(pick('없는값'), null);
+});
+
+test('정상 프리필 경로는 그대로다 — nda 는 골라지고, 함께 온 other 가 그것을 밀어내지 않는다', () => {
+  const pick = loadPicker();
+  assert.strictEqual(pick('nda').value, 'nda');
+  assert.strictEqual(pick('nda,other').value, 'nda', 'NDA 를 가진 사람의 프리필이 사라졌습니다');
+  assert.strictEqual(pick('other,nda').value, 'nda', '고를 수 있는 값이 뒤에 있으면 못 찾습니다');
+  assert.strictEqual(pick('sales_contract,nda').value, 'nda', '준비중 값에서 멈췄습니다 — 건너뛰고 계속 봐야 합니다');
+});
+
+test('🔴 프리필이 성립하지 못하면 빈 값으로 두고, 그 사실을 화면이 적는다 (F-10)', () => {
+  assert.match(PRE_JS, /docTypeSel\.value = picked \? picked\.value : ''/,
+    '고를 것이 없을 때 <select> 를 비우지 않습니다 — 손대지 않으면 기본값 NDA 가 그대로 남고, ' +
+    '그것이 이 결함 자체입니다');
+  assert.ok(PRE_JS.indexOf("getElementById('doc-type-unmatched')") !== -1,
+    '보기가 없다는 사실을 화면이 말하지 않습니다 — 사용자에게는 프리필이 왜 비었는지가 보이지 않습니다');
+  assert.ok(PRE_B.indexOf('사전 확인에서 고르신 서류에 해당하는 보기가 아직 없습니다') !== -1,
+    '안내 문면이 사라졌습니다');
+});
+
+test('🔴 안 고른 채로 접수되지 않는다 — 화면이 서버의 빈값 폴백보다 앞에 선다 (F-10)', () => {
+  assert.match(PRE_JS, /if \(!docType\) \{[\s\S]{0,120}?문서 종류를 골라 주십시오/,
+    '문서 종류를 안 고른 제출을 막지 않습니다 — 서버(parseDocType)는 빈 값을 nda 로 받으므로 ' +
+    '(옛 캐시본 때문에 그래야 합니다) 이 구분은 화면만 할 수 있습니다');
+  assert.ok(!/docTypeSel && docTypeSel\.value \? docTypeSel\.value : 'nda'/.test(PRE_JS),
+    '빈 값을 화면에서 nda 로 눕히고 있습니다 — 그러면 <select> 만 비어 보이고 접수는 NDA 로 들어갑니다');
+  assert.match(PRE_JS, /var docType = docTypeSel \? docTypeSel\.value : 'nda'/,
+    '선택 상자가 **없는** 옛 캐시본의 폴백이 사라졌습니다 — 상자가 없는 것과 비어 있는 것은 다릅니다');
 });
 
 test('프리필 뒤 주소창에서 파라미터를 지운다 (기존 ?intake=ok&r= 처리와 동일)', () => {
