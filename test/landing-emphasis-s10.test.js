@@ -190,97 +190,115 @@ function gridBlock() {
   return CSS.slice(at, CSS.indexOf('\n  }', at));
 }
 
-test('E9 상품 카드가 넓은 화면에서 3열(2 + 거터 + 1)이다', () => {
-  assert.ok(/\.feats\s*\{[^}]*flex-direction:\s*column/.test(CSS),
-    '좁은 화면 기준값이 세로 1열이 아닙니다 — 모바일에서 3열이 되면 카드가 기둥이 됩니다');
+/*
+ * 🔄 **E9·E10·E11 을 한꺼번에 갈아 적었습니다** 〔2026-08-14 · cards-tabs-s12〕.
+ *
+ * 세 검사는 모두 **아코디언 카드 3열**을 전제로 했습니다:
+ *   E9  `.feats` 가 4트랙 그리드인가            → 이제 그 구조는 **탭 줄(.tabs)**이 갖습니다
+ *   E10 펼친 카드가 전폭(1 / -1)이 되는가        → 펼침 자체가 없어졌습니다
+ *   E11 마지막 카드에 왼쪽 굵은 선이 있는가      → **일부러 지웠습니다**(사유는 E11 참조)
+ *
+ * 지키려던 것은 그대로입니다: **생애주기 축(전 2 · 후 1)이 화면에서 보이고, 캡처가
+ * 읽히는 폭을 갖고, 선택 표시에 판정색을 쓰지 않는다.** 무엇이 그것을 지느냐만 바뀌었습니다.
+ *
+ * ⛔ 아코디언 단언으로 되돌리지 마십시오 — 되돌리려면 구조부터 되살려야 하고, 그 구조가
+ *    스크롤 보정을 다시 불러옵니다(index.html `.feats` 주석).
+ */
+test('E9 탭 줄이 넓은 화면에서 생애주기 축을 그린다 (2 + 거터 + 1)', () => {
+  assert.ok(/\.tabs\s*\{[^}]*grid-template-columns:\s*repeat\(3/.test(CSS),
+    '좁은 화면 기준값이 3등분 탭 줄이 아닙니다');
 
   const grid = gridBlock();
-  assert.ok(/\.feats\s*\{[^}]*display:\s*grid/.test(grid), '.feats 가 그리드가 아닙니다');
-
-  const cols = (grid.match(/grid-template-columns:\s*([^;]+);/) || [])[1];
-  assert.ok(cols, 'grid-template-columns 가 없습니다');
+  const cols = (grid.match(/\.tabs\s*\{[^}]*grid-template-columns:\s*([^;]+);/) || [])[1];
+  assert.ok(cols, '1024px 이상에서 탭 줄의 트랙 정의가 없습니다');
   const tracks = cols.split(/\)\s+(?=minmax|clamp)/).length;
   assert.strictEqual(tracks, 4,
-    '트랙이 ' + tracks + '개입니다 — 카드 2 + **빈 거터** + 카드 1 로 4개여야 「앞 2개 / ' +
+    '트랙이 ' + tracks + '개입니다 — 탭 2 + **빈 거터** + 탭 1 로 4개여야 「앞 2개 / ' +
     '뒤 1개」가 보입니다: ' + cols);
 
-  assert.ok(/\.feats > \.feat:last-child\s*\{[^}]*grid-column:\s*4/.test(grid),
-    '기한관리가 4열(거터 건너)에 놓이지 않습니다 — 자동 배치되면 거터 트랙에 들어갑니다');
+  assert.ok(/\.tabs > \[role="tab"\]:last-child\s*\{[^}]*grid-column:\s*4/.test(grid),
+    '기한관리 탭이 4열(거터 건너)에 놓이지 않습니다 — 자동 배치되면 거터 트랙에 들어갑니다');
 });
 
-test('E10 펼친 카드는 전폭이다 — 3열에서도 캡처가 읽힌다', () => {
+test('E10 패널이 본문 + 캡처 두 열이다 — 캡처가 본문 옆 참고 그림 자리에 앉는다', () => {
   const grid = gridBlock();
-  const open = (grid.match(/([^{}]*\[data-open="1"\])\s*\{[^}]*grid-column:\s*1 \/ -1/) || [])[1];
-  assert.ok(open, '펼친 카드가 전폭이 되지 않습니다 — 사전점검 카드의 예시화면(1487×523)이 ' +
-    '1/3 폭에서 높이 123px 라 글자가 읽히지 않습니다(3열이 한 번 기각된 사유)');
+  const pad = (grid.match(/\.feat-panel-pad\s*\{([^}]*)\}/) || [])[1];
+  assert.ok(pad, '1024px 이상에서 패널 배치 규칙이 없습니다');
+  assert.ok(/display:\s*grid/.test(pad), '패널이 두 열로 나뉘지 않습니다');
 
   /*
-   * 특정도 함정: `.feat[data-open="1"]`(0,2,0)로 줄이면 바로 위
-   * `.feats > .feat:last-child`(0,3,0)에 져서 기한관리만 안 펼쳐집니다.
+   * 두 열로 나누는 이유는 **패널을 낮추기 위해서**입니다. 아코디언 시절 1440×900 에서
+   * 패널 가시율이 100 / 72.5 / 77% 로 갈렸는데, 두 열이 되면 세 패널이 모두 한 화면에
+   * 들어옵니다(s12 실측: 아래끝 671 / 833 / 751 < 900).
    */
-  assert.ok(open.trim().startsWith('.feats >'),
-    '선택자가 `.feats >` 로 시작하지 않습니다(' + open.trim() + ') — 특정도가 모자라 ' +
-    '기한관리 카드만 전폭이 되지 않습니다');
-
-  const lastAt = grid.indexOf('.feats > .feat:last-child');
-  assert.ok(lastAt < grid.indexOf(open.trim()),
-    '펼침 규칙이 :last-child 규칙보다 앞에 있습니다 — 특정도가 같으므로 순서가 뒤집히면 ' +
-    '기한관리가 안 펼쳐집니다');
+  const cols = (pad.match(/grid-template-columns:\s*([^;]+);/) || [])[1];
+  assert.ok(cols && /1fr/.test(cols) && /560px/.test(cols),
+    '본문(1fr) + 캡처(최대 560px) 두 열이 아닙니다: ' + cols);
 });
 
-/*
- * 🔄 **단언을 갈아 적었습니다** 〔2026-08-14 · card-shot-reveal-s11〕.
- *
- * 종전에는 `.feats > .feat:last-child` 의 **`border-left: 3px`** 를 봤습니다. 뜻은
- * 맞았지만 화면에서 그 방식이 실패했습니다 — `.feat` 은 `border-radius: 6px` 이라
- * 3px 짙은 왼쪽 변이 위·아래 모서리 호를 타고 1px 연한 변으로 번지고, 좌상·좌하에
- * 짙은 갈고리가 남습니다. 그 갈고리 탓에 카드가 **「짙은 테두리로 둘러싸인 = 선택된」**
- * 것처럼 읽혔습니다(2026-08-14 4배율 실측에서 육안 확인).
- *
- * 그래서 테두리는 세 카드가 똑같이 1px --line 으로 되돌리고, 표시는 **모서리에 닿지
- * 않는 안쪽 세로 막대**(`::before`, 위아래 10px 씩 띄움)로 그립니다. 지키려는 것은
- * 그대로입니다: **생애주기가 갈리는 자리가 보이되, 판정색을 쓰지 않고, 세 카드의
- * 「면」이 달라지지 않는다.**
- *
- * ⛔ `border-left` 로 되돌리지 마십시오 — 되돌리면 위 갈고리가 그대로 돌아옵니다.
- * ⚠️ 위아래를 띄우는 것이 이 방식의 핵심입니다. 0 으로 붙이면 막대가 다시 테두리의
- *    일부로 읽혀 종전 문제가 재발합니다 — 그래서 아래가 그 여백을 함께 봅니다.
- */
-test('E11 「거래 시작 후」 카드가 다른 강조를 갖는다 — 판정색도, 테두리도 아니다', () => {
-  const mark = rule('.feats > .feat:last-child::before');
-  assert.ok(mark, '마지막 카드(기한관리)에 구분 표시가 없습니다 — 생애주기가 갈리는 ' +
-    '자리(전 2 · 후 1)가 화면에서 안 보입니다');
+test('E10-a 캡처가 「정식 화면」이 아니라 「참고 이미지」로 보인다', () => {
+  /*
+   * 🔴 **신설** 〔2026-08-14 · cards-tabs-s12〕. 종전에는 캡처가 전폭(최대 1104px)이라
+   *    실제 서비스 화면처럼 읽혔고, 이미지가 너무 커서 아래 캡션이 눈에 들어오지
+   *    않았습니다. 셋을 함께 못질합니다 — 하나만 지키면 신호가 약해집니다.
+   *
+   * ⚠️ 폭 상한을 올리지 마십시오. 올리는 순간 다시 정식 화면처럼 보입니다.
+   * ⛔ 브라우저 창 목업을 덧씌우지 마십시오 — c03-result*.jpg 는 신호등·주소창이 이미
+   *    이미지 안에 찍혀 있어서 크롬이 두 겹이 됩니다.
+   */
+  const shot = rule('.feat-shot');
 
-  const width = (mark.match(/width:\s*([^;]+);/) || [])[1];
-  assert.ok(width && /^3px/.test(width),
-    '막대가 3px 가 아닙니다(' + width + ') — 1px 이면 다른 두 카드의 테두리와 구분되지 않습니다');
+  // ① 폭 상한 — 「본문 옆 참고 그림」 크기.
+  const max = parseFloat((shot.match(/max-width:\s*(\d+)px/) || [])[1]);
+  assert.ok(max && max <= 560,
+    '캡처 액자의 폭 상한이 ' + (max || '없') + 'px 입니다 — 560px 이하여야 본문의 근거 ' +
+    '그림으로 읽힙니다(전폭이면 실제 서비스 화면처럼 보입니다)');
 
-  const bg = (mark.match(/background:\s*([^;]+);/) || [])[1];
-  assert.ok(bg, '막대에 색이 없습니다');
-  assert.ok(!/--accent|--warning/.test(bg),
-    '판정색을 썼습니다(' + bg + ') — 액센트는 클릭 가능한 것에만, 경고색은 폼 오류에만 ' +
-    '씁니다(시각사양 1-3). 경험담 .story-side.is-case 와 같은 --ink-70 을 쓰십시오.');
-
-  // 모서리에서 떨어져 있어야 「테두리」가 아니라 「표시」로 읽힙니다.
-  for (const side of ['top', 'bottom']) {
-    const v = parseFloat((mark.match(new RegExp(side + ':\\s*(-?[\\d.]+)px')) || [])[1]);
-    assert.ok(v >= 6,
-      '막대의 ' + side + ' 여백이 ' + v + 'px 입니다 — border-radius(6px) 안쪽으로 들어와야 ' +
-      '모서리를 타고 번지지 않습니다. 0 으로 붙이면 다시 테두리로 읽힙니다.');
+  // ② 액자 — 여백 + 테두리 + 그림자가 함께 있어야 「액자에 넣은 참고물」이 됩니다.
+  for (const [prop, why] of [
+    ['padding', '이미지와 액자 사이 여백(매트)이 없습니다'],
+    ['border', '액자 테두리가 없습니다'],
+    ['box-shadow', '액자가 떠 보이지 않습니다 — 배경과 붙으면 화면의 일부로 읽힙니다'],
+  ]) {
+    assert.ok(new RegExp(prop + ':').test(shot), why + ': ' + shot.trim());
   }
 
-  // 테두리는 세 카드가 같아야 합니다 — 마지막 카드만 왼쪽을 갈아 끼우지 않습니다.
-  const base = rule('.feats > .feat:last-child');
-  assert.ok(!/border-left/.test(base || ''),
-    '마지막 카드가 아직 border-left 로 표시합니다 — 6px 모서리를 타고 번져 카드가 ' +
-    '「선택됨」으로 읽힙니다(이 검사가 갈아 적힌 사유).');
-
-  assert.ok(!/\.feats > \.feat:last-child\s*\{[^}]*background/.test(CSS),
-    '마지막 카드를 다른 배경으로 채웠습니다 — 세 카드의 「면」이 달라지면 이 카드만 다른 ' +
-    '상품처럼 보입니다');
+  // ③ 캡션이 액자 **안**에 있어야 이미지와 한 덩어리로 읽힙니다.
+  assert.ok(/<figure class="feat-shot">[\s\S]*?<figcaption class="feat-cap">/.test(M),
+    '캡션이 액자 밖에 있습니다 — <figure> 안의 <figcaption> 이어야 큰 이미지 아래에서도 ' +
+    '함께 읽힙니다(지금 문제의 직접적인 해소)');
+  assert.strictEqual((M.match(/<figcaption class="feat-cap">/g) || []).length, 3,
+    '캡처 3장이 각각 캡션을 갖지 않습니다');
 });
 
-/* ══ E12 무손실 ════════════════════════════════════════════════════════════ */
+test('E11 생애주기 축이 탭 줄에 남아 있다 — 왼쪽 굵은 선은 지웠다', () => {
+  /*
+   * 🔴 **왼쪽 굵은 선을 지운 것이 이번 판단입니다** 〔2026-08-14 · cards-tabs-s12〕.
+   *    탭은 선택 상태를 **스스로** 표시합니다. 그 위에 굵은 선을 얹으면 s11 에서 걷어낸
+   *    혼동(「선택됨처럼 보인다」)이 탭 안에서 그대로 되살아납니다.
+   *    다만 그 선이 지고 있던 뜻은 지켜야 합니다 — 아래 두 가지가 대신합니다.
+   */
+  // ① 생애주기가 탭마다 붙어 **항상** 보입니다(옛 카드에서는 접힌 상태에서만 보였습니다).
+  const metas = (M.match(/<span class="feat-meta">([^<]*)<\/span>/g) || [])
+    .map((x) => x.replace(/<[^>]*>/g, '').trim());
+  assert.deepStrictEqual(metas, ['거래 시작 전', '거래 시작 전', '거래 시작 후'],
+    '탭 줄의 생애주기 축이 사라졌거나 순서가 다릅니다: ' + JSON.stringify(metas));
+
+  // ② 탭 2 와 3 사이의 빈 거터 — E9 가 트랙을, 여기서는 그 트랙이 **비어 있는지**를 봅니다.
+  assert.ok(!/<div[^>]*class="[^"]*tabs[^"]*"[\s\S]{0,40}?<div/.test(M),
+    'role=tablist 안에 tab 아닌 요소가 있습니다 — 거터는 CSS 트랙이고 DOM 요소가 아닙니다');
+
+  // ③ 왼쪽 굵은 선이 되살아나지 않았는지.
+  assert.ok(!/\.feats\s*>\s*\.feat:last-child/.test(CSS),
+    '옛 카드 강조 규칙이 남아 있습니다 — 탭에서는 선택 표시가 둘이 되어 서로 싸웁니다');
+
+  // ④ 선택 표시에 판정색을 쓰지 않았는지(시각사양 1-3 과 같은 결의 절제).
+  const sel = (CSS.match(/\.tab\[aria-selected="true"\]\s*\{([^}]*)\}/) || [])[1];
+  assert.ok(sel, '선택된 탭의 표시 규칙이 없습니다');
+  assert.ok(!/--accent|--warning/.test(sel),
+    '탭 선택 표시에 액센트·경고색을 썼습니다(' + sel.trim() + ') — 액센트는 「눌러서 ' +
+    '어디론가 가는 것」의 색이고, 탭 선택은 현재 위치 표시입니다');
+});
 
 test('E12 강약을 고치면서 콘텐츠·기능이 빠지지 않았다', () => {
   // 문장
@@ -301,8 +319,11 @@ test('E12 강약을 고치면서 콘텐츠·기능이 빠지지 않았다', () =
   }
 
   // 기능
-  assert.strictEqual((M.match(/class="feat-btn"/g) || []).length, 3, '상품 카드가 3장이 아닙니다');
-  assert.strictEqual((M.match(/class="feat-panel"/g) || []).length, 3, '카드 패널이 3개가 아닙니다');
+  // 🔄 카드 3장 → 탭 3개 〔2026-08-14 · cards-tabs-s12〕. 세는 대상만 바뀌고 뜻은 같습니다.
+  // ⚠️ B(본문)로 셉니다. M 은 HTML 주석만 걷으므로 CSS 선택자(`[role="tab"]`)와 JS 안의
+  //    같은 문자열이 함께 잡힙니다 — 실측 7개였습니다.
+  assert.strictEqual((B.match(/role="tab"/g) || []).length, 3, '상품 탭이 3개가 아닙니다');
+  assert.strictEqual((M.match(/class="feat-panel"/g) || []).length, 3, '탭 패널이 3개가 아닙니다');
   assert.strictEqual((B.match(/data-timeline-open/g) || []).length, 3, '기한관리 트리거가 3곳이 아닙니다');
   assert.strictEqual((M.match(/aria-controls="qa-\d+"/g) || []).length, 14, 'FAQ 가 14문항이 아닙니다');
   assert.ok(/id="interest-form"/.test(M), '사전등록 폼이 사라졌습니다');

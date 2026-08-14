@@ -220,16 +220,31 @@ test('🔴 가짜 지도를 그리지 않았다 — 그리는 대신 제품 화�
   assert.ok(/실제 고객 거래가 아닙니다/.test(card), '예시 표기가 없습니다');
 });
 
-test('아코디언 슬라이드가 즉시 show/hide 가 아니다', () => {
+test('탭 전환이 같은 자리에서 일어난다 — 높이가 변하는 펼침이 아니다', () => {
+  /*
+   * 🔄 **단언을 갈아 적었습니다** 〔2026-08-14 · cards-tabs-s12〕.
+   *
+   * 종전 이름은 「아코디언 슬라이드가 즉시 show/hide 가 아니다」였고, `.feat-panel` 이
+   * `grid-template-rows: 0fr → 1fr` 로 **높이를 늘리며** 열리는지 봤습니다. 그 방식이
+   * 바로 이번에 걷어낸 것입니다 — 높이가 변하면 아래 콘텐츠가 밀려 재배치가 일어나고,
+   * s11 이 그 뒤를 스크롤로 쫓아다녀야 했습니다.
+   *
+   * 탭이 지켜야 할 것은 정반대입니다: **패널 자리가 고정이고, 한 번에 하나만 보인다.**
+   * ⛔ 0fr → 1fr 슬라이드로 되돌리지 마십시오. 되돌리면 재배치와 스크롤 보정이 함께
+   *    돌아옵니다(index.html `.feats` 주석의 사유).
+   * ⚠️ 08 FAQ 는 여전히 아코디언(display:none 방식)입니다. 그쪽은 건드리지 않았습니다.
+   */
   const css = CSS;
-  const rule = css.match(/\.feat-panel \{[^}]*\}/);
-  assert.ok(rule, '.feat-panel 규칙이 없습니다');
-  assert.match(rule[0], /grid-template-rows: 0fr/, '접힘이 0fr 이 아닙니다');
-  assert.match(rule[0], /transition: grid-template-rows/, '슬라이드 전환이 없습니다');
-  assert.match(css, /\.feat\[data-open="1"\] \.feat-panel \{[^}]*grid-template-rows: 1fr/,
-    '펼침이 1fr 이 아닙니다');
-  assert.ok(!/\.feat-panel \{[^}]*display: none/.test(css),
-    'display:none 방식이면 슬라이드가 불가능합니다');
+  assert.ok(!/\.feat-panel\s*\{[^}]*grid-template-rows/.test(css),
+    '패널이 아직 0fr → 1fr 로 높이를 늘립니다 — 탭은 자리가 고정이어야 합니다');
+  assert.ok(/\.feat-panel\[hidden\]\s*\{[^}]*display:\s*none/.test(css),
+    '선택되지 않은 패널이 [hidden] 으로 감춰지지 않습니다 — 감춘 패널의 링크·버튼이 ' +
+    'Tab 으로 잡히면 보이지 않는 버튼에 포커스가 들어갑니다');
+
+  // 전환을 알리는 짧은 페이드는 남습니다(흐름 md §1 「다이나믹함」 3번).
+  assert.ok(/@keyframes tab-in/.test(css), '전환 페이드가 없습니다');
+  assert.ok(/\.feat-panel\s*\{[^}]*animation:\s*tab-in/.test(css),
+    '패널이 전환 페이드를 쓰지 않습니다');
 });
 
 test('움직임을 줄이는 설정에서 내용이 사라지지 않는다', () => {
@@ -244,27 +259,32 @@ test('움직임을 줄이는 설정에서 내용이 사라지지 않는다', () 
    *    (위 「제품 정책과 같다」 검사) 여기서 그것을 요구하면 서로 반대되는 두 검사가 됩니다.
    *    ⚠️ 슬라이드·페이드는 그대로 남아 있어야 하므로 아래 두 단언은 유지합니다.
    */
-  assert.match(block[0], /\.feat-panel[^{]*\{[^}]*transition: none/,
-    '아코디언 슬라이드를 끄지 않습니다');
+  /* 🔄 transition → animation 〔2026-08-14 · cards-tabs-s12〕. 탭에는 슬라이드가 없고
+     짧은 페이드(@keyframes tab-in)만 있으므로 끌 것이 animation 입니다. */
+  assert.match(block[0], /\.feat-panel[^{]*\{[^}]*animation: none/,
+    '탭 전환 페이드를 끄지 않습니다');
   assert.ok(!/display: none/.test(block[0]),
     '접근성 설정을 콘텐츠 검열로 바꾸지 마십시오');
 });
 
 /* ── S3 아코디언 카드 3종 ─────────────────────────────────────────────────── */
 
-/** 카드 하나의 마크업을 잘라냅니다. */
+/**
+ * 상품 하나의 패널 마크업을 잘라냅니다.
+ * 🔄 종전에는 `<div class="feat" id="…">`(아코디언 카드)를 잘랐습니다 〔2026-08-14 ·
+ *    cards-tabs-s12〕. 지금은 탭 패널이 그 자리입니다 — 내용은 같고 그릇만 바뀌었습니다.
+ */
 function card(id) {
-  const start = M.indexOf('<div class="feat" id="' + id + '"');
-  assert.ok(start !== -1, id + ' 카드를 찾지 못했습니다');
-  const next = M.indexOf('<div class="feat" id=', start + 10);
+  const start = M.indexOf('<div class="feat-panel" id="' + id + '-panel"');
+  assert.ok(start !== -1, id + ' 패널을 찾지 못했습니다');
+  const next = M.indexOf('<div class="feat-panel" id=', start + 10);
   const end = next === -1 ? M.indexOf('</section>', start) : next;
   return M.slice(start, end);
 }
 
-/** 카드 안의 실행버튼(.btn) — 펼침 버튼(.feat-btn)은 제외합니다. */
+/** 패널 안의 실행버튼(.btn). 탭 라벨은 .btn 이 아니라 .tab 이므로 걸러낼 것이 없습니다. */
 function actionButtons(block) {
-  return (block.match(/<(?:a|button)[^>]*class="[^"]*\bbtn\b[^"]*"[^>]*>/g) || [])
-    .filter((tag) => tag.indexOf('feat-btn') === -1);
+  return (block.match(/<(?:a|button)[^>]*class="[^"]*\bbtn\b[^"]*"[^>]*>/g) || []);
 }
 
 test('사전점검 카드 — 실행버튼 없이 설명+예시화면만', () => {
@@ -300,14 +320,53 @@ test('기한관리 카드 — [계약 등록해보기] 가 app.trops.kr 로 간�
     '[계약 등록해보기] 가 app.trops.kr 로 가지 않습니다: ' + href);
 });
 
-test('세 카드가 같은 인터랙션이다 — 클릭하면 그 자리에서 펼쳐진다', () => {
-  for (const id of ['feat-precheck', 'feat-buyer', 'feat-timeline']) {
-    const block = card(id);
-    assert.match(block, /data-open="0"/, id + ' 이 접힌 상태로 내려오지 않습니다');
-    assert.match(block, /class="feat-btn" type="button" aria-expanded="false"/,
-      id + ' 의 펼침 버튼이 다른 모양입니다');
-    assert.match(block, /class="feat-panel"/, id + ' 에 패널이 없습니다');
-  }
+test('세 탭이 같은 인터랙션이다 — 누르면 같은 자리에서 내용만 바뀐다', () => {
+  /*
+   * 🔄 **단언을 갈아 적었습니다** 〔2026-08-14 · cards-tabs-s12〕. 종전에는 세 카드가
+   *    `data-open="0"` + `.feat-btn` + `.feat-panel` 을 똑같이 갖는지 봤습니다.
+   *    지키려는 것은 그대로입니다: **셋이 서로 다르게 반응하지 않는다.** 기준을 최소개발
+   *    상태인 바이어확인에 맞춘 결정이고(흐름 md §1), 탭이 되어도 바뀌지 않습니다.
+   */
+  const ids = ['feat-precheck', 'feat-buyer', 'feat-timeline'];
+  const tabs = (M.match(/<button class="tab"[^>]*>/g) || []);
+  assert.strictEqual(tabs.length, 3, '탭이 ' + tabs.length + '개입니다');
+
+  ids.forEach((id, i) => {
+    const tag = tabs[i];
+    assert.ok(tag.indexOf('id="' + id + '"') !== -1,
+      i + '번째 탭의 id 가 ' + id + ' 이 아닙니다: ' + tag);
+    assert.ok(tag.indexOf('role="tab"') !== -1, id + ' 이 role=tab 이 아닙니다');
+    assert.ok(tag.indexOf('aria-controls="' + id + '-panel"') !== -1,
+      id + ' 이 자기 패널을 가리키지 않습니다: ' + tag);
+    // 첫 탭만 선택 + tabindex 0 (roving tabindex).
+    const on = i === 0;
+    assert.ok(tag.indexOf('aria-selected="' + (on ? 'true' : 'false') + '"') !== -1,
+      id + ' 의 기본 선택 상태가 다릅니다 — 첫 탭 하나만 열린 채로 내려와야 합니다');
+    assert.ok(tag.indexOf('tabindex="' + (on ? '0' : '-1') + '"') !== -1,
+      id + ' 의 roving tabindex 가 다릅니다 — 탭 줄은 Tab 키에서 정거장 하나여야 합니다');
+
+    // 패널 쪽 짝.
+    const panel = card(id);
+    assert.ok(/role="tabpanel"/.test(panel), id + ' 패널이 role=tabpanel 이 아닙니다');
+    assert.ok(panel.indexOf('aria-labelledby="' + id + '"') !== -1,
+      id + ' 패널이 자기 탭을 가리키지 않습니다');
+    // ⚠️ 여는 태그를 `>` 까지 포함해 자릅니다 — hidden 이 마지막 속성이면 뒤에 공백이
+    //    없어서 `\shidden(\s|>)` 가 안 맞습니다(실제로 한 번 걸렸습니다).
+    assert.strictEqual(/\shidden(\s|>)/.test(panel.slice(0, panel.indexOf('>') + 1)), !on,
+      id + ' 패널의 기본 노출 상태가 다릅니다 — 첫 패널만 보이고 나머지는 [hidden] 입니다');
+  });
+});
+
+/* 이미 발송된 메일이 이 앵커로 들어옵니다 — 그 사실을 마크업 쪽에서도 못질합니다.
+   (링크 자체는 test/waiting-room-mail.test.js 가 봅니다.) */
+test('메일 앵커(#feat-timeline)가 항상 보이는 요소에 붙어 있다', () => {
+  const at = M.indexOf('id="feat-timeline"');
+  assert.ok(at !== -1, 'id="feat-timeline" 이 없습니다 — 발송된 메일 링크가 죽습니다');
+  const tag = M.slice(M.lastIndexOf('<', at), M.indexOf('>', at) + 1);
+  assert.ok(/role="tab"/.test(tag),
+    '앵커가 탭이 아닌 요소에 붙어 있습니다: ' + tag + '\n' +
+    '  패널에 붙이면 선택되지 않은 동안 [hidden] 이라 앵커가 도착할 대상이 없어집니다.');
+  assert.ok(!/\shidden(\s|>)/.test(tag), '앵커 요소가 [hidden] 입니다');
 });
 
 /* ── S4 FAQ 채널분기 ─────────────────────────────────────────────────────── */

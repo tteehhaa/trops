@@ -102,14 +102,16 @@ test('05 배지 3개가 생애주기만 말한다', () => {
 });
 
 test('바이어확인 카드에 「준비 중」이 없다 — 라우트가 이미 돈다', () => {
-  const start = M.index.indexOf('id="feat-buyer"');
-  const block = M.index.slice(start, M.index.indexOf('<div class="feat" id=', start + 10));
+  // 🔄 카드 <div> → 탭 패널 〔2026-08-14 · cards-tabs-s12〕.
+  const start = M.index.indexOf('<div class="feat-panel" id="feat-buyer-panel"');
+  const block = M.index.slice(start, M.index.indexOf('<div class="feat-panel" id=', start + 10));
   assert.ok(!/준비\s*중/.test(block),
     '「준비 중」이 남아 있습니다 — 같은 카드가 「바로 확인하실 수 있습니다」라고도 말합니다');
 });
 
 test('기한관리 「지금은 무료」가 배지에서 빠지고 본문에 남았다', () => {
-  const start = M.index.indexOf('id="feat-timeline"');
+  // 🔄 카드 <div> → 탭 패널 〔2026-08-14 · cards-tabs-s12〕.
+  const start = M.index.indexOf('<div class="feat-panel" id="feat-timeline-panel"');
   const block = M.index.slice(start, M.index.indexOf('</section>', start));
 
   assert.ok(!/<span class="feat-meta">[^<]*무료/.test(block), '배지에 가격이 남아 있습니다');
@@ -256,16 +258,22 @@ test('상품 카드 3장이 모두 상태줄을 갖는다 — 배지를 지운 �
  *    지키려던 것(= 기한관리 소개가 페이지 이동이 아니라 그 자리 확장이다)은 이제
  *    카드 자신의 .feat-btn 이 집니다. 그것을 확인합니다.
  */
-test('기한관리 카드가 그 자리에서 펼쳐진다 — 페이지 이동이 아니다', () => {
+test('기한관리가 그 자리에서 열린다 — 페이지 이동이 아니다', () => {
+  /*
+   * 🔄 **아코디언 → 탭** 〔2026-08-14 · cards-tabs-s12〕. 지키려던 것은 그대로입니다:
+   *    기한관리 소개가 **다른 페이지로 보내는 것이 아니라 이 자리에서 열린다.**
+   *    그것을 이제 탭 라벨과 패널의 짝이 집니다.
+   */
   const cards = section(M.index, 'cards-sec');
   assert.ok(cards.indexOf('알림 받기') === -1, '옛 라벨 「알림 받기」가 남아 있습니다');
   assert.ok(!/<a[^>]*href="#interest"[^>]*>\s*알림/.test(cards), '사전등록 폼으로 보내는 링크가 남아 있습니다');
 
-  const start = cards.indexOf('id="feat-timeline"');
-  assert.ok(start !== -1, '기한관리 카드가 상품소개 섹션 안에 없습니다');
-  const block = cards.slice(start);
-  assert.ok(/aria-controls="feat-timeline-panel"/.test(block), '펼침 버튼이 패널을 가리키지 않습니다');
-  assert.ok(block.indexOf('id="feat-timeline-panel"') !== -1, '인라인 패널이 없습니다');
+  const at = cards.indexOf('id="feat-timeline"');
+  assert.ok(at !== -1, '기한관리 탭이 상품소개 섹션 안에 없습니다');
+  const tag = cards.slice(cards.lastIndexOf('<', at), cards.indexOf('>', at) + 1);
+  assert.ok(/role="tab"/.test(tag) && /aria-controls="feat-timeline-panel"/.test(tag),
+    '기한관리 탭이 자기 패널을 가리키지 않습니다: ' + tag);
+  assert.ok(cards.indexOf('id="feat-timeline-panel"') !== -1, '인라인 패널이 없습니다');
 });
 
 test('기한관리 패널은 페이지에 하나뿐이다 — 트리거만 늘린다', () => {
@@ -293,8 +301,12 @@ test('기한관리 패널은 페이지에 하나뿐이다 — 트리거만 늘�
 test('상품소개 h2 아래 조작 안내 한 줄이 있고, 옛 앵커가 살아 있다', () => {
   const cards = section(M.index, 'cards-sec');
   assert.ok(cards.indexOf('class="cards-lead"') !== -1, '.cards-lead 가 없습니다');
-  assert.ok(cards.indexOf('펼쳐보세요') !== -1,
-    '리드가 카드를 펼치라고 안내하지 않습니다 — 옛 05 h2 가 하던 일을 이 줄이 받았습니다');
+  /* 🔄 「펼쳐보세요」 → 「눌러보세요」 〔2026-08-14 · cards-tabs-s12〕. 펼칠 것이 없어졌고,
+     조작 안내가 화면과 다르면 안내가 아니라 오안내입니다. */
+  assert.ok(cards.indexOf('눌러보세요') !== -1,
+    '리드가 탭을 눌러보라고 안내하지 않습니다 — 옛 05 h2 가 하던 일을 이 줄이 받았습니다');
+  assert.ok(cards.indexOf('펼쳐보세요') === -1,
+    '아코디언 시절 안내(「펼쳐보세요」)가 남아 있습니다 — 화면에 펼칠 것이 없습니다');
   // ⚠️ B(본문)로 봅니다. M 은 HTML 주석만 걷으므로 CSS 주석의 「<a href="#feats"> 를
   //    되살리지 마십시오」가 그대로 오탐이 됩니다(파일 머리 ⚠️ 와 같은 이유).
   assert.ok(!/href="#feats"/.test(B.index),

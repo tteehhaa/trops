@@ -103,9 +103,12 @@ test('O4 세 상품이 각각 한 번씩만 소개된다', () => {
   const cards = M.slice(M.indexOf('<section class="cards-sec" id="service"'));
   const block = cards.slice(0, cards.indexOf('</section>'));
 
-  // 카드 자체가 3개.
-  const feats = (block.match(/<div class="feat" id="/g) || []).length;
-  assert.strictEqual(feats, 3, '상품 카드가 ' + feats + '개입니다 — 3분류(사전점검·바이어확인·기한관리)입니다');
+  // 🔄 카드 3장 → **탭 3개 + 패널 3개** 〔2026-08-14 · cards-tabs-s12〕.
+  //    「한 상품 = 한 번」이라는 뜻은 그대로이고, 세는 그릇만 바뀌었습니다.
+  const tabs = (block.match(/<button class="tab"/g) || []).length;
+  assert.strictEqual(tabs, 3, '상품 탭이 ' + tabs + '개입니다 — 3분류(사전점검·바이어확인·기한관리)입니다');
+  const panels = (block.match(/<div class="feat-panel" id="/g) || []).length;
+  assert.strictEqual(panels, 3, '상품 패널이 ' + panels + '개입니다');
 
   // 각 상품이 카드 머리에서 한 번만 이름 불린다.
   const titles = (block.match(/<span class="feat-title">([^<]*)<\/span>/g) || [])
@@ -113,9 +116,11 @@ test('O4 세 상품이 각각 한 번씩만 소개된다', () => {
   assert.deepStrictEqual(titles, ['수출 사전점검', '바이어 확인', '기한 관리'],
     '상품 카드 제목이 용어 정본과 다릅니다: ' + JSON.stringify(titles));
 
-  // 한 카드 안에서 개요(.feat-sum)와 상세(.feat-desc)가 층을 나눠 갖는가.
+  // 한 상품 안에서 개요(.feat-sum)와 상세(.feat-desc)가 층을 나눠 갖는가.
+  // 🔄 요약은 카드 머리에서 **패널 안**으로 내려왔습니다(탭 라벨은 이름만 답니다).
+  //    층 자체는 그대로입니다 — 그것을 O4-a 가 봅니다.
   assert.strictEqual((block.match(/class="feat-sum"/g) || []).length, 3,
-    '카드 머리의 한 줄 요약이 3개가 아닙니다 — 접힌 상태가 옛 2층카드 역할을 못 합니다');
+    '한 줄 요약이 3개가 아닙니다 — 상품마다 개요 한 줄을 갖습니다');
 });
 
 test('O4-a 한 카드 안에서 머리와 패널이 같은 말을 하지 않는다', () => {
@@ -137,12 +142,14 @@ test('O4-a 한 카드 안에서 머리와 패널이 같은 말을 하지 않는�
     .filter((x) => x.length > 12);
 
   for (const id of ['feat-precheck', 'feat-buyer', 'feat-timeline']) {
-    const at = block.indexOf('id="' + id + '"');
-    assert.ok(at !== -1, id + ' 카드를 찾지 못했습니다');
-    const next = block.indexOf('<div class="feat" id=', at + 10);
+    // 🔄 카드 <div> → 탭 패널 〔2026-08-14 · cards-tabs-s12〕. 요약도 <span> 에서 <p> 로
+    //    바뀌었습니다(버튼 밖으로 나왔으므로 문단을 쓸 수 있습니다). 층 검사는 그대로입니다.
+    const at = block.indexOf('<div class="feat-panel" id="' + id + '-panel"');
+    assert.ok(at !== -1, id + ' 패널을 찾지 못했습니다');
+    const next = block.indexOf('<div class="feat-panel" id=', at + 10);
     const card = block.slice(at, next === -1 ? undefined : next);
 
-    const sum = (card.match(/<span class="feat-sum">([^<]*)<\/span>/) || [])[1];
+    const sum = (card.match(/<p class="feat-sum">([^<]*)<\/p>/) || [])[1];
     const desc = (card.match(/<p class="feat-desc">([^<]*)<\/p>/) || [])[1];
     assert.ok(sum && desc, id + ' 에 요약이나 설명이 없습니다');
 
@@ -182,7 +189,12 @@ test('O4-b 같은 스크린샷이 한 화면 거리에 두 번 나오지 않는�
   const srcOf = (t) => (t.match(/src="([^"]*)"/) || [])[1];
 
   // ① 기본 노출 이미지 — 접힌 패널(.feat-panel) 밖에 있는 것들. 여기는 중복 0 입니다.
-  const panels = (B.match(/<div class="feat-panel"[\s\S]*?<\/div>\s*<\/div>\s*<\/div>/g) || []).join('');
+  /*
+   * 🔄 **「접힌 패널」이 「선택되지 않은 탭 패널」이 됐습니다** 〔2026-08-14 · cards-tabs-s12〕.
+   *    구조가 바뀌었을 뿐 사유는 같습니다 — 클릭해야 보이는 자리는 03 신뢰의 그림과
+   *    한 화면에 함께 놓이지 않습니다. 이제는 [hidden] 이라 판정이 더 분명합니다.
+   */
+  const panels = (B.match(/<div class="feat-panel"[^>]*\shidden[^>]*>[\s\S]*?<\/figure>/g) || []).join('');
   const exposed = imgs.filter((t) => panels.indexOf(t) === -1).map(srcOf);
   const dup = exposed.filter((s, i) => exposed.indexOf(s) !== i);
   assert.deepStrictEqual(dup, [],
@@ -321,7 +333,7 @@ test('재배치로 콘텐츠가 사라지지 않았다 — 각 블록이 한 번
     ['신뢰 인용', '대금 미회수 단 한 번으로 자금난에 빠질 수 있습니다'],
     ['신뢰 출처', '한국무역보험공사'],
     ['상품소개 h2', '거래를 시작하기 전에 한 번, 시작한 후에 한 번.'],
-    ['조작 안내', '하나씩 펼쳐보세요'],
+    ['조작 안내', '하나씩 눌러보세요'],
     ['결 h2', '받으신 서류부터, 하나 확인해 보세요.'],
     ['안심 선언', '결정은 언제나 대표님 것입니다.'],
     ['법적 고지', '법률 자문 서비스가 아닙니다'],
@@ -343,9 +355,10 @@ test('재배치로 콘텐츠가 사라지지 않았다 — 각 블록이 한 번
   }
 });
 
-test('인터랙션이 그대로다 — 아코디언 3장·FAQ·트리거·스크롤 등장', () => {
-  assert.strictEqual((M.match(/class="feat-btn"/g) || []).length, 3, '상품 카드 펼침 버튼이 3개가 아닙니다');
-  assert.strictEqual((M.match(/class="feat-panel"/g) || []).length, 3, '상품 카드 패널이 3개가 아닙니다');
+test('인터랙션이 그대로다 — 탭 3개·FAQ·트리거·스크롤 등장', () => {
+  // 🔄 아코디언 펼침 버튼 3개 → **탭 3개** 〔2026-08-14 · cards-tabs-s12〕.
+  assert.strictEqual((M.match(/<button class="tab"/g) || []).length, 3, '상품 탭이 3개가 아닙니다');
+  assert.strictEqual((M.match(/class="feat-panel"/g) || []).length, 3, '상품 패널이 3개가 아닙니다');
   assert.strictEqual((M.match(/aria-controls="qa-\d+"/g) || []).length, 14, 'FAQ 문항이 14개가 아닙니다');
   assert.strictEqual((B.match(/data-timeline-open/g) || []).length, 3,
     '기한관리 원격 트리거가 3곳(히어로·로드맵·마감 CTA)이 아닙니다');

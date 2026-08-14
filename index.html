@@ -735,13 +735,15 @@
      확인해 드리는지는 아래에서 하나씩 펼쳐…」)는 **두 섹션이 중복이 아님을 문장으로
      변명하려고** 2026-08-13 에 신설된 줄이었습니다. 구조가 옳으면 변명이 필요 없습니다.
 
-     지금 구조: **접힌 카드 = 옛 2층카드, 펼친 카드 = 옛 아코디언.**
-     한 상품 = 한 카드 = 한 번의 설명입니다. 개요(생애주기·상품명·요약·상태·불릿)는
-     .feat-btn 안으로, 상세(설명·예시화면·실행버튼)는 .feat-panel 로 갑니다.
+     지금 구조: **탭 3개 + 패널 3개** 〔2026-08-14 · cards-tabs-s12 에서 아코디언을 대체〕.
+     한 상품 = 한 탭 = 한 번의 설명입니다. 이름표(생애주기·상품명)는 탭 라벨로, 내용
+     (상태줄·요약·설명·불릿·예시화면·실행버튼)은 패널로 갑니다.
+       탭 라벨(.tab)  — 생애주기(.feat-meta) · 상품명(.feat-title)
+       패널(.feat-panel) — 상태줄 · 요약 · 설명 · 불릿 · 캡처 · (기한관리만) 실행버튼
 
-     이 형태는 이미 이 저장소에 선례가 있습니다 — en.html 의 기한관리 카드가 .card 와
-     .feat 를 한 요소에 겹쳐 달아(class="card feat") 카드와 아코디언을 한 몸으로 씁니다.
-     국문만 두 섹션으로 갈라져 있었습니다.
+     🔄 종전에는 「접힌 카드 = 옛 2층카드, 펼친 카드 = 옛 아코디언」이었습니다. 아코디언은
+     펼칠 때마다 줄이 재배치돼 스크롤 보정이 필요했고, 탭이 그것을 구조로 없앴습니다
+     (사유는 아래 .feats CSS 주석에 있습니다).
      ⚠️ 여기(그리고 아래 마크업 주석)에 카드의 id 를 큰따옴표째로 인용하지 마십시오 —
         test/landing-flow-s9.test.js 가 그 문자열의 **첫 등장**부터 잘라 검사하므로
         주석이 그대로 오탐이 됩니다(2026-08-14 에 실제로 걸렸습니다).
@@ -783,110 +785,104 @@
     color: var(--ink-64);
   }
 
-  /* ---------- 상품 카드 3장 (구 05 아코디언 · 흐름 md §1 시각층매핑 · §4-1) ----------
+  /* ---------- 상품소개 탭 3개 (구 아코디언 카드 3열) ----------
      배경은 --bg 입니다. 06 신뢰(--surface-dark)와 07 결(--bg) 사이에 들어갑니다.
      결과 같은 --bg 로 이어지는 것은 **의도**입니다 — md §1 이 「핵심기능 3분류 --bg /
      결 --bg」로 지정했고, 사유도 적혀 있습니다: 「감정선이 신뢰증명 다음 곧바로 행동으로
-     이어지도록 무관한 기능섹션을 사이에 두지 않음」. 상품을 본 직후의 행동은 끊는 것이
-     아니라 잇는 것이 맞습니다. 페이지에서 배경이 연속인 이웃은 이 한 쌍뿐입니다.
+     이어지도록 무관한 기능섹션을 사이에 두지 않음」. 페이지에서 배경이 연속인 이웃은 이 한 쌍뿐입니다.
 
-     🔄 **1열 세로 목록 → 3열(2+1) 그리드** 〔2026-08-14 · landing-emphasis-s10〕.
-        같은 날 그 반대 방향(3열 → 1열)의 변경이 한 번 있었고, 그때 적힌 기각 사유는
-        두 가지였습니다: ① 카드가 세로로 길어져 「기둥」이 된다 ② 패널 안 결과지 캡처가
-        컨테이너의 1/3 폭이라 읽히지 않는다.
-        **두 사유를 각각 해소한 뒤에 되돌린 것입니다:**
-          ① 은 폭 문제였습니다 — 3열을 769px 이 아니라 **1024px 이상**에서만 켜서 열 하나가
-             290px 이상을 갖게 했습니다. 769px 에서 3열이면 열이 215px 라 상태줄이 매번
-             줄바꿈하면서 카드가 기둥이 됩니다.
-          ② 는 **펼친 카드를 전폭(grid-column: 1 / -1)으로** 보내 해소했습니다. 펼치면
-             지금(1열)과 똑같은 폭이므로 캡처 가독성은 그대로입니다.
-        되돌린 이유: 1열에서는 카드 하나가 폭 1104 × 높이 250 인데 본문이 왼쪽 절반만 써서
-        오른쪽 절반이 빈 채 세 번 반복됐고, 세 상품이 한눈에 **비교**되지 않고 순서대로
-        읽혔습니다. 생애주기가 둘로 갈리는 것(전 2 · 후 1)도 세로 목록에서는 안 보입니다.
-        ⚠️ 다시 1열로 되돌리려면 위 ①② 가 **다시 문제가 되는지부터** 확인하십시오.
+     🔴 **아코디언 카드 3열 → 탭** 〔2026-08-14 · cards-tabs-s12〕.
 
-     ⚠️ 세 카드는 반드시 같은 인터랙션입니다 — 「클릭하면 항상 그 자리에서 펼쳐진다」.
-        기준을 최소개발 상태인 바이어확인에 맞춘 결정입니다(흐름 md §1). 카드별로 즉시이동·
-        무반응 같은 다른 반응을 두지 마십시오.
-     ⚠️ 사전점검·바이어확인 카드에 실행버튼을 넣지 마십시오. 바로 다음 「결」 섹션의 주 CTA 와
+     아코디언은 **자리가 움직이는 구조**였습니다. 펼치면 카드가 전폭(`grid-column: 1 / -1`)이
+     되면서 줄이 재배치되고, 접으면 3열 줄로 되돌아가며 카드가 위로 올라갑니다. 그래서 s11 이
+     펼침·접힘마다 스크롤을 보정해야 했고(실측: 접은 직후 카드 머리 y=-238), **보정이
+     필요하다는 것 자체가 구조의 신호**였습니다. 패널 높이도 콘텐츠마다 달라 1440×900
+     가시율이 100 / 72.5 / 77% 로 갈렸습니다.
+
+     탭은 **패널 자리가 고정**입니다. 전환해도 탭 줄이 움직이지 않으므로 스크롤 보정이
+     아예 필요 없습니다 — 문제를 고친 것이 아니라 **발생하지 않게** 했습니다.
+
+     ⛔ 아코디언으로 되돌리지 마십시오. 되돌리면 위 재배치와 스크롤 보정이 함께 돌아옵니다.
+     ⛔ **동시 다중 펼침 정책은 폐기됐습니다** 〔2026-08-14〕. 「하나만 열리게 만들지
+        마십시오」는 아코디언 전제의 규칙이었고, 탭은 정의상 하나입니다. 08 FAQ 는 여전히
+        다중 펼침이며 그쪽은 건드리지 않았습니다 — 두 곳의 방식이 다른 것은 의도입니다.
+     ⚠️ 사전점검·바이어확인 패널에 실행버튼을 넣지 마십시오. 바로 다음 「결」 섹션의 주 CTA 와
         중복되고, 주버튼 2회 규칙(시각사양 2)이 깨집니다. 기한관리만 별도 흐름이라 버튼을 갖고,
         그 버튼도 보조(btn-secondary)입니다.
-     ⚠️ 동시 다중 펼침을 허용합니다. 하나만 열리는 방식은 비교가 안 됩니다 — 08 FAQ(C-3)와 같은 정책. */
-  /* 좁은 화면 기준값 — 세로 1열. 3열은 아래 1024px 미디어쿼리가 켭니다. */
-  .feats { display: flex; flex-direction: column; gap: 16px; }
-  .feat { border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
-  /* 「거래 시작 후」 카드(기한관리)의 표시 〔2026-08-14 · landing-emphasis-s10〕.
-     앞 두 장은 거래 **시작 전**, 이 한 장만 **시작 후**라 생애주기 축이 여기서 갈립니다.
-     굵은 왼쪽 선은 경험담의 .story-side.is-case 가 이미 쓰는 표시법입니다 — 페이지 안에
-     있는 언어를 재사용합니다. 폭과 무관하게(모바일 1열에서도) 그대로 남습니다.
+     ⚠️ 어느 탭에도 가격을 쓰지 마십시오. */
+  .feats { display: flex; flex-direction: column; gap: 0; }
 
-     🔄 **`border-left` → 안쪽 세로 막대(::before)** 〔2026-08-14 · card-shot-reveal-s11〕.
-        종전에는 `.feat` 의 1px 테두리 중 왼쪽만 3px --ink-70 으로 갈아 끼웠습니다. 뜻은
-        맞았지만 화면에서는 **「선택된 카드」로 읽혔습니다** — `border-radius: 6px` 때문에
-        3px 짙은 왼쪽 변이 위·아래 모서리 호를 타고 1px 연한 변으로 번지면서, 좌상·좌하에
-        짙은 갈고리가 생겨 카드 전체가 짙은 테두리로 **둘러싸인** 인상을 줍니다(2026-08-14
-        실측: 4배율 캡처에서 갈고리가 육안으로 잡힙니다).
-        그래서 테두리는 **세 카드가 똑같이 1px --line** 으로 되돌리고, 표시는 모서리에
-        닿지 않는 안쪽 막대로 그립니다. 위·아래를 10px 씩 띄우는 것이 핵심입니다 —
-        띄우는 순간 「테두리의 일부」가 아니라 「왼쪽에 붙은 표시」로 읽힙니다.
-     ⚠️ `border-left` 로 되돌리지 마십시오. 되돌리면 위 갈고리가 그대로 돌아옵니다.
-     ⚠️ 액센트(--accent)·경고색(--warning)을 쓰지 마십시오 — 판정색 금지(시각사양 1-3).
-     ⚠️ 배경을 --surface 로 채우지 마십시오. 세 카드의 「면」이 달라지면 같은 종류로
-        안 읽히고, 이 카드만 다른 상품처럼 보입니다.
-     ⚠️ :last-child 로 고르는 이유: 카드 <div> 에 클래스를 더하면 세 검사 파일이
-        `<div class="feat" id=` 를 정확히 찾고 있어 함께 깨집니다. 카드 순서(사전점검·
-        바이어확인·기한관리)는 test/landing-order-s9.test.js O4 가 제목 배열로 못질하므로
-        「마지막 = 기한관리」는 검사로 보장됩니다. **순서를 바꾸면 이 선이 따라갑니다.** */
-  .feats > .feat:last-child { position: relative; }
-  .feats > .feat:last-child::before {
-    content: "";
-    position: absolute;
-    /* -1px 은 카드 자신의 1px 테두리를 덮는 값입니다. 0 으로 두면 연한 테두리가
-       막대 왼쪽에 한 줄 남아 두 겹으로 보입니다. */
-    left: -1px;
-    top: 10px;
-    bottom: 10px;
-    width: 3px;
-    background: var(--ink-70);
-    /* 막대가 카드 머리 클릭을 가로채지 않게 합니다 — .feat-btn 이 카드를 꽉 채웁니다. */
-    pointer-events: none;
+  /* ── 탭 줄 ────────────────────────────────────────────────────────────────
+     좁은 화면 기준값은 3등분입니다. 1024px 이상에서 아래 미디어쿼리가
+     `1fr 1fr [빈 거터] 1fr` 로 바꿉니다 — 그 트랙 구조가 생애주기 축을 그립니다. */
+  .tabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    border-bottom: 1px solid var(--line);
   }
-  .feat-btn {
-    width: 100%;
+  /* 탭 하나. 자식은 전부 <span> 입니다 — 인터랙티브 콘텐츠 안의 <p>·<div> 는
+     브라우저가 DOM 을 재구성해 버튼 밖으로 밀어냅니다(옛 .feat-btn 과 같은 규칙). */
+  /* 🔴 **이미 발송된 메일이 `#feat-timeline` 로 들어옵니다**(api/_notify.js
+     `buildTimelinePreviewLink` · test/waiting-room-mail.test.js 가 못질). 그 id 는 기한관리
+     **탭 버튼**에 있고, 탭은 항상 보이므로 앵커가 도착합니다.
+     ⛔ 그 id 를 패널로 옮기지 마십시오 — 선택되지 않은 패널은 [hidden] 이라 앵커가 도착할
+        대상이 없어지고, 링크가 조용히 페이지 맨 위로 떨어집니다.
+     🔴 **scroll-margin-top 은 `.tabs`(줄)가 아니라 `.tab`(버튼)에 있어야 합니다.** 이 속성은
+        **스크롤 목표가 된 요소 자신**에만 적용되고, 앵커 목표는 버튼입니다. 줄에만 걸었을
+        때 실측 도착 위치가 top=0 이었습니다 — 탭이 sticky nav(64px) 뒤에 깔립니다.
+     84px = sticky nav 64 + 여백 20. 페이지의 다른 앵커(#service 등)와 같은 값입니다. */
+  .tab {
+    scroll-margin-top: 84px;
     display: flex;
+    flex-direction: column;
     align-items: flex-start;
-    justify-content: space-between;
-    gap: 24px;
-    padding: 28px;
+    gap: 8px;
+    /* 아래 여백이 큰 이유: 선택 밑줄이 탭 줄의 1px 구획선 위에 겹쳐 앉습니다. */
+    padding: 14px 4px 16px;
+    margin-bottom: -1px;
     background: transparent;
     border: 0;
+    border-bottom: 2px solid transparent;
     cursor: pointer;
     text-align: left;
     font: inherit;
     color: inherit;
   }
-  /* ⚠️ .feat-btn 안의 자식은 전부 <span> 입니다. <p>·<div> 를 넣지 마십시오 —
-     인터랙티브 콘텐츠 안의 문단은 브라우저가 DOM 을 재구성해 버튼 밖으로 밀어냅니다.
-     블록 배치는 여기 CSS 가 display 로 만듭니다. */
-  .feat-head { flex: 1; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
-  /* 생애주기(왼쪽) + 상태줄(오른쪽)이 한 줄. 좁아지면 wrap 으로 두 줄이 됩니다 —
-     셰브론은 어느 폭에서나 카드 오른쪽 위에 그대로 있으므로 미디어쿼리가 필요 없습니다. */
-  .feat-topline { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
-  .feat-title { display: block; font-size: 22px; font-weight: 600; line-height: 1.35; letter-spacing: -0.02em; color: var(--ink); }
-  /* eyebrow 사양(12.5/700/+0.14em)을 그대로 씁니다 — .eyebrow-quiet 과 같은 값이지만
-     <span> 이라 margin 규칙이 필요 없어 따로 뒀습니다. */
+  /* 🔴 선택 표시에 --accent 를 쓰지 않습니다. 액센트는 「눌러서 어디론가 가는 것」
+     (버튼·링크)의 색이고, 탭 선택은 **현재 위치 표시**입니다. 시각사양 1-3 의
+     판정색 금지와 같은 결의 절제입니다 — 페이지에서 파란 것은 CTA 뿐이어야 합니다. */
+  .tab[aria-selected="true"] { border-bottom-color: var(--ink); }
+  .tab[aria-selected="true"] .feat-title { color: var(--ink); }
+  .tab[aria-selected="false"] .feat-title { color: var(--ink-62); }
+  .tab[aria-selected="false"]:hover .feat-title { color: var(--ink); }
+  .tab[aria-selected="false"]:hover { border-bottom-color: var(--line); }
+
+  /* 생애주기 eyebrow — eyebrow 사양(12.5/700/+0.14em)을 그대로 씁니다.
+     🔴 **이 줄이 「거래 시작 후」 카드의 왼쪽 굵은 선을 대신합니다** 〔2026-08-14 · s12〕.
+        종전에는 접힌 카드에만 보이던 생애주기가 이제 탭 줄에서 **항상** 보입니다.
+        왼쪽 선을 지운 사유는 아래 .feats 주석이 아니라 여기 적어 둡니다 — 지우려는 사람이
+        먼저 보는 자리가 여기이기 때문입니다: 탭은 선택 상태를 스스로 표시하므로, 그 위에
+        굵은 선을 얹으면 s11 에서 걷어낸 혼동(「선택됨처럼 보인다」)이 그대로 되살아납니다.
+     ⚠️ 지우지 마십시오. 지우면 생애주기가 전 2 · 후 1 로 갈린다는 사실이 화면에서 사라집니다. */
   .feat-meta { display: block; font-size: 12.5px; font-weight: 700; line-height: 1.5; letter-spacing: .14em; color: var(--ink-62); }
-  /* 한 줄 요약 — 구 .card-body 가 하던 일입니다(값도 같은 16.5/1.76/--ink-64).
-     ⚠️ 여기에 상세 설명을 쓰지 마십시오. 상세는 패널의 .feat-desc 몫이고, 머리에
-        상세까지 들어가면 접힌 상태가 다시 「개요 한 번 더」가 됩니다. */
-  .feat-sum { display: block; max-width: 62ch; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); }
-  /* 구 .card-bullets. 카드 하단이 아니라 요약 아래로 옮겨 붙었습니다. */
-  .feat-bullets { display: flex; flex-direction: column; gap: 2px; padding-top: 12px; border-top: 1px solid var(--line); }
-  .feat-bullets span { display: block; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); }
-  /* 상태줄 — 구 .card-title(「지금 쓸 수 있습니다」). 생애주기 eyebrow 오른쪽입니다.
-     🔴 이 줄을 지우지 마십시오. 「준비 중」 배지를 걷어낸 자리를 비워 두면, 상태줄이
-        있는 카드와 없는 카드가 생겨 **없는 쪽은 아직 못 쓴다는 뜻**이 되어 방금 지운
-        배지가 암시로 되살아납니다(2026-08-13 에 실제로 그렇게 됐습니다).
+  /* 상품명 정본이 들어가는 자리 — 값은 옛 카드 제목(22px)에서 한 단 내렸습니다.
+     탭 라벨은 세 개가 한 줄에 서므로 22px 이면 좁은 폭에서 매번 줄바꿈합니다. */
+  .feat-title { display: block; font-size: 19px; font-weight: 600; line-height: 1.4; letter-spacing: -0.02em; }
+
+  /* ── 패널 ─────────────────────────────────────────────────────────────────
+     ⚠️ [hidden] 로 감춥니다. 옛 아코디언의 0fr→1fr 슬라이드는 **높이가 변하는** 방식이라
+        탭에는 맞지 않습니다(탭의 요지가 자리 고정입니다). 대신 짧은 페이드로 전환을 알립니다.
+     ⚠️ visibility 가 아니라 [hidden] 인 이유: 감춘 패널의 링크·버튼이 Tab 으로 잡히면
+        보이지 않는 버튼에 포커스가 들어갑니다. [hidden] 은 그것을 함께 막습니다. */
+  .feat-panel { padding-top: 28px; animation: tab-in .18s ease both; }
+  .feat-panel[hidden] { display: none; }
+  @keyframes tab-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  .feat-panel-pad { display: flex; flex-direction: column; gap: 24px; }
+  .feat-body { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
+  /* 상태줄 — 구 카드의 .card-title(「지금 쓸 수 있습니다」).
+     🔴 이 줄을 지우지 마십시오. 상태줄이 있는 상품과 없는 상품이 생기면 **없는 쪽은 아직
+        못 쓴다는 뜻**이 되어, 걷어낸 「준비 중」 배지가 암시로 되살아납니다.
      ⚠️ 세 줄의 문면이 서로 다른 것은 상태가 실제로 다르기 때문입니다 — 사전점검은 바로
         쓰고, 바이어확인은 사전점검 결과화면 안에서만 나오고, 기한관리는 미리보기까지가
         무로그인입니다. 같게 맞추면 셋 중 둘이 거짓이 됩니다. */
@@ -904,41 +900,44 @@
     color: var(--ink-62);
     white-space: nowrap;
   }
-  /* 셰브론에 액센트를 쓰지 않습니다 — 08 FAQ(.qchev)와 같은 규칙(C-3) */
-  .feat-chev {
-    flex: none;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--muted);
-    transition: transform .14s ease;
-  }
-  .feat[data-open="1"] .feat-chev { transform: rotate(180deg); }
-  /* 슬라이드 확장 — 즉시 show/hide 가 아닙니다(흐름 md §1 「다이나믹함」 3번).
-     0fr → 1fr 은 높이를 미리 모르는 콘텐츠를 순수 CSS 로 슬라이드하는 유일한 방법입니다.
-     ⚠️ visibility 를 함께 끄는 것을 지우지 마십시오 — 접힌 패널 안의 링크·버튼이 Tab 으로
-        잡혀서, 보이지 않는 버튼에 포커스가 들어갑니다.
-     ⚠️ 08 FAQ 는 display:none 방식입니다. 그쪽은 건드리지 않았습니다 — 두 아코디언이
-        방식이 다른 것은 의도이고(FAQ 는 14문항 목록, 여기는 3카드 소개), 통일하지 마십시오. */
-  .feat-panel {
-    display: grid;
-    grid-template-rows: 0fr;
-    visibility: hidden;
-    transition: grid-template-rows .24s ease, visibility .24s ease;
-  }
-  .feat[data-open="1"] .feat-panel { grid-template-rows: 1fr; visibility: visible; }
-  .feat-panel-inner { overflow: hidden; }
-  .feat-panel-pad { display: flex; flex-direction: column; gap: 16px; padding: 0 26px 26px; }
-  .feat-desc { margin: 0; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); }
+  /* 한 줄 요약 — 옛 카드 머리의 .feat-sum 입니다. 패널로 내려왔지만 층은 그대로입니다:
+     요약(무엇을 하는가) → .feat-desc(어디까지 · 무엇을 더).
+     ⚠️ 여기에 상세 설명을 쓰지 마십시오. 층이 무너지면 한 상품을 두 번 설명하게 됩니다. */
+  .feat-sum { margin: 0; max-width: 52ch; font-size: 17.5px; line-height: 1.7; color: var(--ink); }
+  .feat-desc { margin: 0; max-width: 52ch; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); }
   .feat-hook { margin: 0; font-size: 18px; font-weight: 600; line-height: 1.5; letter-spacing: -0.02em; color: var(--ink); }
-  /* 바이어확인 카드의 연결 안내. 실행버튼 대신 이 한 줄로 사전점검에 잇습니다 —
+  .feat-bullets { display: flex; flex-direction: column; gap: 2px; padding-top: 12px; border-top: 1px solid var(--line); align-self: stretch; }
+  .feat-bullets span { display: block; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); }
+  /* 바이어확인 패널의 연결 안내. 실행버튼 대신 이 한 줄로 사전점검에 잇습니다 —
      죽은 클릭(누르면 아무 일도 없는 버튼)을 만들지 않으려는 결정입니다(흐름 md §1). */
-  .feat-note { margin: 0; padding-top: 14px; border-top: 1px solid var(--line); font-size: 16.5px; line-height: 1.76; color: var(--ink-64); }
-  .feat-shot { display: block; overflow: hidden; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
-  .feat-shot img { display: block; width: 100%; height: auto; }
-  .feat-cap { margin: 0; font-size: 12.5px; line-height: 1.7; color: var(--muted); }
+  .feat-note { margin: 0; padding-top: 14px; border-top: 1px solid var(--line); font-size: 16.5px; line-height: 1.76; color: var(--ink-64); align-self: stretch; }
+
+  /* ── 캡처 액자 ────────────────────────────────────────────────────────────
+     🔴 **캡처를 「정식 화면」이 아니라 「참고 이미지」로 보이게 합니다** 〔2026-08-14 · s12〕.
+        종전에는 전폭(최대 1104px)이라 실제 서비스 화면처럼 읽혔고, 이미지가 너무 커서
+        아래 캡션이 눈에 들어오지 않았습니다. 세 가지를 함께 씁니다:
+          ① **폭 상한 560px** — 본문 옆에 놓이는 크기라 「본문의 근거 그림」으로 읽힙니다.
+          ② **매트(mat) 액자** — 여백 + 얇은 테두리 + 부드러운 그림자.
+          ③ **캡션을 액자 안으로** — <figure>/<figcaption> 이라 한 덩어리로 읽힙니다.
+     ⛔ 브라우저 창 목업을 덧씌우지 마십시오. c03-result.jpg · c03-result-detail.jpg 는
+        **이미 신호등 + 주소창이 이미지 안에 찍혀 있습니다** — 또 두르면 크롬이 두 겹이 됩니다.
+     ⚠️ 폭 상한을 올리지 마십시오. 올리는 순간 ①이 무너져 다시 정식 화면처럼 보입니다.
+     ⚠️ 그림자는 이 페이지에서 드문 표현입니다(다른 곳은 .shot-stack 뿐). 여기서 쓰는
+        이유는 장식이 아니라 **「떠 있는 참고물」이라는 신호**입니다 — 진하게 올리지 마십시오. */
+  .feat-shot {
+    margin: 0;
+    width: 100%;
+    max-width: 560px;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+    box-shadow: 0 10px 28px rgba(15, 23, 42, .10);
+  }
+  .feat-shot img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 4px; }
+  /* 캡션이 액자 안에 앉습니다 — margin 이 아니라 padding 으로 붙여 이미지와의 거리를
+     8px 로 좁게 유지합니다. 지금 문제(캡션이 안 눈에 띈다)의 직접적인 해소입니다. */
+  .feat-cap { margin: 0; padding: 8px 2px 2px; font-size: 12.5px; line-height: 1.6; color: var(--muted); }
   /* ✅ **TODO-ASSET 해소 — 자리표시자(.feat-map)를 실제 캡처로 갈았습니다**
      〔2026-08-14 · card-shot-reveal-s11〕.
      `img/timeline-map.jpg` 는 app.trops.kr 홈(화면 4)의 「계약이 향하는 곳」 패널을
@@ -1268,11 +1267,11 @@
 
   /* 정본 §5 레이아웃 전환 — 768px 미만 */
   @media (max-width: 768px) {
-    /* 상품 카드: 생애주기와 상태줄이 한 줄에 안 들어가면 .feat-topline 이 알아서
-       두 줄로 감쌉니다(flex-wrap). 셰브론은 어느 폭에서나 오른쪽 위 그대로입니다.
-       ⚠️ 상태줄을 숨기지 마십시오 — 없는 카드가 생기면 「그 상품은 아직 못 쓴다」는
-          암시가 되살아납니다(.feat-avail 주석 참조). */
-    .feat-title { font-size: 20px; }
+    /* 상품 탭: 라벨이 세로로 쌓이는 폭이라(위 768px 미만 .tabs 규칙) 상품명을 한 단 내려
+       탭 하나의 높이를 줄입니다.
+       ⚠️ 상태줄(.feat-avail)을 숨기지 마십시오 — 없는 상품이 생기면 「그 상품은 아직 못
+          쓴다」는 암시가 되살아납니다(.feat-avail 주석 참조). */
+    .feat-title { font-size: 17.5px; }
     .feat-panel-pad .btn { width: 100%; }
     /* QnA: 질문이 길어 셰브론과 같은 줄에서 눌리므로 위 정렬로 바꿉니다 */
     .qbtn { align-items: flex-start; gap: 12px; padding: 16px 0; }
@@ -1290,60 +1289,56 @@
     .story-cmp { grid-template-columns: 1fr; }
     .story-side { padding: 22px; }
     .stories { gap: 28px; }
-    /* 아코디언: 카드 내부 여백을 좁은 화면 단계로 줄입니다 */
-    .feat-btn { padding: 22px; }
-    .feat-panel-pad { padding: 0 22px 22px; }
+    /* 탭: 좁은 화면에서는 라벨이 3개 한 줄에 서기 벅차므로 세로로 쌓습니다.
+       ⚠️ 세로로 쌓아도 role=tablist 는 그대로입니다 — 배치가 바뀔 뿐 관계는 같습니다. */
+    .tabs { grid-template-columns: 1fr; gap: 0; }
+    .tab { padding: 14px 2px; border-bottom: 1px solid var(--line); margin-bottom: 0; }
+    .tab[aria-selected="true"] { border-bottom-width: 2px; }
+    .feat-panel { padding-top: 22px; }
   }
 
-  /* ---------- 04 상품소개 3열(2+1) 〔2026-08-14 · landing-emphasis-s10〕 ----------
-     1024px 인 이유: 1200 컨테이너·좌우 여백 48 기준으로 열 하나가 **290px 이상**이어야
-     카드 머리(생애주기 + 상태줄 + 22px 제목)가 두 줄 안에 들어갑니다. 769px 에서 켜면
-     열이 215px 라 상태줄이 매번 줄바꿈해 카드가 「기둥」이 됩니다 — 2026-08-14 오전에
-     3열이 한 번 기각된 사유가 그것이었습니다.
-     ⚠️ 이 값을 769 나 900 으로 내리지 마십시오. 내리려면 카드 머리부터 다시 재십시오. */
+  /* ---------- 상품소개 탭 줄의 생애주기 축 〔2026-08-14 · cards-tabs-s12〕 ----------
+     1024px 인 이유: 1200 컨테이너·좌우 여백 48 기준으로 탭 하나가 **290px 이상**이어야
+     생애주기 eyebrow 와 19px 상품명이 각각 한 줄에 들어갑니다. 769px 에서 켜면 탭이
+     215px 라 「사전점검에 포함되어 있습니다」류가 줄바꿈하며 세 탭의 밑선이 어긋납니다.
+     ⚠️ 이 값을 769 나 900 으로 내리지 마십시오. 내리려면 탭 라벨부터 다시 재십시오. */
   @media (min-width: 1024px) {
-    .feats {
-      display: grid;
-      /* 1·2열 = 거래 시작 전(사전점검·바이어확인) · 3열 = **빈 거터** · 4열 = 거래 시작 후.
-         CSS 그리드는 거터마다 다른 폭을 줄 수 없어서 트랙 하나를 비워 씁니다. 결과적으로
-         1↔2 사이는 16px, 2↔3 사이는 40~56px 이 되어 「앞 2개 / 뒤 1개」가 보입니다.
-         ⚠️ 빈 <div> 를 DOM 에 넣어 거터를 만들지 마십시오 — 읽어주는 도구에 뜻 없는
-            요소가 하나 잡힙니다. 트랙은 화면에만 있고 문서에는 없습니다. */
+    /* 1·2열 = 거래 시작 전(사전점검·바이어확인) · 3열 = **빈 거터** · 4열 = 거래 시작 후.
+       🔴 **이 트랙 구조가 옛 「기한관리 왼쪽 굵은 선」의 일을 대신합니다** — 탭 2 와 3
+          사이만 넓어져 「앞 2개 / 뒤 1개」가 눈에 들어옵니다. 카드에서 탭으로 옮겨오면서
+          유일하게 그대로 가져온 것이 이 구조입니다.
+       ⚠️ 빈 <div> 를 DOM 에 넣어 거터를 만들지 마십시오 — 읽어주는 도구에 뜻 없는 요소가
+          하나 잡히고, role=tablist 안에 tab 아닌 자식이 생겨 탭 관계가 깨집니다.
+          트랙은 화면에만 있고 문서에는 없습니다. */
+    .tabs {
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) clamp(8px, 1.5vw, 24px) minmax(0, 1fr);
       gap: 16px;
     }
-    /* 세 카드의 높이를 맞추고(그리드 기본 stretch), 그 높이를 카드 머리가 채웁니다.
-       안 하면 짧은 카드 아래에 빈 띠가 남아 카드가 반쯤 빈 상자처럼 보입니다. */
-    .feat { display: flex; flex-direction: column; }
-    .feat-btn { flex: 1; }
-    /* 생애주기와 상태줄을 **항상** 두 줄로 세웁니다.
-       한 줄(flex-wrap)로 두면 상태줄 길이에 따라 카드마다 줄 수가 달라집니다 — 실측에서
-       바이어확인만 「사전점검에 포함되어 있습니다」가 길어 두 줄이 되고, 그 카드 제목만
-       한 단 아래로 내려가 세 제목의 밑선이 어긋났습니다. 열이 345px 밖에 안 되는 배치라
-       셋 다 두 줄로 고정하는 편이 맞습니다.
-       ⚠️ 좁은 화면(1열)은 폭이 넉넉하므로 기준값(한 줄 + wrap) 그대로입니다. */
-    .feat-topline { flex-direction: column; align-items: flex-start; gap: 10px; }
-    /* 기한관리는 거터 건너 4열입니다(자동 배치면 거터 트랙에 들어갑니다). */
-    .feats > .feat:last-child { grid-column: 4; }
-    /* 🔴 **펼치면 전폭.** 이것이 3열을 되살릴 수 있게 한 조건입니다 — 사전점검 카드의
-       예시화면(1487×523)은 350px 폭에서 높이 123px 라 글자가 읽히지 않습니다. 펼친 카드가
-       1/-1 로 넓어지면 1열이던 때와 **똑같은 폭**을 가집니다.
-       ⚠️ 세 카드가 모두 같은 방식으로 넓어집니다. 카드마다 다르게 하지 마십시오 —
-          「세 카드는 반드시 같은 인터랙션」 가드(test/landing-flow-s9.test.js)가 걸립니다.
-       ⚠️ 동시 다중 펼침은 그대로 허용입니다. 셋 다 펼치면 전폭 세 줄이 되어 1열 목록과
-          같은 화면이 됩니다 — 의도된 퇴화입니다.
-       ⚠️ 선택자를 `.feat[data-open="1"]` 로 줄이지 마십시오. 그러면 특정도가 (0,2,0)이라
-          바로 위 `.feats > .feat:last-child`(0,3,0)에 져서 **기한관리만 안 펼쳐집니다.**
-          지금은 둘 다 (0,3,0)이고 이 규칙이 뒤에 있어 이깁니다 — 순서도 바꾸지 마십시오. */
-    .feats > .feat[data-open="1"] { grid-column: 1 / -1; }
+    /* 기한관리 탭은 거터 건너 4열입니다(자동 배치면 거터 트랙에 들어갑니다). */
+    .tabs > [role="tab"]:last-child { grid-column: 4; }
+
+    /* 패널은 본문 왼쪽 · 캡처 오른쪽. 두 열로 나누면 패널이 **낮아져서** 전환할 때
+       세로 이동이 더 줄고(탭의 요지), 캡처가 본문 옆 「참고 그림」 자리에 앉습니다.
+       ⚠️ 캡처를 왼쪽으로 옮기지 마십시오 — 읽는 순서가 그림부터가 되면 상태줄·요약이
+          그림의 캡션처럼 읽힙니다. */
+    .feat-panel-pad {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 560px);
+      gap: 48px;
+      align-items: start;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
     /* 셰브론 회전은 상태 표시라 없애지 않고, 애니메이션만 끕니다 */
     .qchev { transition: none; }
-    /* 아코디언도 같은 원칙 — 펼침 자체는 남기고 슬라이드만 끕니다 */
-    .feat-chev, .feat-panel { transition: none; }
+    /* 탭도 같은 원칙 — **전환 자체는 남기고 페이드만 끕니다.**
+       🔄 종전에는 `.feat-chev, .feat-panel { transition: none }` 이었습니다(아코디언
+          슬라이드). 탭에는 슬라이드가 없고 짧은 페이드(@keyframes tab-in)만 있으므로
+          끌 것이 transition 이 아니라 animation 입니다 〔2026-08-14 · cards-tabs-s12〕.
+       ⛔ display:none 으로 끄지 마십시오 — 선택된 패널까지 사라집니다. */
+    .feat-panel { animation: none; }
     /* 2026-08-13 신규 애니메이션. 원칙은 위와 같습니다 — **내용은 남기고 움직임만 끕니다.**
        ⚠️ display:none 으로 끄지 마십시오. 움직임을 원치 않는 사람에게 내용을 감추는 것은
           접근성 설정을 콘텐츠 검열로 바꾸는 것입니다.
@@ -1648,26 +1643,28 @@
          확인해 드리는지는 아래에서 하나씩 펼쳐…」)는 **두 섹션이 중복이 아님을 문장으로
          변명하려고** 2026-08-13 에 신설된 줄이었습니다. 구조가 옳으면 변명이 필요 없습니다.
 
-         지금 구조: **접힌 카드 = 옛 2층카드, 펼친 카드 = 옛 아코디언.**
-         한 상품 = 한 카드 = 한 번의 설명입니다.
-           카드 머리(.feat-btn) — 생애주기 · 상품명 · 한 줄 요약 · 상태줄 · 불릿  ← 구 04
-           카드 패널(.feat-panel) — 설명 · 예시화면 · 안내문 · 실행버튼             ← 구 05
-         이 형태의 선례는 이미 en.html 에 있습니다 — 기한관리 카드가
-         `<div class="card feat" id="feat-timeline">` 로 카드와 아코디언을 한 몸으로 씁니다.
-         국문만 두 섹션으로 갈라져 있었습니다.
+         지금 구조: **탭 3개 + 패널 3개** 〔2026-08-14 · cards-tabs-s12 에서 아코디언 대체〕.
+         한 상품 = 한 탭 = 한 번의 설명입니다.
+           탭 라벨(.tab)      — 생애주기 · 상품명
+           패널(.feat-panel)  — 상태줄 · 요약 · 설명 · 불릿 · 예시화면 · (기한관리만) 실행버튼
+
+         🔄 아코디언에서 탭으로 바꾼 사유는 CSS 쪽 `.feats` 주석에 있습니다 — 요약하면
+            **펼침이 줄을 재배치해서 스크롤 보정이 필요했고, 탭은 자리가 고정이라 그 일이
+            아예 생기지 않습니다.**
 
          ⛔ 두 섹션으로 다시 가르지 마십시오. 가르는 순간 중복이 그대로 돌아옵니다.
-         ⛔ 4번째 카드로 HS코드·FTA 세율조회를 넣지 마십시오 — 층위 정리(흐름 md §4-1):
+         ⛔ 4번째 탭으로 HS코드·FTA 세율조회를 넣지 마십시오 — 층위 정리(흐름 md §4-1):
             사전점검·바이어확인·기한관리는 각자 독립된 흐름과 화면을 가진 완결된 상품이고,
             HS코드·세율조회는 그 안(사전점검 리포트)의 세부 콘텐츠 항목입니다.
-         ⚠️ 세 카드는 반드시 같은 인터랙션입니다 — 「클릭하면 항상 그 자리에서 펼쳐진다」.
-            기준을 최소개발 상태인 바이어확인에 맞춘 결정입니다. 카드별로 즉시이동·무반응처럼
-            다른 반응을 두면, 어느 카드가 눌릴지 예측이 안 됩니다.
-         ⚠️ 사전점검·바이어확인 카드에 실행버튼을 넣지 마십시오 — 바로 다음 05 「결」 섹션의
+         ⛔ **동시 다중 펼침 정책은 폐기됐습니다** — 아코디언 전제의 규칙이었고 탭은 정의상
+            하나입니다. 08 FAQ 는 여전히 다중 펼침이며 그쪽은 건드리지 않았습니다.
+         ⚠️ 세 탭은 반드시 같은 인터랙션입니다 — 「누르면 항상 같은 자리에서 내용만 바뀐다」.
+            기준을 최소개발 상태인 바이어확인에 맞춘 결정입니다. 탭별로 즉시이동·무반응처럼
+            다른 반응을 두면, 어느 탭이 눌릴지 예측이 안 됩니다.
+         ⚠️ 사전점검·바이어확인 패널에 실행버튼을 넣지 마십시오 — 바로 다음 05 「결」 섹션의
             주 CTA 와 중복됩니다. 기한관리만 별도 흐름이라 버튼을 갖고, 그것도 보조입니다.
-         ⚠️ 동시 다중 펼침을 허용합니다(08 FAQ C-3 과 같은 정책). 하나만 열리게 만들지 마십시오.
-         ⚠️ 어느 카드에도 가격을 쓰지 마십시오.
-         기본값은 전부 접힘이고 JS 가 죽어도 카드 머리 3개는 그대로 보입니다. -->
+         ⚠️ 어느 탭에도 가격을 쓰지 마십시오.
+         기본값은 첫 탭 선택이고, JS 가 죽어도 상품 이름 3개와 첫 상품 설명이 그대로 보입니다. -->
     <section class="cards-sec" id="service" aria-labelledby="cards-title">
       <div class="container cards-inner">
         <!-- 흐름 md §4-1 이 **이 h2 를 3분류 구조의 원문으로 지목**했으므로 통합 섹션의
@@ -1678,7 +1675,11 @@
              다리이자 「둘은 중복이 아니다」라는 변명이었습니다. 섹션이 하나가 된 지금은
              구 05 의 h2 를 흡수해 **카드를 어떻게 보는지 알려주는 조작 안내**가 됩니다.
              ⚠️ <a href="#feats"> 를 되살리지 마십시오 — 자기 섹션 안으로 가는 링크가 됩니다. -->
-        <p class="cards-lead">지금 쓰실 수 있는 것부터 보여드립니다. 무엇을 확인해 드리는지, 하나씩 펼쳐보세요.</p>
+        <!-- 🔄 「하나씩 펼쳐보세요」 → 「하나씩 눌러보세요」 〔2026-08-14 · cards-tabs-s12〕.
+             펼칠 것이 없어졌습니다 — 탭은 펼치는 것이 아니라 **바꾸는** 것입니다. 조작 안내가
+             화면과 다르면 안내가 아니라 오안내입니다.
+             ⚠️ 「펼쳐」로 되돌리지 마십시오. 되돌리려면 아코디언부터 되살려야 합니다. -->
+        <p class="cards-lead">지금 쓰실 수 있는 것부터 보여드립니다. 무엇을 확인해 드리는지, 하나씩 눌러보세요.</p>
 
         <!-- 앵커 id="feats" 는 여기 남깁니다. 옛 05 섹션의 id 였고 외부·과거 링크가 걸려
              있을 수 있어, 없애면 죽은 링크가 됩니다. 도착지가 카드 목록 맨 위라 뜻도 맞습니다.
@@ -1687,187 +1688,146 @@
                 (2026-08-14 에 실제로 빌드가 여기서 멈췄습니다). -->
         <div class="feats" id="feats">
 
-          <!-- 01 사전점검 — 실행버튼 없음(05 결 섹션 CTA와 중복 방지).
-               🔄 예시화면이 c03-result.jpg → c03-result-detail.jpg 로 바뀌었습니다
-                  〔2026-08-14〕. 바로 위 03 신뢰가 c03-result.jpg 를 쓰고 있어서 한 화면
-                  거리에 같은 그림이 두 번 나왔기 때문입니다. 두 컷은 역할로 갈렸습니다 —
-                  신뢰는 「무엇을 근거로 비교하는가」(대조 표), 여기는 「무엇을 받는가」
-                  (확인해볼 질문). ⚠️ 되돌리면 같은 그림이 다시 두 번 납니다. -->
-          <div class="feat" id="feat-precheck" data-open="0">
-            <button class="feat-btn" type="button" aria-expanded="false" aria-controls="feat-precheck-panel">
-              <span class="feat-head">
-                <span class="feat-topline">
-                  <span class="feat-meta">거래 시작 전</span>
-                  <!-- 상태줄 — 구 04 카드의 .card-title 입니다. 세 카드 모두 갖습니다.
-                       ⚠️ 지우지 마십시오. 하나라도 빠지면 그 상품만 아직 못 쓴다는 뜻이 됩니다. -->
-                  <span class="feat-avail">지금 쓸 수 있습니다</span>
-                </span>
-                <!-- 상품명 정본 〔2026-08-13 · 흐름 md §1〕. /precheck `<title>`·og:title·
-                     플랜명 · 결제창 주문명(api/_payment.js ORDER_NAME)이 **모두 이
-                     문자열**입니다. 한 곳만 고치지 마십시오. -->
-                <span class="feat-title">수출 사전점검</span>
-                <!-- 한 줄 요약 — 구 04 카드의 .card-body 입니다. 카드 머리에서 <br> 로 줄을
-                     끊던 것은 걷었습니다(1열 전폭이라 자연 줄바꿈이 더 낫습니다). 문구는
-                     그대로입니다 — 줄바꿈은 마크업이라 문구 변경이 아닙니다(정본 §2-3).
-                     본문의 「NDA」는 남겨 둡니다. 여기는 무엇을 올리는지 설명하는 자리라
-                     범위를 밝히는 것이 맞습니다(CTA·헤드라인에는 쓰지 않습니다). -->
-                <span class="feat-sum">바이어에게 받은 NDA를 올리시면 공개된 서식과 하나씩 비교해서 다른 부분을 표시해 드립니다.</span>
+          <!-- ===== 탭 줄 =====
+               ⚠️ role="tablist" 안의 자식은 **[role=tab] 뿐**이어야 합니다. 거터를 만들려고
+                  빈 <div> 를 넣지 마십시오 — 탭 관계가 깨집니다(거터는 CSS 트랙입니다).
+               ⚠️ 순서는 생애주기 순입니다: 거래 시작 전 · 전 · 후. 순서를 바꾸면 4열 규칙
+                  (`.tabs > [role="tab"]:last-child { grid-column: 4 }`)이 엉뚱한 탭을 따라갑니다.
+               ⚠️ 기본 선택은 첫 탭입니다. JS 가 죽어도 **상품 이름 3개와 첫 상품 설명**이
+                  그대로 보입니다(옛 아코디언은 이름 3개만 보였습니다 — 후퇴가 아닙니다). -->
+          <div class="tabs" role="tablist" aria-label="상품 3종">
+            <!-- 상품명 정본 〔2026-08-13 · 흐름 md §1〕. /precheck `<title>`·og:title·
+                 플랜명 · 결제창 주문명(api/_payment.js ORDER_NAME)이 **모두 이 문자열**입니다.
+                 한 곳만 고치지 마십시오. -->
+            <button class="tab" type="button" role="tab" id="feat-precheck" aria-controls="feat-precheck-panel" aria-selected="true" tabindex="0">
+              <span class="feat-meta">거래 시작 전</span>
+              <span class="feat-title">수출 사전점검</span>
+            </button>
+            <button class="tab" type="button" role="tab" id="feat-buyer" aria-controls="feat-buyer-panel" aria-selected="false" tabindex="-1">
+              <!-- 「· 준비 중」을 걷었습니다 〔2026-08-13〕. buyer-guard 라우트가 이미 돌고
+                   있어 사실과 달랐고, 이 상품의 .feat-note 가 「사전점검 결과화면에서 바로
+                   확인하실 수 있습니다」라고 말하는 것과 정면으로 충돌했습니다.
+                   ⚠️ 이 자리에는 생애주기만 넣습니다(흐름 md §4-1 3분류). -->
+              <span class="feat-meta">거래 시작 전</span>
+              <span class="feat-title">바이어 확인</span>
+            </button>
+            <button class="tab" type="button" role="tab" id="feat-timeline" aria-controls="feat-timeline-panel" aria-selected="false" tabindex="-1">
+              <!-- 「· 지금은 무료」를 걷었습니다 〔2026-08-13〕. 가격 정책이 바뀐 것이
+                   **아닙니다** — 배지 자리에서 본문으로 내린 것뿐입니다. 이 자리는 생애주기를
+                   말하는 축인데 여기만 가격이 섞여 있었습니다.
+                   ✅ 흐름 md §4 Give/Get 이 요구하는 「지금은 무료」 명시는 아래 패널의
+                      .feat-desc 마지막 문장이 계속 집니다. 지우지 마십시오. -->
+              <span class="feat-meta">거래 시작 후</span>
+              <span class="feat-title">기한 관리</span>
+            </button>
+          </div>
+
+          <!-- ===== 01 사전점검 패널 — 실행버튼 없음(바로 다음 「결」 섹션 CTA와 중복 방지) =====
+               🔄 예시화면이 c03-result.jpg 가 아니라 c03-result-detail.jpg 인 이유
+                  〔2026-08-14〕: 위 03 신뢰가 c03-result.jpg 를 쓰고 있어 한 화면 거리에 같은
+                  그림이 두 번 났습니다. 두 컷은 역할로 갈렸습니다 — 신뢰는 「무엇을 근거로
+                  비교하는가」(대조 표), 여기는 「무엇을 받는가」(확인해볼 질문).
+                  ⚠️ 되돌리면 같은 그림이 다시 두 번 납니다. -->
+          <div class="feat-panel" id="feat-precheck-panel" role="tabpanel" aria-labelledby="feat-precheck" tabindex="0">
+            <div class="feat-panel-pad">
+              <div class="feat-body">
+                <span class="feat-avail">지금 쓸 수 있습니다</span>
+                <!-- 한 줄 요약. 본문의 「NDA」는 남겨 둡니다 — 여기는 무엇을 올리는지 설명하는
+                     자리라 범위를 밝히는 것이 맞습니다(CTA·헤드라인에는 쓰지 않습니다). -->
+                <p class="feat-sum">바이어에게 받은 NDA를 올리시면 공개된 서식과 하나씩 비교해서 다른 부분을 표시해 드립니다.</p>
+                <!-- 「확인하신 시점도 함께 기록해 둡니다」 — 확인 기록 로그의 대외 표기입니다.
+                     ⚠️ 「분쟁·보험청구 시 증거자료로 활용 가능」류로 강화하지 마십시오. 법적효력을
+                        직접 주장하는 문장은 정식 법률검토 전까지 대외 노출하지 않습니다(흐름 md §4-1).
+                     ⚠️ 요약(.feat-sum)과 같은 말을 쓰지 마십시오 — 층이 무너지면 한 상품을 두 번
+                        설명하게 됩니다. test/landing-order-s9.test.js O4-a 가 이 겹침을 검사합니다. -->
+                <p class="feat-desc">다른 부분은 문서 안 어디에 있는지 위치까지 표시해 드립니다. 확인하신 시점도 함께 기록해 둡니다.</p>
                 <span class="feat-bullets">
                   <span>· 로그인 없이 바로</span>
                 </span>
-              </span>
-              <span class="feat-chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-            </button>
-            <div class="feat-panel" id="feat-precheck-panel">
-              <div class="feat-panel-inner">
-                <div class="feat-panel-pad">
-                  <!-- 「확인하신 시점도 함께 기록해 둡니다」 — 확인 기록 로그의 대외 표기입니다.
-                       ⚠️ 「분쟁·보험청구 시 증거자료로 활용 가능」류로 강화하지 마십시오. 법적효력을
-                          직접 주장하는 문장은 정식 법률검토 전까지 대외 노출하지 않습니다(흐름 md §4-1). -->
-                  <!-- 🔄 첫 문장을 걷었습니다 〔2026-08-14〕. 종전 문면은 「받으신 서류를 공개된
-                       표준 서식과 항목별로 맞춰보고, 다른 부분의 위치를 표시해 드립니다.」였는데,
-                       그 앞 절이 카드 머리의 .feat-sum(「공개된 서식과 하나씩 비교해서 다른 부분을
-                       표시해 드립니다」)과 **같은 말**이었습니다. 두 섹션의 중복을 없애면서 한 카드
-                       안에서 같은 중복을 남기면 아무것도 고치지 않은 것입니다.
-                       ⚠️ 머리(무엇을 하는가)와 패널(어디까지·무엇을 더)의 층을 지키십시오 —
-                          패널이 머리 문장을 다시 쓰기 시작하면 통합의 의미가 사라집니다.
-                          test/landing-order-s9.test.js 가 이 겹침을 검사합니다. -->
-                  <p class="feat-desc">다른 부분은 문서 안 어디에 있는지 위치까지 표시해 드립니다. 확인하신 시점도 함께 기록해 둡니다.</p>
-                  <span class="feat-shot">
-                    <img src="/img/c03-result-detail.jpg" alt="확인해볼 질문 — 대조 결과에서 자동으로 뽑아낸 확인 질문 목록" width="1487" height="523" loading="lazy">
-                  </span>
-                  <p class="feat-cap">가상의 서류로 만든 예시 화면입니다. 실제 고객 문서가 아닙니다.</p>
-                </div>
               </div>
+              <figure class="feat-shot">
+                <img src="/img/c03-result-detail.jpg" alt="확인해볼 질문 — 대조 결과에서 자동으로 뽑아낸 확인 질문 목록" width="1487" height="523" loading="lazy">
+                <figcaption class="feat-cap">가상의 서류로 만든 예시 화면입니다. 실제 고객 문서가 아닙니다.</figcaption>
+              </figure>
             </div>
           </div>
 
-          <!-- 02 바이어확인 — 실행버튼 없음. 대신 .feat-note 한 줄로 사전점검에 잇습니다.
-               죽은 클릭(눌러도 아무 일 없는 버튼)을 만들지 않으려는 결정이고, 흐름 md §1 이
-               「안내로 사전점검에 연결(죽은 클릭 방지)」로 명시한 처리입니다.
+          <!-- ===== 02 바이어확인 패널 — 실행버튼 없음 =====
+               대신 .feat-note 한 줄로 사전점검에 잇습니다. 죽은 클릭(눌러도 아무 일 없는
+               버튼)을 만들지 않으려는 결정이고, 흐름 md §1 이 「안내로 사전점검에 연결
+               (죽은 클릭 방지)」로 명시한 처리입니다.
                ⚠️ 「무료」라는 낱말을 쓰지 마십시오 — 덤처럼 보여 가치가 저평가됩니다.
                   「포함」 계열 표현을 씁니다(흐름 md §4 Give/Get 표). 상태줄도 그 표를 따릅니다. -->
-          <div class="feat" id="feat-buyer" data-open="0">
-            <button class="feat-btn" type="button" aria-expanded="false" aria-controls="feat-buyer-panel">
-              <span class="feat-head">
-                <span class="feat-topline">
-                  <!-- 「· 준비 중」을 걷었습니다 〔2026-08-13〕. buyer-guard 라우트가 이미
-                       돌고 있어 사실과 달랐고, 아래 .feat-note 가 「사전점검 결과화면에서 바로
-                       확인하실 수 있습니다」라고 말하는 것과 정면으로 충돌했습니다.
-                       ⚠️ 이 자리에는 생애주기만 넣습니다(흐름 md §4-1 3분류). -->
-                  <span class="feat-meta">거래 시작 전</span>
-                  <span class="feat-avail">사전점검에 포함되어 있습니다</span>
-                </span>
-                <span class="feat-title">바이어 확인</span>
-                <span class="feat-sum">거래 상대가 실제로 있는 회사인지, 공개된 정보를 기준으로 맞춰봅니다.</span>
-              </span>
-              <span class="feat-chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-            </button>
-            <div class="feat-panel" id="feat-buyer-panel">
-              <div class="feat-panel-inner">
-                <div class="feat-panel-pad">
-                  <!-- 🔄 첫 문장을 걷었습니다 〔2026-08-14〕 — 카드 머리의 .feat-sum 과 같은
-                       문장이었습니다(위 사전점검 카드와 같은 사유). 남긴 절은 범위 한정이고,
-                       이것은 머리가 말하지 않는 것입니다. -->
-                  <p class="feat-desc">공개된 정보 안에서만 확인하고, 알선이나 소개는 하지 않습니다.</p>
-                  <!-- ✅ **결과화면 캡처를 대체로 씁니다** 〔2026-08-14 · card-shot-reveal-s11〕.
-                       바이어확인 전용 화면은 trops_a 의 화면 C-06(`/c/[token]/buyer`)이지만,
-                       그 화면은 **유효한 접수 토큰이 있어야 열립니다** — 캡처를 뜨려면 운영
-                       DB 에 접수 1건이 있어야 하므로 지금은 뜰 수 없습니다.
-                       그래서 이 카드가 실제로 주장하는 것(「사전점검 결과화면 안에서 진행된다」)을
-                       **그 결과화면 캡처로 뒷받침**합니다. 캡션이 그 관계를 말합니다.
-
-                       🔴 **이 캡처는 03 신뢰 섹션과 같은 파일입니다(c03-result.jpg).**
-                          test/landing-order-s9.test.js O4-b 가 종전에는 「같은 캡처가 페이지에
-                          두 번 나오지 않는다」를 무조건 금지했는데, 그 규칙이 지키려던 것은
-                          **「한 화면 거리에 같은 그림이 두 번 나지 않는다」**였습니다.
-                          이 자리는 접힌 패널 안이라 클릭해야 보이고, 03 신뢰의 그 그림과 한
-                          화면에 함께 놓이지 않습니다. 그래서 O4-b 를 **기본 노출 이미지끼리만**
-                          보도록 좁혔습니다(사유는 그 검사 주석에 있습니다).
-                       ⛔ 이 파일을 03 신뢰 쪽으로 옮기거나 그쪽과 바꿔치기하지 마십시오 —
-                          그 순간 기본 노출 상태에서 중복이 생겨 O4-b 가 걸립니다.
-                       ⏭️ C-06 전용 캡처를 받으면 이 <img> 와 캡션을 그것으로 갈고, O4-b 의
-                          예외 목록에서 이 항목을 지우십시오. -->
-                  <!-- ⚠️ alt·캡션에 상품명(「바이어 확인」)을 다시 적지 마십시오. 바로 위
-                       .feat-title 이 이미 그 이름을 말하고, test/naming-consistency.test.js
-                       가 **한 카드 안에서 상품명 1회**를 못질합니다(한 상품 = 한 번의 설명).
-                       이 자리에서 말할 것은 이름이 아니라 **어디서 진행되는가**입니다. -->
-                  <span class="feat-shot">
-                    <img src="/img/c03-result.jpg" alt="사전점검 결과화면 — 상대방 확인이 이 화면 안에서 이어집니다" width="1383" height="904" loading="lazy">
-                  </span>
-                  <p class="feat-cap">이 결과화면 안에서 그대로 진행됩니다. 가상의 서류로 만든 예시 화면입니다.</p>
-                  <p class="feat-note">사전점검 결과화면에서 바로 확인하실 수 있습니다.</p>
-                </div>
+          <div class="feat-panel" id="feat-buyer-panel" role="tabpanel" aria-labelledby="feat-buyer" tabindex="0" hidden>
+            <div class="feat-panel-pad">
+              <div class="feat-body">
+                <span class="feat-avail">사전점검에 포함되어 있습니다</span>
+                <p class="feat-sum">거래 상대가 실제로 있는 회사인지, 공개된 정보를 기준으로 맞춰봅니다.</p>
+                <p class="feat-desc">공개된 정보 안에서만 확인하고, 알선이나 소개는 하지 않습니다.</p>
+                <p class="feat-note">사전점검 결과화면에서 바로 확인하실 수 있습니다.</p>
               </div>
+              <!-- ✅ **결과화면 캡처를 대체로 씁니다** 〔2026-08-14 · card-shot-reveal-s11〕.
+                   바이어확인 전용 화면은 trops_a 의 화면 C-06(`/c/[token]/buyer`)이지만, 그
+                   화면은 **유효한 접수 토큰이 있어야 열립니다** — 캡처를 뜨려면 운영 DB 에
+                   접수 1건이 있어야 하므로 지금은 뜰 수 없습니다. 그래서 이 상품이 실제로
+                   주장하는 것(「사전점검 결과화면 안에서 진행된다」)을 **그 결과화면 캡처로
+                   뒷받침**합니다. 캡션이 그 관계를 말합니다.
+
+                   🔴 **이 캡처는 03 신뢰 섹션과 같은 파일입니다(c03-result.jpg).**
+                      test/landing-order-s9.test.js O4-b 는 「같은 캡처가 **기본 노출 상태에서**
+                      두 번 나오지 않는다」를 봅니다. 이 자리는 선택되지 않은 탭 패널이라
+                      [hidden] 이고, 03 신뢰의 그림과 한 화면에 함께 놓이지 않습니다.
+                   ⛔ 이 파일을 03 신뢰 쪽으로 옮기거나 그쪽과 바꿔치기하지 마십시오 —
+                      그 순간 기본 노출 상태에서 중복이 생겨 O4-b 가 걸립니다.
+                   ⏭️ C-06 전용 캡처를 받으면 이 <img> 와 캡션을 그것으로 갈고, O4-b 의
+                      예외 목록(ALLOWED_REUSE)에서 이 항목을 지우십시오.
+                   ⚠️ alt·캡션에 상품명(「바이어 확인」)을 다시 적지 마십시오. 위 탭이 이미 그
+                      이름을 말하고, test/naming-consistency.test.js 가 **상품명 1회**를
+                      못질합니다(한 상품 = 한 번의 설명). 여기서 말할 것은 이름이 아니라
+                      **어디서 진행되는가**입니다. -->
+              <figure class="feat-shot">
+                <img src="/img/c03-result.jpg" alt="사전점검 결과화면 — 상대방 확인이 이 화면 안에서 이어집니다" width="1383" height="904" loading="lazy">
+                <figcaption class="feat-cap">이 결과화면 안에서 그대로 진행됩니다. 가상의 서류로 만든 예시 화면입니다.</figcaption>
+              </figure>
             </div>
           </div>
 
-          <!-- 03 기한관리 — 유일하게 실행버튼을 갖는 카드입니다(결 섹션과 별도 흐름이라 중복 없음).
-               ⚠️ 이 카드의 패널이 페이지에서 유일한 기한관리 미리보기입니다. 히어로·로드맵·
-                  마감 CTA **세 곳**의 [data-timeline-open] 트리거가 모두 이 하나를 펼칩니다 —
-                  다른 자리에 패널을 복제하지 마십시오. id 를 바꾸면 세 트리거가 함께 죽습니다.
-               🔄 네 번째 트리거였던 04 2층카드의 [기한관리 미리보기] 버튼은 사라졌습니다
-                  〔2026-08-14〕 — 그 카드가 **이 카드로 흡수**됐고, 자기 자신을 펼치는
-                  버튼은 뜻이 없기 때문입니다. 트리거는 3곳이 정상입니다.
+          <!-- ===== 03 기한관리 패널 — 유일하게 실행버튼을 갖습니다 =====
+               (결 섹션과 별도 흐름이라 중복 없음)
+               ⚠️ 이 패널이 페이지에서 유일한 기한관리 미리보기입니다. 히어로·로드맵·마감 CTA
+                  **세 곳**의 [data-timeline-open] 트리거가 모두 이 하나를 엽니다 — 다른 자리에
+                  패널을 복제하지 마십시오. id 를 바꾸면 세 트리거가 함께 죽습니다.
                ⚠️ 실행버튼은 btn-secondary 입니다. btn-primary 로 올리면 주버튼이 3회가 됩니다. -->
-          <div class="feat" id="feat-timeline" data-open="0">
-            <button class="feat-btn" type="button" aria-expanded="false" aria-controls="feat-timeline-panel">
-              <span class="feat-head">
-                <span class="feat-topline">
-                  <!-- 「· 지금은 무료」를 걷었습니다 〔2026-08-13〕. 가격 정책이 바뀐 것이
-                       **아닙니다** — 배지 자리에서 본문으로 내린 것뿐입니다. 세 카드의 이 자리는
-                       생애주기(거래 시작 전/후)를 말하는 축인데 여기만 가격이 섞여 있었습니다.
-                       ✅ 흐름 md §4 Give/Get 이 요구하는 「지금은 무료」 명시는 아래 .feat-desc
-                          마지막 문장(「지금은 무료입니다.」)이 계속 집니다. 지우지 마십시오.
-                       (test/waiting-room-mail.test.js 가 단정하는 「지금은 무료」는 결제확인
-                        메일 쪽이라 이 변경과 무관합니다.) -->
-                  <span class="feat-meta">거래 시작 후</span>
-                  <!-- 문구가 다른 이유: 미리보기까지가 무로그인이고 실제 계약 등록에서 로그인이
-                       걸립니다(흐름 md §1 · §3). 「쓸 수 있다」가 아니라 「둘러볼 수 있다」가
-                       지금 상태에 정확합니다. -->
-                  <span class="feat-avail">지금 둘러보실 수 있습니다</span>
-                </span>
-                <span class="feat-title">기한 관리</span>
-                <span class="feat-sum">거래 문서에 있는 기한과 통관·외환 절차를 한 화면에 모아 남은 날짜로 보여드립니다.</span>
-                <!-- 🔄 「· 기한 7일 전, 1일 전 메일」 불릿을 걷었습니다 〔2026-08-14〕 —
-                     패널의 .feat-desc 가 같은 사실을 문장으로 말합니다. 사라진 것이 아니라
-                     한 층에서만 말하도록 정리한 것입니다. -->
+          <div class="feat-panel" id="feat-timeline-panel" role="tabpanel" aria-labelledby="feat-timeline" tabindex="0" hidden>
+            <div class="feat-panel-pad">
+              <div class="feat-body">
+                <span class="feat-avail">지금 둘러보실 수 있습니다</span>
+                <p class="feat-sum">거래 문서에 있는 기한과 통관·외환 절차를 한 화면에 모아 남은 날짜로 보여드립니다.</p>
+                <p class="feat-hook">계약서 하나에 기한이 몇 개나 숨어있는지 아세요?</p>
+                <!-- ✅ 「지금은 무료입니다.」는 흐름 md §4 Give/Get 이 요구하는 명시입니다.
+                     이 문장을 지우면 md 요구가 깨집니다 — 지우지 마십시오. -->
+                <p class="feat-desc">기한 7일 전과 1일 전에 메일로 알려드립니다. 지금은 무료입니다.</p>
                 <span class="feat-bullets">
                   <span>· 계약서만 있으면 시작</span>
                 </span>
-              </span>
-              <span class="feat-chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-            </button>
-            <div class="feat-panel" id="feat-timeline-panel">
-              <div class="feat-panel-inner">
-                <div class="feat-panel-pad">
-                  <p class="feat-hook">계약서 하나에 기한이 몇 개나 숨어있는지 아세요?</p>
-                  <!-- ✅ **실제 화면 캡처** 〔2026-08-14 · card-shot-reveal-s11〕.
-                       app.trops.kr 홈(화면 4)의 「계약이 향하는 곳」 패널을 그대로 찍었습니다
-                       (trops_a `components/l1/world-map-panel.tsx`). 종전 자리표시자
-                       (`<div class="feat-map">` + 세로 핀 목록)는 이 캡처로 대체됐습니다 —
-                       손으로 흉내 내던 예시가 사라지고 제품 화면 자체가 들어왔습니다.
-                       ⛔ 핀 목록·가짜 지도로 되돌리지 마십시오. 사유는 CSS 쪽 주석에 있습니다.
-                       ⚠️ 캡처 안의 「프랑스 · 아랍에미리트 계약 2건을 예시로 표시했습니다」는
-                          제품이 스스로 싣는 고지입니다(trops_a world-map-boundary 정책 ①).
-                          그 위에 아래 .feat-cap 이 한 겹 더 밝힙니다 — 지우지 마십시오. -->
-                  <span class="feat-shot">
-                    <img src="/img/timeline-map.jpg" alt="기한관리 대시보드 — 등록된 계약이 목적국 위에 점으로 표시된 세계지도" width="1600" height="801" loading="lazy">
-                  </span>
-                  <p class="feat-cap">예시로 표시한 화면입니다. 실제 고객 거래가 아닙니다.</p>
-                  <!-- 🔄 첫 문장을 걷었습니다 〔2026-08-14〕 — 카드 머리의 .feat-sum 과 같은
-                       문장이었습니다(위 두 카드와 같은 사유).
-                       ✅ 「지금은 무료입니다.」는 흐름 md §4 Give/Get 이 요구하는 명시입니다.
-                          이 문장을 지우면 md 요구가 깨집니다 — 지우지 마십시오. -->
-                  <p class="feat-desc">기한 7일 전과 1일 전에 메일로 알려드립니다. 지금은 무료입니다.</p>
-                  <div><a class="btn btn-secondary" href="https://app.trops.kr/" target="_self">계약 등록해보기</a></div>
-                </div>
+                <div><a class="btn btn-secondary" href="https://app.trops.kr/" target="_self">계약 등록해보기</a></div>
               </div>
+              <!-- ✅ **실제 화면 캡처** 〔2026-08-14 · card-shot-reveal-s11〕.
+                   app.trops.kr 홈(화면 4)의 「계약이 향하는 곳」 패널을 그대로 찍었습니다
+                   (trops_a `components/l1/world-map-panel.tsx`). 손으로 그리던 자리표시자
+                   (`<div class="feat-map">` + 세로 핀 목록)를 대체한 것입니다.
+                   ⛔ 핀 목록·가짜 지도로 되돌리지 마십시오. 사유는 CSS 쪽 주석에 있습니다.
+                   ⚠️ 캡처 안의 「프랑스 · 아랍에미리트 계약 2건을 예시로 표시했습니다」는
+                      제품이 스스로 싣는 고지입니다(trops_a world-map-boundary 정책 ①).
+                      그 위에 아래 캡션이 한 겹 더 밝힙니다 — 지우지 마십시오. -->
+              <figure class="feat-shot">
+                <img src="/img/timeline-map.jpg" alt="기한관리 대시보드 — 등록된 계약이 목적국 위에 점으로 표시된 세계지도" width="1600" height="801" loading="lazy">
+                <figcaption class="feat-cap">예시로 표시한 화면입니다. 실제 고객 거래가 아닙니다.</figcaption>
+              </figure>
             </div>
           </div>
 
-        </div>
-      </div>
+        </div>      </div>
     </section>
 
     <!-- ===== 05 결: 사전점검 시작하기 (흐름 md §1 시각층매핑 「결」) =====
@@ -2565,132 +2525,116 @@
     });
   })();
 
-  /* ---------- 04 상품 카드 3장 아코디언 + 기한관리 미리보기 트리거 ----------
+  /* ---------- 04 상품소개 탭 + 기한관리 미리보기 트리거 ----------
      또 하나의 독립 IIFE 입니다. 아래 폼 스크립트는 맨 위에서 `if (!form) return` 으로
-     빠져나가므로, 같은 함수에 넣으면 폼이 없는 화면에서 아코디언이 조용히 죽습니다
+     빠져나가므로, 같은 함수에 넣으면 폼이 없는 화면에서 탭이 조용히 죽습니다
      (08 QnA IIFE 와 같은 이유).
 
-     펼침은 CSS(.feat[data-open])가 그립니다 — 여기서는 data-open 과 aria-expanded 두 값만
-     뒤집습니다. 마크업이 전부 접힌 상태로 내려오므로 JS 가 실패해도 카드 제목 3개는 보입니다.
+     🔴 **아코디언에서 탭으로 바뀌었습니다** 〔2026-08-14 · cards-tabs-s12〕.
+        종전 IIFE 는 `data-open` 을 뒤집고 **스크롤을 보정**했습니다(revealFeat). 탭은 패널
+        자리가 고정이라 보정할 것이 없습니다 — 그 함수는 사라졌고, 사라진 것이 이 변경의
+        요지입니다. ⛔ 탭 전환에 스크롤 코드를 다시 넣지 마십시오. 넣는 순간 「같은 영역에서
+        내용만 바뀐다」는 이 구조의 전제가 깨집니다.
 
-     ⚠️ 다른 카드를 닫는 코드를 넣지 마십시오 — 동시 다중 펼침 허용입니다(08 FAQ C-3 과 같은 정책).
-     ⚠️ 기한관리 패널(#feat-timeline)은 페이지에 하나뿐이고 히어로·마감 CTA·로드맵 **세 곳**의
-        [data-timeline-open] 이 그 하나를 공유합니다. 트리거를 늘리는 것은 자유지만
-        패널을 복제하지는 마십시오 — 지도 에셋이 여러 번 로드되고 상태가 갈립니다.
-        (2026-08-14: 네 번째였던 04 2층카드의 트리거는 그 카드가 이 아코디언으로 흡수되면서
-         사라졌습니다. 자기 자신을 펼치는 버튼은 뜻이 없습니다.) */
+     ⚠️ 마크업이 **첫 탭 선택 + 나머지 [hidden]** 상태로 내려옵니다. JS 가 실패해도 상품
+        이름 3개와 첫 상품 설명이 그대로 보입니다. 여기서 하는 일은 상태를 옮기는 것뿐입니다.
+     ⚠️ 기한관리 패널(#feat-timeline-panel)은 페이지에 하나뿐이고 히어로·로드맵·마감 CTA
+        **세 곳**의 [data-timeline-open] 이 그 하나를 공유합니다. 트리거를 늘리는 것은
+        자유지만 패널을 복제하지는 마십시오 — 지도 에셋이 여러 번 로드되고 상태가 갈립니다. */
   (function () {
-    var feats = document.querySelector('.feats');
+    var root = document.querySelector('.feats');
+    if (!root) return;
+    var tabs = Array.prototype.slice.call(root.querySelectorAll('[role="tab"]'));
+    if (!tabs.length) return;
 
-    /* sticky .nav 는 64px 이고, 이 파일은 앵커 도착지에 84px(64 + 여백 20)을 씁니다
-       (`#how, #next, … { scroll-margin-top: 84px }`). 같은 값을 씁니다 — 카드가 앵커와
-       다른 높이에 서면 같은 페이지 안에서 도착 위치가 두 종류가 됩니다. */
-    var NAV_OFFSET = 84;
-
-    /* 펼침 애니메이션(.feat-panel 의 grid-template-rows .24s)이 끝나야 카드의 **최종
-       높이**가 잡힙니다. 그 전에 재면 접힌 높이를 기준으로 옮겨서 덜 올라갑니다. */
-    var EXPAND_MS = 260;
-
-    /*
-     * 🔴 **펼친 카드를 화면 안으로 끌어옵니다** 〔2026-08-14 · card-shot-reveal-s11〕.
-     *
-     * 3열 배치에서 카드를 펼치면 전폭(`grid-column: 1 / -1`)으로 넓어지면서 패널이
-     * 아래로 자랍니다. 1440×900 실측에서 사전점검 카드는 펼친 뒤 높이 756px, 아래끝이
-     * y=1161 이라 **패널의 46%만 화면에 남았습니다** — 누른 사람이 스크롤을 해야
-     * 방금 연 것을 볼 수 있었습니다.
-     *
-     * 고른 방법: **카드 머리를 nav 바로 아래로 옮깁니다.**
-     *   ⛔ `block: 'center'` 는 답이 아닙니다. 카드가 화면보다 높으면 위아래가 함께
-     *      잘려서 **머리(상품명)까지 화면 밖으로 나갑니다.** 종전 [data-timeline-open]
-     *      경로가 그렇게 동작했고(실측 아래끝 y=965 > 900), 그래서 그 경로도 이 함수로
-     *      모았습니다.
-     *   ⛔ 패널만 3열 아래 전폭 영역으로 빼는 방식은 고르지 않았습니다 — 패널을 카드
-     *      밖으로 옮기면 「접힌 카드 = 옛 2층카드, 펼친 카드 = 옛 아코디언」이라는 이
-     *      섹션의 구조가 깨지고, aria-controls 로 묶인 머리-패널 관계와 동시 다중 펼침
-     *      정책이 함께 무너집니다.
-     *
-     * ⚠️ **이미 다 보이면 움직이지 않습니다.** 화면에 온전히 들어와 있는 카드를 누를
-     *    때까지 페이지가 튀면, 스크롤이 조작에 대한 응답이 아니라 방해가 됩니다.
-     * ⚠️ 부드러운 이동은 `html { scroll-behavior: smooth }` 가 담당합니다. behavior 를
-     *    직접 넘기지 마십시오 — 넘기는 순간 prefers-reduced-motion 에서 그 값을 auto 로
-     *    되돌리는 규칙(1362행)을 건너뛰어, 움직임을 원치 않는 사람에게 애니메이션이 갑니다.
-     *
-     * 🔴 **접을 때도 봅니다 — 다만 기준이 다릅니다.**
-     *    처음에는 「닫는 사람은 그 자리를 떠나려는 것이 아니다」로 접기를 제외했는데,
-     *    실측에서 **접은 카드가 화면 위로 사라졌습니다**: 펼친 카드는 전폭
-     *    (`grid-column: 1 / -1`)이라 자기 줄을 차지하고, 접으면 3열 줄로 **돌아가면서
-     *    위로 올라갑니다.** 1440×1600 실측에서 접은 직후 카드 머리가 y=-238 이었습니다 —
-     *    방금 접은 카드가 화면에 없으니 무엇을 접었는지 알 수 없습니다.
-     *    그래서 접을 때는 **카드 머리가 보이는가**만 봅니다(펼칠 때처럼 카드 전체를
-     *    요구하지 않습니다 — 접힌 카드는 원래 짧아서 그 조건이 거의 항상 참입니다).
-     * ⚠️ 두 기준을 하나로 합치지 마십시오. 접기에 「카드 전체」를 요구하면 3열에서
-     *    옆 카드가 길 때 불필요하게 따라 움직입니다.
-     */
-    function revealFeat(item, opening) {
-      window.setTimeout(function () {
-        var r = item.getBoundingClientRect();
-        var vh = window.innerHeight;
-        var settled = opening
-          // 펼침: 위는 nav 아래, 아래는 화면 안 — 둘 다 만족하면 손대지 않습니다.
-          ? (r.top >= NAV_OFFSET && r.bottom <= vh)
-          // 접힘: 카드 머리가 화면 안에 넉넉히(아래끝에서 80px 위) 있으면 그대로.
-          : (r.top >= NAV_OFFSET && r.top <= vh - 80);
-        if (settled) return;
-        window.scrollTo({ top: window.pageYOffset + r.top - NAV_OFFSET });
-      }, EXPAND_MS);
+    function panelOf(tab) {
+      return document.getElementById(tab.getAttribute('aria-controls'));
     }
 
-    /* 카드 하나의 펼침 상태를 정합니다. open 을 넘기지 않으면 토글입니다. */
-    function setOpen(item, open) {
-      if (!item) return;
-      var btn = item.querySelector('.feat-btn');
-      var next = typeof open === 'boolean'
-        ? (open ? '1' : '0')
-        : (item.getAttribute('data-open') === '1' ? '0' : '1');
-      item.setAttribute('data-open', next);
-      if (btn) btn.setAttribute('aria-expanded', next === '1' ? 'true' : 'false');
-      revealFeat(item, next === '1');
-    }
-
-    /* 위임으로 한 번만 겁니다 — 세 카드에 각각 걸지 않습니다. */
-    if (feats) {
-      feats.addEventListener('click', function (e) {
-        var btn = e.target.closest('.feat-btn');
-        if (!btn) return;
-        setOpen(btn.parentNode);
+    /* 탭 하나를 선택합니다. 나머지는 함께 닫힙니다 — 탭은 정의상 하나입니다.
+       ⚠️ roving tabindex 를 지우지 마십시오. 안 하면 Tab 키가 탭 3개를 차례로 밟습니다.
+          탭 줄은 **하나의 정거장**이어야 하고, 그 안 이동은 화살표가 맡습니다(WAI-ARIA). */
+    function select(tab, moveFocus) {
+      tabs.forEach(function (t) {
+        var on = t === tab;
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.setAttribute('tabindex', on ? '0' : '-1');
+        var panel = panelOf(t);
+        if (!panel) return;
+        if (on) panel.removeAttribute('hidden');
+        else panel.setAttribute('hidden', '');
       });
+      if (moveFocus) tab.focus();
     }
 
-    /* 히어로 · 마감 CTA · 로드맵의 「기한관리 미리보기」(세 곳).
-       페이지 이동이 아니라 같은 페이지 안에서 펼치고 그 자리로 옮겨 주는 것이 전부입니다
-       (흐름 md §2 「같은 페이지 내 인라인 확장」). 이미 열려 있으면 닫지 않고 그대로 둡니다 —
-       같은 버튼을 두 번 누른 사람이 방금 본 것을 잃지 않게 하려는 의도입니다.
+    /* 위임으로 한 번만 겁니다 — 탭 3개에 각각 걸지 않습니다. */
+    root.addEventListener('click', function (e) {
+      var tab = e.target.closest('[role="tab"]');
+      if (tab) select(tab, false);
+    });
 
-       🔄 **이동을 revealFeat 으로 모았습니다** 〔2026-08-14 · card-shot-reveal-s11〕.
-          종전에는 여기서만 `scrollIntoView({ block: 'center' })` 를 불렀는데, 펼친
-          기한관리 카드는 640px 이라 900px 화면에서도 가운데 정렬이면 아래끝이 y=965 로
-          잘렸습니다. 카드를 누르는 경로와 이 버튼을 누르는 경로가 **같은 자리에 서야**
-          「어디를 눌러도 같은 곳에 도착한다」가 됩니다.
-       ⚠️ setOpen(…, true) 이 이미 revealFeat 을 부릅니다 — 여기서 또 부르지 마십시오.
-          두 번 부르면 260ms 뒤에 같은 계산이 두 번 돌아 스크롤이 한 번 튑니다.
-       ⚠️ focus 에 preventScroll 을 넘기는 것을 지우지 마십시오. 브라우저의 기본 포커스
-          스크롤은 revealFeat 이 정한 위치를 즉시 덮어씁니다(펼침을 기다리지 않으므로
-          접힌 높이 기준으로 옮겨 놓습니다). 읽어주는 도구를 위한 포커스 이동 자체는
-          그대로 필요하므로 focus() 를 없애지는 마십시오. */
+    /* 🔴 **주소의 #앵커로 들어온 사람에게 그 탭을 열어 줍니다** 〔2026-08-14 · cards-tabs-s12〕.
+       이미 발송된 결제확인 메일이 `https://www.trops.kr/#feat-timeline` 을 싣고 있습니다
+       (api/_notify.js `buildTimelinePreviewLink`). 그 id 는 기한관리 **탭 버튼**에 있으므로
+       브라우저는 탭 줄까지 데려다주지만, 열려 있는 것은 첫 탭입니다 — 기한관리를 보러 온
+       사람에게 사전점검을 보여주게 됩니다.
+       ⚠️ 이 블록을 지우지 마십시오. 지우면 링크는 살아 있는데 **엉뚱한 탭**이 열립니다.
+          그 실패는 화면이 깨지지 않아서 가장 늦게 발견됩니다.
+       ⚠️ 여기서 스크롤하지 않습니다 — 앵커 이동은 브라우저가 이미 했고, `.tabs` 의
+          `scroll-margin-top: 84px` 이 sticky nav 를 피해 줍니다. */
+    function selectFromHash() {
+      var id = (location.hash || '').slice(1);
+      if (!id) return;
+      var tab = document.getElementById(id);
+      if (tab && tabs.indexOf(tab) !== -1) select(tab, false);
+    }
+    selectFromHash();
+    window.addEventListener('hashchange', selectFromHash);
+
+    /* 키보드 조작 — WAI-ARIA Tabs 패턴. 마우스만으로 쓸 수 있는 것은 절반입니다. */
+    root.addEventListener('keydown', function (e) {
+      var tab = e.target.closest('[role="tab"]');
+      if (!tab) return;
+      var i = tabs.indexOf(tab);
+      var n = tabs.length;
+      var next = -1;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = (i + 1) % n;
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = (i - 1 + n) % n;
+      else if (e.key === 'Home') next = 0;
+      else if (e.key === 'End') next = n - 1;
+      if (next === -1) return;
+      e.preventDefault();
+      select(tabs[next], true);
+    });
+
+    /* 히어로 · 로드맵 · 마감 CTA 의 「기한관리 미리보기」(세 곳).
+       페이지 이동이 아니라 같은 페이지 안에서 그 탭을 열고 그 자리로 옮겨 주는 것이
+       전부입니다(흐름 md §2 「같은 페이지 내 인라인 확장」).
+
+       🔄 **도착지가 카드가 아니라 섹션입니다** 〔2026-08-14 · cards-tabs-s12〕. 탭은 패널
+          자리가 고정이므로 「어디로 옮길까」를 계산할 필요가 없습니다 — 섹션 맨 위로 보내면
+          탭 줄과 패널이 함께 보입니다. #service 는 이미 `scroll-margin-top: 84px` 를 갖고
+          있어(sticky nav 64 + 여백 20) 도착 높이가 페이지의 다른 앵커와 같습니다.
+       ⚠️ 부드러운 이동은 `html { scroll-behavior: smooth }` 가 담당합니다. behavior 를
+          직접 넘기지 마십시오 — 넘기는 순간 prefers-reduced-motion 에서 그 값을 auto 로
+          되돌리는 규칙을 건너뛰어, 움직임을 원치 않는 사람에게 애니메이션이 갑니다.
+       ⚠️ focus 에 preventScroll 을 넘기는 것을 지우지 마십시오. 브라우저 기본 포커스
+          스크롤이 위 scrollIntoView 가 정한 위치를 덮어씁니다. 읽어주는 도구를 위한 포커스
+          이동 자체는 필요하므로 focus() 를 없애지는 마십시오. */
     var openers = document.querySelectorAll('[data-timeline-open]');
     if (!openers.length) return;
 
     Array.prototype.forEach.call(openers, function (el) {
       el.addEventListener('click', function () {
-        var target = document.getElementById('feat-timeline');
-        if (!target) return;
-        setOpen(target, true);
-        var btn = target.querySelector('.feat-btn');
-        if (btn) btn.focus({ preventScroll: true });
+        var tab = document.getElementById('feat-timeline');
+        var section = document.getElementById('service');
+        if (!tab) return;
+        select(tab, false);
+        if (section) section.scrollIntoView({ block: 'start' });
+        tab.focus({ preventScroll: true });
       });
     });
   })();
-
   (function () {
     var API_URL = '/api/leads';
     var form = document.getElementById('interest-form');
