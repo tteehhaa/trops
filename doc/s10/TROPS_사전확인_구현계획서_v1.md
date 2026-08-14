@@ -153,8 +153,13 @@
 | 히어로 `h1` | 첫 **수출**이라<br>무엇부터 봐야 할지 모르겠다면. | 첫 **해외 거래**라… |
 | 푸터 `.footer-tag` | 수출을 앞두고 | 해외 거래를 앞두고 |
 | `<title>` | 첫 수출, 무엇부터… | 첫 해외 거래, … |
-| `meta description` / `og:description` | 첫 수출이라… | 첫 해외 거래라… |
+| `meta description` | 첫 수출이라… | 첫 해외 거래라… |
+| `og:description` | — **「수출」 없음** | **대상 없음 — 교체하지 않음** |
 | `og:title` | 첫 수출, … | 첫 해외 거래, … |
+
+**D7 실제 교체는 6곳입니다.**
+
+🔧 **정정 (2026-08-15).** 이 표는 원래 `meta description`과 `og:description`을 한 행에 묶어 **둘 다 「첫 수출이라…」를 담은 것처럼** 적었고, 그래서 대상이 7곳으로 읽혔습니다. **`og:description`에는 애초에 「수출」이라는 낱말이 없었습니다.** `index.html` 상단이 스스로 밝힌 규칙 때문입니다 — `description = 헤드라인 + 리드`, **`og:description` = 리드**. 「첫 수출이라…」는 헤드라인 쪽 문장이므로 리드만 담는 `og:description`에는 들어갈 자리가 없었습니다. 실제로 D7 커밋(`878c393`)이 건드린 곳은 위 표의 나머지 **6곳**뿐이고, `og:description`은 손대지 않았습니다.
 
 **교체하지 않는 것**: 푸터 `.footer-meta`「수출 거래 확인과 기한 관리」·법정 고지문·상품명 「수출 사전점검」(제품 탭·푸터 링크). 상품명 유지 근거는 설계 기록대로 — 이탈은 첫 화면에서 일어나고, 결제창 도달자는 이미 확신이 선 상태입니다.
 
@@ -287,25 +292,53 @@ B는 홉이 하나 늘지만, **fail-open 원칙(§9) 덕에 지연이 사용자
 
 🔴 **M-2 해소 — 필드명을 알아내지 않고, 알 필요가 없게 만듭니다.**
 
-기존 체크박스의 `name`·`value`를 그대로 두고, **`data-doctype` 속성 4개만 추가**합니다.
+기존 입력의 `name`·`value`를 그대로 두고, **`data-doctype` 속성만 추가**합니다.
+프리필 코드는 `[data-doctype="..."]`로만 찾습니다.
+
+🔧 **정정 (2026-08-15).** 이 절은 원래 프리필 대상을 「기존 **체크박스 4개**에
+`data-doctype` 4개 추가」로 적었습니다. **실물은 체크박스가 아니라 단일선택
+`<select>`입니다.** 아래는 `precheck.html`을 실제로 열어 확인한 현재 상태입니다.
 
 ```html
-<input type="checkbox" name="(기존값 그대로)" value="(기존값 그대로)" data-doctype="nda">
-<input type="checkbox" name="(기존값 그대로)" value="(기존값 그대로)" data-doctype="sales_contract">
-<input type="checkbox" name="(기존값 그대로)" value="(기존값 그대로)" data-doctype="quote_pi">
-<input type="checkbox" name="(기존값 그대로)" value="(기존값 그대로)" data-doctype="other">
+<!-- precheck.html — <select id="intake-doc-type" name="docType" required> -->
+<option value="nda"       data-doctype="nda"            selected>비밀유지계약서(NDA) — 현재 지원</option>
+<option value="contract"  data-doctype="sales_contract" disabled>거래계약서 — 준비중</option>
+<option value="quotation" data-doctype="quote_pi"       disabled>견적서 — 준비중</option>
+<option value="po"                                      disabled>발주서(PO) — 준비중</option>
 ```
 
-프리필 코드는 `[data-doctype="..."]`로만 찾습니다.
+| 실물 | |
+|---|---|
+| 형태 | 복수선택 체크박스가 아니라 **`<select>` 단일선택**. 보기 4개 |
+| `data-doctype` | **3개**만 붙어 있음 — `nda`·`sales_contract`·`quote_pi` |
+| 「기타」 보기 | **없음.** 사전 확인의 `other`를 받을 자리가 없습니다. 발주서(PO)에 임의 배정하지 않은 것은 의도입니다 — 그것이 설계서 §7이 금지한 「모르는 것을 아는 척 배정하기」입니다 |
+| 고를 수 있는 보기 | **`nda` 하나뿐.** 나머지 셋은 `disabled`이고, 서버(`parseDocType`)·DB(`intake_doc_type_allowed`)가 `nda` 외를 400/거절로 막습니다 |
+
+**그래서 프리필의 실제 동작**은 이렇습니다.
+
+| 넘어온 값 | 결과 |
+|---|---|
+| `nda` | 선택됨 |
+| `sales_contract`·`quote_pi` | `<option>`은 있으나 `disabled`라 **건너뜀** |
+| `service_license`·`other_doc` | `check.html`이 `other`로 접어 보내는데 받을 `<option>`이 없어 **아무 것도 안 함** |
+| 복수 값 | **성립하지 않음.** 단일선택이므로 **고를 수 있는 첫 값 하나만** 반영 |
+
+어느 경우든 기본값 `nda`가 그대로 남으므로 화면이 깨지거나 잘못된 값이
+저장되지 않습니다. 뒤집어 말하면 **오늘 이 프리필이 실제로 바꾸는 값은
+없습니다** — 유일하게 고를 수 있는 보기가 기본값과 같기 때문입니다. 이 연결은
+「기타」 보기가 생기거나 준비중 보기가 열리는 날을 위해 미리 깔아둔 배선이고,
+그날 그 `<option>`에 `data-doctype` 한 칸을 붙이면 저절로 이어집니다.
 
 | 근거 | |
 |---|---|
 | 1 | **폼 제출 로직이 무변경.** `name`·`value`를 안 건드리므로 기존 접수 처리·메일·결제 흐름에 영향 0 |
-| 2 | **실측 대기가 사라짐** — precheck.html을 열어보기 전에 작업 8을 설계할 수 있고, 구현자는 속성 4개만 붙이면 됨 |
+| 2 | ~~**실측 대기가 사라짐** — precheck.html을 열어보기 전에 작업 8을 설계할 수 있고, 구현자는 속성 4개만 붙이면 됨~~ 🔧 **이 근거가 위 오류의 원인입니다.** `precheck.html`을 열어보지 않고 설계한 결과가 「체크박스 4개」였습니다. `data-doctype`으로 찾는 방식 자체는 실물에서도 그대로 살아남았지만, **속성을 붙일 자리의 형태를 틀리게 적었습니다.** 다음 사람은 연결 방식은 파일을 안 열고 정해도, **붙일 대상의 태그 종류와 보기 개수만은 반드시 실물로 확인**하십시오 |
 | 3 | **나중에 폼이 바뀌어도 안 깨짐.** `name`이 리팩터링돼도 `data-doctype`은 의미 기준이라 그대로 |
 | 4 | 라벨 텍스트로 찾는 방식은 문구가 바뀌면 조용히 깨지므로 채택하지 않음 |
 
-`service_license`·`other_doc` → `data-doctype="other"`로 접히는 다대일 매핑은 그대로입니다.
+`check.html`이 `service_license`·`other_doc`을 `other` 한 값으로 접어 보내는
+다대일 매핑은 그대로입니다. 다만 **받는 쪽에 `other` 보기가 없어** 현재는 그
+값이 도착해도 아무 일도 일어나지 않습니다(위 표).
 
 ---
 
