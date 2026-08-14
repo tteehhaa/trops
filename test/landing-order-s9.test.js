@@ -315,7 +315,10 @@ test('인터랙션이 그대로다 — 아코디언 3장·FAQ·트리거·스크
   assert.strictEqual((M.match(/aria-controls="qa-\d+"/g) || []).length, 14, 'FAQ 문항이 14개가 아닙니다');
   assert.strictEqual((B.match(/data-timeline-open/g) || []).length, 3,
     '기한관리 원격 트리거가 3곳(히어로·로드맵·마감 CTA)이 아닙니다');
-  assert.ok(/class="h3 stat-line reveal"/.test(M), '신뢰 인용의 스크롤 등장이 사라졌습니다');
+  // 클래스 문자열 전체가 아니라 「stat-line 에 reveal 이 붙어 있는가」를 봅니다 —
+  // 사유는 test/landing-flow-s9.test.js 의 같은 검사에 적어 두었습니다 (2026-08-14).
+  assert.ok(/class="[^"]*\bstat-line\b[^"]*\breveal\b[^"]*"/.test(M),
+    '신뢰 인용의 스크롤 등장이 사라졌습니다');
   assert.ok(/id="interest-form"/.test(M), '사전등록 폼이 사라졌습니다');
   assert.ok(/id="intake-return"/.test(M), '접수 완료 배너가 사라졌습니다');
 });

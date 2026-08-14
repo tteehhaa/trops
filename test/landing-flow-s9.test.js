@@ -87,7 +87,13 @@ test('「상담」이라는 낱말을 쓰지 않는다 — 유상 자문 오인 
 
 test('신뢰 통계 문장에 스크롤 진입 등장이 붙어 있다', () => {
   const trust = section('trust');
-  assert.match(trust, /class="h3 stat-line reveal"/, '인용문에 .reveal 이 없습니다');
+  /*
+   * 🔄 클래스 **문자열 전체**를 단정하던 것을 「stat-line 에 reveal 이 붙어 있는가」로
+   *    바꿨습니다 〔2026-08-14 · landing-emphasis-s10〕. 인용문이 H3 스케일에서 헤드라인
+   *    스케일로 올라가면서 `h3` 클래스가 빠졌는데, 그것은 이 검사가 지키려는 것(스크롤
+   *    진입 등장)과 무관합니다. 크기가 바뀔 때마다 애니메이션 검사가 깨지면 안 됩니다.
+   */
+  assert.match(trust, /class="[^"]*\bstat-line\b[^"]*\breveal\b[^"]*"/, '인용문에 .reveal 이 없습니다');
   assert.match(trust, /class="stat-src reveal reveal-late"/, '출처에 .reveal 이 없습니다');
 });
 
