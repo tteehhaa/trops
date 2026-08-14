@@ -5,6 +5,21 @@
 캡처: `.playwright-mcp/s13/` (git 비추적)
 
 **Check 98 / 100** (통과 기준 90) · `npm test` **425/425**
+커밋 `fb5acb1` · 배포 `https://www.trops.kr` (Production · READY) ·
+`npm run verify:prod` **15/15**
+
+### 라이브 실측 (배포 후 · 1440×900)
+
+로컬 `dist/` 실측과 **모든 값이 동일**합니다.
+
+| 항목 | 값 |
+|---|---|
+| 섹션 순서·배경 | 목표와 1:1 · 배경 연속 쌍 0 · docH 9365 |
+| `.trust` 높이 | 446 (전 1461) |
+| `.basis` | top 2688 · h 527 · `rgb(230,236,243)` |
+| 탭 캡처 | `c03-result.jpg` / `buyer-guard.jpg` / `timeline-map.jpg` — 전부 200 |
+| `/#feat-timeline` 직접 진입 | 기한관리 탭 `aria-selected="true"` · 패널 노출 · 탭 top **84px** |
+| precheck → index 앵커 | `/#how` `/#service` `/#interest` 3종 생존 |
 
 ---
 
