@@ -473,6 +473,19 @@
   }
   @media (max-width: 640px) {
     .nav-links { display: none; }
+
+    /* 상시 링크 두 개의 **터치 영역만** 44px 로 올립니다 〔2026-08-14 · bkit-6 작업 12-3〕.
+       375px 실측에서 .step-count a 는 20.3px, .nav-quiet 은 24.6px 이었습니다 — 손가락
+       기준(44px)의 절반이고, 이 둘은 S1~S4 전 화면에 상시 노출되는 유일한 우회로(G1)라
+       빗나가면 갈 곳이 사라집니다.
+       🔴 위 .step-count a 주석의 「.btn 을 붙이지 말 것 · 형태는 낮게」 가드를 지킵니다 —
+          글자 크기·굵기·색·배경 무변경입니다. 늘리는 것은 padding 이 만드는 히트 영역뿐이고,
+          같은 값의 음수 margin 이 그 늘어남을 상쇄해 **화면 배치는 1px 도 움직이지 않습니다.**
+          두 값은 항상 같이 고치십시오. 한쪽만 바꾸면 줄 간격이 틀어집니다.
+       ⚠️ 둘 다 flex 자식(.step-count · .nav-right)이라 padding 이 레이아웃 높이에
+          반영됩니다. 그래서 상쇄가 필요합니다 — inline 이었다면 불필요했습니다. */
+    .step-count a,
+    .nav-quiet { padding-block: 12px; margin-block: -12px; }
     /* 목적 선택: 두 항목이 한 줄에 들어가지 않으면 세로로 쌓습니다 */
     .form-purpose { flex-direction: column; gap: 10px; }
     /* index.html 라이브 CSS 의 같은 두 줄입니다(위 .cta-row 주석 참조) — 값 무변경. */
