@@ -287,37 +287,96 @@ function actionButtons(block) {
   return (block.match(/<(?:a|button)[^>]*class="[^"]*\bbtn\b[^"]*"[^>]*>/g) || []);
 }
 
-test('사전점검 카드 — 실행버튼 없이 설명+예시화면만', () => {
-  const block = card('feat-precheck');
-  assert.deepStrictEqual(actionButtons(block), [],
-    '실행버튼이 있습니다 — 바로 다음 「결」 섹션 CTA 와 중복되고 주버튼 2회 규칙이 깨집니다');
-  assert.match(block, /class="feat-desc"/, '설명이 없습니다');
-  assert.match(block, /<img[^>]*src="\/img\//, '예시화면이 없습니다');
+/*
+ * 🔄 **세 상품이 각각 실행버튼을 갖습니다** 〔2026-08-14 · tab-cta-parity-s14〕.
+ *
+ * 종전 두 검사는 「사전점검·바이어확인 패널에 실행버튼이 **없는지**」를 봤습니다.
+ * 그 금지의 사유는 두 가지였고, 둘 다 소멸했습니다:
+ *
+ *   ① 「**바로 다음** 「결」 섹션의 주 CTA 와 중복」
+ *      → basis-split-s13 이 상품소개와 결 CTA 사이에 05 근거 섹션(527px)을 넣었습니다.
+ *        두 버튼은 더 이상 한 화면에 함께 놓이지 않습니다.
+ *   ② 「죽은 클릭(눌러도 아무 일 없는 버튼)을 만들지 않는다」(바이어확인)
+ *      → 이 사유는 **버튼에 갈 곳이 없을 때**만 성립합니다. 이 상품은 사전점검 안에서
+ *        진행되므로 갈 곳이 있고(/precheck), 패널의 안내문이 그 사실을 이미 말합니다.
+ *
+ * 지키던 것은 그대로입니다 — **주버튼(btn-primary)은 페이지에 2회뿐.** 세 버튼 전부
+ * 보조(btn-secondary)라 그 규칙은 건드리지 않습니다. 아래가 그것을 셉니다.
+ * ⛔ 버튼을 다시 빼는 쪽으로 되돌리지 마십시오. 되돌리려면 위 ①②가 왜 되살아났는지부터
+ *    적으십시오.
+ */
+
+/** 상품 → [버튼 라벨, 목적지]. 목적지가 라벨을 정합니다 — 같은 곳이면 같은 말. */
+const PANEL_CTA = {
+  'feat-precheck': ['비교해 보기', '/precheck'],
+  'feat-buyer': ['비교해 보기', '/precheck'],
+  'feat-timeline': ['계약 등록해보기', 'https://app.trops.kr/'],
+};
+
+test('세 상품 패널이 각각 실행버튼을 하나씩 갖는다', () => {
+  for (const [id, [label, href]] of Object.entries(PANEL_CTA)) {
+    const block = card(id);
+    const buttons = actionButtons(block);
+
+    assert.strictEqual(buttons.length, 1,
+      id + ' 의 실행버튼이 ' + buttons.length + '개입니다 — 상품마다 정확히 하나입니다. ' +
+      '0 이면 그 상품만 문이 없고, 2 이상이면 어느 것을 눌러야 하는지 갈립니다');
+
+    assert.match(buttons[0], /btn-secondary/,
+      id + ' 의 실행버튼이 보조가 아닙니다 — btn-primary 로 올리면 주버튼이 3회가 됩니다 ' +
+      '(시각사양 2 「페이지당 최대 2회」: 히어로 · 06 결)');
+
+    assert.ok(block.indexOf('>' + label + '<') !== -1,
+      id + ' 의 버튼 라벨이 「' + label + '」이 아닙니다');
+
+    const got = (buttons[0].match(/href="([^"]*)"/) || [])[1];
+    assert.strictEqual(got, href,
+      id + ' 의 실행버튼 목적지가 다릅니다: ' + got + ' (기대: ' + href + ')');
+  }
 });
 
-test('바이어확인 카드 — 실행버튼 없이 사전점검 연결 안내만', () => {
+test('같은 곳으로 가는 버튼은 같은 말을 쓴다 — /precheck 는 전부 「비교해 보기」', () => {
+  /*
+   * 사전점검·바이어확인은 **같은 목적지**를 갖습니다. 바이어확인에 전용 진입로가 없기
+   * 때문입니다(trops_a 의 buyer-guard 화면은 접수 1건이 있어야 열립니다). 목적지가 같은데
+   * 라벨이 다르면 읽는 사람은 **다른 곳**으로 갑니다.
+   * ⚠️ 이 검사는 상품 탭만이 아니라 **페이지 전체**를 봅니다 — 히어로 · 탭1 · 탭2 ·
+   *    HOW 하단 · 06 결. 무게(주/보조/텍스트)만 자리에 따라 다릅니다.
+   */
+  const links = (BODY.match(/<a[^>]*class="[^"]*\bbtn\b[^"]*"[^>]*>[^<]*<\/a>/g) || []);
+  const toPrecheck = links.filter((a) => /href="\/precheck"/.test(a));
+  assert.ok(toPrecheck.length >= 5,
+    '/precheck 로 가는 버튼이 ' + toPrecheck.length + '개입니다 — 히어로 · 탭1 · 탭2 · ' +
+    'HOW 하단 · 06 결 다섯 자리가 있어야 합니다');
+
+  for (const a of toPrecheck) {
+    const label = a.replace(/<[^>]*>/g, '').trim();
+    assert.strictEqual(label, '비교해 보기',
+      '/precheck 로 가는데 라벨이 「' + label + '」입니다 — 같은 곳으로 가는 문은 같은 말을 ' +
+      '씁니다. 다른 말을 쓰면 다른 곳으로 읽힙니다');
+  }
+
+  // 그 라벨이 붙은 버튼 중 **주버튼**은 여전히 둘뿐입니다.
+  const primary = toPrecheck.filter((a) => /btn-primary/.test(a));
+  assert.strictEqual(primary.length, 2,
+    '주버튼이 ' + primary.length + '개입니다 — 히어로와 06 결 둘뿐이어야 합니다(시각사양 2)');
+});
+
+test('바이어확인 카드 — 버튼이 생겨도 연결 안내문은 남아 있다', () => {
   const block = card('feat-buyer');
-  assert.deepStrictEqual(actionButtons(block), [], '죽은 클릭이 될 실행버튼이 있습니다');
   assert.ok(
     block.indexOf('사전점검 결과화면에서 바로 확인하실 수 있습니다') !== -1,
-    '흐름 md §1 이 지정한 연결 안내문이 없습니다'
+    '흐름 md §1 이 지정한 연결 안내문이 없습니다 — 버튼만 남으면 「비교해 보기」가 왜 ' +
+    '바이어확인 탭에 있는지 설명하는 문장이 사라집니다'
   );
   assert.ok(!/무료/.test(block),
     '「무료」는 덤처럼 보여 가치를 저평가시킵니다 — 흐름 md §4 Give/Get 은 「포함」 계열을 씁니다');
 });
 
-test('기한관리 카드 — [계약 등록해보기] 가 app.trops.kr 로 간다', () => {
-  const block = card('feat-timeline');
-  const buttons = actionButtons(block);
-  assert.strictEqual(buttons.length, 1,
-    '실행버튼이 ' + buttons.length + '개입니다 — 기한관리만 1개를 갖습니다');
-  assert.match(buttons[0], /btn-secondary/,
-    'btn-primary 로 올리면 주버튼이 3회가 됩니다');
-  assert.ok(block.indexOf('계약 등록해보기') !== -1, '버튼 라벨이 다릅니다');
-
-  const href = (buttons[0].match(/href="([^"]*)"/) || [])[1];
-  assert.strictEqual(href, 'https://app.trops.kr/',
-    '[계약 등록해보기] 가 app.trops.kr 로 가지 않습니다: ' + href);
+test('사전점검 카드 — 설명과 예시화면이 그대로다', () => {
+  const block = card('feat-precheck');
+  assert.match(block, /class="feat-desc"/, '설명이 없습니다');
+  assert.match(block, /<img[^>]*src="\/img\//, '예시화면이 없습니다');
 });
 
 test('세 탭이 같은 인터랙션이다 — 누르면 같은 자리에서 내용만 바뀐다', () => {
