@@ -61,6 +61,13 @@ const STATIC = {
     { file: 'uae.html', locale: 'ko' },
     { file: 'privacy.html', locale: 'ko' },
     { file: 'en-privacy.html', locale: 'en' },
+    // 영문 4종 〔2026-08-16〕. en.html 의 형제 파일로 두고 cleanUrls 가 /en-check ·
+    // /en-precheck · /en-refund 에 붙입니다. 국문 짝은 각각 check · precheck · refund
+    // 이고, 네 쌍 모두 <head> 에 hreflang 3줄이 서로를 가리킵니다.
+    // ⚠️ 여기 빠뜨리면 파일은 있는데 배포만 안 되어 404 가 납니다 — 조용한 실패입니다.
+    { file: 'en-check.html', locale: 'en' },
+    { file: 'en-precheck.html', locale: 'en' },
+    { file: 'en-refund.html', locale: 'en' },
   ],
   dirs: ['data', 'img'],
 };

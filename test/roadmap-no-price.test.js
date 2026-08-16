@@ -45,10 +45,13 @@ const EN = roadmap('en.html');
 
 /* 🔄 「가격 미정 · 준비중」→「준비 중」 〔2026-08-16 · v-next 전면교체〕. 로드맵 두 행이
    기존 상품명을 재사용하면서 가격 언급 자체를 걷었습니다 — 가격 미노출 원칙은
-   아래 「로드맵에 금액이 없다」 테스트가 계속 지킵니다. en.html 은 이번 교체 밖이라
-   옛 표기(Pricing to follow · Coming soon) 그대로입니다.
+   아래 「로드맵에 금액이 없다」 테스트가 계속 지킵니다.
    🔄 대표 수정안(같은 날 2차) — 01행 배지가 「준비 중」→「현재 일부 동작 및 추가
-   개발 중」으로 바뀌었습니다. 02행은 「준비 중」 그대로입니다. */
+   개발 중」으로 바뀌었습니다. 02행은 「준비 중」 그대로입니다.
+   🔄 **en.html 이 같은 표기로 따라왔습니다** 〔2026-08-16 · 영문화〕. 종전 이 파일은
+      옛 표기(Pricing to follow · Coming soon)를 단언하며 en.html 이 다섯 커밋 뒤에
+      남아 있던 상태를 못질하고 있었습니다 — 「가격 미정」을 말하지 않게 된 뒤로는
+      영문에만 가격 언급이 남아 있던 셈입니다. */
 test('국문 로드맵 두 행에 가격 표기 없이 진행 상태 배지가 있다', () => {
   const metas = (KO.match(/<p class="rm-meta">([^<]*)<\/p>/g) || [])
     .map((s) => s.replace(/<[^>]*>/g, '').trim());
@@ -63,8 +66,11 @@ test('영문 로드맵 두 행이 같은 뜻으로 맞춰져 있다', () => {
     .map((s) => s.replace(/<[^>]*>/g, '').trim());
 
   assert.strictEqual(metas.length, 2, '영문 로드맵 행이 ' + metas.length + '개입니다');
-  assert.deepStrictEqual(metas, ['Pricing to follow · Coming soon', 'Pricing to follow · Coming soon'],
+  assert.deepStrictEqual(metas, ['Partly working today, more in development', 'Coming soon'],
     '영문 로드맵 표기가 국문과 갈렸습니다: ' + JSON.stringify(metas));
+  /* 「Pricing to follow」는 가격 언급 자체를 걷은 지금 자리가 없습니다 —
+     되살리면 영문에만 가격 이야기가 남습니다. */
+  assert.ok(EN.indexOf('Pricing to follow') === -1, '옛 가격 언급이 남아 있습니다');
 });
 
 test('🔴 로드맵에 금액이 없다 — 파는 상품의 역앵커를 만들지 않는다', () => {

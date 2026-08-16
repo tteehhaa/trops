@@ -245,11 +245,18 @@ test('상품 카드 3장이 모두 상태줄을 갖는다 — 배지를 지운 �
   // 「무료」는 덤처럼 보여 가치를 저평가시킵니다(흐름 md §4 Give/Get 은 「포함」 계열).
   assert.ok(!avails.some((a) => /무료/.test(a)), '상태줄에 「무료」가 들어왔습니다: ' + JSON.stringify(avails));
 
-  // en.html 은 아직 04 2층카드 구조입니다 — 그쪽 단언은 옛 형태 그대로 둡니다.
-  const enCards = section(M.en, 'cards-sec');
-  const enTitles = (enCards.match(/<span class="card-title">([^<]*)<\/span>/g) || []);
-  assert.strictEqual(enTitles.length, 2,
-    'en.html 의 04 카드 상태줄이 ' + enTitles.length + '개입니다 — 두 카드 모두 필요합니다');
+  // 🔄 en.html 이 같은 구조가 됐습니다 〔2026-08-16 · 영문화〕. 종전에는 옛 04 2층카드
+  //    (.card-title × 2)를 단언하고 있었고, 그것이 en.html 이 다섯 커밋 뒤에 남아 있던
+  //    상태를 못질하고 있었습니다. 이제 국문과 같은 조건을 같은 방식으로 봅니다.
+  const enAvails = (section(M.en, 'cards-sec').match(/<span class="feat-avail">([^<]*)<\/span>/g) || [])
+    .map((s) => s.replace(/<[^>]*>/g, '').trim());
+  assert.strictEqual(enAvails.length, 3,
+    'en.html 의 상태줄이 ' + enAvails.length + '개입니다 — 세 카드 모두 필요합니다');
+  assert.strictEqual(new Set(enAvails).size, 3,
+    'en.html 상태줄 3개가 서로 다르지 않습니다: ' + JSON.stringify(enAvails));
+  // 국문의 「무료」와 같은 이유 — 덤처럼 보이면 가치가 저평가됩니다.
+  assert.ok(!enAvails.some((a) => /\bfree\b/i.test(a)),
+    'en.html 상태줄에 「free」가 들어왔습니다: ' + JSON.stringify(enAvails));
 });
 
 /*
@@ -470,68 +477,188 @@ test('법적 문구가 페이지에 남아 있다 — 위치와 무관하게 필
     'en.html 에서 같은 문구가 사라졌습니다');
 });
 
-/* ══ 5. 영문판 동기화 ═══════════════════════════════════════════════════════ */
+/* ══ 5. 영문판 동기화 ═══════════════════════════════════════════════════════
+ *
+ * 🔴 **이 묶음이 통째로 다시 쓰였습니다** 〔2026-08-16 · 영문화 4종〕.
+ *
+ * 종전 단언은 **옛 en.html**(04 2층카드 · 아코디언 `data-open` · 「Trade operations」)
+ * 을 그대로 못질하고 있었습니다. 그 구조는 국문이 2026-08-14 에 탭으로 바뀌면서
+ * 이미 사라졌고, en.html 만 다섯 커밋 뒤에 남아 있던 상태였습니다 —
+ * 즉 이 테스트들은 「영문판 동기화」라는 이름으로 **비동기 상태를 지키고** 있었습니다.
+ *
+ * 지금 지키는 것은 하나입니다:
+ *
+ *   🔴 **영문 페이지는 국문 페이지의 문구만 옮긴 것이다 — 구조는 1:1 이다.**
+ *      id 순서가 같아야 하고, 클래스 순서가 같아야 하고, 이름은 같은 것을 가리켜야 합니다.
+ *      이 규칙이 있어야 국문을 고칠 때 영문에서 **같은 자리**만 찾으면 됩니다.
+ *
+ * ⚠️ 의도된 차이는 아래 STRUCT_DELTA 에 **개수로** 적혀 있습니다. 새 차이를 만들면
+ *    여기 숫자부터 고쳐야 하고, 그 순간 「왜 갈라졌는가」를 적게 됩니다. 그것이 목적입니다.
+ */
 
-test('en.html 04 카드가 국문과 같은 이름을 쓴다', () => {
-  const cards = section(M.en, 'cards-sec');
+const EN_PAIRS = [
+  ['index.html', 'en.html'],
+  ['check.html', 'en-check.html'],
+  ['precheck.html', 'en-precheck.html'],
+  ['refund.html', 'en-refund.html'],
+];
 
-  assert.ok(cards.indexOf('Before the deal · Export pre-check') !== -1,
-    '01 카드가 Export pre-check 이 아닙니다 (구 Document comparison · 구구 NDA comparison)');
-  assert.ok(cards.indexOf('After the deal starts · Deadline management') !== -1,
-    '02 카드가 Deadline management 가 아닙니다 (구 Trade procedure tracking)');
-  assert.ok(cards.indexOf('NDA comparison') === -1, '옛 이름이 남아 있습니다');
-  assert.ok(cards.indexOf('badge-soon') === -1, 'COMING SOON 배지가 남아 있습니다');
+/**
+ * 의도된 구조 차이. `[클래스 속성 수 차이, 태그 수 차이]` — 영문 − 국문.
+ *
+ *   en.html          +2 / +4  히어로 리드 <p> 한 개(초안이 국문보다 한 문장 깁니다)와
+ *                             05 근거 CTA 앞의 <span class="cta-row-note"> 한 개.
+ *   en-precheck.html −2 / −4  `.lang-notice`(「이 폼은 한국어 전용」 안내). 이 페이지가
+ *                             그 영문판이므로 안내할 대상이 없습니다.
+ *   en-refund.html    0 / +4  푸터를 나머지 영문 4개와 통일했습니다 — [TROPS home] 링크
+ *                             한 개와 법적 고지 <p> 한 개가 더 있습니다. 국문
+ *                             refund.html 의 푸터가 나머지 국문 4개와 어긋나 있는 것이
+ *                             원인이고, 그쪽 갱신은 별건입니다.
+ */
+const STRUCT_DELTA = {
+  'en.html': [2, 4],
+  'en-check.html': [0, 0],
+  'en-precheck.html': [-2, -4],
+  'en-refund.html': [0, 4],
+};
+
+/** 주석을 걷은 마크업에서 id 를 나타난 순서대로. */
+function idSeq(html) {
+  return [...strip(html).matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]);
+}
+/** <style>·<script> 를 뺀 마크업의 class 속성을 나타난 순서대로. */
+function classSeq(html) {
+  return [...body(html).matchAll(/\sclass="([^"]+)"/g)].map((m) => m[1]);
+}
+/**
+ * 태그 이름 순서열. <style>·<script> 안쪽은 비웁니다.
+ *
+ * ⚠️ `<br>` 은 **빼고 셉니다.** 줄바꿈 자리는 언어마다 달라야 하는 것이기 때문입니다 —
+ *    국문 기준으로 잡힌 max-width(ch 단위)에 영문 문장을 그대로 넣으면 마지막 줄이
+ *    낱말 하나짜리 고아가 됩니다(en.html .hero-lead 위 주석). 문구를 바꾸는 것이
+ *    아니라 마크업만 바꾸는 것이라 정본 §2-3 이 허용하는 자리입니다.
+ */
+function tagSeq(html) {
+  const m = strip(html).replace(/<(style|script)\b[^>]*>[\s\S]*?<\/\1>/gi, '<$1></$1>');
+  return (m.match(/<\/?([a-zA-Z][a-zA-Z0-9]*)/g) || [])
+    .map((t) => t.toLowerCase())
+    .filter((t) => t !== '<br');
+}
+
+/*
+ * 🔴 **id 는 한 칸도 어긋나면 안 됩니다.** 문구만 옮긴 것이므로 id 는 손댈 이유가
+ *    없고, 어긋났다면 그 순간 「같은 자리」라는 전제가 깨진 것입니다. JS 가 잡는
+ *    엘리먼트(#intake-doc-type · #erase-btn · #feat-timeline-panel …)도 전부 여기입니다.
+ */
+test('영문 4종이 국문과 같은 id 를 같은 순서로 갖는다', () => {
+  for (const [ko, en] of EN_PAIRS) {
+    const a = idSeq(read(ko));
+    const b = idSeq(read(en));
+    assert.deepStrictEqual(b, a,
+      en + ' 의 id 순서가 ' + ko + ' 와 다릅니다 — 문구만 옮기는 것이 규칙입니다');
+  }
 });
 
-test('en.html 기한관리 버튼이 인라인 확장이다', () => {
-  const cards = section(M.en, 'cards-sec');
-  assert.ok(/<button[^>]*class="[^"]*feat-btn[^"]*"[^>]*aria-controls="feat-timeline-panel"/.test(cards),
-    '펼침 버튼이 없습니다');
-  assert.ok(cards.indexOf('id="feat-timeline-panel"') !== -1, '인라인 패널이 없습니다');
-  assert.ok(!/href="#interest"[^>]*>\s*Get notified\s*</.test(cards),
-    '카드에 [ Get notified ] 링크가 남아 있습니다 — 인라인 확장으로 교체돼야 합니다');
+test('영문 4종의 구조 차이가 적어 둔 것뿐이다', () => {
+  for (const [ko, en] of EN_PAIRS) {
+    const [dc, dt] = STRUCT_DELTA[en];
+    const ca = classSeq(read(ko)).length;
+    const cb = classSeq(read(en)).length;
+    assert.strictEqual(cb - ca, dc,
+      en + ' 의 class 속성 수 차이가 ' + (cb - ca) + ' 입니다 (적어 둔 값 ' + dc + ') — ' +
+      '구조를 바꾸셨다면 STRUCT_DELTA 에 사유와 함께 적어 주십시오');
+    const ta = tagSeq(read(ko)).length;
+    const tb = tagSeq(read(en)).length;
+    assert.strictEqual(tb - ta, dt,
+      en + ' 의 태그 수 차이가 ' + (tb - ta) + ' 입니다 (적어 둔 값 ' + dt + ')');
+  }
 });
 
-test('en.html 패널이 접힌 채로 내려오고 슬라이드로 열린다', () => {
+/*
+ * 국문에만 있고 영문에 없는 한글. 영문 페이지의 **화면 문구**에 한글이 남아 있으면
+ * 그 자리는 번역이 안 된 것입니다.
+ * ⚠️ 주석은 걷고 봅니다 — 이 저장소는 주석을 인수인계 수단으로 쓰고 빌드가 떼어냅니다.
+ * ⚠️ nav 의 언어 전환 링크(「한국어」)만 예외입니다. 그 글자가 한글인 것이 그 링크의 일입니다.
+ */
+test('영문 5종의 화면 문구에 한글이 남아 있지 않다', () => {
+  for (const en of ['en.html', 'en-check.html', 'en-precheck.html', 'en-refund.html', 'en-privacy.html']) {
+    const text = body(read(en))
+      .replace(/<a class="nav-quiet"[^>]*>[^<]*<\/a>/g, '')
+      .replace(/<[^>]+>/g, ' ');
+    const hit = text.match(/[가-힣][가-힣\s·]*/g);
+    assert.ok(!hit, en + ' 에 번역되지 않은 한글이 있습니다: ' + JSON.stringify(hit && hit.slice(0, 5)));
+  }
+});
+
+/* ── 이름 ─────────────────────────────────────────────────────────────────── */
+
+test('en.html 상품 탭 3개가 국문 3상품과 1:1 로 대응한다', () => {
+  const cards = section(M.en, 'cards-sec');
+  const titles = (cards.match(/<span class="feat-title">([^<]*)<\/span>/g) || [])
+    .map((s) => s.replace(/<[^>]*>/g, '').trim());
+  assert.deepStrictEqual(titles, ['Export pre-check', 'Buyer check', 'Deadline tracking'],
+    '상품 탭 이름이 다릅니다: ' + JSON.stringify(titles));
+
+  /* 옛 **상품명** — 상품소개 섹션 안에 하나라도 살아 있으면 한 상품이 두 이름이 됩니다.
+     ⚠️ 섹션 안으로만 봅니다. 「NDA comparison」은 05 근거 섹션의 캡션
+        (「Current NDA comparison standard」)에서 **비교 기준의 이름**으로 쓰이는 정상
+        문구이고, 그것까지 막으면 상품명이 아닌 서술을 상품명 규칙으로 잡게 됩니다. */
+  for (const old of ['NDA comparison', 'Document comparison', 'Deadline management', 'badge-soon']) {
+    assert.ok(cards.indexOf(old) === -1, '상품소개에 옛 이름이 남아 있습니다: ' + old);
+  }
+  /* 이 둘은 어디에도 쓸 데가 없습니다 — 04 카드와 07 로드맵이 같은 이름을 쓰던
+     충돌의 원인이었고, 지금 이름 체계에 자리가 없습니다. */
+  for (const old of ['Trade procedure tracking', 'Trade operations']) {
+    assert.ok(B.en.indexOf(old) === -1, '옛 이름이 남아 있습니다: ' + old);
+  }
+});
+
+test('en.html 기한관리가 그 자리에서 열린다 — 페이지 이동이 아니다', () => {
   const m = M.en;
-  assert.ok(/<div class="card feat" id="feat-timeline" data-open="0">/.test(m),
-    '카드가 접힌 상태(data-open="0")로 내려오지 않습니다 — JS 가 죽으면 펼친 채 굳습니다');
-
-  const css = RAW.en.match(/<style[\s\S]*?<\/style>/g).join('');
-  assert.match(css, /\.feat-panel \{[^}]*grid-template-rows: 0fr/, '접힘이 0fr 이 아닙니다');
-  assert.match(css, /\.feat\[data-open="1"\] \.feat-panel \{[^}]*grid-template-rows: 1fr/,
-    '펼침이 1fr 이 아닙니다');
-  assert.ok(!/\.feat-panel \{[^}]*display: none/.test(css),
-    'display:none 방식이면 슬라이드가 불가능합니다');
+  assert.ok(/<button[^>]*data-timeline-open[^>]*aria-controls="feat-timeline-panel"/.test(m),
+    '기한관리 패널을 여는 트리거가 없습니다');
+  assert.strictEqual((m.match(/id="feat-timeline-panel"/g) || []).length, 1,
+    '기한관리 패널은 페이지에 하나뿐이어야 합니다');
+  assert.ok(!/href="#interest"[^>]*>\s*Get notified\s*</.test(m),
+    '옛 [ Get notified ] 링크가 남아 있습니다 — 인라인 확장으로 교체된 자리입니다');
 });
 
-test('en.html 에서 「Trade procedure tracking」이 완전히 사라졌다', () => {
-  assert.ok(B.en.indexOf('Trade procedure tracking') === -1,
-    '옛 이름이 남아 있습니다 — 04 카드와 07 로드맵이 같은 이름을 쓰던 충돌의 원인입니다');
-  assert.ok(B.en.indexOf('Trade operations') !== -1,
-    '로드맵 02 가 Trade operations 로 갈라지지 않았습니다');
+/*
+ * JS 가 죽어도 **상품 이름 3개와 첫 상품 설명**이 보여야 합니다 — 국문과 같은 조건입니다
+ * (index.html `.feats` 머리주석). 탭 구조라 첫 탭이 선택된 채, 나머지 패널은 [hidden] 으로
+ * 내려옵니다. ⛔ 옛 아코디언(`data-open` · grid-template-rows 0fr↔1fr)으로 되돌리지 마십시오.
+ */
+test('en.html 탭이 첫 탭 선택 + 나머지 hidden 으로 내려온다', () => {
+  const cards = section(M.en, 'cards-sec');
+  assert.strictEqual((cards.match(/aria-selected="true"/g) || []).length, 1,
+    '기본 선택 탭이 하나가 아닙니다');
+  assert.strictEqual((cards.match(/role="tabpanel"/g) || []).length, 3, '패널이 3개가 아닙니다');
+  assert.strictEqual((cards.match(/role="tabpanel"[^>]*hidden/g) || []).length, 2,
+    '첫 패널만 열린 채로 내려와야 합니다');
+  assert.ok(cards.indexOf('data-open=') === -1,
+    '옛 아코디언 속성(data-open)이 남아 있습니다');
 });
 
-test('en.html 로드맵 이름이 04 카드와 겹치지 않는다', () => {
+test('en.html 로드맵 두 행이 기존 상품명을 재사용한다 — 국문과 같은 규칙', () => {
   const next = M.en.slice(M.en.indexOf('id="next"'));
   const block = next.slice(0, next.indexOf('</section>'));
   const names = (block.match(/<p class="rm-name">[\s\S]*?<\/p>/g) || [])
     .map((s) => s.replace(/<[^>]*>/g, '').replace(/^\d+/, '').trim());
-
-  assert.ok(names.indexOf('Deadline management') === -1,
-    '로드맵이 지금 쓸 수 있는 상품과 같은 이름을 씁니다: ' + names);
-  assert.strictEqual((block.match(/class="rm-diff"/g) || []).length, 2,
-    '구분 문구가 두 항목 모두에 있어야 합니다');
+  assert.deepStrictEqual(names, ['Export pre-check', 'Deadline tracking'],
+    '로드맵 두 행이 상품명 재사용이 아닙니다: ' + JSON.stringify(names));
+  /* 금액·오픈월 금지는 국문과 같습니다(test/roadmap-no-price.test.js 와 같은 취지). */
+  assert.ok(!/₩|\$|\d+\s*월/.test(block), '로드맵에 금액·오픈월이 들어왔습니다');
 });
 
-test('en.html 안심 문구가 히어로 직하가 아니다', () => {
+test('en.html 안심 문구가 결 CTA 뒤, 상품소개 앞이다 — 국문과 같은 순서', () => {
   const b = B.en;
-  const cards = b.indexOf('id="cards-title"');
+  const act = b.indexOf('id="act-title"');
   const assure = b.indexOf('id="assure-title"');
-  assert.ok(cards !== -1 && assure !== -1, '기준 블록을 찾지 못했습니다');
-  assert.ok(assure > cards,
-    '안심 문구가 아직 04 카드보다 앞에 있습니다 — 무엇을 파는지 보기 전에 선긋기를 합니다');
-  assert.strictEqual((b.match(/The decision is always yours/g) || []).length, 1,
+  const cards = b.indexOf('id="cards-title"');
+  assert.ok(act !== -1 && assure !== -1 && cards !== -1, '기준 블록을 찾지 못했습니다');
+  assert.ok(act < assure && assure < cards,
+    '순서가 결 CTA → 안심 문구 → 상품소개 가 아닙니다');
+  assert.strictEqual((b.match(/Find out what to check first/g) || []).length, 1,
     '같은 선언이 두 번 나옵니다');
 });
 
@@ -541,4 +668,98 @@ test('en.html 푸터 태그라인이 한 기능만 말하지 않는다', () => {
     '태그라인이 3기능 중 하나만 말합니다: ' + tag);
   assert.ok(/check/i.test(tag) && /deadline/i.test(tag),
     '확인(문서대조·바이어확인)과 기한관리를 함께 담고 있지 않습니다: ' + tag);
+});
+
+/*
+ * 🔴 **랜딩의 주 CTA 는 사전 확인(/en-check)을 경유합니다** 〔구조결정 A안 · 2026-08-16〕.
+ *    옛 en.html 은 `/precheck?lang=en` 으로 **국문 접수 폼**에 곧장 보냈고, 도착지에서
+ *    「이 폼은 한국어 전용」 안내를 만나는 흐름이었습니다. 이제 영문 경로가 끝까지
+ *    영문입니다. ⛔ `?lang=en` 을 영문 페이지에 되살리지 마십시오.
+ */
+test('영문 경로가 끝까지 영문이다 — 국문 페이지로 새지 않는다', () => {
+  const KO_ONLY = ['/precheck', '/check', '/refund', '/privacy'];
+  for (const en of ['en.html', 'en-check.html', 'en-precheck.html', 'en-refund.html']) {
+    const hrefs = [...strip(read(en)).matchAll(/href="(\/[^"]*)"/g)].map((m) => m[1]);
+    for (const h of hrefs) {
+      const path = h.split(/[?#]/)[0];
+      assert.ok(!KO_ONLY.includes(path),
+        en + ' 에 국문 페이지로 가는 링크가 있습니다: ' + h);
+    }
+    /* ⚠️ CSS·JS 주석까지 걷고 봅니다. en-precheck.html 은 `.lang-notice` **CSS 규칙**을
+          국문과 1:1 로 두려고 남겨 뒀고, 그 블록의 주석이 `?lang=en` 을 인용합니다 —
+          주석을 안 걷으면 그 인용이 오탐이 됩니다(이 파일 머리 ⚠️ 와 같은 이유). */
+    const code = strip(read(en))
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .replace(/(^|[^:])\/\/.*$/gm, '$1');
+    assert.ok(code.indexOf('lang=en') === -1,
+      en + ' 에 `?lang=en`(국문 폼 안내 배너 스위치)이 남아 있습니다');
+  }
+  /* 히어로·결 CTA 둘 다 사전 확인을 지납니다 — 국문(/check)과 같은 배선입니다. */
+  const heroCta = /<a id="hero-cta"[^>]*href="\/en-check"/.test(M.en);
+  assert.ok(heroCta, 'en.html 히어로 CTA 가 /en-check 로 가지 않습니다');
+  assert.ok(/<a class="btn btn-primary btn-full" href="\/en-check">/.test(section(M.en, 'act')),
+    'en.html 결 CTA 가 /en-check 로 가지 않습니다');
+});
+
+/*
+ * 언어 짝 — hreflang 은 **양쪽이 서로를 가리켜야** 검색엔진이 인정합니다.
+ * 한쪽만 넣으면 무시되고, 그 실패는 화면이 멀쩡해서 몇 주 뒤에 발견됩니다.
+ */
+test('국문·영문이 hreflang 으로 서로를 가리킨다', () => {
+  const PAIRS = [
+    ['index.html', 'en.html', 'https://trops.kr/', 'https://trops.kr/en'],
+    ['check.html', 'en-check.html', 'https://trops.kr/check', 'https://trops.kr/en-check'],
+    ['precheck.html', 'en-precheck.html', 'https://trops.kr/precheck', 'https://trops.kr/en-precheck'],
+    ['refund.html', 'en-refund.html', 'https://trops.kr/refund', 'https://trops.kr/en-refund'],
+  ];
+  for (const [ko, en, koUrl, enUrl] of PAIRS) {
+    for (const [file, label] of [[ko, '국문'], [en, '영문']]) {
+      const m = strip(read(file));
+      for (const [lang, url] of [['ko', koUrl], ['en', enUrl], ['x-default', koUrl]]) {
+        assert.ok(
+          m.indexOf('<link rel="alternate" hreflang="' + lang + '" href="' + url + '">') !== -1,
+          file + '(' + label + ') 에 hreflang="' + lang + '" → ' + url + ' 이 없습니다'
+        );
+      }
+    }
+  }
+});
+
+/*
+ * 🔴 **접수 폼의 계약은 언어와 무관합니다** — `name=` 은 서버(api/intake.js)가 읽는
+ *    이름이고, `data-doctype` 은 사전 확인이 넘기는 값을 받는 자리이며, 문서 종류
+ *    <option> 의 `value`·`disabled` 는 서버 목록(DOC_TYPES)과 짝입니다.
+ *    영문판에서 **라벨만** 바뀌어야 하고, 하나라도 옮기면 영문 접수만 조용히 400 이 됩니다.
+ */
+test('en-precheck 의 폼 계약이 국문과 글자 그대로 같다', () => {
+  const ko = strip(read('precheck.html'));
+  const en = strip(read('en-precheck.html'));
+
+  const names = (s) => (s.match(/\sname="[^"]+"/g) || []);
+  assert.deepStrictEqual(names(en), names(ko), 'name= 이 다릅니다');
+
+  const doctypes = (s) => (s.match(/\sdata-doctype="[^"]+"/g) || []);
+  assert.deepStrictEqual(doctypes(en), doctypes(ko), 'data-doctype 이 다릅니다');
+
+  /* <option> 의 value·selected·disabled. 라벨(텍스트)만 떼고 비교합니다. */
+  const opts = (s) => (s.match(/<option[^>]*>/g) || []);
+  assert.deepStrictEqual(opts(en), opts(ko), '<option> 의 value·selected·disabled 가 다릅니다');
+
+  assert.ok(en.indexOf('name="preSessionKey"') !== -1, '사전 확인 세션키 필드가 사라졌습니다');
+});
+
+/*
+ * 가격 노출 위치 — 국문과 **같은 자리**여야 합니다. `.pay-area` 는 유료 경로를 고른
+ * 뒤에만 열리므로, 이용자가 금액을 보는 시점은 결제수단을 입력하는 화면 하나뿐입니다
+ * (흐름 md §0-2 「비용 노출 없음」). ⛔ 이 영역 밖으로 옮기지 마십시오.
+ */
+test('en-precheck 의 가격이 국문과 같은 자리에만 있다', () => {
+  const en = body(read('en-precheck.html'));
+  const payArea = en.slice(en.indexOf('id="pay-area"'), en.indexOf('id="intake-submit"'));
+  assert.ok(payArea.indexOf('₩300,000') !== -1, '결제 영역에 금액이 없습니다');
+
+  /* 화면에 보이는 곳은 결제 영역과, 두 겹으로 닫힌 .plans 카드뿐입니다. */
+  const outside = en.replace(payArea, '').replace(/<div class="plans"[\s\S]*?<\/div>\s*<\/label>\s*<\/div>/, '');
+  assert.ok(outside.indexOf('₩300,000') === -1,
+    '가격이 결제 영역 밖에 노출됐습니다 — 접수를 시작하기도 전에 금액을 마주칩니다');
 });

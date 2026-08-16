@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>사전 확인 — TROPS</title>
+<title>Pre-check — TROPS</title>
 <!-- 🔴 이 네 줄에 「NDA」를 넣지 마십시오 (흐름 md §1 · index.html <head> 와 같은 규칙).
      타이틀·메타에 「NDA」가 보이는 순간 「기밀서류를 대놓고 요구하는 곳」이라는
      방어기제가 작동해 자료제출 자체가 막힙니다. 「NDA」는 화면 안에서, 이미 신뢰관계가
@@ -11,11 +11,11 @@
      자리입니다(작업 6).
      🔴 「진단」·「상담」도 금지어입니다. 이 페이지의 이름은 「사전 확인」입니다
         (URL 만 `prestep`/`check` 로 굳었고, 사람이 읽는 글자는 전부 「사전 확인」). -->
-<meta name="description" content="보내시기 전에, 어디쯤인지 먼저 확인해 보세요. 세 가지만 여쭤봅니다. 서류가 아직 없어도 괜찮습니다.">
-<meta property="og:title" content="사전 확인 — TROPS">
-<meta property="og:description" content="보내시기 전에, 어디쯤인지 먼저 확인해 보세요. 세 가지만 여쭤봅니다.">
+<meta name="description" content="Before you send it, find out where you stand first. Three quick questions. It’s fine if you don’t have a document yet.">
+<meta property="og:title" content="Pre-check — TROPS">
+<meta property="og:description" content="Before you send it, find out where you stand first. Three quick questions.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://trops.kr/check">
+<meta property="og:url" content="https://trops.kr/en-check">
 <!-- ⚠️ noindex 가 여기 있었습니다 〔2026-08-14 · 작업 6 완료로 제거〕.
      기준은 순번이 아니라 「결과 화면이 실제로 무언가를 보여주는가」였고(작업 5·7 이
      먼저 들어오면서 한 번 바뀐 기준입니다), S4 가 3블록을 그리게 된 지금 그 조건이
@@ -24,7 +24,7 @@
         noindex 를 얹으면 되돌리는 데 몇 주가 걸립니다 — 고치는 동안에도 화면은
         무언가를 보여주고 있어야 합니다(fail-open 과 같은 태도입니다). -->
 <!-- hreflang 은 양쪽이 서로를 가리켜야 검색엔진이 인정합니다 — 한쪽만 있으면 무시됩니다.
-     en-check.html <head> 에도 같은 3줄이 있습니다. 한쪽만 고치지 마십시오.
+     check.html <head> 에도 같은 3줄이 있습니다. 한쪽만 고치지 마십시오.
      ⚠️ 영문 경로는 `/en/check` 가 아니라 `/en-check` 입니다 — 이 저장소의 영문 페이지는
         하위 폴더가 아니라 형제 파일입니다(scripts/build-static.js STATIC.html 주석). -->
 <link rel="alternate" hreflang="ko" href="https://trops.kr/check">
@@ -512,7 +512,7 @@
 </style>
 </head>
 <body>
-  <a href="#main" class="skip">본문으로 건너뛰기</a>
+  <a href="#main" class="skip">Skip to content</a>
 
   <!-- ===== Nav =====
        랜딩과 같은 헤더입니다. 앵커 3종은 **이 페이지 안이 아니라 랜딩을 가리킵니다** —
@@ -521,11 +521,11 @@
           되돌리면 링크가 조용히 죽습니다. -->
   <nav class="nav">
     <div class="container nav-inner">
-      <a href="/" class="wordmark" aria-label="TROPS 홈">TROPS</a>
+      <a href="/en" class="wordmark" aria-label="TROPS home">TROPS</a>
       <div class="nav-links">
-        <a href="/#service">서비스</a>
-        <a href="/#how">이용 방법</a>
-        <a href="/#qna">자주 묻는 질문</a>
+        <a href="/en#service">Service</a>
+        <a href="/en#how">How it works</a>
+        <a href="/en#qna">FAQ</a>
       </div>
       <div class="nav-right">
         <!-- 🔴 이 페이지에서 상시로 열려 있어야 하는 문입니다 (설계서 §5-1 G1).
@@ -540,7 +540,7 @@
                 「문항 위」라는 위치가 핵심입니다(§1-3). 한쪽만 지우지 마십시오.
              ⚠️ data-bypass 가 붙어 있습니다. 저장 호출이 이 표시로 우회 클릭을 셉니다
                 (exited_via='bypass_link' · 페이지 하단 스크립트). -->
-        <a class="nav-quiet" href="/precheck" data-bypass>바로 비교해 보기</a>
+        <a class="nav-quiet" href="/en-precheck" data-bypass>Compare now</a>
       </div>
     </div>
   </nav>
@@ -573,8 +573,8 @@
          으로 바꿨습니다. 이 페이지는 어디쯤인지만 말하고 좋고 나쁨을 판정하지
          않는다는 설계 원칙이 위 eyebrow(「사전 확인」)에도 이미 깔려 있습니다. -->
     <header class="feat-panel-pad" id="check-intro">
-      <p class="eyebrow-quiet">사전 확인</p>
-      <h1 class="h3">30초 사전 확인</h1>
+      <p class="eyebrow-quiet">Pre-check</p>
+      <h1 class="h3">30-second pre-check</h1>
     </header>
 
     <!-- ===== S1~S4 =====
@@ -612,32 +612,32 @@
       <div class="feat-panel-pad">
         <p class="step-count eyebrow-quiet">
           <span aria-live="polite">1 / 3</span>
-          <a href="/precheck" data-bypass>바로 비교해 보기 →</a>
+          <a href="/en-precheck" data-bypass>Compare now →</a>
         </p>
         <!-- 제목과 보조문을 한 덩이로 묶습니다 — .feat-panel-pad 는 자식 사이를 24px 로
              벌리므로, 따로 두면 제목과 그 보조문이 남남처럼 떨어집니다. -->
         <div>
-          <h2 class="h3" id="step-1-title" tabindex="-1">지금 어느 단계에 있으신가요?</h2>
+          <h2 class="h3" id="step-1-title" tabindex="-1">Where are things right now?</h2>
           <!-- 🔴 이 한 줄이 Q1 의 축을 「상태」가 아니라 「사건」으로 고정합니다(T8).
                연락도 왔고 서류도 받은 사람은 상태로 물으면 둘 다 참이라 답이 갈립니다.
                지우면 같은 상황이 두 값으로 저장되어 검수 우선순위가 랜덤화됩니다(§2-3). -->
-          <p>가장 최근에 있었던 일 하나만 골라주세요.</p>
+          <p>Pick the one thing that happened most recently.</p>
         </div>
         <div class="form-purpose opt-list" id="step-1-opts" role="radiogroup" aria-labelledby="step-1-title">
-          <label class="purpose-opt opt-row"><input type="radio" name="situation" value="not_started"><span data-title>아직 시작 전이에요</span></label>
-          <label class="purpose-opt opt-row"><input type="radio" name="situation" value="talk_invited"><span data-title>해외에서 이야기를 나누자는 연락이 왔어요</span></label>
+          <label class="purpose-opt opt-row"><input type="radio" name="situation" value="not_started"><span data-title>I haven’t started yet</span></label>
+          <label class="purpose-opt opt-row"><input type="radio" name="situation" value="talk_invited"><span data-title>Someone overseas reached out to talk</span></label>
           <!-- ⛔ 「서류를 주고받는 중이에요」로 되돌리지 마십시오 〔F-1〕. 「주고받는」은
                상호적으로 읽혀서, 한 장 받기만 한 사람이 위 보기로 빠집니다. -->
-          <label class="purpose-opt opt-row"><input type="radio" name="situation" value="docs_received"><span data-title>서류를 받았어요</span></label>
-          <label class="purpose-opt opt-row"><input type="radio" name="situation" value="pre_contract"><span data-title>계약을 앞두고 있어요</span></label>
+          <label class="purpose-opt opt-row"><input type="radio" name="situation" value="docs_received"><span data-title>I received a document</span></label>
+          <label class="purpose-opt opt-row"><input type="radio" name="situation" value="pre_contract"><span data-title>A contract is coming up</span></label>
           <!-- 진행 축이 아니라 병렬 상태입니다(D2 수용구). 순서상 뒤에 두되 지우지 마십시오 —
                이 보기가 없으면 「해외 매출은 있는데 서류는 없는」 사람이 답할 칸이 없습니다. -->
-          <label class="purpose-opt opt-row"><input type="radio" name="situation" value="has_revenue"><span data-title>이미 해외에서 주문·매출이 있어요</span></label>
-          <label class="purpose-opt opt-row"><input type="radio" name="situation" value="unsure"><span data-title>잘 모르겠어요</span></label>
+          <label class="purpose-opt opt-row"><input type="radio" name="situation" value="has_revenue"><span data-title>I already have overseas orders or revenue</span></label>
+          <label class="purpose-opt opt-row"><input type="radio" name="situation" value="unsure"><span data-title>Not sure</span></label>
         </div>
         <div class="cta-row">
-          <button type="button" class="btn btn-primary" data-next hidden>다음</button>
-          <button type="button" class="btn btn-text" data-skip>건너뛰기</button>
+          <button type="button" class="btn btn-primary" data-next hidden>Next</button>
+          <button type="button" class="btn btn-text" data-skip>Skip</button>
         </div>
       </div>
     </section>
@@ -652,30 +652,30 @@
       <div class="feat-panel-pad">
         <p class="step-count eyebrow-quiet">
           <span aria-live="polite">2 / 3</span>
-          <a href="/precheck" data-bypass>바로 비교해 보기 →</a>
+          <a href="/en-precheck" data-bypass>Compare now →</a>
         </p>
         <div>
-          <h2 class="h3" id="step-2-title" tabindex="-1">해외에서 받으신 서류가 있나요?</h2>
-          <p>이메일 첨부·링크로 받으신 것도 포함이고, 여러 개 고르셔도 됩니다.</p>
+          <h2 class="h3" id="step-2-title" tabindex="-1">Have you received any documents from overseas?</h2>
+          <p>This includes anything sent by email attachment or link. You can pick more than one.</p>
         </div>
         <!-- 🔴 영문 병기는 장식이 아닙니다 〔F-8〕. 해외에서 오는 문서는 **영문 제목으로**
              옵니다 — 사용자가 대조하는 대상은 한글 용어가 아니라 파일 이름입니다.
              `Confidentiality Undertaking` 을 받은 사람이 NDA 와 같은 것인 줄 몰라
              「이름을 잘 모르는 문서」로 가는 것을 이 괄호가 막습니다. 지우지 마십시오. -->
         <div class="opt-list" id="step-2-opts" role="group" aria-labelledby="step-2-title">
-          <label class="consent opt-row"><input type="checkbox" name="docs" value="nda"><span><span data-title>NDA·비밀유지계약서</span><br><span class="consent-body">(NDA / Confidentiality Agreement / Undertaking)</span></span></label>
-          <label class="consent opt-row"><input type="checkbox" name="docs" value="sales_contract"><span><span data-title>매매계약서</span><br><span class="consent-body">(Sales Contract / Purchase Agreement)</span></span></label>
-          <label class="consent opt-row"><input type="checkbox" name="docs" value="quote_pi"><span><span data-title>견적서·PI</span><br><span class="consent-body">(Quotation / Proforma Invoice / Term Sheet)</span></span></label>
-          <label class="consent opt-row"><input type="checkbox" name="docs" value="service_license"><span><span data-title>용역·라이선스 계약서</span><br><span class="consent-body">(Service / License / Publishing Agreement)</span></span></label>
-          <label class="consent opt-row"><input type="checkbox" name="docs" value="other_doc"><span><span data-title>이름을 잘 모르는 문서가 있어요</span></span></label>
+          <label class="consent opt-row"><input type="checkbox" name="docs" value="nda"><span><span data-title>NDA</span><br><span class="consent-body">(NDA / Confidentiality Agreement / Undertaking)</span></span></label>
+          <label class="consent opt-row"><input type="checkbox" name="docs" value="sales_contract"><span><span data-title>Sales contract</span><br><span class="consent-body">(Sales Contract / Purchase Agreement)</span></span></label>
+          <label class="consent opt-row"><input type="checkbox" name="docs" value="quote_pi"><span><span data-title>Quotation / PI</span><br><span class="consent-body">(Quotation / Proforma Invoice / Term Sheet)</span></span></label>
+          <label class="consent opt-row"><input type="checkbox" name="docs" value="service_license"><span><span data-title>Service or licensing agreement</span><br><span class="consent-body">(Service / License / Publishing Agreement)</span></span></label>
+          <label class="consent opt-row"><input type="checkbox" name="docs" value="other_doc"><span><span data-title>There’s a document, but I’m not sure what it is</span></span></label>
           <!-- 🔴 `none` 은 나머지와 **양방향 상호배제**입니다(§9). 이것을 고르면 나머지가
                풀리고, 나머지 중 하나를 고르면 이것이 풀립니다. 한 방향만 걸면
                「아직 없어요 + NDA」 라는 앞뒤가 맞지 않는 레코드가 저장됩니다. -->
-          <label class="consent opt-row"><input type="checkbox" name="docs" value="none"><span><span data-title>아직 없어요</span></span></label>
+          <label class="consent opt-row"><input type="checkbox" name="docs" value="none"><span><span data-title>Not yet</span></span></label>
         </div>
         <div class="cta-row">
-          <button type="button" class="btn btn-primary" data-next>다음</button>
-          <button type="button" class="btn btn-text" data-skip>건너뛰기</button>
+          <button type="button" class="btn btn-primary" data-next>Next</button>
+          <button type="button" class="btn btn-text" data-skip>Skip</button>
         </div>
       </div>
     </section>
@@ -688,17 +688,17 @@
       <div class="feat-panel-pad">
         <p class="step-count eyebrow-quiet">
           <span aria-live="polite">3 / 3</span>
-          <a href="/precheck" data-bypass>바로 비교해 보기 →</a>
+          <a href="/en-precheck" data-bypass>Compare now →</a>
         </p>
-        <h2 class="h3" id="step-3-title" tabindex="-1">해외 거래는 어느 정도 해보셨나요?</h2>
+        <h2 class="h3" id="step-3-title" tabindex="-1">How much experience do you have trading abroad?</h2>
         <div class="form-purpose opt-list" id="step-3-opts" role="radiogroup" aria-labelledby="step-3-title">
-          <label class="purpose-opt opt-row"><input type="radio" name="experience" value="first"><span data-title>이번이 처음이에요</span></label>
-          <label class="purpose-opt opt-row"><input type="radio" name="experience" value="few"><span data-title>몇 번 해봤어요</span></label>
-          <label class="purpose-opt opt-row"><input type="radio" name="experience" value="regular"><span data-title>계속 하고 있어요</span></label>
+          <label class="purpose-opt opt-row"><input type="radio" name="experience" value="first"><span data-title>This is my first time</span></label>
+          <label class="purpose-opt opt-row"><input type="radio" name="experience" value="few"><span data-title>I’ve done it a few times</span></label>
+          <label class="purpose-opt opt-row"><input type="radio" name="experience" value="regular"><span data-title>I do it regularly</span></label>
         </div>
         <div class="cta-row">
-          <button type="button" class="btn btn-primary" data-next hidden>다음</button>
-          <button type="button" class="btn btn-text" data-skip>건너뛰기</button>
+          <button type="button" class="btn btn-primary" data-next hidden>Next</button>
+          <button type="button" class="btn btn-text" data-skip>Skip</button>
         </div>
       </div>
     </section>
@@ -721,7 +721,7 @@
              ⛔ 여기에 판정을 넣지 마십시오. 「~에 해당합니다」·「~이십니다」는 §2-1
                 금지 어법입니다. 이 제목은 **화면의 이름**이지 사람에 대한 진술이
                 아닙니다. -->
-        <h2 class="h3" id="step-result-title" tabindex="-1">사전 확인 결과</h2>
+        <h2 class="h3" id="step-result-title" tabindex="-1">Pre-check results</h2>
 
         <!-- ── 블록1. 되짚기 ── 조건부입니다 (설계서 §2-6 표시 규칙) ──────────────
              값(<strong>)만 JS 가 채웁니다. 그 글자는 위 문항의 <span data-title> 을
@@ -732,8 +732,8 @@
              🔴 두 행이 모두 비표시 대상이면 이 <div> 통째로 내리고 블록2 로 바로 갑니다.
                 빈 상자만 남으면 「뭔가 나왔어야 하는데 안 나왔다」로 읽힙니다. -->
         <div id="result-recap" hidden>
-          <p id="recap-docs-row" hidden>받으신 서류: <strong id="recap-docs"></strong></p>
-          <p id="recap-situation-row" hidden>상황: <strong id="recap-situation"></strong></p>
+          <p id="recap-docs-row" hidden>Received: <strong id="recap-docs"></strong></p>
+          <p id="recap-situation-row" hidden>Situation: <strong id="recap-situation"></strong></p>
         </div>
 
         <!-- ── 블록2. 문서가 등장하는 순간 ── 분기 없음, 항상 같은 문구 ────────────
@@ -745,19 +745,19 @@
                 않은 채 「NDA를 받으시면」이라는 블록3 을 만납니다. 지우지 마십시오.
              ⛔ 칸을 늘리거나 줄이지 마십시오 — 세 칸이 「문서가 오는 순서」라는 진술
                 자체입니다. -->
-        <p id="result-lead">해외 거래에서 서류는 보통 이 순서로 옵니다.</p>
+        <p id="result-lead">In an overseas deal, documents usually come in this order.</p>
         <div class="flow" id="result-stages">
           <div class="flow-row">
-            <p class="flow-name"><span class="flow-num">(1)</span><span>진지한 이야기가 시작될 때</span></p>
-            <p class="flow-desc">NDA·비밀유지계약서<br>NDA는 본격적인 이야기를 시작하기 전에, 서로 알게 된 내용을 밖에 알리지 않기로 적어두는 문서입니다.</p>
+            <p class="flow-name"><span class="flow-num">(1)</span><span>When serious talks begin</span></p>
+            <p class="flow-desc">NDA / Confidentiality Agreement<br>An NDA is something you sign before serious talks begin, agreeing to keep what each side learns confidential.</p>
           </div>
           <div class="flow-row">
-            <p class="flow-name"><span class="flow-num">(2)</span><span>조건을 정할 때</span></p>
-            <p class="flow-desc">견적서·PI·매매계약서</p>
+            <p class="flow-name"><span class="flow-num">(2)</span><span>When terms are being set</span></p>
+            <p class="flow-desc">Quotation / PI / Sales contract</p>
           </div>
           <div class="flow-row">
-            <p class="flow-name"><span class="flow-num">(3)</span><span>계속 거래하기로 할 때</span></p>
-            <p class="flow-desc">유통·라이선스 계약</p>
+            <p class="flow-name"><span class="flow-num">(3)</span><span>When you agree to keep working together</span></p>
+            <p class="flow-desc">Distribution / licensing agreement</p>
           </div>
         </div>
 
@@ -769,7 +769,7 @@
                 임의로 정하고, 그 순간 근거 없는 주장이 나갑니다.
              ⚠️ 두 <span> 이 동시에 켜지는 경우가 있습니다(other_doc + 다른 값). 그때는
                 「놓이는 자리: ① · ②」 아래에 「어느 자리인지는 서류를 봐야」가 함께 섭니다. -->
-        <p class="result-place" id="result-place" role="status" hidden><span id="result-place-known" hidden>받으신 서류가 놓이는 자리: <strong id="result-place-marks"></strong></span><span id="result-place-unknown" hidden>받으신 서류가 어느 자리인지는 서류를 봐야 알 수 있습니다.</span></p>
+        <p class="result-place" id="result-place" role="status" hidden><span id="result-place-known" hidden>Where your document sits: <strong id="result-place-marks"></strong></span><span id="result-place-unknown" hidden>We’d need to see the document to know where it fits.</span></p>
 
         <!-- docs = none 또는 결측일 때 위치 표시를 **대체**합니다(§2-6 F-5).
              🔴 이 두 문장에 시간 위계어를 넣지 마십시오 — 「아직」·「~ 전입니다」·
@@ -777,7 +777,7 @@
                 *"내가 아직이라고?"* 로 읽혀 판단 금지 원칙에 실질 저촉했습니다. v3 는
                 시간어를 전부 걷고 **종류 차이**(「서로 다른 흐름」)로만 서술합니다.
                 사실관계는 같고 위계만 사라집니다. -->
-        <p class="result-place" id="result-none" hidden>주문으로 이어지는 판매와, 문서를 주고받는 거래는 서로 다른 흐름입니다. 위 (1)에 해당하는 서류를 받으시면, 그때 쓰시는 도구입니다.</p>
+        <p class="result-place" id="result-none" hidden>Making a sale and handling document-based deals are two different tracks. Once you receive a document matching (1) above, that’s when this tool comes in.</p>
 
         <!-- ── 블록3. 다음 행동 ── 서류 있음 / 서류 없음 두 갈래 ─────────────────
              ⚠️ 갈림의 기준은 **docs 하나**입니다(situation 아님). 위 위치 표시와 같은
@@ -792,9 +792,9 @@
                프리필만 안 될 뿐 접수는 그대로 됩니다(fail-open). -->
           <div id="cta-has-docs" hidden>
             <div class="cta-row">
-              <a class="btn btn-primary btn-full" id="cta-send-docs" href="/precheck">이 서류 비교해 보기</a>
+              <a class="btn btn-primary btn-full" id="cta-send-docs" href="/en-precheck">Compare this document</a>
             </div>
-            <p>공개된 표준 서식과 항목별로 비교해서, 어디가 다른지 위치를 보여드립니다.</p>
+            <p>We compare it against a public standard form, item by item, and show you exactly where it differs.</p>
           </div>
           <!-- 서류 없음 — 이메일은 **랜딩의 문의 폼(§10)**이 받습니다.
                /check 안에 이메일 칸을 두지 않은 이유: 그 절차는 이름·개인정보 동의가
@@ -814,9 +814,9 @@
                #interest 에서 그 칸에 바로 타이핑하면 됩니다. -->
           <div id="cta-no-docs" hidden>
             <div class="cta-row">
-              <a class="btn btn-primary btn-full" id="cta-notify-me" href="/?focus=inquiry#interest">문의하기</a>
+              <a class="btn btn-primary btn-full" id="cta-notify-me" href="/en?focus=inquiry#interest">Contact us</a>
             </div>
-            <p>연락처를 남겨주시면, 서비스가 개발 되는대로 연락드리겠습니다.</p>
+            <p>Let us know your contact details and we’ll reach out as we build out the service.</p>
           </div>
         </div>
       </div>
@@ -825,7 +825,7 @@
     <!-- JS 가 꺼져 있으면 문항 전환이 동작하지 않습니다. 그때도 갈 곳은 남깁니다
          (구현계획서 §9 마지막 행). -->
     <noscript>
-      <p><a class="btn btn-primary" href="/precheck">바로 비교해 보기</a></p>
+      <p><a class="btn btn-primary" href="/en-precheck">Compare now</a></p>
     </noscript>
   </main>
 
@@ -836,30 +836,30 @@
         <!-- 태그라인은 index.html · precheck.html 과 같은 문구입니다.
              ⚠️ 고칠 때 그 두 곳도 함께 고치십시오
                 (test/naming-consistency.test.js 가 두 값이 같은지 봅니다). -->
-        <span class="footer-meta">수출 사전점검 · 바이어 확인 · 기한 관리 · contact@theo-ne.com</span>
+        <span class="footer-meta">Export pre-check · Buyer check · Deadline tracking · contact@theo-ne.com</span>
       </div>
-      <nav class="footer-links" aria-label="정책">
-        <a href="/precheck">수출 사전점검</a>
-        <a href="/refund">환불규정</a>
-        <a href="/privacy">개인정보처리방침</a>
-        <a href="/">TROPS 홈</a>
+      <nav class="footer-links" aria-label="Policies">
+        <a href="/en-precheck">Export pre-check</a>
+        <a href="/en-refund">Refund policy</a>
+        <a href="/en-privacy">Privacy policy</a>
+        <a href="/en">TROPS home</a>
       </nav>
 
-      <dl class="footer-biz" aria-label="사업자정보">
-        <div><dt>상호명</dt><dd>{{biz.companyName}}</dd></div>
-        <div><dt>대표자명</dt><dd>{{biz.ceo}}</dd></div>
-        <div><dt>사업자등록번호</dt><dd>{{biz.registrationNo}}</dd></div>
+      <dl class="footer-biz" aria-label="Business information">
+        <div><dt>Company</dt><dd>{{biz.companyName}}</dd></div>
+        <div><dt>CEO</dt><dd>{{biz.ceo}}</dd></div>
+        <div><dt>Business Registration No.</dt><dd>{{biz.registrationNo}}</dd></div>
         <!-- 값은 전부 site.config.json 이 원본입니다(2026-08-11 단일소스화).
              통신판매업신고번호가 확정되면 그 파일의 biz.ko.ecommerceNo 만 고치십시오 —
              국문 페이지가 함께 따라옵니다. 여기를 직접 고치지 마십시오. -->
-        <div><dt>통신판매업신고번호</dt><dd>{{biz.ecommerceNo}}</dd></div>
-        <div><dt>사업장주소</dt><dd>{{biz.address}}</dd></div>
-        <div><dt>전화번호</dt><dd>{{biz.phone}}</dd></div>
+        <div><dt>E-Commerce Registration No.</dt><dd>{{biz.ecommerceNo}}</dd></div>
+        <div><dt>Address</dt><dd>{{biz.address}}</dd></div>
+        <div><dt>Phone</dt><dd>{{biz.phone}}</dd></div>
       </dl>
 
       <div class="footer-legal">
         <p>TROPS · {{biz.companyName}}</p>
-        <p>※ TROPS는 무역 서류 대조 및 수출 데이터 관리를 지원하는 B2B 무역 서비스이며, 법률 자문이나 법률 대리 서비스를 제공하지 않습니다.</p>
+        <p>※ TROPS is a B2B trade service supporting trade document comparison and export data management. It does not provide legal advice or legal representation.</p>
         <p>© 2026 TROPS · {{biz.companyName}}. All rights reserved.</p>
       </div>
     </div>
@@ -1198,7 +1198,7 @@
         v = DOCTYPE_OF[state.docs[k]];
         if (v && indexOf(mapped, v) === -1) mapped.push(v);
       }
-      var href = '/precheck?pre=' + encodeURIComponent(state.sessionKey);
+      var href = '/en-precheck?pre=' + encodeURIComponent(state.sessionKey);
       if (mapped.length) href += '&docs=' + encodeURIComponent(mapped.join(','));
       el('cta-send-docs').href = href;
     }
