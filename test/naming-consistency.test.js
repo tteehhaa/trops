@@ -621,6 +621,43 @@ test('영문 5종의 화면 문구에 한글이 남아 있지 않다', () => {
   }
 });
 
+/*
+ * 🔴 **영문 화면 문구에 em dash(—)를 쓰지 않습니다** 〔2026-08-17 · 대표 지시〕.
+ *
+ * 국문은 그대로 씁니다 — 이 규칙은 영문 문면에만 걸립니다. 영문 원고를 처음 옮길 때
+ * 국문의 「—」 자리를 그대로 따라가 문장마다 붙어 있었고, 영문에서는 그 빈도가
+ * 기계가 쓴 문장처럼 읽힙니다.
+ *
+ * 지울 때 **글자만 빼지 마십시오.** 자리마다 뜻이 다릅니다:
+ *   문장 안의 삽입    → 마침표로 끊거나 쉼표로 잇습니다
+ *   타이틀·옵션 구분  → 이 저장소가 이미 쓰는 가운뎃점(·)
+ *   기관명 동격       → 쉼표
+ *   대체 텍스트 설명  → 콜론
+ *
+ * ⚠️ en dash(–)는 **그대로 둡니다.** 숫자 범위(3–5 business days)에 쓰는 것이
+ *    영문에서 옳은 표기이고, 지시하신 「—」와 다른 글자입니다.
+ */
+test('영문 화면 문구에 em dash 가 없다', () => {
+  const EN_PAGES = ['en.html', 'en-check.html', 'en-precheck.html', 'en-refund.html', 'en-privacy.html'];
+  for (const f of EN_PAGES) {
+    /* 주석은 뺍니다 — 인수인계 주석은 국문이고 거기 「—」가 자유롭게 쓰입니다. */
+    const code = strip(read(f))
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+      .replace(/(^|[^:])\/\/.*$/gm, '$1');
+    const hit = code.split('\n').filter((l) => l.includes('—'));
+    assert.strictEqual(hit.length, 0,
+      f + ' 에 em dash 가 있습니다:\n' + hit.map((l) => '    ' + l.trim().slice(0, 120)).join('\n'));
+  }
+  /* 고객에게 나가는 영문 메일·문면도 같은 규칙입니다 — 화면과 메일이 다른 문체를
+     쓰면 같은 서비스로 안 읽힙니다. 국문 줄은 이 검사에서 뺍니다. */
+  for (const f of ['api/_notify.js', 'api/_intake-route.js']) {
+    const hit = read(f).split('\n')
+      .filter((l) => l.includes('—') && !/[가-힣]/.test(l));
+    assert.strictEqual(hit.length, 0,
+      f + ' 의 영문 문면에 em dash 가 있습니다:\n' + hit.map((l) => '    ' + l.trim().slice(0, 120)).join('\n'));
+  }
+});
+
 /* ── 이름 ─────────────────────────────────────────────────────────────────── */
 
 test('en.html 상품 탭 3개가 국문 3상품과 1:1 로 대응한다', () => {
