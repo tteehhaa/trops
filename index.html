@@ -2591,6 +2591,19 @@
     Array.prototype.forEach.call(form.querySelectorAll('input[name="purpose"]'), function (radio) {
       radio.addEventListener('change', syncSubmitLabel);
     });
+
+    /* ---------- 페이지 간 목적 지정 (2026-08-16 · check.html → index.html) ----------
+       위 [data-purpose] 클릭 처리는 **같은 페이지 안**에서만 동작합니다(클릭 이벤트가
+       index.html 자신에 걸려 있어야 하므로). check.html 의 「문의하기」(서류 없음 CTA)는
+       다른 페이지에서 넘어오므로 클릭 이벤트로 잡을 수 없습니다 — 대신 도착 URL 에
+       `?purpose=inquiry` 를 실어 보내고, 여기서 쿼리를 읽어 같은 일을 합니다.
+       ⚠️ JS 가 죽어도 앵커 이동(#interest)은 그대로 되고, 방문자가 라디오만 직접
+          고르면 됩니다 — fail-open. */
+    if (new URLSearchParams(window.location.search).get('purpose') === 'inquiry') {
+      var inquiryRadio = form.querySelector('input[name="purpose"][value="inquiry"]');
+      if (inquiryRadio) inquiryRadio.checked = true;
+    }
+
     syncSubmitLabel();
 
     /* [문의하기] 링크는 <a href="#interest"> 그대로 둡니다 — 앵커 기본동작으로 이동하고,

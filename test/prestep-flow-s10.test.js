@@ -300,14 +300,14 @@ test('블록2 3칸이 정본 문구 그대로다 (§2-6)', () => {
   }
 });
 
-test('NDA 정의 한 줄이 ① 안에 있다 — 모든 경로가 지나가는 유일한 설명이다 (§2-6)', () => {
+test('NDA 정의 한 줄이 (1) 안에 있다 — 모든 경로가 지나가는 유일한 설명이다 (§2-6)', () => {
   const def = 'NDA는 본격적인 이야기를 시작하기 전에, 서로 알게 된 내용을 밖에 알리지 않기로 적어두는 문서입니다.';
   assert.ok(S4.indexOf(def) !== -1,
     'NDA 정의가 없습니다 — docs=none 을 고른 사람은 Q2 보기를 읽지 않고 지나가므로, ' +
-    '이 줄이 없으면 NDA 가 한 번도 설명되지 않은 채 「NDA를 받으시면」이라는 블록3 을 만납니다');
-  // ① 칸 안에 있어야 합니다. ② 칸이 시작되기 전에 나와야 한다는 뜻입니다.
+    '이 줄이 없으면 NDA 가 한 번도 설명되지 않은 채 「문의하기」라는 블록3 을 만납니다');
+  // (1) 칸 안에 있어야 합니다. (2) 칸이 시작되기 전에 나와야 한다는 뜻입니다.
   assert.ok(S4.indexOf(def) < S4.indexOf('조건을 정할 때'),
-    'NDA 정의가 ① 칸 밖에 있습니다 — ① 안에 두는 것이 「모든 경로가 이 줄을 한 번 지나간다」의 조건입니다');
+    'NDA 정의가 (1) 칸 밖에 있습니다 — (1) 안에 두는 것이 「모든 경로가 이 줄을 한 번 지나간다」의 조건입니다');
 });
 
 test('블록2 는 마크업에 정적으로 있고 조건이 걸려 있지 않다 (§5-1 「항상 표시」)', () => {
@@ -321,23 +321,25 @@ test('블록2 는 마크업에 정적으로 있고 조건이 걸려 있지 않�
     '사람이 빈 화면을 봅니다');
 });
 
-test('①②③ 표기가 한 벌로 통일돼 있다 (칸 기호 = 위치 표시 기호)', () => {
+/* 🔄 기호를 ①②③(원문자) → (1)(2)(3) 로 바꿨습니다 〔2026-08-16 · 대표 피드백
+ * 「가독성 떨어짐」〕. 검사 취지(칸 기호 = 위치 표시 기호)는 그대로입니다. */
+test('(1)(2)(3) 표기가 한 벌로 통일돼 있다 (칸 기호 = 위치 표시 기호)', () => {
   const marks = (S4.match(/class="flow-num">([^<]+)</g) || []).map((s) => s.slice(s.indexOf('>') + 1, -1));
-  assert.deepStrictEqual(marks, ['①', '②', '③'],
-    '결과 화면 3칸의 기호가 ①②③ 이 아닙니다 — 위치 표시가 「① · ②」로 가리키므로 ' +
+  assert.deepStrictEqual(marks, ['(1)', '(2)', '(3)'],
+    '결과 화면 3칸의 기호가 (1)(2)(3) 이 아닙니다 — 위치 표시가 「(1) · (2)」로 가리키므로 ' +
     '칸에 찍힌 기호가 같아야 그 줄이 무언가를 가리킵니다(랜딩의 01·02·03 과 섞지 마십시오)');
-  for (const mark of ['①', '②', '③']) {
+  for (const mark of ['(1)', '(2)', '(3)']) {
     assert.ok(JS.indexOf("'" + mark + "'") !== -1, '위치 표시 매핑에 ' + mark + ' 가 없습니다');
   }
 });
 
 test('위치 표시는 docs(Q2)로만 계산하고 other_doc·none 을 배정하지 않는다 (F-7)', () => {
   const map = JS.slice(JS.indexOf('var PLACE_OF'), JS.indexOf('var DOCTYPE_OF'));
-  assert.ok(/nda:\s*'①'/.test(map) && /sales_contract:\s*'②'/.test(map) &&
-    /quote_pi:\s*'②'/.test(map) && /service_license:\s*'③'/.test(map),
+  assert.ok(/nda:\s*'\(1\)'/.test(map) && /sales_contract:\s*'\(2\)'/.test(map) &&
+    /quote_pi:\s*'\(2\)'/.test(map) && /service_license:\s*'\(3\)'/.test(map),
     '위치 표시 매핑이 정본(§2-6 F-7 표)과 다릅니다');
   assert.ok(map.indexOf('other_doc') === -1 && map.indexOf('none') === -1,
-    'other_doc·none 이 ①②③ 중 하나로 배정됐습니다 — 모르는 것을 모른다고 쓰는 것이 ' +
+    'other_doc·none 이 (1)(2)(3) 중 하나로 배정됐습니다 — 모르는 것을 모른다고 쓰는 것이 ' +
     '유일한 안전한 처리입니다. 배정하는 순간 근거 없는 주장이 화면에 나갑니다');
   // situation(Q1) 값이 위치 계산에 섞이면 「우리가 아는 것으로만 진술한다」가 깨집니다.
   for (const v of ['docs_received', 'pre_contract', 'has_revenue', 'talk_invited', 'not_started']) {
@@ -360,7 +362,7 @@ test('docs=none 문안에 시간 위계어가 없다 (F-5 · §2-1)', () => {
   const at = B.indexOf('id="result-none"');
   const line = B.slice(at, B.indexOf('</p>', at));
   assert.ok(line.indexOf('주문으로 이어지는 판매와, 문서를 주고받는 거래는 서로 다른 흐름입니다.') !== -1 &&
-    line.indexOf('위 ①에 해당하는 서류를 받으시면, 그때 쓰시는 도구입니다.') !== -1,
+    line.indexOf('위 (1)에 해당하는 서류를 받으시면, 그때 쓰시는 도구입니다.') !== -1,
     'docs=none 문안이 정본과 다릅니다');
   for (const word of ['아직', '전입니다', '먼저', '다음 단계']) {
     assert.ok(line.indexOf(word) === -1,
@@ -380,16 +382,20 @@ test('블록1 되짚기의 값을 JS 로 복사하지 않고 화면 글자를 �
   }
 });
 
+/* 🔄 대표 수정안(2026-08-16) — 「서류 없음」 갈래를 곧장 [문의하기]로 바꿨습니다.
+ *    옛 라벨(「NDA를 받으시면 그때 보내주세요」)·문구(「이메일을 남겨두시면…」)와
+ *    목적지(파라미터 없는 /#interest)는 더 이상 정본이 아닙니다. */
 test('블록3 두 갈래 문구와 행선지가 정본과 같다 (§2-6)', () => {
   assert.ok(S4.indexOf('이 서류 비교해 보기') !== -1 &&
     S4.indexOf('공개된 표준 서식과 항목별로 비교해서, 어디가 다른지 위치를 보여드립니다.') !== -1,
     '서류 있음 CTA 가 정본과 다릅니다');
-  assert.ok(S4.indexOf('NDA를 받으시면 그때 보내주세요') !== -1 &&
-    S4.indexOf('이메일을 남겨두시면, 보내는 방법을 한 번만 알려드립니다.') !== -1,
+  assert.ok(S4.indexOf('>문의하기<') !== -1 &&
+    S4.indexOf('맞춤 서비스 개발 되는대로 연락드리겠습니다.') !== -1,
     '서류 없음 CTA 가 정본과 다릅니다');
-  assert.ok(/id="cta-notify-me"[^>]*href="\/#interest"|href="\/#interest"[^>]*id="cta-notify-me"/.test(S4),
-    '알림 등록이 랜딩 §10 으로 가지 않습니다 — 이메일은 이름·개인정보 동의가 함께 있어야 ' +
-    '접수됩니다(api/leads.js). /check 안에 이메일 칸을 만들려면 그쪽이 먼저입니다');
+  assert.ok(/id="cta-notify-me"[^>]*href="\/\?purpose=inquiry#interest"|href="\/\?purpose=inquiry#interest"[^>]*id="cta-notify-me"/.test(S4),
+    '문의 CTA 가 랜딩 §10 문의 목적(?purpose=inquiry)으로 가지 않습니다 — 이메일은 ' +
+    '이름·개인정보 동의가 함께 있어야 접수됩니다(api/leads.js). /check 안에 이메일 칸을 ' +
+    '만들려면 그쪽이 먼저입니다');
 });
 
 test('블록3 클릭이 cta_clicked 를 저장하고 링크를 막지 않는다', () => {
