@@ -68,7 +68,7 @@ function options(id) {
 
 test('세 문항의 제목이 정본 그대로다', () => {
   const titles = [
-    ['step-1-title', '지금 어느 쯤에 계신가요?'],
+    ['step-1-title', '지금 어느 단계에 있으신가요?'],
     ['step-2-title', '해외에서 받으신 서류가 있나요?'],
     ['step-3-title', '해외 거래는 어느 정도 해보셨나요?'],
   ];

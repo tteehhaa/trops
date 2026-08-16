@@ -225,20 +225,46 @@ test('DB check 가 서버 목록과 같은 종류만 허용한다', () => {
   }
 });
 
-test('화면에서 고를 수 있는 종류가 서버 목록과 같다', () => {
+/*
+ * 🔴 `value="other"`(그 외 서류)를 이 대조에서 제외합니다 〔2026-08-16 · 대표 지시〕.
+ * disabled 도 아니고 서버 DOC_TYPES 에도 없는 **세 번째 부류**입니다 — 고를 수는
+ * 있지만 제출 값이 아니라 [문의하기]로 돌리는 스위치입니다. 아래 두 번째 테스트가
+ * 그 스위치가 실제로 제출을 막는지(JS 정적 확인)를 봅니다.
+ */
+test('화면에서 고를 수 있는 종류가 서버 목록과 같다 (그 외 서류 제외)', () => {
   const html = fs.readFileSync(path.join(ROOT, 'precheck.html'), 'utf8');
   const select = html.match(/<select id="intake-doc-type"[\s\S]*?<\/select>/);
   assert.ok(select, 'precheck.html 에 문서 종류 선택 상자가 없습니다');
 
   const options = select[0].match(/<option[^>]*>/g) || [];
   const enabled = options
-    .filter((o) => o.indexOf('disabled') === -1)
+    .filter((o) => o.indexOf('disabled') === -1 && o.indexOf('value="other"') === -1)
     .map((o) => (o.match(/value="([^"]*)"/) || [])[1]);
 
   assert.deepStrictEqual(enabled, intake.DOC_TYPES,
-    '화면에서 고를 수 있는 종류가 서버가 받는 종류와 다릅니다');
-  assert.ok(options.length > enabled.length,
+    '화면에서 고를 수 있는 종류(그 외 서류 제외)가 서버가 받는 종류와 다릅니다');
+  assert.ok(options.length > enabled.length + 1,
     '준비중 옵션이 하나도 없습니다 — 흐름 md §5 는 확장 예정을 이 자리에서 보여 주라고 합니다');
+  assert.ok(select[0].indexOf('value="other"') !== -1,
+    '[그 외 서류] 옵션이 없습니다');
+  assert.ok(!/value="other"[^>]*disabled|disabled[^>]*value="other"/.test(select[0]),
+    '[그 외 서류]가 disabled 입니다 — 활성화(선택 가능)가 요구사항입니다');
+});
+
+test('[그 외 서류]를 고르면 제출을 막고 문의하기로 안내한다', () => {
+  const html = fs.readFileSync(path.join(ROOT, 'precheck.html'), 'utf8');
+  assert.ok(/id="doc-type-other"[^>]*hidden[^>]*>[\s\S]*?문의하기/.test(html) ||
+    /id="doc-type-other"[\s\S]{0,10}hidden[\s\S]*?문의하기/.test(html),
+    '[그 외 서류] 선택 시 보일 문의하기 안내(#doc-type-other)가 없습니다');
+  assert.ok(/purpose=inquiry#interest/.test(html),
+    '문의하기 안내가 랜딩 §10 의 문의 목적(?purpose=inquiry)으로 연결되지 않습니다');
+
+  const script = html.slice(html.indexOf('<script>'));
+  assert.ok(/docType === 'other'/.test(script) || /docType==='other'/.test(script),
+    'onSubmit 에 docType===\'other\' 방어선이 없습니다 — 버튼 잠금이 어떤 이유로 풀려도 ' +
+    '서버가 400 으로 조용히 막는 대신, 여기서 사람이 알아볼 수 있는 안내로 막아야 합니다');
+  assert.ok(/isOther/.test(script),
+    '[그 외 서류] 선택 시 제출 버튼을 잠그는 처리가 없습니다');
 });
 
 /* ── ④ 로그인 필드가 들어오지 않았는가 ───────────────────────────────────── */
