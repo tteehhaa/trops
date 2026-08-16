@@ -43,12 +43,18 @@ function roadmap(file) {
 const KO = roadmap('index.html');
 const EN = roadmap('en.html');
 
-test('국문 로드맵 두 행이 「가격 미정 · 준비중」이다', () => {
+/* 🔄 「가격 미정 · 준비중」→「준비 중」 〔2026-08-16 · v-next 전면교체〕. 로드맵 두 행이
+   기존 상품명을 재사용하면서 가격 언급 자체를 걷었습니다 — 가격 미노출 원칙은
+   아래 「로드맵에 금액이 없다」 테스트가 계속 지킵니다. en.html 은 이번 교체 밖이라
+   옛 표기(Pricing to follow · Coming soon) 그대로입니다.
+   🔄 대표 수정안(같은 날 2차) — 01행 배지가 「준비 중」→「현재 일부 동작 및 추가
+   개발 중」으로 바뀌었습니다. 02행은 「준비 중」 그대로입니다. */
+test('국문 로드맵 두 행에 가격 표기 없이 진행 상태 배지가 있다', () => {
   const metas = (KO.match(/<p class="rm-meta">([^<]*)<\/p>/g) || [])
     .map((s) => s.replace(/<[^>]*>/g, '').trim());
 
   assert.strictEqual(metas.length, 2, '로드맵 행이 ' + metas.length + '개입니다');
-  assert.deepStrictEqual(metas, ['가격 미정 · 준비중', '가격 미정 · 준비중'],
+  assert.deepStrictEqual(metas, ['현재 일부 동작 및 추가 개발 중', '준비 중'],
     '로드맵 표기가 바뀌었습니다: ' + JSON.stringify(metas));
 });
 

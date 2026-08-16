@@ -70,13 +70,15 @@ const INDEX_JS = scripts(INDEX_RAW);
 
 test('🔴 랜딩 헤드라인을 반복하지 않는다 — 설득은 index.html 에서 끝났다', () => {
   /*
-   * 종전 히어로는 index.html 확정본 §2 의 H1(「첫 수출이라 / 무엇부터 봐야 할지
+   * 종전 히어로는 index.html 의 H1(「첫 해외 거래라 / 무엇부터 봐야 할지
    * 모르겠다면.」)을 글자 그대로 복제하고 있었습니다. 그 문장을 읽고 눌러서 넘어온
    * 사람에게 같은 문장을 다시 보여 주면, 눌린 것이 아무 일도 하지 않은 것처럼 읽힙니다.
+   * 🔄 단언 문자열을 index.html 의 현재 H1(「첫 수출이라」→「첫 해외 거래라」)에
+   *    맞춰 갱신했습니다 — 이 사이클과 무관한 이전 배치에서 이미 바뀌어 있었습니다.
    */
-  assert.ok(PRECHECK.indexOf('첫 수출이라') === -1,
+  assert.ok(PRECHECK.indexOf('첫 해외 거래라') === -1,
     'precheck 에 랜딩 H1 이 그대로 남아 있습니다');
-  assert.ok(INDEX.indexOf('첫 수출이라') !== -1,
+  assert.ok(INDEX.indexOf('첫 해외 거래라') !== -1,
     '원본(index.html)의 H1 까지 사라졌습니다 — 여기서 지울 것이 아니었습니다');
 });
 

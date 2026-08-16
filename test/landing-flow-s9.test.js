@@ -49,24 +49,30 @@ function section(className) {
   return M.slice(start, end);
 }
 
-/* ── S1 KOTRA 신뢰신호 재배치 ─────────────────────────────────────────────── */
+/* ── S1 KOTRA 신뢰신호 재배치 (2026-08-13) → 삭제 (2026-08-16 대표 수정안 3차) ── */
 
-test('KOTRA 신뢰신호가 마감 CTA 안에 있다 — 문의하기 버튼 옆', () => {
-  const close = section('close-cta');
-  assert.ok(close.indexOf('KOTRA 멘토 네트워크') !== -1,
-    '마감 CTA 에 KOTRA 신뢰신호가 없습니다');
-  assert.ok(close.indexOf('data-purpose="inquiry"') !== -1,
-    '같은 섹션에 [문의하기] 버튼이 없으면 「버튼 옆」이 성립하지 않습니다');
+/*
+ * 🔴 KOTRA 신뢰신호 문장("초기 서비스는 KOTRA 멘토 네트워크에 먼저 배정됩니다.")을
+ * 대표가 마감 CTA 에서 완전히 삭제했습니다 — 아래 두 옛 테스트("KOTRA 신뢰신호가
+ * 마감 CTA 안에 있다" / "KOTRA 문구가 페이지에 딱 한 번만 나온다")는 문구 **존재**를
+ * 검증했는데 이제 전제가 반대(문구 **부재**)가 되어 제거했습니다. 대신 아래에서
+ * 완전히 사라졌는지만 확인합니다. 같은 배치로 마감 CTA 의 [기한관리 미리보기]
+ * 버튼도 함께 삭제됐습니다 — 이제 마감 CTA 에는 [문의하기] 하나만 남습니다.
+ */
+test('KOTRA 신뢰신호 문구가 페이지 어디에도 없다', () => {
+  // ⚠️ 「KOTRA」 자체를 셀 수는 없습니다 — 11 기관안내 섹션의 "KOTRA 해외무역관"은
+  //    이번 삭제와 무관한 별개 항목이라 그대로 남아 있어야 합니다.
+  const hits = (BODY.match(/KOTRA 멘토 네트워크/g) || []).length;
+  assert.strictEqual(hits, 0, 'KOTRA 신뢰신호 문구가 화면에 ' + hits + '번 남아 있습니다');
 });
 
-test('🔴 KOTRA 문구가 페이지에 딱 한 번만 나온다', () => {
-  /*
-   * 두 곳에 두면 #interest 쪽이 「기한관리 출시 알림 신청」의 신뢰신호로 읽힙니다 —
-   * 흐름 md §4 가 「트래킹 대기자 등록에 붙어있던 문구를 재배치」 라고 지적한
-   * 바로 그 상태입니다. 옮기는 것이지 복제하는 것이 아닙니다.
-   */
-  const hits = (BODY.match(/KOTRA 멘토 네트워크/g) || []).length;
-  assert.strictEqual(hits, 1, 'KOTRA 문구가 화면에 ' + hits + '번 나옵니다 (1번이어야 합니다)');
+test('마감 CTA 에는 [문의하기] 버튼 하나만 있다', () => {
+  const close = section('close-cta');
+  assert.ok(close.indexOf('data-purpose="inquiry"') !== -1, '[문의하기] 버튼이 없습니다');
+  assert.strictEqual((close.match(/class="btn /g) || []).length, 1,
+    '마감 CTA 의 버튼이 하나가 아닙니다 — [기한관리 미리보기]는 삭제된 상태여야 합니다');
+  assert.ok(close.indexOf('data-timeline-open') === -1,
+    '마감 CTA 에 [기한관리 미리보기] 트리거가 남아 있습니다');
 });
 
 test('#interest 폼에는 KOTRA 문구가 없다', () => {
@@ -348,15 +354,25 @@ test('같은 곳으로 가는 버튼은 같은 말을 쓴다 — /precheck 는 �
    *    이제 /check(사전 확인 3문항)로 갑니다 — 목적지가 달라졌으므로 라벨도 달라야 하고
    *    (「30초 만에 알아보기」), 같은 이유로 이 검사의 대상이 아닙니다. 여기 규칙은 여전히
    *    「같은 목적지면 같은 말」이고, 히어로는 더 이상 같은 목적지가 아닙니다.
-   *    따라서 자리는 넷, 그중 주버튼은 06 결 하나뿐입니다.
+   *
+   * 🔴 2026-08-16 대표 수정안 — **06 결 버튼도 이 목록에서 뺐습니다.** 대표가 결 CTA
+   *    라벨을 「비교해 보기」→「30초 만에 알아보기」로 직접 지정했습니다. 목적지는
+   *    /precheck 그대로입니다(변경 지시 없음) — 즉 이번만은 **목적지가 같은데 라벨이
+   *    다른**, 이 검사가 원래 막으려던 것과 정반대 조합입니다. 결과적으로 「30초 만에
+   *    알아보기」라는 같은 문구가 서로 다른 두 목적지(히어로→/check, 결→/precheck)로
+   *    갈리게 됩니다 — 이 파일이 판단할 사안이 아니라 대표가 인지하고 있어야 할
+   *    사안이라 여기서는 막지 않고 기록만 남깁니다.
+   *    따라서 이 검사가 보는 자리는 셋(탭1 · 탭2 · HOW 하단)뿐입니다.
    */
   const links = (BODY.match(/<a[^>]*class="[^"]*\bbtn\b[^"]*"[^>]*>[^<]*<\/a>/g) || []);
-  const toPrecheck = links.filter((a) => /href="\/precheck"/.test(a));
-  assert.ok(toPrecheck.length >= 4,
-    '/precheck 로 가는 버튼이 ' + toPrecheck.length + '개입니다 — 탭1 · 탭2 · ' +
-    'HOW 하단 · 06 결 네 자리가 있어야 합니다');
+  const toPrecheck = links.filter((a) => /href="\/precheck"/.test(a) && !/id="hero-cta"/.test(a));
+  // 06 결 버튼(act-row 안, /precheck 목적지)은 위 사유로 이 검사에서 제외합니다.
+  const toPrecheckExcludingAct = toPrecheck.filter((a) => a.indexOf('30초 만에 알아보기') === -1);
+  assert.ok(toPrecheckExcludingAct.length >= 3,
+    '/precheck 로 가는 「비교해 보기」 버튼이 ' + toPrecheckExcludingAct.length + '개입니다 — ' +
+    '탭1 · 탭2 · HOW 하단 세 자리가 있어야 합니다(06 결은 대표 지정으로 예외)');
 
-  for (const a of toPrecheck) {
+  for (const a of toPrecheckExcludingAct) {
     const label = a.replace(/<[^>]*>/g, '').trim();
     assert.strictEqual(label, '비교해 보기',
       '/precheck 로 가는데 라벨이 「' + label + '」입니다 — 같은 곳으로 가는 문은 같은 말을 ' +

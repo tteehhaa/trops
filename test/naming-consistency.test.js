@@ -282,14 +282,16 @@ test('기한관리 패널은 페이지에 하나뿐이다 — 트리거만 늘�
     '패널이 ' + panels + '개입니다 — 복제하면 지도 에셋이 여러 번 로드되고 상태가 갈립니다');
 
   /*
-   * 🔄 4 → 3. 옛 04 2층카드의 트리거가 위 사유로 사라졌습니다.
+   * 🔄 3 → 2 → 1 〔2026-08-16 · v-next 전면교체 + 대표 수정안 3차〕. 히어로 CTA 가
+   *    3개→2개로 줄면서 히어로의 [기한관리 미리보기] 트리거가 사라졌고, 이어서
+   *    마감 CTA 의 [기한관리 미리보기] 버튼도 삭제되며 로드맵 한 곳만 남았습니다.
    * ⚠️ **B.index(본문)로 셉니다.** M.index 는 HTML 주석만 걷으므로 <style>·<script>
    *    안의 주석에 인용된 [data-timeline-open] 이 그대로 섞여 들어옵니다 — 그러면
    *    트리거를 지워도 이 검사가 통과합니다(실제로 그런 상태였습니다).
    */
   const triggers = (B.index.match(/data-timeline-open/g) || []).length;
-  assert.strictEqual(triggers, 3,
-    '트리거가 ' + triggers + '개입니다 — 히어로·로드맵·마감 CTA 세 곳이어야 합니다');
+  assert.strictEqual(triggers, 1,
+    '트리거가 ' + triggers + '개입니다 — 로드맵 한 곳이어야 합니다(히어로·마감 CTA는 삭제)');
 });
 
 /*
@@ -323,29 +325,35 @@ test('nav 앱 링크에 「준비중」이 없다 — 실측으로 열리는 것
     '「준비중」이 남아 있습니다 — 루트는 로그인 없이 열리고 예시 지도가 그려집니다');
 });
 
-test('로드맵 두 항목이 지금 파는 상품과 어떻게 다른지 밝힌다', () => {
-  const next = M.index.slice(M.index.indexOf('id="next"'));
-  const block = next.slice(0, next.indexOf('</section>'));
-
-  const diffs = (block.match(/class="rm-diff"/g) || []).length;
-  assert.strictEqual(diffs, 2, '구분 문구가 ' + diffs + '개입니다 — 두 항목 모두에 필요합니다');
-
-  assert.ok(block.indexOf('「수출 사전점검」과는 다른 상품입니다') !== -1,
-    '「확인 항목 요약 자료」가 「수출 사전점검」과 다른 상품이라는 문구가 없습니다 — ' +
-    '지금 파는 상품 이름이 바뀌면 이 구분 문구도 함께 바뀝니다(안 바꾸면 없는 상품과 비교합니다)');
-  assert.ok(block.indexOf('「기한 관리」의 확장판입니다') !== -1,
-    '「거래 운영」과 「기한 관리」의 관계(확장판)가 명시되지 않았습니다');
-});
-
-test('「거래 운영」과 「기한 관리」는 이름이 겹치지 않는다', () => {
+/*
+ * 🔄 **로드맵 구분 문구(.rm-diff)를 걷었습니다** 〔2026-08-16 · v-next 전면교체〕.
+ *    로드맵 두 행이 기존 3상품명 중 두 개(「수출 사전점검」·「기한 관리」)를 그대로
+ *    재사용하는 쪽으로 대표가 확정했습니다 — 이제 이름 자체가 "지금 쓸 수 있는
+ *    상품의 확장분"임을 말하므로, 별도 구분 문구가 필요 없어졌습니다.
+ *    아래 옛 두 테스트(구분 문구 존재 확인 / 이름 비충돌 확인)는 전제가 반대로
+ *    뒤집혀 제거했습니다 — 지금은 로드맵이 기존 상품명을 재사용하는 것 자체가
+ *    승인된 설계입니다.
+ * 🔄 대표 수정안(2026-08-16, 같은 날 2차) — 01행 배지가 「준비 중」→「현재 일부
+ *    동작 및 추가 개발 중」으로, 01행에만 보충 문구(.rm-note)가 추가됐습니다.
+ *    02행은 「준비 중」 그대로입니다.
+ */
+test('로드맵 두 행이 기존 상품명을 재사용한다', () => {
   const next = M.index.slice(M.index.indexOf('id="next"'));
   const block = next.slice(0, next.indexOf('</section>'));
   const names = (block.match(/<p class="rm-name">[\s\S]*?<\/p>/g) || [])
     .map((s) => s.replace(/<[^>]*>/g, '').replace(/^\d+/, '').trim());
 
-  assert.ok(names.indexOf('거래 운영') !== -1, '로드맵 02 이름이 「거래 운영」이 아닙니다: ' + names);
-  assert.ok(names.indexOf('기한 관리') === -1,
-    '로드맵이 지금 파는 상품과 같은 이름을 씁니다 — 같은 페이지가 두 상품을 한 이름으로 부릅니다');
+  assert.deepStrictEqual(names, ['수출 사전점검', '기한 관리'],
+    '로드맵 두 행의 이름이 상품명 정본과 다릅니다: ' + JSON.stringify(names));
+
+  const metas = (block.match(/<p class="rm-meta">([^<]*)<\/p>/g) || [])
+    .map((s) => s.replace(/<[^>]*>/g, '').trim());
+  assert.deepStrictEqual(metas, ['현재 일부 동작 및 추가 개발 중', '준비 중'],
+    '로드맵 배지가 예상 문구와 다릅니다: ' + JSON.stringify(metas));
+  assert.ok(!/가격|₩|원\b|미정/.test(block), '로드맵에 가격 관련 표기가 남아 있습니다');
+
+  const notes = (block.match(/<p class="rm-note">[\s\S]*?<\/p>/g) || []).length;
+  assert.strictEqual(notes, 1, '01행 보충 문구(.rm-note)가 정확히 1개여야 합니다 — 02행에는 없어야 합니다: ' + notes);
 });
 
 test('푸터 태그라인이 index 와 precheck 에서 같다', () => {
@@ -440,8 +448,12 @@ test('안심 문구가 결 CTA 뒤에 있다 — 감정선 안에 끼지 않는�
     '말한다」는 차별점(정본 §2-2 우선순위 1번)이 사라집니다');
 });
 
+/* 🔄 h2 문구가 v-next 전면교체(2026-08-16)와 같은 날 대표 수정안으로 세 번
+   바뀌었습니다 — 「결정은 언제나 대표님 것입니다」→「무엇을 더 확인할지, 먼저
+   찾을 수 있습니다.」→「무엇을 먼저 확인할지, 먼저 알아 볼 수 있습니다.」→
+   「무엇을 먼저 확인해야 하는지, 빠르게 알아 볼 수 있습니다.」 */
 test('안심 문구가 하나뿐이다 — 옛 자리에 남기지 않았다', () => {
-  const n = (B.index.match(/결정은 언제나 대표님 것입니다/g) || []).length;
+  const n = (B.index.match(/무엇을 먼저 확인해야 하는지, 빠르게 알아 볼 수 있습니다/g) || []).length;
   assert.strictEqual(n, 1, '같은 선언이 ' + n + '번 나옵니다');
 });
 
