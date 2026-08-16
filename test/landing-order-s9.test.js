@@ -44,15 +44,32 @@ const CSS = RAW.match(/<style[\s\S]*?<\/style>/)[0].replace(/\/\*[\s\S]*?\*\//g,
  *    한 섹션이 심박을 올렸다(경고) 내리는(근거) 일을 하지 않게 갈랐고, 「무엇을 근거로
  *    비교하는지」가 **비교를 설명한 뒤**에 오도록 근거를 상품 뒤로 내렸습니다.
  */
+/*
+ * 🔴 **두 섹션이 자리를 바꿨습니다** 〔2026-08-16 · docs/a3/trops_A3_최종구조_정리.md §2〕.
+ *      상품소개(3탭 카드)  스토리 직후  →  안심문구 **뒤**
+ *      HOW IT WORKS       안심문구 뒤  →  경고 **직후**
+ *    A3 §2 가 정한 최종 순서(헤더→히어로→스토리→HOW→근거→안심→3탭카드→QnA→…)를 그대로
+ *    옮긴 것이고, **문구는 한 글자도 바꾸지 않았습니다 — 이동만** 했습니다(A3 §2 명시).
+ *
+ *    왜 이 조합인가: 「무엇을 파는가」의 상세(3탭)는 한 줄기 서사(경고→HOW→근거→결→안심)가
+ *    끝난 뒤 궁금해진 사람이 읽는 것입니다. 서사 한가운데 카탈로그가 있으면 감정선이 거기서
+ *    끊깁니다. 상품 이름이 페이지 앞쪽에서 아주 사라지지 않도록 히어로에 미니 신호
+ *    (A3 §3 · .hero-signal)를 같은 배치에서 신설해 세 탭으로 앵커를 걸었습니다.
+ *
+ * ⚠️ **배경 규칙은 한 줄도 고치지 않았습니다.** 두 섹션이 **서로** 자리를 바꾸면서 아래
+ *    bg 열이 저절로 맞아떨어졌기 때문입니다. 둘 중 **하나만** 옮기면 그 자리에서 연속
+ *    배경이 생기고, 그 아래 6개 섹션(HOW·로드맵·FAQ·마감CTA·폼·기관안내)의 배경을 전부
+ *    뒤집어야 O7 이 다시 통과합니다. 한쪽만 되돌리지 마십시오.
+ */
 const LAYOUT = [
   { name: '히어로',        key: '<section class="container hero">',        bg: 'bg' },
   { name: '경험담(승)',    key: '<section class="stories-sec',             bg: 'surface' },
   { name: '경고(전)',      key: '<section class="trust"',                  bg: 'dark' },
-  { name: '상품소개',      key: '<section class="cards-sec" id="service"', bg: 'bg' },
+  { name: 'HOW IT WORKS',  key: '<section class="how" id="how">',          bg: 'bg' },
   { name: '근거(전)',      key: '<section class="basis',                   bg: 'surface' },
   { name: '결 CTA',        key: '<section class="act"',                    bg: 'bg' },
   { name: '안심문구',      key: '<section class="assure',                  bg: 'surface' },
-  { name: 'HOW IT WORKS',  key: '<section class="how" id="how">',          bg: 'bg' },
+  { name: '상품소개',      key: '<section class="cards-sec" id="service"', bg: 'bg' },
   { name: '로드맵',        key: 'id="next"',                               bg: 'surface' },
   { name: 'FAQ',           key: '<section class="qna"',                    bg: 'bg' },
   { name: '마감CTA',       key: '<section class="close-cta',               bg: 'surface' },
@@ -84,21 +101,38 @@ test('O1 섹션 순서가 배치표와 정확히 일치한다', () => {
  *    「신뢰증명 < 상품소개」 하나였고, 그때 신뢰증명은 경고와 근거를 **함께** 지고
  *    있었습니다. 둘을 가르고 나니 두 블록이 상품을 사이에 두고 갈라 앉습니다.
  */
-test('O2 경고 → 상품 → 근거 순이다 — 각성시킨 뒤 답을 주고, 그 답의 기준을 밝힌다', () => {
+/*
+ * 🔄 **가운데 한 칸이 상품소개에서 HOW 로 바뀌었습니다** 〔2026-08-16 · A3 §2〕.
+ *    s13 이 세운 것은 「근거 h2 의 **「비교」가 가리킬 대상이 앞에 있어야 한다**」였고,
+ *    그때 그 선행사는 상품 탭1 의 요약이었습니다. A3 §2 가 상품소개를 안심문구 뒤로
+ *    내리면서 그 짝이 끊겼고, **바로 위로 올라온 HOW 02 가 같은 낱말을 이어받았습니다**:
+ *        HOW 02   「공개된 서식과 항목별로 **비교**해서 다른 부분을 표시합니다.」
+ *        근거 h2  「무엇을 근거로 **비교**하는지 밝힙니다.」
+ *    한 섹션 건너가 아니라 **바로 앞 문장**이 선행사가 됐으므로 s13 이 지키려던 것은
+ *    더 짧은 거리로 지켜집니다. 그래서 단언 대상만 갈아 끼우고 사유는 그대로 둡니다.
+ */
+test('O2 경고 → HOW → 근거 순이다 — 각성시킨 뒤 답을 주고, 그 답의 기준을 밝힌다', () => {
   const warn = M.indexOf('<section class="trust"');
-  const cards = M.indexOf('<section class="cards-sec" id="service"');
+  const how = M.indexOf('<section class="how" id="how">');
   const basis = M.indexOf('<section class="basis');
-  assert.ok(warn !== -1 && cards !== -1 && basis !== -1, '기준 섹션을 찾지 못했습니다');
+  const cards = M.indexOf('<section class="cards-sec" id="service"');
+  assert.ok(warn !== -1 && how !== -1 && basis !== -1 && cards !== -1,
+    '기준 섹션을 찾지 못했습니다');
 
-  assert.ok(warn < cards,
-    '경고(무보 인용문)가 상품소개 뒤에 있습니다 — 감정선(기-승-전-결)이 뒤집혀 「상품을 ' +
-    '보여준 뒤 각성시킨다」가 됩니다. 그 각성 없이 본 상품 탭은 그냥 기능 목록입니다.');
+  assert.ok(warn < how,
+    '경고(무보 인용문)가 HOW 뒤에 있습니다 — 감정선(기-승-전-결)이 뒤집혀 「방법을 ' +
+    '설명한 뒤 각성시킨다」가 됩니다. 그 각성 없이 읽는 방법 설명은 그냥 절차 안내입니다.');
 
-  assert.ok(cards < basis,
-    '근거 섹션(「무엇을 근거로 비교하는지 밝힙니다」)이 상품소개보다 앞에 있습니다 — 그 h2 의 ' +
+  assert.ok(how < basis,
+    '근거 섹션(「무엇을 근거로 비교하는지 밝힙니다」)이 HOW 보다 앞에 있습니다 — 그 h2 의 ' +
     '「비교」가 가리킬 대상이 아직 화면에 없습니다. 읽는 사람은 「무슨 비교?」를 안은 채 ' +
-    '근거 3줄과 캡처를 지나게 됩니다. 상품 탭이 「공개된 서식과 하나씩 비교해서」라고 ' +
+    '근거 3줄과 캡처를 지나게 됩니다. HOW 02 가 「공개된 서식과 항목별로 비교해서」라고 ' +
     '말한 **뒤**라야 이 h2 가 그 문장에 대한 대답이 됩니다.');
+
+  assert.ok(basis < cards,
+    '상품소개(3탭 카드)가 근거 섹션보다 앞에 있습니다 — A3 §2 는 3탭 카드를 안심문구 ' +
+    '**뒤**에 둡니다. 서사(경고→HOW→근거→결→안심) 한가운데로 되돌리면 감정선이 ' +
+    '카탈로그에서 끊깁니다.');
 });
 
 test('O2-b 경고 섹션은 한 문장짜리다 — 근거가 다시 붙지 않았다', () => {
@@ -476,7 +510,8 @@ test('인터랙션이 그대로다 — 탭 3개·FAQ·트리거·스크롤 등�
   // 🔄 아코디언 펼침 버튼 3개 → **탭 3개** 〔2026-08-14 · cards-tabs-s12〕.
   assert.strictEqual((M.match(/<button class="tab"/g) || []).length, 3, '상품 탭이 3개가 아닙니다');
   assert.strictEqual((M.match(/class="feat-panel"/g) || []).length, 3, '상품 패널이 3개가 아닙니다');
-  assert.strictEqual((M.match(/aria-controls="qa-\d+"/g) || []).length, 14, 'FAQ 문항이 14개가 아닙니다');
+  // 🔄 14 → 10 〔2026-08-16 · A3 §4〕. 사유는 index.html QnA 섹션 머리주석 참조.
+  assert.strictEqual((M.match(/aria-controls="qa-\d+"/g) || []).length, 10, 'FAQ 문항이 10개가 아닙니다');
   assert.strictEqual((B.match(/data-timeline-open/g) || []).length, 3,
     '기한관리 원격 트리거가 3곳(히어로·로드맵·마감 CTA)이 아닙니다');
   // 클래스 문자열 전체가 아니라 「stat-line 에 reveal 이 붙어 있는가」를 봅니다 —

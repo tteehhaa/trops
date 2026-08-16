@@ -413,10 +413,21 @@ test('안심 문구가 결 CTA 뒤에 있다 — 감정선 안에 끼지 않는�
   const warn = b.indexOf('class="stat-line');
   const act = b.indexOf('id="act-title"');
   const assure = b.indexOf('id="assure-title"');
-  const how = b.indexOf('HOW IT WORKS');
+  /*
+   * 🔄 **하한 기준이 HOW 에서 FAQ 로 바뀌었습니다** 〔2026-08-16 · A3 §2〕.
+   *
+   * 종전 단언은 `assure < how` 였고, 뜻은 「안심 문구가 하단 작은 글씨로 밀리지
+   * 않는다」였습니다(섹션 머리주석의 「FAQ 쪽으로 더 내리지 마십시오」). 그때 HOW 가
+   * 안심 문구 바로 다음이었으므로 HOW 가 편의상의 하한선 노릇을 했을 뿐입니다.
+   * A3 §2 가 HOW 를 경고 직후로 **올렸으므로** 그 문면은 그대로 쓸 수 없습니다 —
+   * 지키려던 것을 원문 그대로 적으면 기준은 FAQ 입니다.
+   * ⛔ `assure < how` 로 되돌리지 마십시오. 되돌리려면 HOW 를 다시 내려야 하고,
+   *    그것은 A3 §2 배치를 되감는 일입니다(test/landing-order-s9.test.js LAYOUT).
+   */
+  const qna = b.indexOf('id="qna-title"');
 
   for (const [n, v] of [['hero', hero], ['stories', stories], ['warn', warn],
-    ['act', act], ['assure', assure], ['how', how]]) {
+    ['act', act], ['assure', assure], ['qna', qna]]) {
     assert.ok(v !== -1, '기준 블록을 찾지 못했습니다: ' + n);
   }
   // 감정선 기 - 승 - 전 - 결이 끊기지 않고 이어지는가.
@@ -424,7 +435,9 @@ test('안심 문구가 결 CTA 뒤에 있다 — 감정선 안에 끼지 않는�
     '감정선 순서가 기(히어로) - 승(경험담) - 전(경고) - 결(행동)이 아닙니다');
   assert.ok(assure > act,
     '안심 문구가 감정선 안에 끼어 있습니다 — 결(행동) 다음이어야 방어가 아니라 안심으로 읽힙니다');
-  assert.ok(assure < how, '안심 문구가 HOW 설명보다 뒤로 밀렸습니다');
+  assert.ok(assure < qna,
+    '안심 문구가 FAQ 뒤로 밀렸습니다 — 하단 작은 글씨가 되면 「본문 크기로 한 번 제대로 ' +
+    '말한다」는 차별점(정본 §2-2 우선순위 1번)이 사라집니다');
 });
 
 test('안심 문구가 하나뿐이다 — 옛 자리에 남기지 않았다', () => {

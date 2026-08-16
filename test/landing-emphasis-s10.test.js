@@ -353,7 +353,10 @@ test('E12 강약을 고치면서 콘텐츠·기능이 빠지지 않았다', () =
   assert.strictEqual((B.match(/role="tab"/g) || []).length, 3, '상품 탭이 3개가 아닙니다');
   assert.strictEqual((M.match(/class="feat-panel"/g) || []).length, 3, '탭 패널이 3개가 아닙니다');
   assert.strictEqual((B.match(/data-timeline-open/g) || []).length, 3, '기한관리 트리거가 3곳이 아닙니다');
-  assert.strictEqual((M.match(/aria-controls="qa-\d+"/g) || []).length, 14, 'FAQ 가 14문항이 아닙니다');
+  // 🔄 14 → 10 〔2026-08-16 · A3 §4〕. 다른 섹션과 중복이던 4문항(무엇을 기준으로
+  //    비교하나요·어디에 물어볼 수 있나요·수출 사전점검이랑 문의하기는 뭐가 달라요·
+  //    무엇을 해주나요)을 뺐습니다. 사유는 index.html QnA 섹션 머리주석 참조.
+  assert.strictEqual((M.match(/aria-controls="qa-\d+"/g) || []).length, 10, 'FAQ 가 10문항이 아닙니다');
   assert.ok(/id="interest-form"/.test(M), '사전등록 폼이 사라졌습니다');
   assert.ok(/class="btn btn-primary btn-full" href="\/precheck"/.test(M), '결 CTA 주버튼이 사라졌습니다');
 
