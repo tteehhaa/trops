@@ -933,8 +933,11 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
                       F-2 · E-4 승인 대기)로 키우지 마십시오. 그 문장은 **반영됐다**는 주장이고
                       이 문장은 **반영하지 못했다**는 사실입니다. 층이 반대입니다. -->
               <p class="field-hint" id="doc-type-unmatched" hidden>사전 확인에서 고르신 서류에 해당하는 보기가 아직 없습니다.</p>
-              <!-- [그 외 서류]를 고르면 이 안내로 바뀌고 위 것과 서로 배타적입니다(JS). -->
-              <p class="field-hint" id="doc-type-other" hidden>지금은 이 서류를 바로 대조해 드리기 어렵습니다. <a href="/?purpose=inquiry#interest">문의하기</a>로 알려주시면 확인해 드리겠습니다.</p>
+              <!-- [그 외 서류]를 고르면 이 안내로 바뀌고 위 것과 서로 배타적입니다(JS).
+                   🔄 index.html 이 목적 라디오를 걷고 이메일 아래 [문의하기] 입력창
+                   하나로 바뀌면서(2026-08-16 대표 수정안 4차), 쿼리도 `?purpose=inquiry`
+                   에서 `?focus=inquiry`(그 칸에 포커스)로 맞춰 바꿨습니다. -->
+              <p class="field-hint" id="doc-type-other" hidden>지금은 이 서류를 바로 대조해 드리기 어렵습니다. <a href="/?focus=inquiry#interest">문의하기</a>로 알려주시면 확인해 드리겠습니다.</p>
               <p class="field-hint" id="doc-type-default-hint">지금은 NDA만 대조할 수 있습니다. 나머지 서류는 준비 중입니다.</p>
             </div>
 

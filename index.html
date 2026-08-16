@@ -525,18 +525,10 @@
     background-color: var(--bg);
     color: var(--ink);
   }
-  /* ---------- 목적 선택 (2026-08-13 신설) ----------
-     「문의하기」 CTA(히어로·마감)가 이 폼으로 들어옵니다. 제출버튼이 「사전 등록하기」
-     하나뿐이면 문의하러 온 사람이 잘못 온 줄 압니다 — 목적을 먼저 고르게 하고 제출버튼
-     라벨을 JS 가 따라가게 합니다(아래 폼 IIFE).
-     ⚠️ 「상담」이라는 낱말을 쓰지 마십시오. 과거 이 단어가 유상 자문으로 오인돼 CTA 가
-        제거된 이력이 있어 명칭을 「문의하기」로 확정했습니다(흐름 md §2 · §6-2).
-     ⚠️ 목적은 선택값이 아니라 항상 하나가 켜져 있어야 합니다 — tracking 이 기본값입니다.
-        api/leads.js 도 미전송·미지원 값을 tracking 으로 폴백합니다. */
-  .form-purpose { display: flex; flex-wrap: wrap; gap: 8px 24px; }
-  .form-purpose > .purpose-legend { flex: 1 0 100%; font-size: 14px; font-weight: 600; color: var(--ink); }
-  .purpose-opt { display: flex; align-items: center; gap: 8px; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); cursor: pointer; }
-  .purpose-opt input { flex: none; width: 18px; height: 18px; margin: 0; accent-color: var(--accent); }
+  /* 🔴 .form-purpose·.purpose-legend·.purpose-opt(목적 선택 라디오)는 대표
+     수정안(2026-08-16)으로 마크업이 걷히며 죽은 규칙이 되어 삭제했습니다. 그 자리는
+     .form-row(이메일 바로 아래 [문의하기] 입력창, 이름·이메일과 같은 규칙 재사용)가
+     이어받았습니다 — 새 CSS 규칙이 필요 없습니다. */
   /* ---------- 동의 (§10 · 2026-08-11 신설) ----------
      precheck.html 의 .consents 패턴을 그대로 가져왔습니다. 두 폼이 같은 모양이어야
      이용자가 「같은 종류의 동의」로 읽습니다 — 한쪽만 고치지 마십시오.
@@ -1267,8 +1259,6 @@
     .rm-meta { grid-column: auto; }
     .cta-row { flex-direction: column; align-items: stretch; gap: 12px; }
     .cta-row .btn { width: 100%; }
-    /* 목적 선택: 두 항목이 한 줄에 들어가지 않으면 세로로 쌓습니다 */
-    .form-purpose { flex-direction: column; gap: 10px; }
   }
 
   /* 정본 §5 레이아웃 전환 — 768px 미만 */
@@ -1911,8 +1901,10 @@
             </div>
           </div>
 
-          <!-- ===== 03 기한관리 패널 — 실행버튼 [계약 등록해보기] → app.trops.kr =====
+          <!-- ===== 03 기한관리 패널 — 실행버튼 [미리보기] → app.trops.kr =====
                (결 섹션과 별도 흐름이라 중복 없음)
+               🔄 라벨을 「계약 등록해보기」→「미리보기」로 바꿨습니다〔2026-08-16 · 대표
+               지시〕. 목적지(app.trops.kr)는 그대로입니다 — 문구만 교체했습니다.
                ⚠️ 이 패널이 페이지에서 유일한 기한관리 미리보기입니다. 로드맵
                   **한 곳**의 [data-timeline-open] 트리거가 이 하나를 엽니다(히어로·마감 CTA
                   트리거는 v-next 전면교체〔2026-08-16〕와 대표 수정안 3차로 삭제됐습니다) —
@@ -1930,7 +1922,7 @@
                 <span class="feat-bullets">
                   <span>· 계약서만 있으면 시작</span>
                 </span>
-                <div><a class="btn btn-secondary" href="https://app.trops.kr/" target="_self">계약 등록해보기</a></div>
+                <div><a class="btn btn-secondary" href="https://app.trops.kr/" target="_self">미리보기</a></div>
               </div>
               <!-- ✅ **실제 화면 캡처** 〔2026-08-14 · card-shot-reveal-s11〕.
                    app.trops.kr 홈(화면 4)을 그대로 찍었습니다. 손으로 그리던 자리표시자
@@ -2210,23 +2202,10 @@
                 근거 주석은 09 마감 CTA 의 .close-cta-kotra 위에 있습니다. -->
         <h2>출시 알림 신청과 문의, 여기서 받습니다.</h2>
         <form class="interest-form" id="interest-form" novalidate>
-          <!-- 목적 선택 (2026-08-13 신설 · 흐름 md §2 CTA 표).
-               ⚠️ 항상 하나가 켜져 있어야 합니다 — tracking 이 기본값입니다. required 를 붙이지
-                  않은 이유는 checked 로 이미 보장되기 때문이고, 둘 다 꺼진 상태는 만들 수 없습니다.
+          <!-- 🔴 목적 선택 라디오(사전 등록/문의하기)는 대표 수정안(2026-08-16)으로
+               삭제했습니다 — 이메일 아래 [문의하기] 입력창 하나로 대체했습니다(아래).
                ⚠️ 「상담」이라는 낱말을 쓰지 마십시오 — 유상 자문 오인 이력이 있어 명칭을
-                  「문의하기」로 확정했습니다(흐름 md §2 · §6-2).
-               제출버튼 라벨은 아래 폼 IIFE 가 이 값에 맞춰 바꿉니다. -->
-          <div class="form-row form-purpose" role="radiogroup" aria-label="무엇을 보내실지 골라주세요">
-            <span class="purpose-legend">무엇을 보내실까요?</span>
-            <label class="purpose-opt">
-              <input type="radio" name="purpose" value="tracking" checked>
-              <span>기한관리 출시 알림 받기</span>
-            </label>
-            <label class="purpose-opt">
-              <input type="radio" name="purpose" value="inquiry">
-              <span>문의하기</span>
-            </label>
-          </div>
+                  「문의하기」로 확정했습니다(흐름 md §2 · §6-2). -->
           <div class="form-row">
             <label for="interest-name">이름 <span class="req" aria-hidden="true">*</span></label>
             <input type="text" id="interest-name" name="name" autocomplete="name" required>
@@ -2234,6 +2213,14 @@
           <div class="form-row">
             <label for="interest-email">이메일 <span class="req" aria-hidden="true">*</span></label>
             <input type="email" id="interest-email" name="email" autocomplete="email" required>
+          </div>
+          <!-- 🔴 신설 〔2026-08-16 · 대표 수정안〕. 목적 라디오를 대체합니다 — 무엇을
+               보낼지 고르게 하는 대신, 물어볼 내용을 바로 적을 수 있는 칸 하나를 이메일
+               바로 아래에 둡니다. 비워도 제출됩니다(사전 등록만 하고 싶은 사람도 있으므로
+               필수 아님). .form-row input 을 그대로 써서 이름·이메일과 크기가 같습니다. -->
+          <div class="form-row">
+            <label for="interest-inquiry">문의하기 <span class="optional">(선택)</span></label>
+            <input type="text" id="interest-inquiry" name="inquiry" autocomplete="off">
           </div>
           <div class="form-row">
             <label for="interest-company">회사명 <span class="optional">(선택)</span></label>
@@ -2583,63 +2570,37 @@
     if (!form) return;
 
     var submitBtn = form.querySelector('button[type="submit"]');
+    var inquiryInput = document.getElementById('interest-inquiry');
 
-    /* ---------- 목적 선택 연동 (2026-08-13) ----------
-       히어로·마감 CTA 의 [문의하기]에는 data-purpose="inquiry" 가 붙어 있습니다. 그 링크로
-       들어온 사람에게 「사전 등록하기」 버튼을 보여주면 잘못 온 줄 알기 때문에, 목적 라디오를
-       미리 켜 주고 제출버튼 라벨도 함께 바꿉니다.
-       ⚠️ 라벨 문구를 바꾸실 때 PURPOSE_LABEL 과 마크업의 라디오 value 를 함께 보십시오 —
-          여기 없는 value 가 들어오면 라벨이 undefined 로 찍힙니다. */
-    var PURPOSE_LABEL = { tracking: '사전 등록하기', inquiry: '문의 보내기' };
-
-    function currentPurpose() {
-      var picked = form.querySelector('input[name="purpose"]:checked');
-      /* 라디오가 없거나(구 마크업) 값이 낯설면 tracking 으로 봅니다 —
-         api/leads.js 도 같은 폴백을 갖고 있습니다. 한쪽만 고치지 마십시오. */
-      var value = picked ? picked.value : 'tracking';
-      return PURPOSE_LABEL[value] ? value : 'tracking';
-    }
-
-    function syncSubmitLabel() {
-      if (submitBtn) submitBtn.textContent = PURPOSE_LABEL[currentPurpose()];
-    }
-
-    Array.prototype.forEach.call(form.querySelectorAll('input[name="purpose"]'), function (radio) {
-      radio.addEventListener('change', syncSubmitLabel);
-    });
-
-    /* ---------- 페이지 간 목적 지정 (2026-08-16 · check.html → index.html) ----------
-       위 [data-purpose] 클릭 처리는 **같은 페이지 안**에서만 동작합니다(클릭 이벤트가
-       index.html 자신에 걸려 있어야 하므로). check.html 의 「문의하기」(서류 없음 CTA)는
-       다른 페이지에서 넘어오므로 클릭 이벤트로 잡을 수 없습니다 — 대신 도착 URL 에
-       `?purpose=inquiry` 를 실어 보내고, 여기서 쿼리를 읽어 같은 일을 합니다.
-       ⚠️ JS 가 죽어도 앵커 이동(#interest)은 그대로 되고, 방문자가 라디오만 직접
-          고르면 됩니다 — fail-open. */
-    if (new URLSearchParams(window.location.search).get('purpose') === 'inquiry') {
-      var inquiryRadio = form.querySelector('input[name="purpose"][value="inquiry"]');
-      if (inquiryRadio) inquiryRadio.checked = true;
-    }
-
-    syncSubmitLabel();
-
-    /* [문의하기] 링크는 <a href="#interest"> 그대로 둡니다 — 앵커 기본동작으로 이동하고,
-       여기서는 라디오만 미리 켭니다. preventDefault 를 넣지 마십시오. JS 가 죽어도
-       앵커 이동은 그대로 동작해야 합니다. */
-    Array.prototype.forEach.call(document.querySelectorAll('[data-purpose]'), function (el) {
+    /* ---------- [문의하기] 포커스 연동 (2026-08-16 · 대표 수정안) ----------
+       종전에는 목적 라디오(사전 등록/문의하기)를 골라서 제출버튼 라벨을 바꿨습니다.
+       라디오를 걷고 이메일 아래 [문의하기] 입력창 하나로 합치면서, 히어로·마감 CTA 의
+       [문의하기](data-purpose="inquiry")는 이제 그 칸에 포커스를 놓는 일만 합니다 —
+       눌러서 온 사람이 바로 타이핑을 시작할 수 있게.
+       ⚠️ preventDefault 를 넣지 마십시오 — 앵커 기본동작(#interest 로 스크롤)은 그대로
+          두고 포커스만 덧붙입니다. JS 가 죽어도 스크롤은 됩니다(fail-open).
+       ⚠️ setTimeout 은 앵커 스크롤이 끝나길 기다리는 용도입니다 — 스크롤 도중 포커스를
+          주면 브라우저가 다시 그 요소로 스크롤을 덧씌워 두 스크롤이 다툽니다. */
+    Array.prototype.forEach.call(document.querySelectorAll('[data-purpose="inquiry"]'), function (el) {
       el.addEventListener('click', function () {
-        var want = el.getAttribute('data-purpose');
-        var radio = form.querySelector('input[name="purpose"][value="' + want + '"]');
-        if (!radio) return;
-        radio.checked = true;
-        syncSubmitLabel();
+        if (inquiryInput) setTimeout(function () { inquiryInput.focus(); }, 300);
       });
     });
+
+    /* ---------- 페이지 간 포커스 지정 (check.html·precheck.html → index.html) ----------
+       두 페이지의 [문의하기]는 다른 페이지에서 넘어오므로 클릭 이벤트로 잡을 수 없습니다
+       — 대신 도착 URL 에 `?focus=inquiry` 를 실어 보내고, 여기서 쿼리를 읽어 같은
+       포커스를 줍니다. */
+    if (new URLSearchParams(window.location.search).get('focus') === 'inquiry' && inquiryInput) {
+      inquiryInput.focus();
+    }
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var name = document.getElementById('interest-name').value.trim();
       var email = document.getElementById('interest-email').value.trim();
       var company = document.getElementById('interest-company').value.trim();
+      var inquiry = inquiryInput ? inquiryInput.value.trim() : '';
       var consentPrivacy = document.getElementById('interest-consent-privacy').checked;
       var consentMarketing = document.getElementById('interest-consent-marketing').checked;
 
@@ -2661,15 +2622,14 @@
         return;
       }
 
-      var purpose = currentPurpose();
       submitBtn.disabled = true;
-      msg.textContent = purpose === 'inquiry' ? '보내는 중입니다...' : '등록 중입니다...';
+      msg.textContent = '등록 중입니다...';
 
       fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: name, email: email, company: company, purpose: purpose,
+          name: name, email: email, company: company, inquiry: inquiry,
           consentPrivacy: consentPrivacy, consentMarketing: consentMarketing
         })
       })
@@ -2678,18 +2638,11 @@
           return res.json();
         })
         .then(function () {
-          msg.textContent = purpose === 'inquiry'
-            ? '문의를 받았습니다. 곧 메일로 회신드리겠습니다.'
-            : '등록이 완료되었습니다. 곧 연락드리겠습니다.';
+          msg.textContent = '등록이 완료되었습니다. 곧 연락드리겠습니다.';
           form.reset();
-          /* reset() 은 라디오를 마크업 기본값(tracking)으로 되돌립니다 —
-             제출버튼 라벨을 함께 되돌리지 않으면 「문의 보내기」가 남아 다음 사람이 헷갈립니다. */
-          syncSubmitLabel();
         })
         .catch(function () {
-          msg.textContent = purpose === 'inquiry'
-            ? '문의를 보내지 못했습니다. 잠시 후 다시 시도해 주세요.'
-            : '등록에 실패했습니다. 잠시 후 다시 시도해 주세요.';
+          msg.textContent = '등록에 실패했습니다. 잠시 후 다시 시도해 주세요.';
           msg.classList.add('is-error');
         })
         .finally(function () {

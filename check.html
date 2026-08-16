@@ -795,17 +795,19 @@
                페이지에 한 벌 더 만들면 동의 UI 가 두 곳으로 갈립니다. 사전 확인 단계가
                **개인정보 0** 인 것이 「동의를 안 받아도 되는 근거」이기도 합니다(§5-2 원칙 3).
                ⛔ 여기에 이메일 입력칸을 직접 만들려면 api/leads.js 쪽 (name 선택화 ·
-                  purpose 값 신설)이 먼저입니다. 화면만 만들면 제출이 전부 400 입니다.
+                  inquiry 값 신설)이 먼저입니다. 화면만 만들면 제출이 전부 400 입니다.
 
                🔄 대표 수정안(2026-08-16) — 서류가 없어 지금 대상이 아니라고 판단되는
                사람을 곧장 [문의하기]로 보냅니다. 종전 라벨(「NDA를 받으시면 그때
-               보내주세요」)과 「기한관리 알림 등록」쪽 목적지는 걷었습니다. href 의
-               `?purpose=inquiry` 는 index.html 도착 시 문의 라디오를 미리 켭니다
-               (index.html 폼 IIFE 「목적 선택 연동」 참조) — JS 가 죽어도 앵커 이동
-               자체는 그대로 되고, #interest 에서 라디오만 직접 고르면 됩니다. -->
+               보내주세요」)과 「기한관리 알림 등록」쪽 목적지는 걷었습니다.
+               🔄 같은 날 4차 수정안 — index.html 이 목적 라디오를 걷고 이메일 아래
+               [문의하기] 입력창 하나로 바뀌면서, href 의 쿼리도 `?purpose=inquiry`
+               (라디오 선택)에서 `?focus=inquiry`(그 칸에 포커스)로 맞춰 바꿨습니다
+               (index.html 폼 IIFE 참조) — JS 가 죽어도 앵커 이동 자체는 그대로 되고,
+               #interest 에서 그 칸에 바로 타이핑하면 됩니다. -->
           <div id="cta-no-docs" hidden>
             <div class="cta-row">
-              <a class="btn btn-primary btn-full" id="cta-notify-me" href="/?purpose=inquiry#interest">문의하기</a>
+              <a class="btn btn-primary btn-full" id="cta-notify-me" href="/?focus=inquiry#interest">문의하기</a>
             </div>
             <p>연락처를 남겨주시면, 서비스가 개발 되는대로 연락드리겠습니다.</p>
           </div>

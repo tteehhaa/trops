@@ -392,8 +392,10 @@ test('블록3 두 갈래 문구와 행선지가 정본과 같다 (§2-6)', () =>
   assert.ok(S4.indexOf('>문의하기<') !== -1 &&
     S4.indexOf('연락처를 남겨주시면, 서비스가 개발 되는대로 연락드리겠습니다.') !== -1,
     '서류 없음 CTA 가 정본과 다릅니다');
-  assert.ok(/id="cta-notify-me"[^>]*href="\/\?purpose=inquiry#interest"|href="\/\?purpose=inquiry#interest"[^>]*id="cta-notify-me"/.test(S4),
-    '문의 CTA 가 랜딩 §10 문의 목적(?purpose=inquiry)으로 가지 않습니다 — 이메일은 ' +
+  // 🔄 index.html 목적 라디오 → [문의하기] 입력창(2026-08-16 대표 수정안 4차)으로
+  // 쿼리도 ?purpose=inquiry → ?focus=inquiry 로 맞춰 바뀌었습니다.
+  assert.ok(/id="cta-notify-me"[^>]*href="\/\?focus=inquiry#interest"|href="\/\?focus=inquiry#interest"[^>]*id="cta-notify-me"/.test(S4),
+    '문의 CTA 가 랜딩 §10 문의 칸 포커스(?focus=inquiry)로 가지 않습니다 — 이메일은 ' +
     '이름·개인정보 동의가 함께 있어야 접수됩니다(api/leads.js). /check 안에 이메일 칸을 ' +
     '만들려면 그쪽이 먼저입니다');
 });

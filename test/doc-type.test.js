@@ -256,8 +256,10 @@ test('[그 외 서류]를 고르면 제출을 막고 문의하기로 안내한�
   assert.ok(/id="doc-type-other"[^>]*hidden[^>]*>[\s\S]*?문의하기/.test(html) ||
     /id="doc-type-other"[\s\S]{0,10}hidden[\s\S]*?문의하기/.test(html),
     '[그 외 서류] 선택 시 보일 문의하기 안내(#doc-type-other)가 없습니다');
-  assert.ok(/purpose=inquiry#interest/.test(html),
-    '문의하기 안내가 랜딩 §10 의 문의 목적(?purpose=inquiry)으로 연결되지 않습니다');
+  // 🔄 index.html 의 목적 라디오가 [문의하기] 입력창으로 바뀌면서(2026-08-16 대표
+  // 수정안 4차) 쿼리도 ?purpose=inquiry → ?focus=inquiry 로 맞춰 바뀌었습니다.
+  assert.ok(/focus=inquiry#interest/.test(html),
+    '문의하기 안내가 랜딩 §10 의 문의 칸 포커스(?focus=inquiry)로 연결되지 않습니다');
 
   const script = html.slice(html.indexOf('<script>'));
   assert.ok(/docType === 'other'/.test(script) || /docType==='other'/.test(script),

@@ -317,7 +317,7 @@ function actionButtons(block) {
 const PANEL_CTA = {
   'feat-precheck': ['비교해 보기', '/precheck'],
   'feat-buyer': ['비교해 보기', '/precheck'],
-  'feat-timeline': ['계약 등록해보기', 'https://app.trops.kr/'],
+  'feat-timeline': ['미리보기', 'https://app.trops.kr/'], // 🔄 2026-08-16 대표 지시로 라벨 교체(목적지 불변)
 };
 
 test('세 상품 패널이 각각 실행버튼을 하나씩 갖는다', () => {
