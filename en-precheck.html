@@ -954,8 +954,8 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
             <div class="field">
               <label for="intake-files">Document from your buyer <span class="req" aria-hidden="true">*</span></label>
               <input type="file" id="intake-files" name="files" multiple
-                     accept=".pdf,.docx,.txt" required>
-              <p class="field-hint">Supported: PDF · DOCX · TXT (other formats aren’t accepted) · up to 5 files · 10MB each</p>
+                     accept=".pdf,.docx" required>
+              <p class="field-hint">Supported: PDF · DOCX (other formats aren’t accepted) · up to 5 files · 10MB each</p>
               <ul class="filelist" id="intake-filelist"></ul>
 
               <!-- 텍스트 레이어 안내 〔M-1 · 2026-08-11〕
@@ -981,10 +981,10 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
             <div class="field">
               <label for="intake-own-form">Your own company’s form <span class="optional">(optional)</span></label>
               <input type="file" id="intake-own-form" name="ownForm"
-                     accept=".pdf,.docx,.txt">
+                     accept=".pdf,.docx">
               <p class="field-hint">
                 If you upload one, we’ll compare against <strong>this form</strong>.
-                If not, we’ll use a public standard form. · Supported: PDF · DOCX · TXT · 1 file · 10MB
+                If not, we’ll use a public standard form. · Supported: PDF · DOCX · 1 file · 10MB
               </p>
               <ul class="filelist" id="intake-own-form-list"></ul>
             </div>
@@ -1170,7 +1170,7 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
     var MAX_TOTAL_BYTES = 20 * 1024 * 1024;
     // accept 속성은 파일 선택창의 필터일 뿐 강제가 아닙니다("모든 파일"로 우회 가능) —
     // 실제로 판독하는 포맷만 여기서도 한 번 더 막습니다.
-    var ALLOWED_EXTENSIONS = ['pdf', 'docx', 'txt'];
+    var ALLOWED_EXTENSIONS = ['pdf', 'docx'];
 
     function hasAllowedExtension(name) {
       var m = /\.([a-z0-9]+)$/i.exec(name || '');
@@ -2011,11 +2011,11 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
       }
       for (var k = 0; k < files.length; k += 1) {
         if (!hasAllowedExtension(files[k].name)) {
-          return fail('"' + files[k].name + '" is an unsupported format. Supported: PDF · DOCX · TXT');
+          return fail('"' + files[k].name + '" is an unsupported format. Supported: PDF · DOCX');
         }
       }
       if (ownFile && !hasAllowedExtension(ownFile.name)) {
-        return fail('Your own form "' + ownFile.name + '" is an unsupported format. Supported: PDF · DOCX · TXT');
+        return fail('Your own form "' + ownFile.name + '" is an unsupported format. Supported: PDF · DOCX');
       }
 
       var total = 0;

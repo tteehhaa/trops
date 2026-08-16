@@ -959,8 +959,8 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
             <div class="field">
               <label for="intake-files">바이어가 보낸 서류 <span class="req" aria-hidden="true">*</span></label>
               <input type="file" id="intake-files" name="files" multiple
-                     accept=".pdf,.docx,.txt" required>
-              <p class="field-hint">지원 포맷: PDF · DOCX · TXT(그 외 형식은 접수되지 않습니다) · 최대 5개 · 개당 10MB</p>
+                     accept=".pdf,.docx" required>
+              <p class="field-hint">지원 포맷: PDF · DOCX(그 외 형식은 접수되지 않습니다) · 최대 5개 · 개당 10MB</p>
               <ul class="filelist" id="intake-filelist"></ul>
 
               <!-- 텍스트 레이어 안내 〔M-1 · 2026-08-11〕
@@ -986,10 +986,10 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
             <div class="field">
               <label for="intake-own-form">자사 서식 <span class="optional">(선택)</span></label>
               <input type="file" id="intake-own-form" name="ownForm"
-                     accept=".pdf,.docx,.txt">
+                     accept=".pdf,.docx">
               <p class="field-hint">
                 올려주시면 <strong>이 서식을 기준으로</strong> 대조해 드립니다.
-                없으시면 공개 라이선스로 배포되는 표준 서식을 기준으로 대조합니다. · 지원 포맷: PDF · DOCX · TXT · 1개 · 10MB
+                없으시면 공개 라이선스로 배포되는 표준 서식을 기준으로 대조합니다. · 지원 포맷: PDF · DOCX · 1개 · 10MB
               </p>
               <ul class="filelist" id="intake-own-form-list"></ul>
             </div>
@@ -1174,7 +1174,7 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
     var MAX_TOTAL_BYTES = 20 * 1024 * 1024;
     // accept 속성은 파일 선택창의 필터일 뿐 강제가 아닙니다("모든 파일"로 우회 가능) —
     // 실제로 판독하는 포맷만 여기서도 한 번 더 막습니다.
-    var ALLOWED_EXTENSIONS = ['pdf', 'docx', 'txt'];
+    var ALLOWED_EXTENSIONS = ['pdf', 'docx'];
 
     function hasAllowedExtension(name) {
       var m = /\.([a-z0-9]+)$/i.exec(name || '');
@@ -2015,11 +2015,11 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
       }
       for (var k = 0; k < files.length; k += 1) {
         if (!hasAllowedExtension(files[k].name)) {
-          return fail('"' + files[k].name + '" 은 지원하지 않는 형식입니다. 지원 포맷: PDF · DOCX · TXT');
+          return fail('"' + files[k].name + '" 은 지원하지 않는 형식입니다. 지원 포맷: PDF · DOCX');
         }
       }
       if (ownFile && !hasAllowedExtension(ownFile.name)) {
-        return fail('자사 서식 "' + ownFile.name + '" 은 지원하지 않는 형식입니다. 지원 포맷: PDF · DOCX · TXT');
+        return fail('자사 서식 "' + ownFile.name + '" 은 지원하지 않는 형식입니다. 지원 포맷: PDF · DOCX');
       }
 
       var total = 0;

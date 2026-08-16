@@ -99,19 +99,12 @@ const MAX_FILE_BYTES = 10 * 1024 * 1024;   // 파일 1개당 10MB
 const MAX_TOTAL_BYTES = 20 * 1024 * 1024;  // 합계 20MB
 const MAX_NAME_LEN = 180;
 
-// 바이어가 보내오는 서류의 실제 형식만 받습니다.
-const ALLOWED_EXTENSIONS = ['pdf', 'doc', 'docx', 'hwp', 'hwpx', 'txt', 'rtf', 'png', 'jpg', 'jpeg'];
+// 뒷단(trops_a) lib/precheck/nda/ingest.ts 가 인식하는 형식만 받습니다 — docx·pdf 2종.
+// 그 외 형식은 여기서 받아도 뒷단이 열지 못해 결제 후 parse_error 로 막힙니다(2026-08-17 좁힘).
+const ALLOWED_EXTENSIONS = ['pdf', 'docx'];
 const MIME_BY_EXTENSION = {
   pdf: 'application/pdf',
-  doc: 'application/msword',
   docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  hwp: 'application/x-hwp',
-  hwpx: 'application/hwp+zip',
-  txt: 'text/plain',
-  rtf: 'application/rtf',
-  png: 'image/png',
-  jpg: 'image/jpeg',
-  jpeg: 'image/jpeg',
 };
 
 module.exports = async (req, res) => {
