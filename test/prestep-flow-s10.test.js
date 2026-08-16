@@ -390,7 +390,7 @@ test('블록3 두 갈래 문구와 행선지가 정본과 같다 (§2-6)', () =>
     S4.indexOf('공개된 표준 서식과 항목별로 비교해서, 어디가 다른지 위치를 보여드립니다.') !== -1,
     '서류 있음 CTA 가 정본과 다릅니다');
   assert.ok(S4.indexOf('>문의하기<') !== -1 &&
-    S4.indexOf('맞춤 서비스 개발 되는대로 연락드리겠습니다.') !== -1,
+    S4.indexOf('연락처를 남겨주시면, 서비스가 개발 되는대로 연락드리겠습니다.') !== -1,
     '서류 없음 CTA 가 정본과 다릅니다');
   assert.ok(/id="cta-notify-me"[^>]*href="\/\?purpose=inquiry#interest"|href="\/\?purpose=inquiry#interest"[^>]*id="cta-notify-me"/.test(S4),
     '문의 CTA 가 랜딩 §10 문의 목적(?purpose=inquiry)으로 가지 않습니다 — 이메일은 ' +
