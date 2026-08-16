@@ -143,6 +143,9 @@ async function handleIntake(req, res) {
   }
   const consentTraining = body.consentTraining === true;
 
+  // 접수한 화면의 언어. 확인메일·자료 전달 메일·접수 확인 표가 이 값을 따릅니다.
+  const locale = parseLocale(body.locale);
+
   // 무상 실증(free)과 건별 결제(paid)는 접수 시점이 다릅니다.
   // free 는 여기서 접수가 끝나고, paid 는 결제 승인까지 가야 끝납니다.
   const path = body.path === 'paid' ? 'paid' : 'free';
@@ -274,6 +277,11 @@ async function handleIntake(req, res) {
       // 서류 종류 〔흐름 md §5〕. 지금은 늘 'nda' 이지만 **값으로 남깁니다** —
       // 하드코딩이 아니라 파라미터라는 것이 이 컬럼의 존재 이유입니다.
       doc_type: docType,
+      // 접수한 화면의 언어 〔2026-08-17〕. **나중에** 나가는 메일(자료 전달 ·
+      // 삭제 확인)이 이 값을 읽습니다 — 그때는 요청이 이미 끝나 화면을 물어볼 수
+      // 없습니다. OPTIONAL_COLUMNS 에 있어 컬럼이 없어도 접수는 그대로 됩니다
+      // (그 경우 나중 메일만 국문으로 나갑니다 — precheck-schema.sql 「0-K」).
+      locale: locale,
       // 사전 확인(/check) 세션 연결 〔bkit-7〕. trops_a 가 읽어서 자기 쪽
       // precheck_prestep_session.intake_id 를 채웁니다. 없으면 null — 정상입니다.
       pre_session_key: preSessionKey,
@@ -327,7 +335,8 @@ async function handleIntake(req, res) {
     // 운영자가 무엇과 대조해야 하는지 메일 본문에서 바로 보이도록 넘깁니다.
     ownFormName: ownForm ? ownForm.name : null,
     // 서류 종류 표기 〔흐름 md §5〕. 서류가 늘면 운영자가 메일 한 줄로 구분해야 합니다.
-    docTypeLabel: docTypeLabel(docType),
+    docTypeLabel: docTypeLabel(docType, locale),
+    locale: locale,
     // 둘 다 있을 때만 확인메일에 협정 세율 항목이 붙습니다(api/_notify.js).
     targetCountry: trade.country,
     hsCode: trade.hsCode,
@@ -426,8 +435,10 @@ async function handleReceipt(req, res) {
     if (!route.available) {
       console.error('intake receipt route lookup skipped: ' + route.error);
     }
+    // 접수한 화면의 언어. 컬럼이 없는 옛 행은 국문입니다(그때는 영문 접수가 없었습니다).
+    const locale = parseLocale(row.locale);
     const routeNotice = route.available && route.row
-      ? ROUTE.noticeFor(route.row.route, route.row.reason)
+      ? ROUTE.noticeFor(route.row.route, route.row.reason, locale)
       : null;
 
     /*
@@ -461,7 +472,7 @@ async function handleReceipt(req, res) {
       stage: stage,
       // 서류 종류 〔흐름 md §5〕. 옛 행에는 컬럼이 없을 수 있어 'nda' 로 폴백합니다.
       docType: row.doc_type || 'nda',
-      docTypeLabel: docTypeLabel(row.doc_type || 'nda'),
+      docTypeLabel: docTypeLabel(row.doc_type || 'nda', locale),
       receivedAt: row.received_at,
       fileCount: row.file_count,
       // 자사 서식을 받았는지만 알려 줍니다(1순위 기준). 저장소 경로는 내보내지 않습니다.
@@ -674,9 +685,47 @@ function parseDocType(raw) {
   return { ok: true, docType: value };
 }
 
-/** 코드값 → 표기. 모르는 값이 들어오면 코드값을 그대로 돌려줍니다(지어내지 않습니다). */
-function docTypeLabel(value) {
-  return DOC_TYPE_LABEL[value] || String(value || 'nda');
+/*
+ * 영문 표기 〔2026-08-17 · 영문 접수 경로〕.
+ *
+ * 🔴 화면에서 코드값을 번역하지 않는 것이 이 저장소의 규칙입니다 — 서류가 늘 때
+ *    고칠 곳을 **한 곳**으로 두려고 서버가 표기를 내려보냅니다(precheck.html 의
+ *    「서버가 표기를 주므로 화면에서 코드값을 번역하지 않습니다」 주석).
+ *    영문 화면도 같은 규칙을 지켜야 하므로, 화면이 아니라 여기서 갈라집니다.
+ * ⚠️ 서류 종류를 늘리실 때 두 표를 함께 늘리십시오 — 한쪽만 늘리면 영문 접수에서만
+ *    코드값(`sales_contract`)이 그대로 화면에 찍힙니다.
+ */
+const DOC_TYPE_LABEL_EN = {
+  nda: 'NDA (Non-Disclosure Agreement)',
+};
+
+const DOC_TYPE_LABELS = { ko: DOC_TYPE_LABEL, en: DOC_TYPE_LABEL_EN };
+
+/**
+ * 코드값 → 표기. 모르는 값이 들어오면 코드값을 그대로 돌려줍니다(지어내지 않습니다).
+ * locale 을 모르면 국문입니다 — 접수의 기본값이고, 빈 값보다 안전합니다.
+ */
+function docTypeLabel(value, locale) {
+  const table = DOC_TYPE_LABELS[locale] || DOC_TYPE_LABEL;
+  return table[value] || String(value || 'nda');
+}
+
+/*
+ * 접수한 화면의 언어 〔2026-08-17〕.
+ *
+ * 🔴 **화면이 스스로 알려 줍니다** — en-precheck.html 과 precheck.html 은 구조가 1:1
+ *    이라 폼에 필드를 더할 수 없고(그 순간 두 페이지가 갈라집니다), 더할 필요도
+ *    없습니다. 두 페이지는 `<html lang>` 이 이미 다르고, 제출 스크립트가 그 값을
+ *    그대로 실어 보냅니다.
+ * ⚠️ 아는 값만 통과시킵니다. 모르는 값은 400 이 아니라 **국문으로 떨어집니다** —
+ *    언어는 접수 성립의 조건이 아니고, 여기서 막으면 접수를 잃습니다.
+ */
+const LOCALES = ['ko', 'en'];
+
+function parseLocale(raw) {
+  if (typeof raw !== 'string') return 'ko';
+  const value = raw.trim().toLowerCase();
+  return LOCALES.indexOf(value) === -1 ? 'ko' : value;
 }
 
 /* ──────────────────────────────────────────────────────────────
@@ -863,7 +912,7 @@ async function uploadOne(config, path, file) {
  *    잃고(trops_a 쪽 intake_id 역기입이 안 될 뿐) 접수 자체의 사실(이메일·파일·동의)은
  *    전혀 어긋나지 않습니다.
  */
-const OPTIONAL_COLUMNS = ['doc_type', 'pre_session_key'];
+const OPTIONAL_COLUMNS = ['doc_type', 'pre_session_key', 'locale'];
 
 /** PostgREST 가 「그런 칸 없다」고 답한 것인가. 컬럼명이 응답 본문에 실려 옵니다. */
 function isUnknownColumnError(status, text) {
@@ -960,3 +1009,6 @@ module.exports.progressStage = progressStage;
 module.exports.DOC_TYPES = DOC_TYPES;
 module.exports.OPTIONAL_COLUMNS = OPTIONAL_COLUMNS;
 module.exports.isUnknownColumnError = isUnknownColumnError;
+// 접수 화면의 언어 〔2026-08-17〕. test/intake-locale.test.js 가 「모르는 값은 국문」을 셉니다.
+module.exports.parseLocale = parseLocale;
+module.exports.LOCALES = LOCALES;

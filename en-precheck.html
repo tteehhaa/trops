@@ -2073,6 +2073,18 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               path: plan,
+              /*
+               * 접수한 화면의 언어 〔2026-08-17 · 영문 접수 경로〕.
+               *
+               * 🔴 폼에 필드를 더하지 않습니다. precheck.html 과 en-precheck.html 은
+               *    구조가 1:1 이라(test/naming-consistency.test.js 가 name= 목록까지
+               *    셉니다) 한쪽에만 칸을 더하면 그 자리에서 갈라집니다.
+               *    두 페이지는 `<html lang>` 이 이미 다르므로 그것을 읽어 보냅니다 —
+               *    **두 파일이 같은 코드로 서로 다른 값을 보냅니다.**
+               * ⚠️ 아는 값이 아니면 서버가 국문으로 떨어뜨립니다(api/intake.js
+               *    parseLocale). 접수를 막지 않습니다.
+               */
+              locale: document.documentElement.lang === 'en' ? 'en' : 'ko',
               email: email,
               // 문서 종류 〔흐름 md §5 확장 구조〕. 지금은 'nda' 하나만 서버가 받습니다.
               docType: docType,

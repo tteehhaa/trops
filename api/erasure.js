@@ -151,6 +151,9 @@ module.exports = async (req, res) => {
     amount: row.amount,
     orderId: row.order_id,
     paymentStatus: row.payment_status,
+    // 접수한 화면의 언어 〔2026-08-17〕. 아래 select 가 컬럼이 없으면 값을 못 싣고,
+    // 그때는 국문으로 나갑니다 — 삭제 자체는 이미 끝났습니다.
+    locale: row.locale,
   });
 
   res.status(200).json({ ok: true, filesDeleted: deleted, erasureRequestedAt: now });
@@ -161,10 +164,31 @@ module.exports = async (req, res) => {
 async function findByToken(config, token) {
   const select = 'id,email,status,file_paths,file_count,received_at,' +
     'intake_path,order_id,amount,payment_status,erasure_requested_at';
-  const response = await fetch(
-    config.restUrl + '/intake?access_token=eq.' + encodeURIComponent(token) + '&select=' + select,
+  const ask = (columns) => fetch(
+    config.restUrl + '/intake?access_token=eq.' + encodeURIComponent(token) + '&select=' + columns,
     { headers: config.headers }
   );
+
+  /*
+   * 접수한 화면의 언어 〔2026-08-17〕는 **붙여서 한 번, 없으면 떼고 한 번** 조회합니다.
+   * 🔴 그냥 붙이면 컬럼이 없는 DB 에서 이 조회가 실패하고, 그러면 **삭제가 막힙니다** —
+   *    되돌릴 수 없는 약속(재발급 불가)을 걸어 둔 기능이라 「지워 달라」를 못 받는 것이
+   *    가장 나쁜 결과입니다. 언어 하나 때문에 그것을 걸지 않습니다.
+   * ⚠️ 떼고 조회하면 삭제 확인 메일이 국문으로 나갑니다. 삭제는 정상 처리됩니다.
+   */
+  let response = await ask(select + ',locale');
+  if (!response.ok) {
+    const text = (await safeText(response)).slice(0, 300);
+    if ((response.status === 400 || response.status === 404) &&
+        /PGRST204|42703|could not find|does not exist/i.test(text)) {
+      console.error('erasure: locale 컬럼이 없어 그 값 없이 조회했습니다 — ' +
+        '삭제 확인 메일이 국문으로 나갑니다. precheck-schema.sql 「0-K」 절을 실행하십시오.');
+      response = await ask(select);
+    } else {
+      throw new Error('HTTP ' + response.status + ' | ' + text +
+        ' | erasure_requested_at 컬럼이 없으면 precheck-schema.sql 의 "0-B. 삭제 요청 컬럼" 절을 실행하십시오.');
+    }
+  }
 
   if (!response.ok) {
     throw new Error('HTTP ' + response.status + ' | ' + (await safeText(response)).slice(0, 300) +

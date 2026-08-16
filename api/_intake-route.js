@@ -90,6 +90,27 @@ const NOTICES = {
     '이 접수는 지금 확인할 수 있는 범위 밖입니다.',
 };
 
+/*
+ * 영문 문면 〔2026-08-17 · 영문 접수 경로〕.
+ *
+ * 🔴 위 국문과 **같은 규칙**이 그대로 걸립니다:
+ *    scan-only 는 업로드 시점에 이미 띄우는 문장(en-precheck.html #textlayer-msg)과
+ *    **글자 그대로 같아야** 합니다. 같은 사실을 두 시점에 두 문장으로 말하면
+ *    이용자는 다른 일이 생긴 줄 압니다. test/intake-route.test.js 가 국문·영문
+ *    두 쌍을 모두 셉니다.
+ * ⚠️ 여기에도 파일이 무엇인지·무슨 언어인지 적지 마십시오. 말하는 것은
+ *    「우리가 지금 확인할 수 있는 범위」 하나입니다(국문과 같은 이유).
+ */
+const NOTICES_EN = {
+  'scan-only':
+    'We can’t read text from this file. If you have a Word file or a PDF with selectable text, please upload that instead.',
+  'unsupported-language':
+    'This submission is outside what we can check right now.',
+};
+
+/** 국문·영문 문면표. 모르는 locale 은 국문으로 떨어집니다(안전한 쪽). */
+const NOTICE_SETS = { ko: NOTICES, en: NOTICES_EN };
+
 /**
  * 사유를 모를 때의 문면.
  *
@@ -98,6 +119,7 @@ const NOTICES = {
  * 범위 밖이라는 사실은 어느 사유든 참이고, 그 이상은 말할 근거가 없습니다.
  */
 const FALLBACK_NOTICE = NOTICES['unsupported-language'];
+const FALLBACK_NOTICE_EN = NOTICES_EN['unsupported-language'];
 
 /**
  * 사유 코드 → 이용자에게 보여 줄 한 문장.
@@ -106,10 +128,15 @@ const FALLBACK_NOTICE = NOTICES['unsupported-language'];
  * 돌려주는 것은 **사유 문면 하나**뿐입니다. 「그래서 돈은 어떻게 되는가」는
  * 부르는 쪽이 붙입니다(결제 상태를 아는 것은 부르는 쪽입니다).
  */
-function noticeFor(route, reason) {
+function noticeFor(route, reason, locale) {
   if (route !== 'blocked') return null;
-  if (typeof reason === 'string' && NOTICES[reason]) return NOTICES[reason];
-  return FALLBACK_NOTICE;
+  /* 🔴 모르는 locale 은 국문으로 떨어집니다. 접수는 국문이 기본이고, 언어를 모를 때
+     빈 문면을 주는 것보다 국문 문면을 주는 편이 안전합니다(fail-safe).
+     ⚠️ 인자를 빼고 부르는 곳이 여럿입니다(_route-refund.js · 테스트) — 그때도
+        지금까지와 **똑같이** 국문을 돌려줍니다. 그러라고 뒤에 붙인 선택 인자입니다. */
+  const set = NOTICE_SETS[locale] || NOTICES;
+  if (typeof reason === 'string' && set[reason]) return set[reason];
+  return set['unsupported-language'];
 }
 
 /** 표에서 읽어 온 행을 아는 값만 남기고 걸러냅니다. 모르면 null. */
@@ -216,7 +243,9 @@ module.exports = {
   ROUTES: ROUTES,
   REASONS: REASONS,
   NOTICES: NOTICES,
+  NOTICES_EN: NOTICES_EN,
   FALLBACK_NOTICE: FALLBACK_NOTICE,
+  FALLBACK_NOTICE_EN: FALLBACK_NOTICE_EN,
   noticeFor: noticeFor,
   readRow: readRow,
   readLatestRoute: readLatestRoute,

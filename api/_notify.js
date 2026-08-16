@@ -93,7 +93,27 @@ function buildTimelinePreviewLink() {
  * ⚠️ 무상·유료 **양쪽 메일에 붙입니다.** md §3 은 결제확인 메일을 지목했지만 대기
  *    공백은 무상 건도 같고, sendIntakeMails 는 두 경로가 공유하는 한 함수입니다.
  */
-function waitingRoomHtml() {
+function waitingRoomHtml(en) {
+  /*
+   * 영문 본문 〔2026-08-17〕. 국문과 **같은 것을 말합니다** — 두 문단의 약속
+   * (기한 7일 전·1일 전 알림 · 지금은 무료)이 랜딩 기한관리 탭의 문면과 같습니다.
+   * ⚠️ 「지금은 무료」를 어느 쪽에서도 빼지 마십시오(흐름 md §4 Give/Get 요구).
+   * ⚠️ 링크 목적지는 둘 다 같습니다 — app.trops.kr 은 아직 국문 화면뿐이라
+   *    영문 방문자도 그리로 갑니다. 그쪽이 영문화되면 여기는 손댈 것이 없습니다.
+   */
+  if (en) {
+    return `
+        <hr>
+        <p><strong>While your results are being prepared, take a look at deadline tracking.</strong></p>
+        <p>Do you know how many deadlines are hiding in a single contract?
+          Once your deal starts, we pull the deadlines in your contract, plus customs and FX steps,
+          onto one screen and show you the days left. We email you 7 days and 1 day before each
+          deadline, and it's free for now.</p>
+        <p><a href="${escapeHtml(buildTimelinePreviewLink())}">Preview deadline tracking</a>
+          &nbsp;&middot;&nbsp;
+          <a href="${escapeHtml(appOrigin() + '/')}">Register a contract</a></p>
+  `;
+  }
   return `
         <hr>
         <p><strong>결과 준비되는 동안, 기한관리 먼저 둘러보세요.</strong></p>
@@ -129,6 +149,16 @@ function buildReviewLink(intakeId) {
  */
 async function sendIntakeMails(info) {
   let confirmationSent = false;
+
+  /*
+   * 접수한 화면의 언어 〔2026-08-17 · 영문 접수 경로〕.
+   *
+   * 🔴 **고객 메일에만 걸립니다.** 운영자 메일은 언제나 국문입니다 — 읽는 사람이
+   *    한 명이고 그 사람의 언어는 안 바뀝니다. 운영자 메일을 영문으로 갈아 끼우면
+   *    같은 받은편지함에 두 언어가 섞여 검수가 느려집니다.
+   * ⚠️ 모르는 값은 국문입니다(api/intake.js parseLocale 과 같은 태도).
+   */
+  const en = info.locale === 'en';
 
   const paid = info.path === 'paid';
   const label = paid
@@ -190,8 +220,42 @@ async function sendIntakeMails(info) {
     const { error } = await resendApi().emails.send({
       from: `TROPS <${CONTACT_ADDRESS}>`,
       to: [info.email],
-      subject: '[TROPS] 사전 확인 접수가 완료되었습니다',
-      html: `
+      subject: en
+        ? '[TROPS] We received your document'
+        : '[TROPS] 사전 확인 접수가 완료되었습니다',
+      /*
+       * 🔴 두 본문이 **같은 것을 말합니다.** 한쪽에만 문단을 더하지 마십시오 —
+       *    영문 접수자와 국문 접수자가 서로 다른 약속을 받게 됩니다.
+       *    특히 마지막 두 문단(보관 기간 · 법률 자문 아님)은 어느 쪽에서도
+       *    빼지 마십시오. 나머지 페이지 푸터가 지키는 것과 같은 고지입니다.
+       * ⚠️ 유료 문단은 지금 나갈 수 없습니다 — 과금 게이트가 닫혀 있어 유료 접수가
+       *    생기지 않습니다(api/intake.js rejectIfChargeBlocked). 게이트를 여는 날
+       *    영문 쪽 금액 표기(formatWon)를 함께 보십시오.
+       */
+      html: en
+        ? `
+        <p>Hello. We've received the document you sent.</p>
+        ${paid
+          ? `<p>Your payment of <strong>${escapeHtml(formatWon(info.amount))}</strong> was approved. Order number ${escapeHtml(info.orderId || '-')}</p>`
+          : ''}
+        <p>${ownFormName
+          ? "We'll compare it against your own company's form that you sent with it, then put together a summary and post it at the address below within the day."
+          : "We didn't receive your own company's form, so we'll compare against a publicly licensed standard form, then put together a summary and post it at the address below within the day."}</p>
+        <p><a href="${escapeHtml(info.magicLink)}">View your submission</a></p>
+        ${waitingRoomHtml(true)}
+        ${trade ? trade.html : ''}
+        <p style="color:#64748B;font-size:13px">
+          Only you can open this link. Please don't forward it to anyone else.<br>
+          Files you send are deleted ${RETENTION_DAYS} days after submission.
+        </p>
+        ${paid
+          ? `<p style="color:#64748B;font-size:13px">You can read our refund policy at <a href="${escapeHtml(origin())}/en-refund">${escapeHtml(origin().replace(/^https?:\/\//, ''))}/en-refund</a>. Before you receive your summary, we refund in full.</p>`
+          : ''}
+        <p style="color:#64748B;font-size:13px">
+          TROPS is not a legal advisory service. What we deliver is for reference.
+        </p>
+      `
+        : `
         <p>안녕하세요. 보내주신 서류가 정상적으로 접수되었습니다.</p>
         ${paid
           ? `<p><strong>${escapeHtml(formatWon(info.amount))}</strong> 결제가 승인되었습니다. 주문번호 ${escapeHtml(info.orderId || '-')}</p>`
@@ -237,6 +301,7 @@ async function sendIntakeMails(info) {
  */
 async function sendErasureMails(info) {
   let confirmationSent = false;
+  const en = info.locale === 'en';
   const paid = info.path === 'paid';
 
   try {
@@ -279,8 +344,27 @@ async function sendErasureMails(info) {
     const { error } = await resendApi().emails.send({
       from: `TROPS <${CONTACT_ADDRESS}>`,
       to: [info.email],
-      subject: '[TROPS] 요청하신 자료를 삭제했습니다',
-      html: `
+      subject: en
+        ? '[TROPS] We deleted your file'
+        : '[TROPS] 요청하신 자료를 삭제했습니다',
+      /* 🔴 「다시 만들어 드릴 수 없습니다」는 이 기능의 약속 그 자체입니다(환불규정 §05).
+             어느 언어에서도 흐리게 쓰지 마십시오 — 되돌릴 수 없다는 사실이 이 메일의 요지입니다. */
+      html: en
+        ? `
+        <p>As you requested, we've deleted the file you sent.</p>
+        <p style="color:#64748B;font-size:13px">
+          Submission number ${escapeHtml(info.intakeId)} · ${Number(info.filesDeleted || 0)} file(s) deleted<br>
+          The submission record will be erased along with it shortly. This link will no longer open.
+        </p>
+        <p><strong>We can't regenerate a summary for this submission.</strong>
+          If you need one, you'll have to send the document again, and that starts a new submission.</p>
+        ${paid
+          ? `<p>Deleting is separate from a refund. If you'd like a refund, email ${escapeHtml(CONTACT_ADDRESS)}
+             with the email address you paid with and your submission number.
+             Our refund policy is at <a href="${escapeHtml(origin())}/en-refund">${escapeHtml(origin().replace(/^https?:\/\//, ''))}/en-refund</a>.</p>`
+          : ''}
+      `
+        : `
         <p>요청하신 대로 보내주신 파일을 삭제했습니다.</p>
         <p style="color:#64748B;font-size:13px">
           접수 번호 ${escapeHtml(info.intakeId)} · 삭제한 파일 ${Number(info.filesDeleted || 0)}건<br>
@@ -324,6 +408,7 @@ async function sendErasureMails(info) {
  */
 async function sendDeliveryMail(info) {
   const paid = info.path === 'paid';
+  const en = info.locale === 'en';
   const summaryUrl = String(info.summaryUrl || '');
 
   let sent = false;
@@ -333,8 +418,39 @@ async function sendDeliveryMail(info) {
     const { error } = await resendApi().emails.send({
       from: `TROPS <${CONTACT_ADDRESS}>`,
       to: [info.email],
-      subject: '[TROPS] 요청하신 요약 자료를 보내드립니다',
-      html: `
+      subject: en
+        ? '[TROPS] Your summary is ready'
+        : '[TROPS] 요청하신 요약 자료를 보내드립니다',
+      /*
+       * 🔴 두 본문이 **같은 것을 말합니다.** 특히 마지막 문단(법률 자문이 아니라는 고지)은
+       *    어느 쪽에서도 빼지 마십시오 — 자료를 실제로 건네는 메일이라 이 페이지들
+       *    가운데 그 고지가 가장 필요한 자리입니다.
+       * ⚠️ 유료 문단의 「이 메일을 보내드린 시점이 전달 시점」은 환불규정 §02 의 기산점
+       *    문언입니다. 두 언어의 뜻이 어긋나면 규정과 메일이 다른 말을 하게 됩니다.
+       */
+      html: en
+        ? `
+        <p>We've finished comparing the document you sent. You can see your summary at the link below.</p>
+        <p><a href="${escapeHtml(summaryUrl)}">View your summary</a></p>
+        <p>${info.ownFormName
+          ? "We compared it against your own company's form <strong>" + escapeHtml(info.ownFormName) + '</strong> that you sent with it.'
+          : "We didn't receive your own company's form, so we compared against a publicly licensed standard form."}</p>
+        <p style="color:#64748B;font-size:13px">
+          Submission number ${escapeHtml(info.intakeId)}<br>
+          You can review your submission <a href="${escapeHtml(info.magicLink)}">here</a>.<br>
+          Files you send are deleted ${RETENTION_DAYS} days after submission.
+        </p>
+        ${paid
+          ? `<p style="color:#64748B;font-size:13px">The time we sent this email is the delivery time under our refund policy.
+             You can read it at <a href="${escapeHtml(origin())}/en-refund">${escapeHtml(origin().replace(/^https?:\/\//, ''))}/en-refund</a>.</p>`
+          : ''}
+        <p style="color:#64748B;font-size:13px">
+          TROPS is not a legal advisory service. What we deliver is a reference document marking the
+          differences in your document, item by item, and it carries no legal effect on its own.
+          The final decision is yours, together with any professional you choose to consult.
+        </p>
+      `
+        : `
         <p>보내주신 서류의 대조를 마쳤습니다. 아래 링크에서 요약 자료를 보실 수 있습니다.</p>
         <p><a href="${escapeHtml(summaryUrl)}">요약 자료 보기</a></p>
         <p>${info.ownFormName

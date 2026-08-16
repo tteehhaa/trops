@@ -46,6 +46,18 @@ const DELIVERABLE = ['received', 'in_progress'];
 const SELECT = 'id,email,status,delivered_at,own_form_path,received_at,' +
   'intake_path,order_id,amount,payment_status,erasure_requested_at,access_token';
 
+/*
+ * 접수한 화면의 언어 〔2026-08-17 · 영문 접수 경로〕.
+ *
+ * 🔴 **SELECT 에 그냥 붙이지 않습니다.** 컬럼이 아직 없는 DB 에서 이 조회가 통째로
+ *    실패하면 **전달이 멈춥니다** — delivered_at 이 환불규정 §02 의 기산점이라
+ *    전달이 멈추는 것은 이 파일에서 가장 나쁜 결과입니다. 그래서 붙여서 한 번,
+ *    없으면 떼고 한 번 조회합니다(api/intake.js 접수 확인 조회와 같은 처리).
+ * ⚠️ 떼고 조회하면 locale 을 모르므로 국문으로 나갑니다. 접수는 이미 끝났고
+ *    자료도 전달됩니다 — 잃는 것은 메일 언어 하나입니다.
+ */
+const OPTIONAL_SELECT = ['locale'];
+
 /* ──────────────────────────────────────────────────────────────
  * 순수 함수 — 테스트가 여기를 봅니다
  * ────────────────────────────────────────────────────────────── */
@@ -136,10 +148,24 @@ function basename(path) {
  * ────────────────────────────────────────────────────────────── */
 
 async function findByToken(config, token) {
-  const response = await fetch(
-    config.restUrl + '/intake?access_token=eq.' + encodeURIComponent(token) + '&select=' + SELECT,
+  const ask = (select) => fetch(
+    config.restUrl + '/intake?access_token=eq.' + encodeURIComponent(token) + '&select=' + select,
     { headers: config.headers }
   );
+
+  let response = await ask(SELECT + ',' + OPTIONAL_SELECT.join(','));
+  if (!response.ok) {
+    const text = (await safeText(response)).slice(0, 300);
+    if (isUnknownColumnError(response.status, text)) {
+      console.error('delivery: ' + OPTIONAL_SELECT.join(', ') +
+        ' 컬럼이 없어 그 값 없이 조회했습니다 — 전달 메일이 국문으로 나갑니다. ' +
+        'precheck-schema.sql 「0-K」 절을 실행하십시오.');
+      response = await ask(SELECT);
+    } else {
+      throw new Error('HTTP ' + response.status + ' | ' + text +
+        ' | delivered_at 컬럼이 없으면 precheck-schema.sql 의 "0-E. 전달 시점 컬럼" 절을 실행하십시오.');
+    }
+  }
 
   if (!response.ok) {
     throw new Error('HTTP ' + response.status + ' | ' + (await safeText(response)).slice(0, 300) +
@@ -148,6 +174,12 @@ async function findByToken(config, token) {
 
   const rows = await response.json();
   return Array.isArray(rows) ? rows[0] || null : null;
+}
+
+/** 「그런 칸 없다」인가. api/intake.js 의 같은 이름 함수와 같은 판정입니다. */
+function isUnknownColumnError(status, text) {
+  if (status !== 400 && status !== 404) return false;
+  return /PGRST204|42703|could not find|does not exist/i.test(String(text || ''));
 }
 
 /**
@@ -222,6 +254,8 @@ async function deliver(config, options) {
     amount: row.amount,
     orderId: row.order_id,
     deliveredAt: deliveredAt,
+    // 접수한 화면의 언어. 컬럼이 없거나 옛 행이면 undefined → 국문입니다.
+    locale: row.locale,
   });
 
   if (!mail.sent) {
