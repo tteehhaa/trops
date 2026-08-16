@@ -110,9 +110,7 @@
   }
   .nav-inner { height: 64px; display: flex; align-items: center; gap: 40px; }
   .wordmark { font-size: 19px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); }
-  .nav-links { display: flex; gap: 28px; }
-  .nav-links a { font-size: 14.5px; font-weight: 500; color: var(--ink-62); transition: color .14s ease; }
-  .nav-links a:hover { color: var(--ink); }
+  /* 🔴 .nav-links 는 대표 지시(2026-08-16)로 마크업이 걷히며 죽은 규칙이 되어 삭제. */
   .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
 
   /* `#how`·`#deliver` 는 2026-08-14 에 이 페이지에서 없어졌습니다(랜딩 중복 제거).
@@ -652,20 +650,14 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
            결과 확인 화면(접수 확인 · #tariff)에서만 노출합니다(결과 확인 단계 이전
            비노출 원칙). 조회 자체는 거래 정보를 넣으신 접수 건의 접수 확인
            화면에서 링크로 열립니다. -->
-      <!-- 🔴 두 링크가 **이 페이지 안이 아니라 랜딩을 가리킵니다** 〔2026-08-14 · precheck 축소〕.
-           종전에는 `#how`(진행 방식)·`#deliver`(제공되는 것) 두 섹션이 이 페이지에 그대로
-           복제돼 있었고, 그래서 index.html 에서 이미 설명을 다 읽고 넘어온 사람이 같은
-           설명을 한 번 더 스크롤해야 접수 폼에 닿았습니다. 두 섹션을 걷어냈으므로
-           설명이 필요한 사람은 원본(랜딩) 한 곳으로 보냅니다 — 같은 설명을 두 곳에
-           두면 언젠가 한쪽만 고쳐집니다.
-           ⛔ 이 앵커를 `#how`·`#deliver` 로 되돌리지 마십시오. 이 페이지에 그 id 는
-              더 이상 없고, 되돌리면 링크가 조용히 죽습니다. -->
-      <div class="nav-links">
-        <a href="/#how">진행 방식</a>
-        <a href="/#service">제공되는 것</a>
-      </div>
+      <!-- 🔴 .nav-links(「진행 방식」·「제공되는 것」, 랜딩 #how·#service 로 가는 링크)를
+           대표 지시(2026-08-16)로 삭제했습니다. -->
       <div class="nav-right">
-        <a class="btn btn-primary btn-nav" href="#intake">서류 보내기</a>
+        <!-- 🔄 「서류 보내기」(href="#intake", 이 페이지 접수 폼으로 스크롤) →
+             「문의하기」(대표 지시 2026-08-16). 목적지도 함께 바꿨습니다 — 랜딩
+             #interest 문의 칸으로 연결됩니다(?focus=inquiry 는 index.html 도착 시
+             그 칸에 포커스를 줍니다 — index.html 폼 IIFE 참조). -->
+        <a class="btn btn-primary btn-nav" href="/?focus=inquiry#interest">문의하기</a>
       </div>
     </div>
   </nav>

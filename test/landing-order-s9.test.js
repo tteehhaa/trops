@@ -435,11 +435,12 @@ test('O8-b 섹션을 옮겨도 밖에서 들어오는 앵커가 살아 있다', 
    * ⚠️ 아래 목록은 **index.html 밖에서 들어오는 것**만입니다. 안에서 자기 페이지로 거는
    *    링크는 O8 이 봅니다. 새 유입 링크를 만들면 여기 한 줄을 더하십시오.
    */
+  // 🔴 precheck.html 헤더의 「진행 방식」(#how)·「제공되는 것」(#service) 링크는
+  // 대표 지시(2026-08-16)로 삭제됐습니다 — 그 출처가 없어져 아래 목록에서 뺐습니다.
+  // #how·#service 자체는 index.html 자기 nav 가 여전히 쓰므로 O8 이 별도로 봅니다.
   const INBOUND = [
     ['#feat-timeline', '발송된 결제확인 메일(api/_notify.js buildTimelinePreviewLink)'],
-    ['#service', 'precheck.html 헤더 「제공되는 것」'],
-    ['#how', 'precheck.html 헤더 「진행 방식」'],
-    ['#interest', 'precheck.html 하단 「다음 회차 알림 받기」'],
+    ['#interest', 'precheck.html 하단 「다음 회차 알림 받기」 · 헤더 [문의하기]'],
     ['#feats', '옛 05 섹션에 걸려 있을 수 있는 과거·외부 링크'],
   ];
 
