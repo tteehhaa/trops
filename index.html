@@ -1094,6 +1094,9 @@
     box-shadow: 0 10px 28px rgba(15, 23, 42, .10);
   }
   .basis-shot img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 4px; }
+  /* 이미지가 <a> 로 감싸이면서(원문 링크) 추가 — <a> 는 기본 inline 이라 자식이
+     block 이어도 baseline 만큼의 여백이 아래 남습니다. */
+  .basis-shot a { display: block; }
   .basis-cap { margin: 0; padding: 8px 2px 2px; font-size: 12.5px; line-height: 1.6; color: var(--muted); }
 
   /* ---------- 06 결: 사전점검 시작하기 (흐름 md §1 시각층매핑 「결」) ----------
@@ -1320,12 +1323,15 @@
     }
     /* 근거 섹션도 **같은 두 열**입니다 〔2026-08-14 · basis-split-s13〕. 바로 위 이웃과
        열 구조가 다르면 페이지에 격자가 두 종류로 보입니다. 값을 따로 두지 않는 이유도
-       같습니다 — 한쪽만 고치면 두 섹션이 조용히 어긋납니다. */
+       같습니다 — 한쪽만 고치면 두 섹션이 조용히 어긋납니다.
+       🔄 align-items: start → center 〔2026-08-16 · 대표 피드백 「균형감」〕. 텍스트가
+       두 문장으로 줄면서 이미지보다 훨씬 짧아져, 위쪽 정렬이면 왼쪽 칸 아래가 빈
+       채로 남습니다. 세로 중앙 정렬로 두 칸의 무게중심을 맞춥니다. */
     .basis-body {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 560px);
       gap: 48px;
-      align-items: start;
+      align-items: center;
     }
   }
 
@@ -1620,31 +1626,41 @@
 
     <!-- ===== 05 근거: 비교에 쓴 기준도 함께 보여드립니다 =====
          🔄 v-next 전면교체(2026-08-16)로 h2·본문을 새 원고로 교체했습니다. 3번째 bullet
-            (근거 5종 나열)은 새 원고에 없어 삭제했고, 대신 "현재 NDA 비교 기준" 레이블
-            블록을 추가했습니다. 섹션 끝에 CTA([비교해 보기])를 새로 추가했습니다 —
-            주버튼(btn-primary)이 아니므로 시각사양 2 「페이지당 최대 2회」 규칙은
-            그대로 지켜집니다.
+            (근거 5종 나열)은 새 원고에 없어 삭제했습니다. 섹션 끝에 CTA([비교해 보기])를
+            추가했습니다 — 주버튼(btn-primary)이 아니므로 시각사양 2 「페이지당 최대
+            2회」 규칙은 그대로 지켜집니다.
          🔄 btn-text → btn-secondary 〔같은 날 2차 · 대표 피드백〕. 이 섹션은
             .sec-surface 라 배경이 --surface 지만, .sec-surface 가 --line 변수 자체를
             --line-on-surface 로 갈아 끼우므로 .btn-secondary(border-color: var(--line))
             를 그대로 써도 색이 저절로 이 배경에 맞습니다 — 새 규칙을 만들 필요가
             없습니다.
-         ⚠️ 이미지(c03-result-detail.jpg)는 바꾸지 않았습니다 — 새 원고 캡션이 묘사하는
-            "나란히 비교" 장면과 완전히 일치하지 않을 수 있으나, 이번 작업은 텍스트만
-            다루고 이미지 자산 교체는 스코프 밖입니다. 대표 확인 시 재검토 대상입니다.
-         ⚠️ 이 컷과 탭1(수출 사전점검 패널)의 컷을 서로 바꾸지 마십시오. -->
+         🔄 이미지·캡션 재구성 〔같은 날 3차 · 대표 지시〕. 종전에는 "현재 NDA 비교 기준"
+            레이블이 .basis-list 세 번째 문단이었고, 이미지는 사전점검 결과지 컷
+            (c03-result-detail.jpg)이었습니다. 이제 그 레이블 텍스트를 **이미지 캡션**으로
+            옮기고, 이미지 자체를 **근거 원문(OGL 라이선스 페이지) 캡처**로 바꿨습니다 —
+            "근거를 밝힌다"는 이 섹션의 목적에, 상품 화면 대신 실제 근거 문서를 보여주는
+            쪽이 더 정확히 맞습니다. 이미지는 원문 페이지로 링크됩니다.
+            ⚠️ 이미지 파일(/img/ogl-licence.png)은 대표가 별도로 올려야 합니다 — 이 배치
+               시점에는 자리표시자입니다. width/height 는 실제 파일이 올라온 뒤 실측해
+               채우십시오(비율 미확정으로 비워 뒀습니다).
+         ⚠️ 이 컷은 더 이상 탭1(수출 사전점검 패널)의 컷(c03-result.jpg)과 같은 종류가
+            아닙니다 — 「바꾸지 마십시오」 경고는 소멸했습니다. -->
     <section class="basis sec-surface" aria-labelledby="basis-title">
       <div class="container basis-inner">
         <h2 id="basis-title">비교에 쓴 기준도 함께 보여드립니다</h2>
+        <!-- 텍스트가 두 문장으로 짧아지면서 이미지와 위 위쪽을 맞추면(align-items:start)
+             왼쪽 칸 아래가 비어 균형이 깨집니다. 데스크톱 2열에서 세로 중앙(center)으로
+             맞춰 균형을 잡습니다 — 아래 미디어쿼리 .basis-body 참조. -->
         <div class="basis-body">
           <div class="basis-list">
             <p>문서 종류에 맞는 공개된 표준 서식을 비교 기준으로 사용합니다.</p>
             <p>어떤 서식을 기준으로 비교했는지, 출처와 확인 시점도 함께 표시합니다.</p>
-            <p><strong>현재 NDA 비교 기준</strong><br>영국 지식재산청 공개 서식 · Open Government Licence v3.0<br>© Crown copyright · 확인일 2026-08-10</p>
           </div>
           <figure class="basis-shot">
-            <img src="/img/c03-result-detail.jpg" alt="확인해볼 질문 — 참조 서식의 조항 번호를 그대로 인용해 만든 확인 질문 목록" width="1487" height="523" loading="lazy">
-            <figcaption class="basis-cap"><strong>문언 확인 결과지</strong><br>올린 문서와 비교 기준이 된 표준 서식을 나란히 확인할 수 있습니다.<br>가상의 NDA로 만든 예시 화면입니다. 실제 고객 문서가 아닙니다.</figcaption>
+            <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank" rel="noopener noreferrer">
+              <img src="/img/ogl-licence.png" alt="Open Government Licence v3.0 원문 페이지 — The National Archives" loading="lazy">
+            </a>
+            <figcaption class="basis-cap"><strong>현재 NDA 비교 기준</strong><br>영국 지식재산청 공개 서식 · Open Government Licence v3.0<br>© Crown copyright · 확인일 2026-08-10</figcaption>
           </figure>
         </div>
         <div class="cta-row"><a class="btn btn-secondary" href="/precheck">비교해 보기</a></div>
@@ -1670,14 +1686,16 @@
             HOW 하단은 텍스트로 강등돼 있고, 마감 CTA 에는 주버튼이 없습니다.
             이 균형을 깨지 마십시오 — 무게로 위계를 만드는 것이 이 페이지의 방식입니다.
          ⚠️ 리드 문장을 붙이지 마십시오 — 바로 아래 07 안심 문구와 톤이 겹칩니다.
-         🔄 v-next 전면교체(2026-08-16) — h2·버튼 라벨을 새 원고로 교체했습니다. 버튼
-            라벨을 히어로 주 CTA와 같은 「30초 만에 알아보기」로 맞췄습니다(목적지는
-            /precheck 그대로 — 히어로의 /check 와는 다른 목적지입니다). -->
+         🔄 v-next 전면교체(2026-08-16) — h2·버튼 라벨을 새 원고로 교체했습니다.
+         🔄 대표 수정안(같은 날 2차) — h2 「첫 해외거래라면,」→「첫 해외 거래라면,」
+            (띄어쓰기 보정). 버튼 목적지를 /precheck → /check 로 바꿨습니다 — 이제
+            히어로 주 CTA(「30초 만에 알아보기」→/check)와 라벨·목적지가 완전히
+            같습니다(직전까지 있던 "같은 라벨, 다른 목적지" 불일치가 해소됐습니다). -->
     <section class="act" aria-labelledby="act-title">
       <div class="container narrow-c sec-center act-inner">
-        <h2 id="act-title">첫 해외거래라면, 바로 확인해보세요.</h2>
+        <h2 id="act-title">첫 해외 거래라면, 바로 확인해보세요.</h2>
         <div class="act-row">
-          <a class="btn btn-primary btn-full" href="/precheck">30초 만에 알아보기</a>
+          <a class="btn btn-primary btn-full" href="/check">30초 만에 알아보기</a>
         </div>
         <p class="act-note">로그인 없이 바로</p>
       </div>

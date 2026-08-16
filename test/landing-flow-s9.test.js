@@ -355,34 +355,30 @@ test('같은 곳으로 가는 버튼은 같은 말을 쓴다 — /precheck 는 �
    *    (「30초 만에 알아보기」), 같은 이유로 이 검사의 대상이 아닙니다. 여기 규칙은 여전히
    *    「같은 목적지면 같은 말」이고, 히어로는 더 이상 같은 목적지가 아닙니다.
    *
-   * 🔴 2026-08-16 대표 수정안 — **06 결 버튼도 이 목록에서 뺐습니다.** 대표가 결 CTA
-   *    라벨을 「비교해 보기」→「30초 만에 알아보기」로 직접 지정했습니다. 목적지는
-   *    /precheck 그대로입니다(변경 지시 없음) — 즉 이번만은 **목적지가 같은데 라벨이
-   *    다른**, 이 검사가 원래 막으려던 것과 정반대 조합입니다. 결과적으로 「30초 만에
-   *    알아보기」라는 같은 문구가 서로 다른 두 목적지(히어로→/check, 결→/precheck)로
-   *    갈리게 됩니다 — 이 파일이 판단할 사안이 아니라 대표가 인지하고 있어야 할
-   *    사안이라 여기서는 막지 않고 기록만 남깁니다.
-   *    따라서 이 검사가 보는 자리는 셋(탭1 · 탭2 · HOW 하단)뿐입니다.
+   * 🔴 2026-08-16 대표 수정안(2차) — **06 결 버튼의 목적지를 /precheck → /check 로
+   *    바꿨습니다.** 히어로와 라벨(「30초 만에 알아보기」)·목적지가 완전히 같아졌으므로,
+   *    직전에 있던 "목적지는 같은데 라벨이 다른" 예외 상황이 소멸했습니다 — 06 결은
+   *    이제 /precheck 목록에 아예 나타나지 않아 별도 제외 처리가 필요 없습니다.
+   *    이 검사가 보는 자리는 넷(탭1 · 탭2 · HOW 하단 · 05 근거)입니다.
    */
   const links = (BODY.match(/<a[^>]*class="[^"]*\bbtn\b[^"]*"[^>]*>[^<]*<\/a>/g) || []);
   const toPrecheck = links.filter((a) => /href="\/precheck"/.test(a) && !/id="hero-cta"/.test(a));
-  // 06 결 버튼(act-row 안, /precheck 목적지)은 위 사유로 이 검사에서 제외합니다.
-  const toPrecheckExcludingAct = toPrecheck.filter((a) => a.indexOf('30초 만에 알아보기') === -1);
-  assert.ok(toPrecheckExcludingAct.length >= 3,
-    '/precheck 로 가는 「비교해 보기」 버튼이 ' + toPrecheckExcludingAct.length + '개입니다 — ' +
-    '탭1 · 탭2 · HOW 하단 세 자리가 있어야 합니다(06 결은 대표 지정으로 예외)');
+  assert.ok(toPrecheck.length >= 4,
+    '/precheck 로 가는 「비교해 보기」 버튼이 ' + toPrecheck.length + '개입니다 — ' +
+    '탭1 · 탭2 · HOW 하단 · 05 근거 네 자리가 있어야 합니다');
 
-  for (const a of toPrecheckExcludingAct) {
+  for (const a of toPrecheck) {
     const label = a.replace(/<[^>]*>/g, '').trim();
     assert.strictEqual(label, '비교해 보기',
       '/precheck 로 가는데 라벨이 「' + label + '」입니다 — 같은 곳으로 가는 문은 같은 말을 ' +
       '씁니다. 다른 말을 쓰면 다른 곳으로 읽힙니다');
   }
 
-  // 그 라벨이 붙은 버튼 중 **주버튼**은 06 결 하나입니다(히어로는 /check 로 갔습니다).
+  // 06 결이 /check 로 옮겨가면서, /precheck 목적지에는 더 이상 주버튼이 없습니다.
   const primary = toPrecheck.filter((a) => /btn-primary/.test(a));
-  assert.strictEqual(primary.length, 1,
-    '주버튼이 ' + primary.length + '개입니다 — 06 결 하나여야 합니다(히어로는 /check 담당)');
+  assert.strictEqual(primary.length, 0,
+    '주버튼이 ' + primary.length + '개입니다 — /precheck 목적지에는 주버튼이 없어야 합니다' +
+    '(히어로·06 결 둘 다 /check 담당)');
 });
 
 test('바이어확인 카드 — 버튼이 생겨도 연결 안내문은 남아 있다', () => {

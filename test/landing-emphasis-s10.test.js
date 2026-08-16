@@ -325,7 +325,7 @@ test('E12 강약을 고치면서 콘텐츠·기능이 빠지지 않았다', () =
     '누구나 처음이라면,',
     '지금 무엇을 먼저 확인해야 하는지 아는 것입니다.',
     '무엇을 먼저 확인해야 하는지, 빠르게 알아 볼 수 있습니다.',
-    '첫 해외거래라면, 바로 확인해보세요.',
+    '첫 해외 거래라면, 바로 확인해보세요.',
     '거래 전부터 거래 후까지, 필요한 기능을 나눠 두었습니다.',
     '사전점검 결과화면에서 바로 확인하실 수 있습니다',
     '지금은 무료입니다.',
@@ -348,7 +348,8 @@ test('E12 강약을 고치면서 콘텐츠·기능이 빠지지 않았다', () =
   //    무엇을 해주나요)을 뺐습니다. 사유는 index.html QnA 섹션 머리주석 참조.
   assert.strictEqual((M.match(/aria-controls="qa-\d+"/g) || []).length, 10, 'FAQ 가 10문항이 아닙니다');
   assert.ok(/id="interest-form"/.test(M), '사전등록 폼이 사라졌습니다');
-  assert.ok(/class="btn btn-primary btn-full" href="\/precheck"/.test(M), '결 CTA 주버튼이 사라졌습니다');
+  // 🔄 목적지가 /precheck → /check 로 바뀌었습니다(2026-08-16 대표 수정안 2차) — 히어로와 같은 목적지.
+  assert.ok(/class="btn btn-primary btn-full" href="\/check"/.test(M), '결 CTA 주버튼이 사라졌습니다');
 
   // 태그 짝 — 신뢰증명에 <div> 를 한 겹 더 씌웠으므로 여기서 셉니다.
   const trust = M.slice(M.indexOf('<section class="trust"'));
