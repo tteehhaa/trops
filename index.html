@@ -1636,8 +1636,15 @@
             옮기고, 이미지 자체를 **근거 원문(OGL 라이선스 페이지) 캡처**로 바꿨습니다 —
             "근거를 밝힌다"는 이 섹션의 목적에, 상품 화면 대신 실제 근거 문서를 보여주는
             쪽이 더 정확히 맞습니다. 이미지는 원문 페이지로 링크됩니다.
-            이미지(/img/ogl-licence.png, 1558×1206)는 대표가 직접 캡처해 브라우저
-            크롬 없이 콘텐츠만 담아 올렸습니다.
+            이미지(/img/ogl-licence.png)는 대표가 직접 캡처해 브라우저 크롬 없이
+            콘텐츠만 담아 올렸습니다.
+         🔄 **높이를 1206 → 860 으로 줄였습니다** 〔2026-08-16 · 대표 지시〕. "You are free
+            to:" 체크 3개까지만 남기고 "You must (where you do any of the above):" 이하를
+            잘라냈습니다 — 비교 기준을 밝히는 데 필요한 것은 "무엇이 허용되는가"까지이고,
+            그 아래 귀속 표시 의무 조항은 이 섹션의 논지에 필요하지 않습니다. 이 높이 축소가
+            `.basis-body` 의 `align-items: center`(위 미디어쿼리 참조)를 실제로 눈에 보이게
+            만듭니다 — 이미지가 1206px 로 길 때는 왼쪽 텍스트 2줄을 세로 중앙에 맞춰도
+            그 차이가 작아 보이지 않았습니다.
          ⚠️ 이 컷은 더 이상 탭1(수출 사전점검 패널)의 컷(c03-result.jpg)과 같은 종류가
             아닙니다 — 「바꾸지 마십시오」 경고는 소멸했습니다. -->
     <section class="basis sec-surface" aria-labelledby="basis-title">
@@ -1653,7 +1660,7 @@
           </div>
           <figure class="basis-shot">
             <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank" rel="noopener noreferrer">
-              <img src="/img/ogl-licence.png" alt="Open Government Licence v3.0 원문 페이지 — The National Archives" width="1558" height="1206" loading="lazy">
+              <img src="/img/ogl-licence.png" alt="Open Government Licence v3.0 원문 페이지 — The National Archives" width="1558" height="860" loading="lazy">
             </a>
             <figcaption class="basis-cap"><strong>현재 NDA 비교 기준</strong><br>영국 지식재산청 공개 서식 · Open Government Licence v3.0<br>© Crown copyright · 확인일 2026-08-10</figcaption>
           </figure>
@@ -1909,9 +1916,17 @@
                    ⛔ 실명이 든 캡처로 갈아 끼우지 마십시오.
                    ⚠️ alt·캡션에 상품명(「바이어 확인」)을 다시 적지 마십시오. 위 탭이 이미 그
                       이름을 말하고, test/naming-consistency.test.js 가 **상품명 1회**를
-                      못질합니다(한 상품 = 한 번의 설명). -->
+                      못질합니다(한 상품 = 한 번의 설명).
+
+                   🔄 **높이를 2846 → 1085 로 줄였습니다** 〔2026-08-16 · 대표 지시〕. A4 2쪽
+                      전체를 다 담으면 탭1(c03-result.jpg 904px)·탭3(timeline-map.jpg 983px)
+                      보다 2.6배 이상 길어져, 탭을 넘길 때 세로 이동이 커집니다(§6-2 창틀
+                      도구가 막으려던 문제와 같은 축). SUMMARY 박스 바로 뒤(1. Company
+                      existence 표 시작 전)에서 잘라 두 탭과 비슷한 세로 길이(1644:1085 ≈
+                      1383:904 · 1480:983)로 맞췄습니다.
+                   ⛔ 표 섹션까지 다시 늘리지 마십시오 — 늘리는 순간 이 문제가 되돌아옵니다. -->
               <figure class="feat-shot">
-                <img src="/img/buyer-doc.jpg" alt="공급업체 정보시트 — 법인 실존·사기 신호 점검 항목의 확인 상태와 근거, 확인 시각을 표로 정리해 상대 회사에 보낼 수 있는 문서로 만듭니다" width="1644" height="2846" loading="lazy">
+                <img src="/img/buyer-doc.jpg" alt="공급업체 정보시트 — 법인 실존·사기 신호 점검 항목의 확인 상태와 근거, 확인 시각을 표로 정리해 상대 회사에 보낼 수 있는 문서로 만듭니다" width="1644" height="1085" loading="lazy">
                 <figcaption class="feat-cap">가상의 회사 정보로 만든 예시 문서입니다. 실제 고객사 정보가 아닙니다.</figcaption>
               </figure>
             </div>
