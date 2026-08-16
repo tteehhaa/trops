@@ -205,33 +205,97 @@ const CHECKS = [
     },
   },
 
-  /* ── C-1 ③ /en 영문 페이지 ──────────────────────────────────────── */
+  /* ── C-1 ③ 영문 페이지 ──────────────────────────────────────────────
+   *
+   * 🔄 **한 페이지에서 다섯으로 넓혔습니다** 〔2026-08-16 · 영문화〕.
+   *    종전에는 `/en` 하나만 보면서 앵커 문구 두 개(「Item comparison sheet」·
+   *    「What's next」)를 **하드코딩**하고 있었습니다. 그 두 문구는 en.html 이
+   *    국문에서 다섯 커밋 뒤에 머무는 동안의 옛 원고였고, 이 파일 머리의
+   *    「기대값을 여기 하드코딩하지 마십시오」를 그대로 어긴 자리였습니다 —
+   *    문구가 바뀌면 라이브가 멀쩡해도 확인이 실패합니다.
+   *
+   * 그래서 기대값을 **소스에서 읽습니다**: <title> 이 그대로 나갔는가, 그리고
+   * 화면 문구에 한글이 없는가. 후자가 「국문판이 영문 주소에 올라간」 사고를
+   * 문구 목록 없이 잡습니다 — 문구가 바뀌어도 낡지 않습니다.
+   */
   {
     id: 'en-페이지',
-    label: '/en 이 서고 영문으로 렌더된다',
-    page: '/en',
-    check: (html) => {
+    label: '영문 5개가 서고 영문으로 렌더된다',
+    pages: ['/en', '/en-check', '/en-precheck', '/en-refund', '/en-privacy'],
+    sourceOf: {
+      '/en': 'en.html',
+      '/en-check': 'en-check.html',
+      '/en-precheck': 'en-precheck.html',
+      '/en-refund': 'en-refund.html',
+      '/en-privacy': 'en-privacy.html',
+    },
+    check: (html, ctx) => {
       if (!/<html[^>]+lang=["']en["']/.test(html)) return 'html lang="en" 이 아닙니다';
-      // 영문 확정본 v2 의 앵커 문구 — 국문판이 잘못 올라가면 여기서 잡힙니다.
-      for (const phrase of ['Item comparison sheet', "What's next"]) {
-        if (!html.includes(phrase)) return `영문 문구 "${phrase}" 가 없습니다`;
-      }
-      if (/바이어가 보낸 NDA/.test(html)) return '국문 히어로가 /en 에 올라가 있습니다';
+
+      const want = (source(ctx.sourceFile).match(/<title>([^<]*)<\/title>/) || [])[1];
+      if (!want) return `소스 ${ctx.sourceFile} 에 <title> 이 없습니다 — 검사가 낡았습니다`;
+      const got = (html.match(/<title>([^<]*)<\/title>/) || [])[1];
+      if (got !== want) return `<title> 이 다릅니다 — 배포 ${JSON.stringify(got)} / 소스 ${JSON.stringify(want)}`;
+
+      /* 화면에 보이는 한글. 국문판이 영문 주소로 올라가거나 번역이 빠진 자리를 잡습니다.
+         ⚠️ nav 의 언어 전환 링크(「한국어」)만 예외입니다 — 그 글자가 한글인 것이 그 링크의 일입니다. */
+      const text = html
+        .replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi, '')
+        .replace(/<a class="nav-quiet"[^>]*>[^<]*<\/a>/g, '')
+        .replace(/<[^>]+>/g, ' ');
+      const hangul = text.match(/[가-힣][가-힣\s·]*/g);
+      if (hangul) return `화면에 한글이 있습니다: ${JSON.stringify(hangul.slice(0, 3))}`;
       return true;
     },
   },
-  {
-    id: 'en-hreflang',
-    label: '/en 과 / 가 서로 hreflang 으로 가리킨다',
-    page: null,
-    pages: ['/', '/en'],
-    sourceOf: { '/': 'index.html', '/en': 'en.html' },
+  /*
+   * 언어 짝 — hreflang 은 **양쪽이 서로를 가리켜야** 검색엔진이 인정합니다.
+   * 한쪽만 있으면 무시되고, 그 실패는 화면이 멀쩡해서 몇 주 뒤에 발견됩니다.
+   *
+   * 🔄 짝이 하나(/ ↔ /en)에서 넷으로 늘었습니다 〔2026-08-16〕. 주소를 여기 적는
+   *    대신 **소스 한쪽에서 3줄을 통째로 읽어** 양쪽에 있는지 봅니다 — 주소가
+   *    바뀌어도 이 파일을 손대지 않습니다.
+   * ⚠️ privacy 쌍은 아직 hreflang 이 없어 목록에 없습니다(인계 메모 §4).
+   */
+  ...[
+    ['/', '/en', 'index.html'],
+    ['/check', '/en-check', 'check.html'],
+    ['/precheck', '/en-precheck', 'precheck.html'],
+    ['/refund', '/en-refund', 'refund.html'],
+  ].map(([ko, en, koFile]) => ({
+    id: 'hreflang' + en.replace(/\//g, '-'),
+    label: `${ko} 과 ${en} 이 서로 hreflang 으로 가리킨다`,
+    pages: [ko, en],
     check: (html) => {
-      // 상호 참조가 아니면 검색엔진이 무시합니다 — 한쪽만 있으면 없는 것과 같습니다.
-      for (const lang of ['ko', 'en', 'x-default']) {
-        const re = new RegExp('hreflang=["\']' + lang + '["\']');
-        if (!re.test(html)) return `hreflang="${lang}" 이 없습니다`;
+      const lines = source(koFile).match(/<link rel="alternate" hreflang="[^"]+" href="[^"]+">/g) || [];
+      if (lines.length !== 3) return `소스 ${koFile} 의 hreflang 이 3줄이 아닙니다(${lines.length}) — 검사가 낡았습니다`;
+      for (const line of lines) {
+        if (!html.includes(line)) return `이 줄이 없습니다: ${line}`;
       }
+      /* 두 벌이 되면 검색엔진이 무엇을 믿을지 알 수 없습니다 — 실제로 한 번 났습니다. */
+      const n = (html.match(/rel="alternate"/g) || []).length;
+      if (n !== 3) return `hreflang 이 ${n}줄입니다 — 3줄이어야 합니다`;
+      return true;
+    },
+  })),
+  /*
+   * 🔴 영문 경로가 **끝까지 영문**인지. 라이브에서 봐야 하는 이유는, 마크업의 href
+   *    만으로는 안 걸리는 자리가 있기 때문입니다 — replaceState 목적지와 토스
+   *    결제 복귀 주소(successUrl·failUrl)는 스크립트 안 문자열입니다.
+   *    2026-08-16 에 실제로 셋 다 국문(/precheck)을 가리킨 채였습니다.
+   */
+  {
+    id: 'en-경로누수',
+    label: '영문 4개가 국문 페이지로 새지 않는다',
+    pages: ['/en', '/en-check', '/en-precheck', '/en-refund'],
+    check: (html) => {
+      /* hreflang·canonical 은 국문 주소를 **가리켜야 하는** 자리라 뺍니다. */
+      const body = html.replace(/<link[^>]+>/g, '');
+      for (const ko of ['/precheck', '/check', '/refund', '/privacy']) {
+        const re = new RegExp('["\'\\(]' + ko + '(["\'?#]|$)');
+        if (re.test(body)) return `국문 경로 ${ko} 가 남아 있습니다`;
+      }
+      if (body.includes('lang=en')) return '`?lang=en`(국문 폼 안내 배너 스위치)이 남아 있습니다';
       return true;
     },
   },
