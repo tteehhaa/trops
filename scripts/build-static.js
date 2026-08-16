@@ -319,7 +319,22 @@ async function main() {
   console.log(`\n  주석 ${totalBytes.toLocaleString()}자 제거 → dist/\n`);
 }
 
-main().catch((err) => {
-  console.error('✋ 빌드 실패:', err && err.message ? err.message : err);
-  process.exit(1);
-});
+/*
+ * 직접 실행할 때만 빌드합니다 〔2026-08-17〕.
+ *
+ * 이 파일을 `require` 하는 곳이 생겼기 때문입니다 — test/naming-consistency.test.js 가
+ * 「배포되는 전 페이지」 목록을 손으로 적는 대신 아래 STATIC 을 읽습니다. 목록을 두 곳에
+ * 두면 페이지를 새로 만들 때 한쪽만 늘고, 검사가 조용히 그 페이지를 건너뜁니다 —
+ * 푸터 태그라인이 네 페이지에서 갈라진 것이 정확히 그 방식이었습니다.
+ *
+ * ⚠️ 가드를 빼지 마십시오. 빼면 테스트를 돌릴 때마다 dist/ 를 지우고 다시 씁니다.
+ *    `npm run build` 는 이 파일을 직접 실행하므로 그대로 동작합니다.
+ */
+if (require.main === module) {
+  main().catch((err) => {
+    console.error('✋ 빌드 실패:', err && err.message ? err.message : err);
+    process.exit(1);
+  });
+}
+
+module.exports = { STATIC: STATIC, NOT_DEPLOYED: NOT_DEPLOYED };

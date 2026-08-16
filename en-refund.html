@@ -400,6 +400,13 @@
     <div class="container footer-inner">
       <div class="footer-row">
         <span class="footer-mark">TROPS</span>
+        <!-- 태그라인 정본 〔2026-08-16 확정〕. 상품소개 탭 라벨(.feat-title) 세 개와 문자
+             그대로 대응합니다.
+             🔴 이 페이지는 2026-08-17 까지 옛 값을 들고 있었습니다 — index·check·precheck 만
+                고치고 나머지를 놓친 것이고, 그동안 같은 회사의 페이지들이 서로 다른 회사를
+                소개하고 있었습니다. test/naming-consistency.test.js 가 이제 국문 7개 · 영문 4개
+                **전부**를 셉니다(종전에는 index·precheck 둘뿐이라 이 누락을 못 봤습니다).
+             ⚠️ 고치실 때 한 곳만 고치지 마십시오. -->
         <span class="footer-meta">Export pre-check · Buyer check · Deadline tracking · contact@theo-ne.com</span>
       </div>
 
@@ -407,7 +414,6 @@
         <a href="/en-precheck">Export pre-check</a>
         <a href="/en-refund">Refund policy</a>
         <a href="/en-privacy">Privacy policy</a>
-        <a href="/en">TROPS home</a>
       </nav>
 
       <dl class="footer-biz" aria-label="Business information">
@@ -423,8 +429,7 @@
       </dl>
 
       <div class="footer-legal">
-        <p>TROPS · {{biz.companyName}}</p>
-        <p>※ TROPS is a B2B trade service supporting trade document comparison and export data management. It does not provide legal advice or legal representation.</p>
+        <p>TROPS · {{biz.companyName}} — ※ This is not a legal advisory service.</p>
         <p>© 2026 TROPS · {{biz.companyName}}. All rights reserved.</p>
       </div>
     </div>

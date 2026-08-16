@@ -369,15 +369,42 @@ test('로드맵 두 행이 기존 상품명을 재사용한다', () => {
     '.rm-note 가 로드맵에 남아 있습니다 — FAQ 「법률 자문인가요?」로 옮겨간 문구입니다');
 });
 
-test('푸터 태그라인이 index 와 precheck 에서 같다', () => {
+/*
+ * 🔄 **검사 대상이 두 페이지에서 배포되는 전 페이지로 넓어졌습니다** 〔2026-08-17〕.
+ *
+ * 종전에는 index·precheck **둘만** 봤습니다. 그 사이 나머지가 조용히 갈라져
+ * 2026-08-17 실측에서 **네 페이지가 옛 값**을 들고 있었습니다:
+ *   refund · nda · uae  「수출 거래 운영」        (2026-08-13 이전 표현)
+ *   privacy             「수출 사전점검」          (셋째 값 — 3기능 중 하나만)
+ * 같은 회사의 페이지들이 서로 다른 회사를 소개하던 상태입니다.
+ *
+ * 두 곳만 보는 검사는 **두 곳만 지킵니다.** 그래서 목록을 손으로 적지 않고
+ * scripts/build-static.js 의 STATIC.html 에서 읽습니다 — 페이지를 새로 만들면
+ * 다음 실행부터 저절로 검사 대상이 됩니다(cron 라우트 탐지와 같은 태도).
+ */
+const STATIC_PAGES = require('../scripts/build-static.js').STATIC.html;
+
+test('푸터 태그라인이 배포되는 전 페이지에서 같다', () => {
   const pick = (s) => (s.match(/<span class="footer-meta">([^<]*)<\/span>/) || [])[1];
   const ko = pick(M.index);
-  const pre = pick(M.precheck);
-
   assert.ok(ko, 'index.html 푸터 태그라인을 찾지 못했습니다');
-  assert.strictEqual(pre, ko,
-    '두 페이지가 다른 태그라인을 씁니다 — 같은 회사의 두 페이지가 다른 회사처럼 읽힙니다\n' +
-    '  index:    ' + ko + '\n  precheck: ' + pre);
+
+  /* 국문·영문은 값이 다릅니다(번역). 각 묶음 안에서 하나여야 합니다. */
+  const seen = { ko: new Map(), en: new Map() };
+  for (const { file, locale } of STATIC_PAGES) {
+    const tag = pick(strip(read(file)));
+    assert.ok(tag, file + ' 에 푸터 태그라인이 없습니다');
+    if (!seen[locale].has(tag)) seen[locale].set(tag, []);
+    seen[locale].get(tag).push(file);
+  }
+  for (const locale of ['ko', 'en']) {
+    const got = [...seen[locale].entries()];
+    assert.strictEqual(got.length, 1,
+      locale + ' 페이지들이 서로 다른 태그라인을 씁니다 — 같은 회사의 페이지가 다른 회사처럼 읽힙니다\n' +
+      got.map(([tag, files]) => '  ' + JSON.stringify(tag) + '\n    └ ' + files.join(' · ')).join('\n'));
+  }
+  const pre = pick(M.precheck);
+  assert.strictEqual(pre, ko, 'index 와 precheck 이 다릅니다: ' + ko + ' / ' + pre);
 
   // 3기능을 아우르는지 — 한 기능 이름만 박아 두면 나머지 둘이 부록이 됩니다.
   assert.ok(/확인/.test(ko) && /기한/.test(ko),
@@ -510,16 +537,20 @@ const EN_PAIRS = [
  *                             05 근거 CTA 앞의 <span class="cta-row-note"> 한 개.
  *   en-precheck.html −2 / −4  `.lang-notice`(「이 폼은 한국어 전용」 안내). 이 페이지가
  *                             그 영문판이므로 안내할 대상이 없습니다.
- *   en-refund.html    0 / +4  푸터를 나머지 영문 4개와 통일했습니다 — [TROPS home] 링크
- *                             한 개와 법적 고지 <p> 한 개가 더 있습니다. 국문
- *                             refund.html 의 푸터가 나머지 국문 4개와 어긋나 있는 것이
- *                             원인이고, 그쪽 갱신은 별건입니다.
+ *   en-refund.html    0 / 0   차이 없음.
+ *                             🔄 종전에는 +0/+4 였습니다 — 국문 refund.html 의 푸터가
+ *                             드리프트했다고 보고 나머지 영문 4개에 맞춰 [TROPS home]
+ *                             링크와 법적 고지 <p> 를 하나씩 더 갖고 있었습니다.
+ *                             2026-08-17 에 국문 7개를 실측해 보니 **어긋난 것은 태그라인
+ *                             하나뿐**이었고(링크 3개·법적 고지 2줄은 precheck·privacy·
+ *                             nda·uae 와 같은 다수 형태), 태그라인은 국문에서 고쳤으므로
+ *                             여기서 맞출 것이 없어졌습니다.
  */
 const STRUCT_DELTA = {
   'en.html': [2, 4],
   'en-check.html': [0, 0],
   'en-precheck.html': [-2, -4],
-  'en-refund.html': [0, 4],
+  'en-refund.html': [0, 0],
 };
 
 /** 주석을 걷은 마크업에서 id 를 나타난 순서대로. */
