@@ -1888,28 +1888,31 @@
                         섹션 안 상품명 1회 규칙(test/naming-consistency.test.js)이 깨집니다. -->
                 <div><a class="btn btn-secondary" href="/precheck">비교해 보기</a></div>
               </div>
-              <!-- ✅ **전용 캡처를 확보했습니다** 〔2026-08-14 · basis-split-s13〕.
-                   card-shot-reveal-s11 이 남긴 미결(§8)이 닫혔습니다. 종전에는 사전점검
-                   결과화면(c03-result.jpg)을 **빌려** 쓰고 있었고, 그 대여 때문에
-                   test/landing-order-s9.test.js O4-b 에 예외 목록(ALLOWED_REUSE)이
-                   필요했습니다. 지금은 예외 없이 **기본 노출 중복 0** 입니다.
+              <!-- 🔄 **캡처를 결과화면 → 산출 문서로 교체했습니다** 〔2026-08-16 · 대표 지시〕.
+                   종전 buyer-guard.jpg(A-2 공개정보 조회 결과 화면)를 걷어내고, 그 조회가
+                   만드는 **문서 그 자체**(trops_a `/self-report/[id]/document` · Supplier
+                   Information Sheet, doc/s10/TROPS.pdf 원본)로 갈았습니다 — 화면보다 문서가
+                   「상대에게 보낼 수 있는 결과물」이라는 상품 가치를 더 직접 보여줍니다.
 
-                   화면은 trops_a `/deals/[id]/buyer-guard`(A-2 공개정보 조회 결과)입니다.
-                   s11 이 못 찍었던 `/c/[token]/buyer`(C-06)와 다른 라우트이고, 이쪽은
-                   **접수 토큰 없이 열립니다** — 그래서 찍을 수 있었습니다.
-
-                   🔴 **상호·등록번호·도메인·거래 id 를 가상값으로 치환한 뒤 찍었습니다.**
-                      원본 거래는 실재 기업이었고, 그대로 실으면 「제재·수출통제 추가 확인
-                      필요」가 실명 기업에 붙은 그림이 됩니다. c03-result*.jpg 가 처음부터
-                      가상 NDA(Alpha Trading Co./Beta Sourcing Inc.)로 만들어진 것과 같은
-                      규칙이고, 그래서 이 캡처의 상호도 Alpha Trading Co. 입니다.
+                   🔴 **실명(자사 상호·사업자등록번호·주소·해외 바이어명)을 가상값으로 치환한
+                      뒤 찍었습니다.** 원본 문서는 자사(주식회사 테오네) 실제 정보로 만들어진
+                      견본이었고, 그대로 실으면 실제 사업자등록번호·주소가 공개되고 실재하는
+                      해외 유통기업명이 「우리 바이어」처럼 읽힙니다. buyer-guard.jpg 가 지켰던
+                      규칙(실명 → 가상값)을 그대로 이었습니다 — 상호는 한울무역 주식회사
+                      (HANUL TRADING CO., LTD.) · 사업자등록번호 104-86-77231 · 주소 서울특별시
+                      성동구 왕십리로 100 · 바이어는 Meridian Retail Group. 렌더는 프로덕션과
+                      같은 경로(`buildReportDoc` → `<ReportDocument>`)를 쓰는 임시 dev 하네스로
+                      찍고 지웠습니다(`/dev` 접두어라 프로덕션에는 애초에 없는 화면).
+                      운영 주체 표기(하단 「Issued by THEO-NE Co., Ltd.」)는 실제 서비스 발급
+                      주체라 그대로 남겼습니다 — 고객 정보가 아니라 TROPS 자신의 사업자 표시
+                      입니다.
                    ⛔ 실명이 든 캡처로 갈아 끼우지 마십시오.
                    ⚠️ alt·캡션에 상품명(「바이어 확인」)을 다시 적지 마십시오. 위 탭이 이미 그
                       이름을 말하고, test/naming-consistency.test.js 가 **상품명 1회**를
                       못질합니다(한 상품 = 한 번의 설명). -->
               <figure class="feat-shot">
-                <img src="/img/buyer-guard.jpg" alt="공개정보 조회 결과 — 회사 실재·도메인·제재 목록을 질문 단위로 나누고 각 항목의 확인 상태와 확인처를 함께 표시합니다" width="1512" height="1110" loading="lazy">
-                <figcaption class="feat-cap">가상의 거래로 만든 예시 화면입니다. 실제 고객 거래가 아닙니다.</figcaption>
+                <img src="/img/buyer-doc.jpg" alt="공급업체 정보시트 — 법인 실존·사기 신호 점검 항목의 확인 상태와 근거, 확인 시각을 표로 정리해 상대 회사에 보낼 수 있는 문서로 만듭니다" width="1644" height="2846" loading="lazy">
+                <figcaption class="feat-cap">가상의 회사 정보로 만든 예시 문서입니다. 실제 고객사 정보가 아닙니다.</figcaption>
               </figure>
             </div>
           </div>
