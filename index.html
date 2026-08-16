@@ -1673,7 +1673,6 @@
             아닙니다 — 「바꾸지 마십시오」 경고는 소멸했습니다. -->
     <section class="basis sec-surface" aria-labelledby="basis-title">
       <div class="container basis-inner">
-        <h2 id="basis-title">비교에 쓴 기준도 함께 보여드립니다</h2>
         <!-- 텍스트가 두 문장으로 짧아지면서 이미지와 윗쪽을 맞추면(align-items:start)
              왼쪽 칸 아래가 비어 균형이 깨집니다. 데스크톱 2열에서 세로 중앙(center)으로
              맞춰 균형을 잡습니다 — 아래 미디어쿼리 .basis-body 참조.
@@ -1681,9 +1680,16 @@
                 직계 자식으로 나와 있습니다 — grid-row 정렬이 grid 의 직계 자식에만
                 걸리기 때문입니다(위 미디어쿼리 주석 참조). <figure> 안으로 도로 넣지
                 마십시오 — 넣는 순간 텍스트 중앙 정렬이 이미지가 아니라 다시
-                "이미지+캡션" 전체 높이 기준으로 돌아갑니다. -->
+                "이미지+캡션" 전체 높이 기준으로 돌아갑니다.
+             🔴 h2#basis-title 을 .basis-body 바깥(형제)이 아니라 .basis-list 안 첫
+                자식으로 둡니다 〔2026-08-16 · basis-split-s13 정렬 수정〕. align-items:
+                center 는 .basis-body 의 grid 직계 자식(.basis-list)에만 적용되므로,
+                제목이 바깥에 있으면 본문 텍스트만 내려가 제목-본문 간격이 벌어지고
+                이미지와도 어긋나 보였습니다. id 는 그대로 유지 — aria-labelledby=
+                "basis-title" 참조는 id 위치가 아니라 값만 봅니다. -->
         <div class="basis-body">
           <div class="basis-list">
+            <h2 id="basis-title">비교에 쓴 기준도 함께 보여드립니다</h2>
             <p>문서 종류에 맞는 공개된 표준 서식을 비교 기준으로 사용합니다.</p>
             <p>어떤 서식을 기준으로 비교했는지, 출처와 확인 시점도 함께 표시합니다.</p>
           </div>
