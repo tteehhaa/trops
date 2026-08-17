@@ -322,6 +322,41 @@
 --       api/intake.js LOCALES · api/_intake-route.js NOTICE_SETS · 이 제약.
 
 
+-- ── 0-L. 문의·출시 알림 등록(leads) 표 — admin 조회용 (2026-08-18) ───────────
+--
+-- 종전에는 api/leads.js 가 메일 두 통(담당자 알림·신청자 확인)만 보내고 저장하지
+-- 않았습니다(그 파일 머리주석 「저장소가 없습니다」). trops_a admin 화면에서
+-- 문의·출시 알림 신청 이력을 조회하려면 저장이 필요해 이 표를 추가합니다.
+--
+-- 🔴 **삭제 배치를 두지 않습니다** — public.intake(§5)와 다른 판단입니다. 이 표는
+--    두 가지 목적을 함께 담습니다: ① 문의 응대(1회성) ② 출시 알림 신청(응답까지
+--    기간이 정해지지 않음 — 출시 시점까지 남아 있어야 실제로 알릴 수 있습니다).
+--    30일로 자동 삭제하면 ②의 목적 자체가 깨집니다. 삭제는 목적 달성(출시 안내 발송
+--    완료·문의 응대 완료) 또는 이용자 요청 시 **사람이** 합니다(§5 이용자 요구 대응).
+--
+-- 이미 실행한 프로젝트라면 아래만 실행하면 됩니다(신규 표라 안전 — 기존 표에 영향 없음).
+
+create table if not exists public.leads (
+  id                 uuid        primary key default gen_random_uuid(),
+  created_at         timestamptz not null default now(),
+
+  name               text        not null,
+  email              text        not null,
+  company            text,
+  -- 값이 있으면 「문의」, 비어 있으면 「출시 알림 신청」 — api/leads.js 의 hasInquiry 와
+  -- 같은 구분이다. 여기서 별도 종류 컬럼을 두지 않는다(같은 사실이 두 곳에 있으면 갈린다).
+  inquiry            text,
+
+  consent_privacy    boolean     not null,
+  consent_marketing  boolean     not null default false
+);
+
+comment on table public.leads is
+  'trops.kr 랜딩 [문의하기/출시 알림 신청] 폼(interest-form → api/leads.js) 저장. 30일 자동 삭제 없음(§0-L 참조) — 목적 달성·요청 시 수동 삭제.';
+
+alter table public.leads enable row level security;
+
+
 -- ── 0-G. 처리 가능 여부 표 — ⛔ **이 저장소 소관이 아닙니다** (2026-08-11 · M-2) ──
 --
 -- 🔴 **여기서 실행하지 마십시오. 참조본입니다.**
