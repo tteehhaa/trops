@@ -1471,7 +1471,7 @@
            ⚠️ 「상담」이라는 낱말을 쓰지 마십시오 — 유상 자문으로 오인돼 제거된 이력이 있습니다. -->
       <div class="cta-row">
         <a id="hero-cta" class="btn btn-primary btn-full" href="/en-check">Check in 30 seconds</a>
-        <a class="btn btn-secondary btn-full" href="#interest" data-purpose="inquiry">Contact us</a>
+        <a class="btn btn-secondary btn-full" href="#interest" data-purpose="inquiry" data-track="inquiry_cta">Contact us</a>
       </div>
       <!-- 마이크로카피는 버튼 옆이 아니라 아래 줄입니다 — 버튼이 둘로 늘면서 같은 행에
            두면 모바일에서 세 덩어리가 세로로 쌓입니다. 마감 CTA(.close-cta-note)와 같은 배치. -->
@@ -2239,7 +2239,7 @@
              둘 다 삭제했습니다. [문의하기] 하나만 남습니다. data-timeline-open 트리거는
              이제 로드맵 한 곳뿐입니다(위 CSS .rm-hook 버튼 참조). -->
         <div class="close-cta-row">
-          <a class="btn btn-secondary btn-full" href="#interest" data-purpose="inquiry">Contact us</a>
+          <a class="btn btn-secondary btn-full" href="#interest" data-purpose="inquiry" data-track="inquiry_cta">Contact us</a>
         </div>
         <p class="close-cta-note">We reply by email, in the order we receive them.</p>
       </div>
@@ -2324,7 +2324,7 @@
             </div>
           </div>
 
-          <button type="submit" class="btn btn-primary interest-submit">Sign up</button>
+          <button type="submit" class="btn btn-primary interest-submit" data-track="interest_submit">Sign up</button>
           <p class="interest-msg" id="interest-msg" role="status" aria-live="polite"></p>
         </form>
       </div>
@@ -2718,5 +2718,6 @@
     });
   })();
   </script>
+  <script defer src="/assets/track.js"></script>
 </body>
 </html>

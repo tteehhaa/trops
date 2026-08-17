@@ -69,7 +69,8 @@ const STATIC = {
     { file: 'en-precheck.html', locale: 'en' },
     { file: 'en-refund.html', locale: 'en' },
   ],
-  dirs: ['data', 'img'],
+  // assets/ = track.js(2026-08-18 페이지 조회·클릭 익명 집계). 주석 제거 없이 통째 복사.
+  dirs: ['data', 'img', 'assets'],
 };
 
 /** 배포되지 않는 것. api/ 는 Vercel 이 소스 루트에서 직접 함수로 잡습니다. */

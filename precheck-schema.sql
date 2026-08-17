@@ -357,6 +357,41 @@ comment on table public.leads is
 alter table public.leads enable row level security;
 
 
+-- ── 0-M. 페이지 조회·버튼 클릭 집계(page_events) — admin 조회용 (2026-08-18) ──
+--
+-- 창업자 요청 「방문자수 그래프 + 어딜 클릭하는지」의 **가벼운 쪽**입니다(개별 방문자 식별
+-- 안 함 — 히트맵·세션 재생 아님). 페이지 로드·주요 버튼 클릭을 익명 집계로만 남깁니다.
+--
+-- 🔴 **개인 식별자가 0 입니다.** 방문자 쿠키·localStorage 값·IP·User-Agent 를 어디에도
+--    적지 않습니다 — privacy.html §01 의 「행태정보 수집 도구를 쓰지 않는다」 약속과
+--    정면으로 부딪히는 것은 **개인을 식별·추적하는 것**이고, 이 표는 그것을 하지 않습니다.
+--    (§02 의 「접속 통계를 수집하지 않는다」 문장은 이 신설로 더는 사실이 아니므로 함께
+--    고쳤습니다 — 페이지·버튼 단위 익명 집계라고 명시합니다.)
+-- 🔴 **「방문자 수」가 아니라 「조회수」입니다.** 방문자를 구분할 식별자가 없으므로 같은
+--    사람이 새로고침하면 그만큼 더 셉니다. admin 화면에 「방문자」로 표기하지 마십시오
+--    (`app/admin/analytics/page.tsx` 주석 참조).
+--
+-- 이미 실행한 프로젝트라면 아래만 실행하면 됩니다(신규 표라 안전).
+
+create table if not exists public.page_events (
+  id          bigint      generated always as identity primary key,
+  created_at  timestamptz not null default now(),
+
+  kind        text        not null check (kind in ('pageview', 'click')),
+  path        text        not null,
+  -- click 일 때만 값이 있다 — 어느 버튼인지(`data-track` 값). pageview 는 null.
+  label       text
+);
+
+comment on table public.page_events is
+  'trops.kr 페이지 조회·버튼 클릭 익명 집계(assets/track.js → api/track.js). 개인 식별자 0 — 방문자를 구분하지 않는다(그래서 "조회수"이지 "방문자 수"가 아니다).';
+
+alter table public.page_events enable row level security;
+
+-- 집계 조회가 훑는 축 — 최근 N일 · path 별 group by 가 이 색인을 쓴다.
+create index if not exists page_events_created_at_idx on public.page_events (created_at desc);
+
+
 -- ── 0-G. 처리 가능 여부 표 — ⛔ **이 저장소 소관이 아닙니다** (2026-08-11 · M-2) ──
 --
 -- 🔴 **여기서 실행하지 마십시오. 참조본입니다.**

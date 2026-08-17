@@ -1105,7 +1105,7 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
             </div>
 
             <div>
-              <button type="submit" class="btn btn-primary btn-block" id="intake-submit">서류 보내기</button>
+              <button type="submit" class="btn btn-primary btn-block" id="intake-submit" data-track="precheck_submit">서류 보내기</button>
               <p class="form-msg" id="intake-msg" role="status" aria-live="polite"></p>
             </div>
           </form>
@@ -2884,5 +2884,6 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
     }
   })();
   </script>
+  <script defer src="/assets/track.js"></script>
 </body>
 </html>

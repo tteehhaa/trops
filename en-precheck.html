@@ -1099,7 +1099,7 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
             </div>
 
             <div>
-              <button type="submit" class="btn btn-primary btn-block" id="intake-submit">Send document</button>
+              <button type="submit" class="btn btn-primary btn-block" id="intake-submit" data-track="precheck_submit">Send document</button>
               <p class="form-msg" id="intake-msg" role="status" aria-live="polite"></p>
             </div>
           </form>
@@ -2879,5 +2879,6 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
     }
   })();
   </script>
+  <script defer src="/assets/track.js"></script>
 </body>
 </html>
