@@ -39,16 +39,21 @@ const strip = (s) => s.replace(/<!--[\s\S]*?-->/g, '').replace(/\/\*[\s\S]*?\*\/
 const RAW = read('precheck.html');
 const SRC = strip(RAW);
 
-/** 흐름 md §4 가 확정한 1차 테스트가. ⛔ 상수 참조로 바꾸지 마십시오(위 주석). */
-const PRICE_TEXT = '₩300,000';
+/**
+ * 흐름 md §4 가 확정한 1차 테스트가 — **VAT 포함 총액**〔2026-08-17 · 300,000 → 330,000〕.
+ * ⛔ 상수 참조로 바꾸지 마십시오(위 주석).
+ */
+const PRICE_TEXT = '₩330,000';
 const RETIRED_TEXT = '₩99,000';
+/** 폐기된 종전 판매가(VAT 미포함 시절) — 화면 어디에도 남아 있으면 안 된다. */
+const RETIRED_PRE_VAT_TEXT = '₩300,000';
 
 /* ══ 1. 값 ═══════════════════════════════════════════════════════════════════ */
 
-test('서버가 가진 청구 금액이 ₩300,000 이다', () => {
+test('서버가 가진 청구 금액이 ₩330,000(VAT 포함) 이다', () => {
   const payment = require('../api/_payment.js');
-  assert.strictEqual(payment.PRICE, 300000,
-    '실제 청구 금액이 ' + payment.PRICE + ' 입니다 — 흐름 md §4 는 ₩300,000 입니다');
+  assert.strictEqual(payment.PRICE, 330000,
+    '실제 청구 금액이 ' + payment.PRICE + ' 입니다 — 2026-08-17 VAT 반영 결정은 ₩330,000 입니다');
 });
 
 test('결제 요약·제출 버튼·서버 금액이 같은 말을 한다', () => {
@@ -69,19 +74,52 @@ test('결제 요약·제출 버튼·서버 금액이 같은 말을 한다', () =
 test('🔴 폐기된 ₩99,000 이 화면 문면에 남아 있지 않다', () => {
   assert.ok(SRC.indexOf(RETIRED_TEXT) === -1,
     '/precheck 에 폐기된 금액이 남아 있습니다 — 고친 자리가 일부뿐입니다');
-  for (const f of ['nda.html', 'refund.html']) {
+  for (const f of ['nda.html', 'refund.html', 'en-refund.html']) {
     const s = strip(read(f));
     assert.ok(!/99,000/.test(s),
       f + ' 에 폐기된 금액(99,000)이 남아 있습니다 — FAQ·약관만 낡으면 물어본 값과 청구된 값이 갈립니다');
   }
 });
 
-test('부가세 별도가 금액과 한 묶음으로 병기돼 있다 — md §4 표기', () => {
-  assert.ok(SRC.indexOf('부가세(VAT) 별도입니다.') !== -1, 'VAT 병기가 없습니다');
+/**
+ * 🔴 **신설 〔2026-08-17〕 — 폐기된 VAT 미포함 표기(₩300,000)가 어디에도 없다.**
+ * 판매가가 VAT 포함 총액(₩330,000)으로 바뀌었으므로, 종전 표기가 precheck.html 뿐
+ * 아니라 FAQ·환불 페이지에도 남아 있으면 「물어본 값」과 「청구된 값」이 다시 갈립니다.
+ */
+test('🔴 폐기된 VAT 미포함 표기(₩300,000)가 화면 문면 어디에도 없다', () => {
+  for (const f of ['precheck.html', 'en-precheck.html', 'nda.html', 'refund.html', 'en-refund.html']) {
+    const s = strip(read(f));
+    assert.ok(s.indexOf(RETIRED_PRE_VAT_TEXT) === -1,
+      f + ' 에 VAT 미포함 시절 금액(₩300,000)이 남아 있습니다');
+  }
+});
 
-  // 금액 **바로 아래**여야 합니다. 환불·SLA 문구 사이로 밀리면 별개 안내로 읽히고,
-  // 결제 직전에 세액이 늘어나는 것을 뒤늦게 알게 됩니다.
-  const at = SRC.indexOf('부가세(VAT) 별도입니다.');
+/**
+ * 🔴 **신설 〔2026-08-17 · 창업자 지시〕 — 가격은 결제 단계 마지막에만 보인다.**
+ * FAQ(nda.html)·환불 규정(refund.html·en-refund.html)은 결제 흐름 밖의 일반 공개
+ * 페이지입니다. 여기에 정확한 금액이 있으면 접수를 시작하기도 전에, 혹은 결제와
+ * 무관한 문서를 읽다가 가격을 마주칩니다 — precheck.html 자체의 노출 시점 규칙
+ * (아래 「2. 노출 시점」)과 같은 원칙을 이 세 페이지에도 적용합니다.
+ *
+ * ⚠️ 「원 단위 금액이 전혀 없다」를 봅니다(₩로 시작하는 숫자 전체) — 특정 값만 지우고
+ *    다른 표기로 우회하는 것을 막습니다.
+ * ⚠️ **₩0 은 예외입니다** — 「무료」를 설명하는 표기(en-refund.html 의 「Free (₩0)」)이지
+ *    가격 정보를 새지 않습니다. 0 이 아닌 금액만 봅니다.
+ */
+test('🔴 FAQ·환불 페이지에 원화 금액이 전혀 없다 — 가격은 결제 단계에서만 보인다', () => {
+  const AMOUNT_RE = /₩\s?(?!0\b)[\d,]+/;
+  for (const f of ['nda.html', 'refund.html', 'en-refund.html']) {
+    const s = strip(read(f));
+    const hit = AMOUNT_RE.exec(s);
+    assert.ok(!hit, f + ' 에 원화 금액이 남아 있습니다: ' + (hit && hit[0]));
+  }
+});
+
+test('부가세 포함이 금액과 한 묶음으로 병기돼 있다 — 2026-08-17 VAT 반영 표기', () => {
+  assert.ok(SRC.indexOf('부가세(VAT) 포함입니다.') !== -1, 'VAT 병기가 없습니다');
+
+  // 금액 **바로 아래**여야 합니다. 환불·SLA 문구 사이로 밀리면 별개 안내로 읽힙니다.
+  const at = SRC.indexOf('부가세(VAT) 포함입니다.');
   const priceAt = SRC.indexOf('class="pay-summary-value"');
   const refundAt = SRC.indexOf('class="pay-refund"');
   assert.ok(priceAt !== -1 && refundAt !== -1, '기준 블록을 찾지 못했습니다');

@@ -328,10 +328,13 @@
     font-size: 27px; font-weight: 700; letter-spacing: -0.03em;
     font-variant-numeric: tabular-nums;
   }
-  /* 부가세 병기 〔2026-08-13 · 흐름 md §4 「₩300,000(VAT별도)」〕.
+  /* 부가세 병기 〔2026-08-13 · 흐름 md §4 · 2026-08-17 VAT 포함 총액으로 개정〕.
      금액과 **한 묶음**으로 읽혀야 하므로 .pay-refund 보다 위, 금액 바로 아래입니다 —
-     환불·SLA 문구 사이에 끼우면 별개 안내로 읽히고 결제 직전에 세액이 늘어납니다.
-     ⛔ 이 줄을 지우지 마십시오. md §4 가 표기에 「VAT별도」를 함께 못질했습니다. */
+     환불·SLA 문구 사이에 끼우면 별개 안내로 읽힙니다.
+     🔴 **2026-08-17 — 「VAT not included」 → 「VAT included」.** 국문판과 같은 이유
+        (법인은 간이과세 대상이 아니라 일반과세자 · 부가가치세법 §61) — ₩330,000 이
+        실제 청구·표시 총액입니다.
+     ⛔ 이 줄을 지우지 마십시오. */
   .pay-vat { margin: 6px 0 0; font-size: 13.5px; line-height: 1.7; color: var(--ink-62); text-align: right; }
   .pay-refund { margin: 14px 0 0; font-size: 13.5px; line-height: 1.7; color: var(--muted); }
   .pay-refund a { color: var(--ink-64); text-decoration: underline; text-underline-offset: 2px; }
@@ -812,7 +815,7 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
                 <!-- 상품명 「수출 사전점검」 〔2026-08-13 · 흐름 md §1 상위 카테고리명 통일〕.
                      ⛔ 「NDA」를 넣지 마십시오 — 서류 종류는 아래 폼의 문서종류 필드가 말합니다. -->
                 <p class="plan-name">Export pre-check</p>
-                <p class="plan-price">₩300,000</p>
+                <p class="plan-price">₩330,000</p>
                 <p class="plan-desc" id="plan-paid-desc">
                   Submitted today regardless of remaining slots. A single one-time card payment, not a subscription.
                 </p>
@@ -1070,9 +1073,9 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
                       가진 값이고, 두 값이 갈리면 test/price-exposure.test.js 가 잡습니다. -->
               <div class="pay-summary">
                 <span class="pay-summary-label">Amount</span>
-                <span class="pay-summary-value">₩300,000</span>
+                <span class="pay-summary-value">₩330,000</span>
               </div>
-              <p class="pay-vat">VAT not included.</p>
+              <p class="pay-vat">VAT included.</p>
               <p class="pay-refund">
                 Full refund before you receive your summary. <a href="/en-refund">View refund policy</a>
               </p>
@@ -1544,7 +1547,7 @@ if (/[?&](r|paymentKey|pay)=[^&]/.test(location.search)) document.documentElemen
       // 결제 금액을 그대로 둡니다 — 결제 시점의 금액 고지는 표시 정리 대상이 아닙니다.
       // ⚠️ 금액은 .pay-summary-value 와 **같은 문자열**이어야 합니다. 한쪽만 고치면 같은
       //    화면이 두 금액을 말합니다 — test/price-exposure.test.js 가 둘을 대조합니다.
-      submitBtn.textContent = paid ? 'Pay ₩300,000 and send' : 'Send document';
+      submitBtn.textContent = paid ? 'Pay ₩330,000 and send' : 'Send document';
 
       // 위젯은 컨테이너가 보인 뒤에 그립니다. 숨긴 채 그리면 높이가 0으로 잡힙니다.
       if (paid) renderWidgets();

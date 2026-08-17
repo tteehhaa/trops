@@ -26,26 +26,45 @@ const gate = require('../api/_precheck-charge-gate.js');
 
 /* ── ① 판정 ────────────────────────────────────────────────────────────────── */
 
-test('지금은 막혀 있다 — 라이브 상수 기준', () => {
-  assert.strictEqual(gate.isPrecheckPaidChargeEnabled(), false);
-  assert.deepStrictEqual(gate.precheckChargeBlockers(),
-    ['paid_charge_enabled', 'S62-44', 'S62-03']);
+/*
+ * 🔄 **기대값 갱신 〔2026-08-17 · 운영 플래그도 열림〕** — 종전 기대값은
+ *    `['paid_charge_enabled']` 하나였습니다(법 게이트 2건은 2026-08-16 에 이미 통과).
+ *    정본이 2026-08-17 에 운영 플래그도 열어 **남은 차단이 0건**이 됐습니다(전환 데이터
+ *    수집 목적 · Toss 는 아직 심사 전이라 라이브 키가 없어 실제 과금은 안 나갑니다).
+ *
+ * ⚠️ **여기 값을 손으로 적어 두는 것이 의도입니다.** 게이트 모듈에서 읽어 오면
+ *    「상수가 조용히 뒤집혔다」를 이 검사가 못 봅니다 — 라이브 상태를 못질하는
+ *    자리라 사본과 기대값이 **서로 다른 손**으로 적혀 있어야 합니다.
+ */
+test('지금은 열려 있다 — 라이브 상수 기준(2026-08-17)', () => {
+  assert.strictEqual(gate.isPrecheckPaidChargeEnabled(), true);
+  assert.deepStrictEqual(gate.precheckChargeBlockers(), []);
 });
 
 test('게시는 막지 않는다 — 노출과 과금은 별개 결정이다', () => {
   assert.strictEqual(gate.isPrecheckPaidDisplayEnabled(), true);
 });
 
+/*
+ * ⚠️ **확인값을 명시로 넘깁니다** 〔2026-08-17〕. 종전에는 두 번째 인자를 비워 라이브
+ *    상수(그때는 둘 다 `false`)에 기댔는데, 정본이 켜지면서 그 방식으로는 이 검사가
+ *    **아무것도 막지 않는 상태**가 됐습니다(차단 0건이라 통과). 이 검사가 지키려는
+ *    것은 라이브 값이 아니라 **AND 구조 자체**이므로 미확인 상태를 직접 만듭니다.
+ */
 test('운영 플래그만 켜서는 열리지 않는다 — 법 게이트와 AND 다', () => {
   const open = { paid_display_enabled: true, paid_charge_enabled: true };
-  assert.strictEqual(gate.isPrecheckPaidChargeEnabled(open), false,
+  const unconfirmed = { S62_44: false, S62_03: false };
+  assert.strictEqual(gate.isPrecheckPaidChargeEnabled(open, unconfirmed), false,
     '플래그 하나로 변호사 확인을 우회할 수 있으면 게이트가 아닙니다');
-  assert.deepStrictEqual(gate.precheckChargeBlockers(open), ['S62-44', 'S62-03']);
+  assert.deepStrictEqual(gate.precheckChargeBlockers(open, unconfirmed), ['S62-44', 'S62-03']);
 });
 
 test('법 게이트만 통과해도 열리지 않는다 — 운영 플래그가 남는다', () => {
+  /* 🔄 2026-08-17 — 라이브 기본값이 열려 `undefined`(디폴트)로는 이 시나리오를 못
+     만듭니다. 운영 플래그를 명시로 닫아 개념을 재현합니다. */
+  const closed = { paid_display_enabled: true, paid_charge_enabled: false };
   const confirmed = { S62_44: true, S62_03: true };
-  assert.deepStrictEqual(gate.precheckChargeBlockers(undefined, confirmed),
+  assert.deepStrictEqual(gate.precheckChargeBlockers(closed, confirmed),
     ['paid_charge_enabled']);
 });
 
@@ -57,10 +76,15 @@ test('셋이 모두 서면 열린다 — 상수를 뒤집지 않고도 검증된
 });
 
 test('assert 는 boolean 을 돌려주지 않고 던진다 — 잊고 지나칠 수 없게', () => {
-  assert.throws(() => gate.assertPrecheckChargeAllowed(),
+  /* 🔄 2026-08-17 — 라이브 기본값이 열려 `assertPrecheckChargeAllowed()` 를 인자 없이
+     부르면 더 이상 던지지 않습니다. 운영 플래그를 명시로 닫아 「던진다」는 동작 자체를
+     계속 증명합니다. */
+  const closed = { paid_display_enabled: true, paid_charge_enabled: false };
+  assert.throws(() => gate.assertPrecheckChargeAllowed(closed),
     (err) => err instanceof gate.PrecheckChargeBlockedError &&
       err.statusCode === 403 &&
-      err.blockers.indexOf('S62-44') !== -1);
+      err.blockers.length > 0 &&
+      err.blockers.join(',') === gate.precheckChargeBlockers(closed).join(','));
 });
 
 /* ── ② 실제로 막는가 ───────────────────────────────────────────────────────── */
@@ -158,8 +182,14 @@ function withFakes(run, options) {
 const tossCalls = (calls) => calls.filter((c) => c.url.indexOf('tosspayments.com') !== -1);
 const writeCalls = (calls) => calls.filter((c) => c.method === 'POST' || c.method === 'PATCH');
 
-test('유료 접수는 403 으로 막힌다 — 주문도 파일도 만들어지지 않는다', async () => {
-  await withFakes(async (calls) => {
+/*
+ * 🔄 **2026-08-17 — `withLaunchClosed` 로 감쌉니다.** 라이브 기본값이 열림으로 바뀌어,
+ *    이 테스트가 재현하려는 「아직 안 열렸을 때 실제로 막는다」를 기본 상태로는 더 이상
+ *    만들 수 없습니다. 회귀 방어선 자체는 계속 유효합니다 — 개시가 언젠가 다시 닫혀야
+ *    하는 날(또는 새 상품이 닫힌 채 시작하는 날) 이 차단이 실제로 동작하는지를 봅니다.
+ */
+test('유료 접수는 403 으로 막힌다 — 주문도 파일도 만들어지지 않는다(개시가 닫혀 있을 때)', async () => {
+  await withLaunchClosed(() => withFakes(async (calls) => {
     const res = fakeRes();
     await intake({
       method: 'POST', query: {},
@@ -168,15 +198,20 @@ test('유료 접수는 403 으로 막힌다 — 주문도 파일도 만들어지
 
     assert.strictEqual(res.statusCode, 403);
     assert.strictEqual(res.body.error, 'charge-not-open');
-    assert.ok(Array.isArray(res.body.blockers) && res.body.blockers.length === 3,
+    /* 개수를 박지 않습니다 — 종전 `=== 3` 은 정본이 변호사 마커를 켜자 곧바로 낡았습니다.
+       이 검사가 지키는 것은 **사유가 응답에 실려 나간다**는 것이라, 게이트가 말하는
+       목록과 같은지를 봅니다(비어 있으면 애초에 403 이 아닙니다). */
+    assert.ok(Array.isArray(res.body.blockers) && res.body.blockers.length > 0,
       '왜 막혔는지가 응답에 남아야 합니다');
+    assert.deepStrictEqual(res.body.blockers, gate.precheckChargeBlockers(),
+      '응답의 차단 사유가 게이트 판정과 다릅니다');
 
     // 🔴 이 단정이 핵심입니다. 게이트가 파일 업로드·주문 생성보다 뒤에 있으면
     //    여기서 쓰기가 잡히고, 결제하지 못할 주문이 DB 에 쌓이는 것을 뜻합니다.
     assert.deepStrictEqual(writeCalls(calls), [],
       'Supabase 쓰기가 일어났습니다 — 게이트가 저장보다 뒤에 있습니다');
     assert.strictEqual(mails.length, 0, '막힌 건에 메일이 나갔습니다');
-  });
+  }));
 });
 
 test('무상 접수는 그대로 지나간다 — 막는 것은 유상 개시이지 제품 제공이 아니다', async () => {
@@ -192,8 +227,8 @@ test('무상 접수는 그대로 지나간다 — 막는 것은 유상 개시이
   });
 });
 
-test('결제 승인은 토스를 부르기 전에 막힌다 — 승인 호출 0건', async () => {
-  await withFakes(async (calls) => {
+test('결제 승인은 토스를 부르기 전에 막힌다 — 승인 호출 0건(개시가 닫혀 있을 때)', async () => {
+  await withLaunchClosed(() => withFakes(async (calls) => {
     const res = fakeRes();
     await paymentConfirm({
       method: 'POST',
@@ -206,7 +241,7 @@ test('결제 승인은 토스를 부르기 전에 막힌다 — 승인 호출 0�
     // 🔴 돈이 나가는 호출이 0건인 것으로 「막혔다」를 말합니다.
     assert.deepStrictEqual(tossCalls(calls), [],
       '토스 승인 API 가 호출됐습니다 — 게이트가 게이트웨이 호출을 막지 못했습니다');
-  });
+  }));
 });
 
 test('이미 승인된 건의 조회는 막지 않는다 — 지난 청구까지 막으면 낸 분이 못 봅니다', async () => {
@@ -235,15 +270,17 @@ test('payment-config 는 게이트 상태를 알린다 — 화면이 잠글 근�
     const res = fakeRes();
     await paymentConfig({ method: 'GET' }, res);
 
-    assert.strictEqual(res.body.chargeEnabled, false);
+    // 🔄 2026-08-17 — 운영 플래그가 열려 chargeEnabled 도 true 다(법 게이트는 2026-08-16 통과).
+    assert.strictEqual(res.body.chargeEnabled, true);
     assert.strictEqual(res.body.displayEnabled, true, '게시는 계속 열려 있어야 합니다');
     /*
-     * 🔄 99,000 → 300,000 〔2026-08-13 · 흐름 md §4 1차 테스트가〕. 화면이 이 값을 받아
-     *    금액을 그리게 될 자리라, 낡으면 「보여준 값」과 「청구할 값」이 갈립니다.
+     * 🔄 99,000 → 300,000 → 330,000(VAT 포함) 〔2026-08-13 흐름 md §4 · 2026-08-17 VAT 반영〕.
+     *    화면이 이 값을 받아 금액을 그리게 될 자리라, 낡으면 「보여준 값」과 「청구할 값」이
+     *    갈립니다.
      * ⚠️ 위 두 fixture(orderRow.amount = 99000)는 **지난 접수 건의 저장값**이므로 그대로
      *    둡니다 — 옛 가격으로 결제된 건의 조회가 계속 열려야 합니다.
      */
-    assert.strictEqual(res.body.amount, 300000, '판매가가 흐름 md §4 값과 다릅니다');
+    assert.strictEqual(res.body.amount, 330000, '판매가가 VAT 반영 결정과 다릅니다');
     /*
      * 🔴 **`listPrice` 는 응답에 없어야 합니다** 〔2026-08-13 정리〕.
      *    종전 단언은 「정가 값을 지우지 않았습니다」(=290000 이 내려온다)였습니다. 그 값은
@@ -264,10 +301,9 @@ test('payment-config 는 게이트 상태를 알린다 — 화면이 잠글 근�
 /* ══════════════════════════════════════════════════════════════════════════════
  * 축 ② 「불가」 비과금 〔M-3 · 2026-08-11〕
  *
- * 🔴 **개시 게이트를 잠시 열고 잽니다.** 지금은 축 ①(paid_charge_enabled ·
- *    S62-44 · S62-03)이 모든 유상 건을 막고 있어서, 그 상태로는 「불가라서
- *    막혔다」와 「아직 안 열려서 막혔다」가 구분되지 않습니다. 구분이 안 되면
- *    개시가 열리는 날 이 기능이 동작하는지 아무도 모릅니다.
+ * 🔄 **2026-08-17 — 라이브 기본값이 열림으로 바뀌었습니다.** `withLaunchOpen` 은 이제
+ *    대부분 no-op(이미 열려 있음)이지만, 이 파일 안에서 다른 테스트가 상태를 바꿔 놓고
+ *    끝나는 경합을 막는 안전망으로 남깁니다 — 지우지 않습니다.
  *
  * ⚠️ 상수를 파일에서 고치는 것이 아니라 **객체 속성을 잠깐 뒤집고 되돌립니다.**
  *    (모듈이 상수를 참조로 들고 있어 같은 객체를 봅니다.) 파일을 고치면 정본
@@ -294,6 +330,24 @@ function withLaunchOpen(run) {
     });
 }
 
+/**
+ * 🔴 **2026-08-17 신설 — `withLaunchOpen` 의 반대.** 라이브 기본값이 열림으로 바뀌면서
+ *    「아직 안 열렸을 때 실제로 막는다」는 사실을 재현할 방법이 없어졌습니다 — 이 함수가
+ *    그 상태를 잠깐 만듭니다. 개시가 닫혀 있던 시절의 회귀 방어선을 계속 살려 둡니다
+ *    (다음에 누가 운영 플래그를 다시 닫아야 하는 날에도 차단이 실제로 동작하는지).
+ */
+function withLaunchClosed(run) {
+  const flags = gate.PRECHECK_PAID_FLAGS;
+  const before = flags.paid_charge_enabled;
+  flags.paid_charge_enabled = false;
+
+  return Promise.resolve()
+    .then(run)
+    .finally(() => {
+      flags.paid_charge_enabled = before;
+    });
+}
+
 test('신고값이 차단 사유로 옮겨진다 — absent 하나만', () => {
   assert.deepStrictEqual(gate.intakeIneligibilityBlockers({ pdfTextLayer: 'absent' }),
     ['ineligible:text-layer-absent']);
@@ -306,8 +360,11 @@ test('신고값이 차단 사유로 옮겨진다 — absent 하나만', () => {
 });
 
 test('신고값은 축 ①을 열지 못한다 — 한 방향으로만 움직인다', () => {
+  /* 🔄 2026-08-17 — 라이브 기본값이 열려 축 ①을 명시로 닫아야 이 시나리오(축 ①이 닫힌
+     채 축 ②만 통과)를 재현할 수 있습니다. */
+  const closed = { paid_display_enabled: true, paid_charge_enabled: false };
   // present 를 보내도 개시 게이트는 그대로 막혀 있습니다.
-  assert.throws(() => gate.assertPrecheckChargeAllowed(undefined, undefined, { pdfTextLayer: 'present' }),
+  assert.throws(() => gate.assertPrecheckChargeAllowed(closed, undefined, { pdfTextLayer: 'present' }),
     (err) => err instanceof gate.PrecheckChargeBlockedError && err.kind === 'launch');
 });
 

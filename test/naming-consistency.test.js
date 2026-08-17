@@ -384,6 +384,35 @@ test('로드맵 두 행이 기존 상품명을 재사용한다', () => {
  */
 const STATIC_PAGES = require('../scripts/build-static.js').STATIC.html;
 
+/*
+ * 🔴 **영문 페이지 목록은 여기 한 곳에서만 만듭니다** 〔통합 2026-08-17〕.
+ *
+ * 종전에는 세 검사(한글 잔류 · em dash · 국문 링크 누출)가 **같은 다섯 이름을 각자
+ * 손으로** 적고 있었습니다. 목록이 셋이면 새 영문 페이지를 넣을 때 **셋 다 고쳐야**
+ * 하고, 하나를 빠뜨려도 나머지 둘이 초록이라 빠뜨린 사실이 안 보입니다.
+ * 실제로 「국문 링크 누출」 목록에서 en-privacy.html 하나가 빠져 있었고, 그 페이지가
+ * `/precheck` · `/refund` 로 새는 동안 검사가 조용히 통과했습니다.
+ *
+ * 이제 세 검사가 이 상수 하나를 봅니다. **손으로 적는 목록이 아니라 필터**이므로
+ * 「STATIC.html 에 locale:'en' 으로 있는데 이 목록에는 없는」 상태를 만들 수 없습니다 —
+ * 빠뜨림이 고쳐야 할 실수가 아니라 **표현할 수 없는 상태**가 됩니다.
+ */
+const EN_PAGES = STATIC_PAGES.filter((p) => p.locale === 'en').map((p) => p.file);
+
+/*
+ * 필터가 아무것도 못 잡는 반대 방향 사고를 막습니다. `locale` 표기가 바뀌거나
+ * (`'en'` → `'en-US'`) STATIC.html 구조가 달라지면 EN_PAGES 가 **빈 배열**이 되고,
+ * 그러면 아래 세 검사가 **한 바퀴도 안 돌면서 전부 초록**입니다. 가장 나쁜 실패 형태라
+ * 하한을 따로 셉니다.
+ */
+test('영문 페이지가 STATIC.html 에서 실제로 잡힌다 — 빈 목록은 조용한 초록불이다', () => {
+  assert.ok(EN_PAGES.length >= 5,
+    'STATIC.html 에서 잡힌 영문 페이지가 ' + EN_PAGES.length + '개입니다(5개 이상이어야 합니다): ' +
+    JSON.stringify(EN_PAGES) + '\n' +
+    '  영문 페이지를 지우신 것이 아니라면 locale 표기나 STATIC.html 구조가 바뀐 것입니다 — ' +
+    '이 목록을 쓰는 세 검사가 한 바퀴도 안 돌게 됩니다');
+});
+
 test('푸터 태그라인이 배포되는 전 페이지에서 같다', () => {
   const pick = (s) => (s.match(/<span class="footer-meta">([^<]*)<\/span>/) || [])[1];
   const ko = pick(M.index);
@@ -611,8 +640,8 @@ test('영문 4종의 구조 차이가 적어 둔 것뿐이다', () => {
  * ⚠️ 주석은 걷고 봅니다 — 이 저장소는 주석을 인수인계 수단으로 쓰고 빌드가 떼어냅니다.
  * ⚠️ nav 의 언어 전환 링크(「한국어」)만 예외입니다. 그 글자가 한글인 것이 그 링크의 일입니다.
  */
-test('영문 5종의 화면 문구에 한글이 남아 있지 않다', () => {
-  for (const en of ['en.html', 'en-check.html', 'en-precheck.html', 'en-refund.html', 'en-privacy.html']) {
+test('영문 페이지의 화면 문구에 한글이 남아 있지 않다', () => {
+  for (const en of EN_PAGES) {
     const text = body(read(en))
       .replace(/<a class="nav-quiet"[^>]*>[^<]*<\/a>/g, '')
       .replace(/<[^>]+>/g, ' ');
@@ -638,7 +667,6 @@ test('영문 5종의 화면 문구에 한글이 남아 있지 않다', () => {
  *    영문에서 옳은 표기이고, 지시하신 「—」와 다른 글자입니다.
  */
 test('영문 화면 문구에 em dash 가 없다', () => {
-  const EN_PAGES = ['en.html', 'en-check.html', 'en-precheck.html', 'en-refund.html', 'en-privacy.html'];
   for (const f of EN_PAGES) {
     /* 주석은 뺍니다 — 인수인계 주석은 국문이고 거기 「—」가 자유롭게 쓰입니다. */
     const code = strip(read(f))
@@ -743,10 +771,16 @@ test('en.html 푸터 태그라인이 한 기능만 말하지 않는다', () => {
  *    옛 en.html 은 `/precheck?lang=en` 으로 **국문 접수 폼**에 곧장 보냈고, 도착지에서
  *    「이 폼은 한국어 전용」 안내를 만나는 흐름이었습니다. 이제 영문 경로가 끝까지
  *    영문입니다. ⛔ `?lang=en` 을 영문 페이지에 되살리지 마십시오.
+ *
+ * 🔄 **대상을 손으로 적지 않고 EN_PAGES 를 씁니다** 〔2026-08-17〕.
+ *    종전에는 영문 4개를 손으로 적었고 `en-privacy.html` 하나가 빠져 있었습니다.
+ *    그 빠진 페이지에서 실제로 두 링크가 국문으로 새고 있었는데도(`/precheck` ·
+ *    `/refund`) 검사가 조용히 통과했습니다 — 목록에서 빠진 페이지는 검사받지 않습니다.
+ *    상수의 유래와 왜 손목록을 없앴는지는 이 파일 EN_PAGES 정의부를 보십시오.
  */
 test('영문 경로가 끝까지 영문이다 — 국문 페이지로 새지 않는다', () => {
   const KO_ONLY = ['/precheck', '/check', '/refund', '/privacy'];
-  for (const en of ['en.html', 'en-check.html', 'en-precheck.html', 'en-refund.html']) {
+  for (const en of EN_PAGES) {
     const hrefs = [...strip(read(en)).matchAll(/href="(\/[^"]*)"/g)].map((m) => m[1]);
     for (const h of hrefs) {
       const path = h.split(/[?#]/)[0];
@@ -824,10 +858,10 @@ test('en-precheck 의 폼 계약이 국문과 글자 그대로 같다', () => {
 test('en-precheck 의 가격이 국문과 같은 자리에만 있다', () => {
   const en = body(read('en-precheck.html'));
   const payArea = en.slice(en.indexOf('id="pay-area"'), en.indexOf('id="intake-submit"'));
-  assert.ok(payArea.indexOf('₩300,000') !== -1, '결제 영역에 금액이 없습니다');
+  assert.ok(payArea.indexOf('₩330,000') !== -1, '결제 영역에 금액이 없습니다');
 
   /* 화면에 보이는 곳은 결제 영역과, 두 겹으로 닫힌 .plans 카드뿐입니다. */
   const outside = en.replace(payArea, '').replace(/<div class="plans"[\s\S]*?<\/div>\s*<\/label>\s*<\/div>/, '');
-  assert.ok(outside.indexOf('₩300,000') === -1,
+  assert.ok(outside.indexOf('₩330,000') === -1,
     '가격이 결제 영역 밖에 노출됐습니다 — 접수를 시작하기도 전에 금액을 마주칩니다');
 });
