@@ -467,9 +467,9 @@ test('FAQ 아코디언 짝이 맞고 id 가 겹치지 않는다', () => {
   assert.deepStrictEqual(controls, panels, '버튼과 패널의 짝이 어긋납니다');
   assert.strictEqual(new Set(controls).size, controls.length,
     'qa- id 가 중복됩니다 — 한 버튼이 두 패널을 엽니다');
-  // 🔄 14 → 10 〔2026-08-16 · A3 §4〕. id 는 다시 매기지 않아 1·2·3·5·6·7·8·10·11·12
-  //    로 듬성듬성합니다 — 그 자체가 정상입니다(위 삭제 사유 참조).
-  assert.strictEqual(controls.length, 10, 'FAQ 문항 수가 10개가 아닙니다: ' + controls.length);
+  // 🔄 10 → 12 〔2026-08-18 · "왜 써야 하는가" FAQ 2문항 추가〕. id 는 다시 매기지
+  //    않아 1~10·11·12 순서가 아니라 11·12가 1 앞에 옵니다 — 그 자체가 정상입니다.
+  assert.strictEqual(controls.length, 12, 'FAQ 문항 수가 12개가 아닙니다: ' + controls.length);
 });
 
 test('「상담 신청」 문항을 되살리지 않았다', () => {

@@ -76,9 +76,9 @@ test('🔴 랜딩 헤드라인을 반복하지 않는다 — 설득은 index.htm
    * 🔄 단언 문자열을 index.html 의 현재 H1(「첫 수출이라」→「첫 해외 거래라」)에
    *    맞춰 갱신했습니다 — 이 사이클과 무관한 이전 배치에서 이미 바뀌어 있었습니다.
    */
-  assert.ok(PRECHECK.indexOf('첫 해외 거래라') === -1,
+  assert.ok(PRECHECK.indexOf('놓치면 안 되는 것부터 확인하세요') === -1,
     'precheck 에 랜딩 H1 이 그대로 남아 있습니다');
-  assert.ok(INDEX.indexOf('첫 해외 거래라') !== -1,
+  assert.ok(INDEX.indexOf('놓치면 안 되는 것부터 확인하세요') !== -1,
     '원본(index.html)의 H1 까지 사라졌습니다 — 여기서 지울 것이 아니었습니다');
 });
 
