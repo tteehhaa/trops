@@ -1019,7 +1019,7 @@
         쌍이 소멸했습니다. 지금 페이지는 배경이 **완전 교차**입니다
         (test/landing-order-s9.test.js O7 이 셉니다). */
   .basis { border-top: 1px solid var(--line); }
-  .basis-inner { padding-block: clamp(60px, 8vw, 96px); }
+  .basis-inner { padding-block: clamp(40px, 5vw, 64px); }
   /* 크기·굵기는 다른 섹션 h2 와 같은 값입니다(신규 타이포 값을 만들지 않습니다 —
      시각사양 3-1). 색만 다크 전용(--d-ink-primary)에서 본문 잉크로 돌아왔습니다. */
   .basis h2 {
@@ -1098,6 +1098,11 @@
      block 이어도 baseline 만큼의 여백이 아래 남습니다. */
   .basis-shot a { display: block; }
   .basis-cap { margin: 0; padding: 8px 2px 2px; font-size: 12.5px; line-height: 1.6; color: var(--muted); }
+  /* CTA를 .basis-body 안으로 옮겨(그리드/플렉스 자식) 캡션과 같은 줄에 놓습니다 —
+     바깥 형제였을 때는 전체 grid 아래로 내려가 캡션보다 한참 낮은 자리에 떴습니다.
+     margin-top 은 0으로 지웁니다 — 모바일은 .basis-body 의 flex gap이, 데스크톱은
+     아래 grid-row 배치가 간격을 대신 집니다. */
+  .basis-body > .cta-row { margin-top: 0; }
 
   /* ---------- 06 결: 사전점검 시작하기 (흐름 md §1 시각층매핑 「결」) ----------
      감정선 기(히어로) - 승(경험담) - 전(경고 · 상품 · 근거) 다음의 행동 자리입니다.
@@ -1353,6 +1358,14 @@
     .basis-list { grid-column: 1; grid-row: 1; }
     .basis-shot { grid-column: 2; grid-row: 1; }
     .basis-cap { grid-column: 2; grid-row: 2; }
+    /* 버튼을 캡션과 같은 2행 · 왼쪽 열에 둡니다 〔2026-08-18 · 대표 지시 「버튼과 캡션
+       높이를 맞춰라」〕. 종전에는 grid 형제가 아니라 grid **바깥**의 블록이라 두 행
+       전체(이미지 높이 + 캡션 높이) 아래로 내려가 캡션보다 한참 낮았고, 그만큼 섹션
+       전체 높이도 늘어나 있었습니다. 같은 행에 두면 그 여백이 사라집니다.
+       align-self: start — 캡션은 자기 줄 높이를 그대로 채워 center 를 줘도 그대로지만,
+       버튼(44px)은 캡션(~70px)보다 짧아 center 를 주면 위아래가 붕 뜹니다. start 로
+       캡션과 같은 위쪽 기준선에 맞춥니다. */
+    .basis-body > .cta-row { grid-column: 1; grid-row: 2; align-self: start; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -1699,8 +1712,8 @@
             </a>
           </figure>
           <p class="basis-cap"><strong>현재 NDA 비교 기준</strong><br>영국 지식재산청 공개 서식 · Open Government Licence v3.0<br>© Crown copyright · 확인일 2026-08-10</p>
+          <div class="cta-row"><a class="btn btn-secondary" href="/precheck">비교해 보기</a></div>
         </div>
-        <div class="cta-row"><a class="btn btn-secondary" href="/precheck">비교해 보기</a></div>
       </div>
     </section>
 
