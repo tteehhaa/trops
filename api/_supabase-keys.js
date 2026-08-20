@@ -97,11 +97,38 @@ function resolveKey(names, env) {
 /**
  * 비밀 키 자리에 공개 키가 들어갔는가.
  *
- * 이 저장소는 브라우저가 api/ 만 부르므로 공개 키를 쓸 일이 아예 없습니다.
- * 그래서 공개 키가 보이면 그것은 설정 사고이지 선택이 아닙니다.
+ * api/ 는 비밀 키 전용입니다 — 공개(publishable) 키가 필요한 곳은 랜딩 헤더의
+ * 로그인 UI(assets/auth.js · 브라우저) 하나뿐이고, 거기는 env 가 아니라 자기 파일에
+ * 값을 가집니다. 그래서 api/ 의 비밀 자리에 공개 키가 보이면 설정 사고입니다.
  */
 function isPublishable(scheme) {
   return scheme === 'publishable';
+}
+
+/**
+ * Supabase URL 정규화 — trops_a `lib/supabase/keys.ts` normalizeSupabaseUrl 과 같은 규칙.
+ *
+ * 🔴 http:// 로 실 프로젝트를 가리키면 REST 가 301 로 https 로 돌리고, 그 리다이렉트에서
+ *    fetch 가 POST 를 GET 으로 깎아 본문이 사라집니다 — 에러 없이 200·빈 배열만 돌아오고
+ *    실제 쓰기는 유실됩니다(trops_a 2026-08-13 실측 · precheck_nda_run 삽입이 배포에서만
+ *    이렇게 죽어 있었습니다). 스킴이 있어도 http 면 https 로 올립니다.
+ *
+ * 관용은 읽을 수 있는 형태만 받습니다 — Reference ID 단독·스킴 누락은 채워 주고,
+ * 못 읽는 값에는 null 로 답합니다(스택 트레이스로 답하지 않습니다).
+ * 로컬 Supabase CLI(http://localhost·127.0.0.1)만 http 그대로 둡니다.
+ */
+function normalizeSupabaseUrl(raw) {
+  const v = String(raw == null ? '' : raw).trim().replace(/\/+$/, '');
+  if (v === '') return null;
+  if (/^https?:\/\//i.test(v)) {
+    if (/^http:\/\/(localhost|127\.0\.0\.1)(:|\/|$)/i.test(v)) return v;
+    return v.replace(/^http:\/\//i, 'https://');
+  }
+  // Reference ID 만 넣은 경우 — Supabase ref 는 소문자 20자입니다
+  if (/^[a-z]{20}$/.test(v)) return 'https://' + v + '.supabase.co';
+  // 스킴만 빠진 경우
+  if (v.indexOf('.') !== -1) return 'https://' + v;
+  return null;
 }
 
 /** 두 이름 중 사람에게 보여줄 이름 — 지금 읽히는 쪽을 먼저 적습니다. */
@@ -117,5 +144,6 @@ module.exports = {
   classify: classify,
   resolveKey: resolveKey,
   isPublishable: isPublishable,
+  normalizeSupabaseUrl: normalizeSupabaseUrl,
   describeNames: describeNames,
 };

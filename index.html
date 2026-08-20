@@ -29,6 +29,9 @@
 <link rel="alternate" hreflang="en" href="https://trops.kr/en">
 <link rel="alternate" hreflang="x-default" href="https://trops.kr/">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<!-- 헤더 로그인 영역 + 로그인 모달 (핸드오프 3a·3c·3d-A · 2026-08-20).
+     값의 정본은 trops_a dd-now/console_handoff/HANDOFF.md 입니다. -->
+<link rel="stylesheet" href="/assets/auth.css">
 <style>
   :root {
     --ink:          #0F172A;
@@ -1415,6 +1418,12 @@
              그쪽 독자가 상대 페이지를 찾지 못합니다. 둘 다 nav-quiet(강등된
              텍스트 링크)입니다. 버튼으로 올리지 마십시오. -->
         <a class="nav-quiet" href="/en" hreflang="en" lang="en">EN</a>
+        <!-- 로그인 영역 (핸드오프 3a — EN · divider · 로그인 · 무료로 시작하기 /
+             로그인 완료 시 3d-A — 사용자 칩 · 나의 대시보드 → app.trops.kr).
+             내용은 assets/auth.js 가 세션 상태를 보고 채웁니다 — JS 가 없으면
+             비워 둡니다(종전 헤더 그대로 · 조용한 폴백). 세션은 app.trops.kr 과
+             .trops.kr 쿠키로 공유됩니다. -->
+        <div class="trops-auth" id="trops-auth" data-auth-lang="ko"></div>
       </div>
     </div>
   </nav>
@@ -1487,7 +1496,10 @@
       </div>
       <!-- 마이크로카피는 버튼 옆이 아니라 아래 줄입니다 — 버튼이 둘로 늘면서 같은 행에
            두면 모바일에서 세 덩어리가 세로로 쌓입니다. 마감 CTA(.close-cta-note)와 같은 배치. -->
-      <p class="hero-note">로그인 없이 바로</p>
+      <!-- 🔄 「로그인 없이 바로」→ 가입 유도 카피 (핸드오프 3b · 2026-08-20).
+           랜딩 로그인·세션 공유가 서면서 「로그인 없음」을 파는 문구를 걷었습니다.
+           문장은 3b 히어로 note 원문 그대로입니다. -->
+      <p class="hero-note">신용카드 없이 가입 · 진단 결과 저장 무료</p>
     </section>
 
     <!-- 🔴 03 안심 문구가 **여기 없습니다** 〔2026-08-13 이동 · 2026-08-14 재이동〕.
@@ -1747,7 +1759,8 @@
         <div class="act-row">
           <a class="btn btn-primary btn-full" href="/check">30초 만에 알아보기</a>
         </div>
-        <p class="act-note">로그인 없이 바로</p>
+        <!-- 🔄 「로그인 없이 바로」→ 가입 유도 카피 (핸드오프 3b · 히어로 note 와 같은 문장) -->
+        <p class="act-note">신용카드 없이 가입 · 진단 결과 저장 무료</p>
       </div>
     </section>
 
@@ -1894,7 +1907,8 @@
                 <p class="feat-sum">서명하기 전에, 다른 조건부터 확인하세요.</p>
                 <p class="feat-desc">바이어가 보낸 NDA를 표준 서식과 비교해 달라진 부분부터 보여드립니다. 중요한 조건을 모르고 지나치지 않도록 먼저 확인할 수 있습니다.</p>
                 <span class="feat-bullets">
-                  <span>· 로그인 없이 바로</span>
+                  <!-- 🔄 「로그인 없이 바로」→ 가입 유도 카피 (핸드오프 3b · 2026-08-20) -->
+                  <span>· 신용카드 없이 가입 · 진단 결과 저장 무료</span>
                 </span>
                 <!-- ✅ **실행버튼이 생겼습니다** 〔2026-08-14 · tab-cta-parity-s14〕.
                      여기에는 「사전점검·바이어확인 패널에 실행버튼을 넣지 마십시오」라는 금지가
@@ -2173,7 +2187,10 @@
                 <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
               </button>
               <div class="qans" id="qa-5">
-                <p>로그인 없이 비교하려는 서류를 그대로 올리시면 됩니다.</p>
+                <!-- 🔄 「로그인 없이」 구절 제거 (핸드오프 3b 전환 · 2026-08-20).
+                     접수 자체가 무계정인 사실은 그대로라 문장에서 그 구절만 뗐습니다 —
+                     가입 문구를 붙이면 접수에 가입이 필요한 것처럼 읽힙니다(사실 아님). -->
+                <p>비교하려는 서류를 그대로 올리시면 됩니다.</p>
               </div>
             </div>
             <div class="qitem" data-open="0">
@@ -2751,5 +2768,7 @@
   })();
   </script>
   <script defer src="/assets/track.js"></script>
+  <!-- 헤더 로그인 영역 + 로그인 모달 (핸드오프 3a·3c·3d-A). module 이라 자동 defer 입니다. -->
+  <script type="module" src="/assets/auth.js"></script>
 </body>
 </html>

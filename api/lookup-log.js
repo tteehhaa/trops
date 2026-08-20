@@ -156,10 +156,13 @@ module.exports = async (req, res) => {
 
 // 프로젝트 URL 을 검증해 REST 엔드포인트를 만듭니다.
 // 스킴 누락(프로젝트 ref만 입력한 경우)처럼 흔한 실수를 fetch 이전에 잡아냅니다.
+// 🔴 정규화 단일 출처 = _supabase-keys.js normalizeSupabaseUrl — http:// 실 도메인을
+//    https 로 올리지 않으면 REST 301 리다이렉트에서 POST 가 GET 으로 깎여
+//    이 로그의 INSERT 가 조용히 유실됩니다(그 함수 주석 참조).
 function buildEndpoint(rawUrl) {
-  const trimmed = String(rawUrl).trim().replace(/\/+$/, '');
-  if (!/^https?:\/\//i.test(trimmed)) {
-    return { ok: false, error: '스킴(https://)이 없습니다' };
+  const trimmed = KEYS.normalizeSupabaseUrl(rawUrl);
+  if (trimmed === null) {
+    return { ok: false, error: 'URL 로 읽을 수 없습니다' };
   }
   let parsed;
   try {

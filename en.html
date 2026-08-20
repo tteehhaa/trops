@@ -29,6 +29,11 @@
 <link rel="alternate" hreflang="en" href="https://trops.kr/en">
 <link rel="alternate" hreflang="x-default" href="https://trops.kr/">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<!-- 헤더 로그인 영역 + 로그인 모달 (핸드오프 3a·3c·3d-A · 2026-08-20).
+     값의 정본은 trops_a dd-now/console_handoff/HANDOFF.md 입니다.
+     ⚠️ EN 로그인 카피는 핸드오프 §7 미확정 항목 — assets/auth.js 의 en 사전이
+        직역 가안입니다. 확정되면 그 사전만 바꿉니다. -->
+<link rel="stylesheet" href="/assets/auth.css">
 <style>
   :root {
     --ink:          #0F172A;
@@ -1402,6 +1407,9 @@
              그쪽 독자가 상대 페이지를 찾지 못합니다. 둘 다 nav-quiet(강등된
              텍스트 링크)입니다. 버튼으로 올리지 마십시오. -->
         <a class="nav-quiet" href="/" hreflang="ko" lang="ko">한국어</a>
+        <!-- 로그인 영역 (핸드오프 3a / 로그인 완료 시 3d-A). 내용은 assets/auth.js 가
+             세션 상태를 보고 채웁니다 — JS 가 없으면 비워 둡니다(조용한 폴백). -->
+        <div class="trops-auth" id="trops-auth" data-auth-lang="en"></div>
       </div>
     </div>
   </nav>
@@ -1475,7 +1483,8 @@
       </div>
       <!-- 마이크로카피는 버튼 옆이 아니라 아래 줄입니다 — 버튼이 둘로 늘면서 같은 행에
            두면 모바일에서 세 덩어리가 세로로 쌓입니다. 마감 CTA(.close-cta-note)와 같은 배치. -->
-      <p class="hero-note">No login required</p>
+      <!-- 🔄 "No login required" → 가입 유도 카피 (핸드오프 3b · 국문 index.html 과 같은 자리) -->
+      <p class="hero-note">Sign up with no credit card · Results saved free</p>
     </section>
 
     <!-- 🔴 03 안심 문구가 **여기 없습니다** 〔2026-08-13 이동 · 2026-08-14 재이동〕.
@@ -1735,7 +1744,8 @@
         <div class="act-row">
           <a class="btn btn-primary btn-full" href="/en-check">Check in 30 seconds</a>
         </div>
-        <p class="act-note">No login required</p>
+        <!-- 🔄 "No login required" → 가입 유도 카피 (핸드오프 3b · 히어로 note 와 같은 문장) -->
+        <p class="act-note">Sign up with no credit card · Results saved free</p>
       </div>
     </section>
 
@@ -1882,7 +1892,8 @@
                 <p class="feat-sum">Before you sign, check the other terms first.</p>
                 <p class="feat-desc">We compare the NDA your buyer sent against a standard form and show you what’s different first. So you can catch an important term before signing, not after.</p>
                 <span class="feat-bullets">
-                  <span>· No login required</span>
+                  <!-- 🔄 "No login required" → 가입 유도 카피 (핸드오프 3b · 2026-08-20) -->
+                  <span>· Sign up with no credit card · Results saved free</span>
                 </span>
                 <!-- ✅ **실행버튼이 생겼습니다** 〔2026-08-14 · tab-cta-parity-s14〕.
                      여기에는 「사전점검·바이어확인 패널에 실행버튼을 넣지 마십시오」라는 금지가
@@ -2161,7 +2172,8 @@
                 <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
               </button>
               <div class="qans" id="qa-5">
-                <p>No login needed. Just upload the document you want to compare.</p>
+                <!-- 🔄 "No login needed" 구절 제거 (핸드오프 3b 전환 · 국문 qa-5 와 같은 판단) -->
+                <p>Just upload the document you want to compare.</p>
               </div>
             </div>
             <div class="qitem" data-open="0">
@@ -2739,5 +2751,7 @@
   })();
   </script>
   <script defer src="/assets/track.js"></script>
+  <!-- 헤더 로그인 영역 + 로그인 모달 (핸드오프 3a·3c·3d-A). module 이라 자동 defer 입니다. -->
+  <script type="module" src="/assets/auth.js"></script>
 </body>
 </html>
