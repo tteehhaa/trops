@@ -57,12 +57,14 @@ function readConfig() {
     console.error('supabase config warning: ' + resolved.warning);
   }
 
-  const trimmed = String(url).trim().replace(/\/+$/, '');
-
+  // 🔴 정규화 단일 출처 = _supabase-keys.js normalizeSupabaseUrl.
+  //    http:// 실 도메인을 여기서 https 로 올리지 않으면 REST 301 리다이렉트에서
+  //    POST 가 GET 으로 깎여 쓰기가 조용히 유실됩니다(그 함수 주석 참조).
   // URL 은 자격증명이 아니므로 진단을 위해 값을 그대로 남깁니다.
   // (비밀 키는 어떤 경우에도 로그에 남기지 않습니다 — 이름과 체계만 남깁니다.)
-  if (!/^https?:\/\//i.test(trimmed)) {
-    return invalidUrl('스킴(https://)이 없습니다', url);
+  const trimmed = KEYS.normalizeSupabaseUrl(url);
+  if (trimmed === null) {
+    return invalidUrl('URL 로 읽을 수 없습니다', url);
   }
 
   let parsed;
