@@ -68,6 +68,11 @@ const STATIC = {
     { file: 'en-check.html', locale: 'en' },
     { file: 'en-precheck.html', locale: 'en' },
     { file: 'en-refund.html', locale: 'en' },
+    // 영문 2종 추가 〔2026-08-20〕. en-nda.html 은 nda.html 의, en-uae.html 은 uae.html 의
+    // 형제 파일이고 cleanUrls 가 /en-nda · /en-uae 에 붙입니다. hreflang 3줄이 각각
+    // nda.html · uae.html 을 서로 가리킵니다.
+    { file: 'en-nda.html', locale: 'en' },
+    { file: 'en-uae.html', locale: 'en' },
   ],
   // assets/ = track.js(2026-08-18 페이지 조회·클릭 익명 집계). 주석 제거 없이 통째 복사.
   dirs: ['data', 'img', 'assets'],

@@ -557,6 +557,9 @@ const EN_PAIRS = [
   ['check.html', 'en-check.html'],
   ['precheck.html', 'en-precheck.html'],
   ['refund.html', 'en-refund.html'],
+  // 영문 2종 추가 〔2026-08-20〕. nda.html · uae.html 의 형제 파일입니다.
+  ['nda.html', 'en-nda.html'],
+  ['uae.html', 'en-uae.html'],
 ];
 
 /**
@@ -580,6 +583,9 @@ const STRUCT_DELTA = {
   'en-check.html': [0, 0],
   'en-precheck.html': [-2, -4],
   'en-refund.html': [0, 0],
+  // 영문 2종 추가 〔2026-08-20〕. 문구만 옮겼고 구조를 더하지 않았습니다 — 둘 다 0/0.
+  'en-nda.html': [0, 0],
+  'en-uae.html': [0, 0],
 };
 
 /** 주석을 걷은 마크업에서 id 를 나타난 순서대로. */
@@ -813,6 +819,9 @@ test('국문·영문이 hreflang 으로 서로를 가리킨다', () => {
     ['check.html', 'en-check.html', 'https://trops.kr/check', 'https://trops.kr/en-check'],
     ['precheck.html', 'en-precheck.html', 'https://trops.kr/precheck', 'https://trops.kr/en-precheck'],
     ['refund.html', 'en-refund.html', 'https://trops.kr/refund', 'https://trops.kr/en-refund'],
+    // 영문 2종 추가 〔2026-08-20〕.
+    ['nda.html', 'en-nda.html', 'https://trops.kr/nda', 'https://trops.kr/en-nda'],
+    ['uae.html', 'en-uae.html', 'https://trops.kr/uae', 'https://trops.kr/en-uae'],
   ];
   for (const [ko, en, koUrl, enUrl] of PAIRS) {
     for (const [file, label] of [[ko, '국문'], [en, '영문']]) {

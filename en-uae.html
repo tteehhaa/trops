@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>한-UAE CEPA 협정 세율 조회 — TROPS</title>
+<title>Korea-UAE CEPA Tariff Rate Lookup · TROPS</title>
 <!-- 🔄 「로그인 없이」 구절 제거 (핸드오프 3b 전환 · 2026-08-20) — 무료 사실만 남깁니다. -->
-<meta name="description" content="HS 8단위로 한-UAE CEPA 부속서의 양허 내용과 연도별 적용 세율을 조회합니다. 무료로 이용할 수 있습니다.">
+<meta name="description" content="Look up Korea-UAE CEPA concession details and the yearly applicable tariff rate by 8-digit HS code. Free to use.">
 <!-- hreflang 은 양쪽이 서로를 가리켜야 검색엔진이 인정합니다 — 한쪽만 있으면 무시됩니다.
-     en-uae.html <head> 에도 같은 3줄이 있습니다. 한쪽만 고치지 마십시오. -->
+     uae.html <head> 에도 같은 3줄이 있습니다. 한쪽만 고치지 마십시오. -->
 <link rel="alternate" hreflang="ko" href="https://trops.kr/uae">
 <link rel="alternate" hreflang="en" href="https://trops.kr/en-uae">
 <link rel="alternate" hreflang="x-default" href="https://trops.kr/uae">
@@ -378,19 +378,19 @@
 </style>
 </head>
 <body>
-  <a href="#uae-main" class="skip">본문으로 건너뛰기</a>
+  <a href="#uae-main" class="skip">Skip to main content</a>
 
   <div class="uae-page">
     <nav class="nav">
       <div class="container nav-inner">
-        <a href="/" class="wordmark" aria-label="TROPS 홈">TROPS</a>
+        <a href="/en" class="wordmark" aria-label="TROPS home">TROPS</a>
         <div class="nav-links">
-          <a href="/#how">작동 방식</a>
-          <a href="/#stages">이용 단계</a>
-          <a href="/#interest">문의</a>
+          <a href="/en#how">How it works</a>
+          <a href="/en#stages">Steps</a>
+          <a href="/en#interest">Contact</a>
         </div>
         <div class="nav-right">
-          <a class="btn btn-secondary btn-nav" href="https://app.trops.kr/" target="_self">수출 시작하기</a>
+          <a class="btn btn-secondary btn-nav" href="https://app.trops.kr/" target="_self">Start exporting</a>
         </div>
       </div>
     </nav>
@@ -398,7 +398,7 @@
     <main class="uae-main" id="uae-main" tabindex="-1">
       <noscript>
         <div class="container uae-block" style="border-top:0">
-          <p class="uae-block-note">이 조회 화면은 자바스크립트가 필요합니다. 브라우저에서 자바스크립트를 켠 뒤 다시 시도해 주십시오.</p>
+          <p class="uae-block-note">This lookup page requires JavaScript. Please enable JavaScript in your browser and try again.</p>
         </div>
       </noscript>
     </main>
@@ -424,29 +424,29 @@
                 소개하고 있었습니다. test/naming-consistency.test.js 가 이제 국문 7개 · 영문 4개
                 **전부**를 셉니다(종전에는 index·precheck 둘뿐이라 이 누락을 못 봤습니다).
              ⚠️ 고치실 때 한 곳만 고치지 마십시오. -->
-        <span class="footer-meta">수출 사전점검 · 바이어 확인 · 기한 관리 · contact@theo-ne.com</span>
+        <span class="footer-meta">Export pre-check · Buyer check · Deadline tracking · contact@theo-ne.com</span>
       </div>
 
-      <nav class="footer-links" aria-label="정책">
-        <a href="/precheck">수출 사전점검</a>
-        <a href="/refund">환불규정</a>
-        <a href="/privacy">개인정보처리방침</a>
+      <nav class="footer-links" aria-label="Policies">
+        <a href="/en-precheck">Export pre-check</a>
+        <a href="/en-refund">Refund policy</a>
+        <a href="/en-privacy">Privacy policy</a>
       </nav>
 
-      <dl class="footer-biz" aria-label="사업자정보">
-        <div><dt>상호명</dt><dd>{{biz.companyName}}</dd></div>
-        <div><dt>대표자명</dt><dd>{{biz.ceo}}</dd></div>
-        <div><dt>사업자등록번호</dt><dd>{{biz.registrationNo}}</dd></div>
+      <dl class="footer-biz" aria-label="Business information">
+        <div><dt>Company</dt><dd>{{biz.companyName}}</dd></div>
+        <div><dt>CEO</dt><dd>{{biz.ceo}}</dd></div>
+        <div><dt>Business Registration No.</dt><dd>{{biz.registrationNo}}</dd></div>
         <!-- 값은 전부 site.config.json 이 원본입니다(2026-08-11 단일소스화).
              통신판매업신고번호가 확정되면 그 파일의 biz.ko.ecommerceNo 만 고치십시오 —
              국문 5개 페이지가 함께 따라옵니다. 여기를 직접 고치지 마십시오. -->
-        <div><dt>통신판매업신고번호</dt><dd>{{biz.ecommerceNo}}</dd></div>
-        <div><dt>사업장주소</dt><dd>{{biz.address}}</dd></div>
-        <div><dt>전화번호</dt><dd>{{biz.phone}}</dd></div>
+        <div><dt>E-Commerce Registration No.</dt><dd>{{biz.ecommerceNo}}</dd></div>
+        <div><dt>Address</dt><dd>{{biz.address}}</dd></div>
+        <div><dt>Phone</dt><dd>{{biz.phone}}</dd></div>
       </dl>
 
       <div class="footer-legal">
-        <p>TROPS · {{biz.companyName}} — ※ 법률 자문 서비스가 아닙니다.</p>
+        <p>TROPS · {{biz.companyName}}. ※ This is not a legal advisory service.</p>
         <p>© 2026 TROPS · {{biz.companyName}}. All rights reserved.</p>
       </div>
     </div>
@@ -462,11 +462,11 @@
      ============================================================ */
   const UAE_CONFIG = {
     code: 'AE',
-    name: '아랍에미리트',
-    agreement: '한-UAE CEPA',
+    name: 'the United Arab Emirates',
+    agreement: 'Korea-UAE CEPA',
     effectiveDate: '2026-05-01',
-    tariffAnnex: '부속서 2-가-2',
-    psrAnnex: '부속서 3-가',
+    tariffAnnex: 'Annex 2-A-2',
+    psrAnnex: 'Annex 3-A',
     staging: {
       B: { steps: 5,  firstYearFactor: 4/5  },
       C: { steps: 10, firstYearFactor: 9/10 },
@@ -476,10 +476,10 @@
 
   /* 면책 4문장 — 글자 그대로 유지 */
   const FIXED_DISCLAIMER = [
-    '이 결과는 한-UAE CEPA 부속서의 양허 내용을 표시한 것입니다.',
-    '실제 납부 세액과 다를 수 있습니다.',
-    '원산지 결정기준은 품목별로 다르며 원문 확인이 필요합니다.',
-    'TROPS는 품목분류·원산지를 판정하지 않습니다.',
+    'This result shows the concession details from the Korea-UAE CEPA annex.',
+    'The actual duty paid may differ.',
+    'Rules of origin vary by item and require verification against the source text.',
+    'TROPS does not determine tariff classification or origin.',
   ];
 
   // 🔴 `DIAGNOSIS_PRICE = '99,000원'` 을 **지웠습니다** 〔2026-08-13 · 대표 결정〕.
@@ -496,18 +496,18 @@
   // 되돌리면 됩니다. ⚠️ 가격을 라벨에 붙이려면 **가격이 먼저 결정 사안**입니다.
   // ⚠️ 상수 이름(DIAGNOSIS_*)은 그대로 둡니다 — 내부 식별자이고, 바꾸면 이 파일 안
   //    참조 5곳을 함께 옮겨야 하는데 §4-7 은 **대외 문구** 규칙입니다(화면에 안 찍힙니다).
-  const DIAGNOSIS_CTA_HREF = '/precheck';
-  const DIAGNOSIS_CTA_LABEL = '수출 사전점검 신청';
+  const DIAGNOSIS_CTA_HREF = '/en-precheck';
+  const DIAGNOSIS_CTA_LABEL = 'Apply for export pre-check';
   // 항목 수는 빌드가 채웁니다 — site.config.json 의 precheck.itemCount 가 원본입니다.
   // ⚠️ 문자열 리터럴 안이지만 숫자라 따옴표 문제가 없습니다. 토큰을 따옴표로 감싸지 마십시오.
-  const DIAGNOSIS_CTA_NOTE = '확인 항목 대조표는 준비 중입니다. 바이어가 보낸 서류의 {{precheck.itemCount}}개 항목 대조는 지금 신청하실 수 있습니다.';
-  const PSR_PENDING_TEXT = '원문 확인 중 — 정확한 기준은 담당 관세사에게 문의하십시오';
+  const DIAGNOSIS_CTA_NOTE = 'The item comparison table isn’t ready yet. You can apply now for a {{precheck.itemCount}}-item comparison of the document your buyer sent.';
+  const PSR_PENDING_TEXT = 'Source text pending verification. For the exact standard, please consult your customs broker.';
 
   /* 허용치(제3.7조)는 세번변경기준을 전제한 항목입니다.
      PSR 원문이 확인되지 않았거나 세번변경 기준이 아닌 품목에는 노출하지 않고,
      기준과 무관한 아래 항목으로 대체합니다. (근거 없는 항목을 만들지 않기 위한 처리) */
   const CTC_PREMISED_PROVISION_IDS = ['tolerance'];
-  const CTC_PENDING_SUBSTITUTE = '원산지 판정 근거서류 구비 여부';
+  const CTC_PENDING_SUBSTITUTE = 'Whether you have supporting documents for the origin determination';
 
   function fetchJson(url, fallback) {
     return fetch(url)
@@ -586,16 +586,16 @@
     const wrap = el('div', 'container uae-topbar');
 
     const back = el('a', 'uae-back');
-    back.href = '/uae';
+    back.href = '/en-uae';
     const mark = el('span', 'uae-back-mark', '←');
     mark.setAttribute('aria-hidden', 'true');
     back.appendChild(mark);
-    back.appendChild(document.createTextNode('다시 조회'));
+    back.appendChild(document.createTextNode('Search again'));
     wrap.appendChild(back);
 
     // nav 워드마크만으로는 홈 경로가 잘 읽히지 않아 텍스트 링크를 함께 둡니다.
-    const home = el('a', 'uae-back', '홈');
-    home.href = '/';
+    const home = el('a', 'uae-back', 'Home');
+    home.href = '/en';
     wrap.appendChild(home);
 
     return wrap;
@@ -603,10 +603,10 @@
 
   function lookupForm(labelText, presetValue) {
     const box = el('div', 'hs-box');
-    box.appendChild(el('p', 'hs-box-label', labelText || 'HS 코드로 협정 세율 조회'));
+    box.appendChild(el('p', 'hs-box-label', labelText || 'Look up the tariff rate by HS code'));
 
     const form = el('form', 'hs-group');
-    form.action = '/uae';
+    form.action = '/en-uae';
     form.method = 'get';
     form.appendChild(el('span', 'hs-country', UAE_CONFIG.name));
 
@@ -617,21 +617,21 @@
     input.inputMode = 'numeric';
     input.pattern = '[0-9]{8}';
     input.maxLength = 8;
-    input.placeholder = 'HS 8단위 입력';
-    input.title = 'HS 코드 8자리 숫자를 입력하세요';
+    input.placeholder = 'Enter 8-digit HS code';
+    input.title = 'Enter the 8-digit HS code';
     input.required = true;
-    input.setAttribute('aria-label', 'HS 코드 8단위');
+    input.setAttribute('aria-label', '8-digit HS code');
     if (presetValue) input.value = presetValue;
     form.appendChild(input);
 
-    const btn = el('button', 'btn btn-primary', '확인');
+    const btn = el('button', 'btn btn-primary', 'Search');
     btn.type = 'submit';
     form.appendChild(btn);
 
     box.appendChild(form);
     // 🔄 「로그인 없이」 구절 제거 (핸드오프 3b 전환 · 2026-08-20) — 무료 사실만 남깁니다.
     box.appendChild(el('p', 'hs-meta',
-      UAE_CONFIG.name + ' · ' + UAE_CONFIG.agreement + ' 기준 · 무료 조회'));
+      UAE_CONFIG.name + ' · based on the ' + UAE_CONFIG.agreement + ' · Free lookup'));
     return box;
   }
 
@@ -675,8 +675,8 @@
     // (2) PSR 원문이 확인된 품목에만 기준 기반 항목을 만듭니다
     const psrDerived = [];
     if (verified) {
-      if (psr.rule) psrDerived.push(psr.rule + ' 충족 여부');
-      if (psr.alternative) psrDerived.push(psr.alternative + ' 산정 근거');
+      if (psr.rule) psrDerived.push(psr.rule + ' compliance');
+      if (psr.alternative) psrDerived.push(psr.alternative + ' calculation basis');
     }
 
     // (3) 협정 일반 조항 — data/general-provisions.json 순서 유지
@@ -721,7 +721,7 @@
     hs.appendChild(el('span', 'uae-hs-g', parts.hs8.slice(4)));
     head.appendChild(hs);
     head.appendChild(el('p', 'uae-hs-note',
-      'HS 8단위 · 6단위 ' + parts.hs6 + ' · 제' + parts.hs4 + '호'));
+      'HS 8-digit · 6-digit ' + parts.hs6 + ' · Heading ' + parts.hs4));
     head.appendChild(el('h1', 'uae-item-name', cleanName(record.name)));
     // 류 이름은 data/chapter_names.json 에서 옵니다.
     // 관세청 속견표 기준 약칭이며(일부는 협정문 원문 정식 명칭), 어느 류인지 알아보게 돕는
@@ -730,11 +730,11 @@
     const chapterName = (chapterNames && chapterNames[parts.chapter]) ||
       (psr && psr.chapterName) || '';
     head.appendChild(el('p', 'uae-item-parent',
-      '제' + chapterNo(parts.chapter) + '류' + (chapterName ? ' · ' + chapterName : '')));
+      'Chapter ' + chapterNo(parts.chapter) + (chapterName ? ' · ' + chapterName : '')));
 
     const badges = el('div', 'uae-badge-row');
     badges.appendChild(badge(record.trackLabel, conc === 'PH' ? 'uae-badge-warning' : null));
-    badges.appendChild(badge('양허유형 ' + conc, 'uae-badge-quiet'));
+    badges.appendChild(badge('Concession type ' + conc, 'uae-badge-quiet'));
     badges.appendChild(badge(UAE_CONFIG.tariffAnnex, 'uae-badge-quiet'));
     head.appendChild(badges);
     frag.appendChild(head);
@@ -742,31 +742,31 @@
     /* 2. 세율 카드 3개 */
     const ratesWrap = el('div', 'container');
     const rates = el('div', 'uae-rates');
-    const nowBadge = yearMonth(TODAY) + ' 기준';
+    const nowBadge = 'as of ' + yearMonth(TODAY);
     const yearIndex = isStaged ? currentYearIndex(stage) : 0;
 
     if (noRate) {
-      rates.appendChild(rateCard('기준세율', '해당없음',
-        UAE_CONFIG.tariffAnnex + ' 기재값: ' + record.baseRateRaw + '. 세율로 환산하지 않습니다.',
+      rates.appendChild(rateCard('Base rate', 'N/A',
+        UAE_CONFIG.tariffAnnex + ' listed value: ' + record.baseRateRaw + '. Not converted to a tariff rate.',
         { na: true }));
-      rates.appendChild(rateCard('현재 세율', '해당없음',
-        record.trackLabel + '으로 기재되어 단계별 철폐 일정이 없습니다.',
+      rates.appendChild(rateCard('Current rate', 'N/A',
+        'Listed as ' + record.trackLabel + ', so there is no phase-out schedule.',
         { now: true, na: true, labelBadge: nowBadge }));
-      rates.appendChild(rateCard('무관세 도달일', '해당없음',
-        record.trackLabel + ' — ' + UAE_CONFIG.tariffAnnex + '에 철폐 일정이 기재되지 않았습니다.',
+      rates.appendChild(rateCard('Duty-free date', 'N/A',
+        record.trackLabel + '. No phase-out schedule is listed in ' + UAE_CONFIG.tariffAnnex + '.',
         { na: true }));
     } else {
-      rates.appendChild(rateCard('기준세율', record.baseRateRaw,
+      rates.appendChild(rateCard('Base rate', record.baseRateRaw,
         isExcluded
-          ? 'UAE 양허표 기재 기준세율. 협정과 무관하게 유지됩니다.'
-          : 'UAE 양허표 기재 기준세율. 발효 전 실행관세율입니다.'));
+          ? 'Base rate listed in the UAE tariff schedule. Maintained regardless of the agreement.'
+          : 'Base rate listed in the UAE tariff schedule. This is the applied tariff rate before the agreement takes effect.'));
 
       if (isImmediate) {
-        rates.appendChild(rateCard('현재 세율', fmtRate(0),
-          '발효일에 전량 철폐되는 유형입니다. 이후 단계 인하가 없습니다.',
+        rates.appendChild(rateCard('Current rate', fmtRate(0),
+          'This type is eliminated in full on the effective date, with no further staged reductions.',
           { now: true, labelBadge: nowBadge }));
-        rates.appendChild(rateCard('무관세 도달일', UAE_CONFIG.effectiveDate,
-          '협정 발효일. ' + UAE_CONFIG.tariffAnnex + ' 양허유형 A.'));
+        rates.appendChild(rateCard('Duty-free date', UAE_CONFIG.effectiveDate,
+          'Agreement effective date. ' + UAE_CONFIG.tariffAnnex + ' concession type A.'));
       } else if (isStaged) {
         const cur = rateForYear(record.baseRate, stage, yearIndex);
         const from = startDateForYear(yearIndex);
@@ -774,20 +774,20 @@
           ? null
           : new Date(startDateForYear(yearIndex + 1).getTime() - 86400000);
         const srcNow = yearIndex === 0
-          ? '협정 발효(' + UAE_CONFIG.effectiveDate + ') 전이므로 기준세율이 적용됩니다.'
+          ? 'Before the agreement takes effect (' + UAE_CONFIG.effectiveDate + '), the base rate applies.'
           : yearIndex >= stage.steps
-            ? '철폐 완료. ' + zeroDateFor(stage) + '부터 무관세입니다.'
-            : yearIndex + '년차(' + iso(from) + ' ~ ' + iso(until) + ') 적용분. 매년 1월 1일 인하됩니다.';
-        rates.appendChild(rateCard('현재 세율', fmtRate(yearIndex === 0 ? record.baseRate : cur),
+            ? 'Phase-out complete. Duty-free from ' + zeroDateFor(stage) + '.'
+            : 'Year ' + yearIndex + ' (' + iso(from) + '–' + iso(until) + '). Rates are reduced every January 1.';
+        rates.appendChild(rateCard('Current rate', fmtRate(yearIndex === 0 ? record.baseRate : cur),
           srcNow, { now: true, labelBadge: nowBadge }));
-        rates.appendChild(rateCard('무관세 도달일', zeroDateFor(stage),
-          stage.steps + '회 균등 인하 후 철폐. ' + UAE_CONFIG.tariffAnnex + ' 양허유형 ' + conc + '.'));
+        rates.appendChild(rateCard('Duty-free date', zeroDateFor(stage),
+          stage.steps + ' equal-step reductions before full elimination. ' + UAE_CONFIG.tariffAnnex + ' concession type ' + conc + '.'));
       } else { // X
-        rates.appendChild(rateCard('현재 세율', record.baseRateRaw,
-          '양허 대상이 아니므로 인하 일정이 없습니다.',
+        rates.appendChild(rateCard('Current rate', record.baseRateRaw,
+          'Not subject to concession, so there is no reduction schedule.',
           { now: true, labelBadge: nowBadge }));
-        rates.appendChild(rateCard('무관세 도달일', '해당없음',
-          '양허제외 품목 — ' + UAE_CONFIG.tariffAnnex + '에 철폐 일정이 기재되지 않았습니다.',
+        rates.appendChild(rateCard('Duty-free date', 'N/A',
+          'Excluded from concession. No phase-out schedule is listed in ' + UAE_CONFIG.tariffAnnex + '.',
           { na: true }));
       }
     }
@@ -797,16 +797,16 @@
     /* 3. 연도별 세율 표 — B/C에서만 표를 그립니다 */
     if (isStaged) {
       const sec = el('section', 'container uae-block');
-      blockHead(sec, '연도별 적용 세율', UAE_CONFIG.tariffAnnex + ' 단계별 철폐 일정 · 균등 인하');
+      blockHead(sec, 'Rate by year', UAE_CONFIG.tariffAnnex + ' phase-out schedule · equal-step reductions');
       sec.appendChild(el('p', 'uae-block-note',
-        '각 세율은 해당 연도 1월 1일부터 적용됩니다. 1년차는 발효일부터 적용됩니다.'));
+        'Each rate applies from January 1 of that year. Year 1 applies from the effective date.'));
 
       const wrap = el('div', 'uae-table-wrap');
       const table = el('table', 'uae-table');
       const thead = el('thead');
       const htr = el('tr');
-      const th1 = el('th', null, '적용 시점'); th1.scope = 'col';
-      const th2 = el('th', null, '세율'); th2.scope = 'col';
+      const th1 = el('th', null, 'Effective from'); th1.scope = 'col';
+      const th2 = el('th', null, 'Rate'); th2.scope = 'col';
       htr.appendChild(th1); htr.appendChild(th2);
       thead.appendChild(htr);
       table.appendChild(thead);
@@ -816,10 +816,10 @@
         const tr = el('tr', n === yearIndex ? 'uae-row-current' : null);
         const tdDate = el('td', null, iso(startDateForYear(n)));
         let mark = null;
-        if (n === 1 && yearIndex === 1) mark = '발효 · 현재';
-        else if (n === 1) mark = '발효';
-        else if (n === yearIndex) mark = '현재';
-        else if (n === stage.steps) mark = '무관세';
+        if (n === 1 && yearIndex === 1) mark = 'Effective · current';
+        else if (n === 1) mark = 'Effective';
+        else if (n === yearIndex) mark = 'Current';
+        else if (n === stage.steps) mark = 'Duty-free';
         if (mark) tdDate.appendChild(el('span', 'uae-row-mark', mark));
         tr.appendChild(tdDate);
         tr.appendChild(el('td', null, fmtRate(rateForYear(record.baseRate, stage, n))));
@@ -832,9 +832,9 @@
     } else if (!isImmediate) {
       // X / PH / SG — 제목과 설명만, 표 없음
       const sec = el('section', 'container uae-block');
-      blockHead(sec, '연도별 적용 세율', UAE_CONFIG.tariffAnnex + ' 단계별 철폐 일정');
+      blockHead(sec, 'Rate by year', UAE_CONFIG.tariffAnnex + ' phase-out schedule');
       sec.appendChild(el('p', 'uae-block-note',
-        '양허제외·금지품목·특별관심품목은 단계별 철폐 일정이 없습니다. 표시할 연도별 세율이 없습니다.'));
+        'Excluded, prohibited, and special-attention items have no phase-out schedule. There is no yearly rate to display.'));
       frag.appendChild(sec);
     }
     // A(즉시 철폐)는 이 블록을 DOM에 만들지 않습니다.
@@ -842,26 +842,26 @@
     /* 4. PSR */
     const verified = !!(psr && psr.verified);
     const psrSec = el('section', 'container uae-block');
-    blockHead(psrSec, '원산지 결정기준(PSR)', UAE_CONFIG.psrAnnex + ' 품목별 원산지 기준');
+    blockHead(psrSec, 'Product-specific rules of origin (PSR)', UAE_CONFIG.psrAnnex + ' item-specific origin criteria');
     const psrBox = el('div', 'uae-psr' + (verified ? '' : ' uae-psr-pending'));
     const state = el('div', 'uae-psr-state');
     const markEl = el('i', 'uae-psr-mark' + (verified ? '' : ' uae-psr-mark-pending'));
     markEl.setAttribute('aria-hidden', 'true');
     state.appendChild(markEl);
-    state.appendChild(document.createTextNode(verified ? '원문 확인됨' : '원문 확인 중'));
+    state.appendChild(document.createTextNode(verified ? 'Source text verified' : 'Source text pending'));
     psrBox.appendChild(state);
 
     if (verified) {
-      const ruleText = [psr.rule, psr.alternative].filter(Boolean).join(' 또는 ');
+      const ruleText = [psr.rule, psr.alternative].filter(Boolean).join(' or ');
       psrBox.appendChild(el('p', 'uae-psr-text', ruleText));
       // 출처 문구는 확인된 품목에만 붙입니다. 데이터가 류 단위이므로 류 단위로만 표기합니다.
       psrBox.appendChild(el('p', 'uae-psr-meta',
-        psr.source + ' 기재 기준을 그대로 옮긴 것입니다. 충족 여부 판정은 포함되지 않습니다.'));
+        psr.source + '. Copied verbatim from the listed standard. Does not include a determination of whether it is met.'));
     } else {
       psrBox.appendChild(el('p', 'uae-psr-text uae-psr-text-pending', PSR_PENDING_TEXT));
       psrBox.appendChild(el('p', 'uae-psr-meta',
-        '제' + chapterNo(parts.chapter) + '류는 ' + UAE_CONFIG.psrAnnex +
-        ' 원문 확인이 완료되지 않았습니다. TROPS는 확인된 원문만 표시하며, 추정하지 않습니다.'));
+        'Chapter ' + chapterNo(parts.chapter) + ' has not yet had its ' + UAE_CONFIG.psrAnnex +
+        ' source text verified. TROPS only displays verified source text, and does not estimate.'));
     }
     psrSec.appendChild(psrBox);
     frag.appendChild(psrSec);
@@ -870,9 +870,9 @@
     const items = buildCheckItems(record, psr, provisions, trackItems);
     const checkSec = el('section', 'container uae-check');
     checkSec.appendChild(el('p', 'uae-check-count',
-      '확인이 필요한 항목이 ' + items.length + '개 있습니다'));
+      'There are ' + items.length + ' items you need to check'));
     checkSec.appendChild(el('p', 'uae-check-sub',
-      '원산지증명서 · 소급발급 기한 등 협정상 확인 대상입니다.'));
+      'These are things the agreement requires you to check, such as the certificate of origin and retroactive-issuance deadlines.'));
     const list = el('ul', 'uae-check-list');
     items.forEach((title, i) => {
       const li = el('li', 'uae-check-item');
@@ -894,7 +894,7 @@
 
     main.innerHTML = '';
     main.appendChild(frag);
-    document.title = parts.hs8 + ' · ' + UAE_CONFIG.agreement + ' 협정 세율 — TROPS';
+    document.title = parts.hs8 + ' · ' + UAE_CONFIG.agreement + ' tariff rate · TROPS';
 
     logLookup(parts.hs8, conc, verified);
   }
@@ -912,25 +912,25 @@
     hs.appendChild(el('span', 'uae-hs-g', parts.hs8.slice(4)));
     head.appendChild(hs);
     head.appendChild(el('p', 'uae-hs-note',
-      'HS 8단위 · 6단위 ' + parts.hs6 + ' · 제' + parts.hs4 + '호'));
-    head.appendChild(el('h1', 'uae-item-name', '양허표에서 찾을 수 없는 HS 8단위입니다'));
+      'HS 8-digit · 6-digit ' + parts.hs6 + ' · Heading ' + parts.hs4));
+    head.appendChild(el('h1', 'uae-item-name', 'This HS 8-digit code was not found in the tariff schedule'));
     head.appendChild(el('p', 'uae-item-parent',
-      UAE_CONFIG.tariffAnnex + '에 이 8단위 코드가 기재되어 있지 않습니다.'));
+      'This 8-digit code is not listed in ' + UAE_CONFIG.tariffAnnex + '.'));
     frag.appendChild(head);
 
     const sec = el('section', 'container uae-block');
     sec.style.borderTop = '0';
     if (siblings && siblings.length) {
-      blockHead(sec, '제' + parts.hs4 + '호에 기재된 8단위',
-        UAE_CONFIG.tariffAnnex + ' 기재 항목 ' + siblings.length + '건');
+      blockHead(sec, '8-digit codes listed under heading ' + parts.hs4,
+        UAE_CONFIG.tariffAnnex + ' (' + siblings.length + ' listed items)');
       sec.appendChild(el('p', 'uae-block-note',
-        '입력하신 코드와 같은 4단위 호에 기재된 항목입니다. TROPS는 어느 항목에 해당하는지 추정하지 않습니다. 품목분류는 직접 확인하시거나 담당 관세사에게 문의하십시오.'));
+        'These are items listed under the same 4-digit heading as the code you entered. TROPS does not estimate which item applies to you. Please verify the classification yourself or consult your customs broker.'));
       const wrap = el('div', 'uae-table-wrap');
       const table = el('table', 'uae-table');
       const thead = el('thead');
       const htr = el('tr');
-      const th1 = el('th', null, 'HS 8단위'); th1.scope = 'col';
-      const th2 = el('th', null, '품목명'); th2.scope = 'col';
+      const th1 = el('th', null, 'HS 8-digit code'); th1.scope = 'col';
+      const th2 = el('th', null, 'Item name'); th2.scope = 'col';
       htr.appendChild(th1); htr.appendChild(th2);
       thead.appendChild(htr);
       table.appendChild(thead);
@@ -939,7 +939,7 @@
         const tr = el('tr');
         const tdCode = el('td');
         const a = el('a', null, r.hs8);
-        a.href = '/uae?hs=' + encodeURIComponent(r.hs8);
+        a.href = '/en-uae?hs=' + encodeURIComponent(r.hs8);
         tdCode.appendChild(a);
         tr.appendChild(tdCode);
         tr.appendChild(el('td', null, cleanName(r.name)));
@@ -949,20 +949,20 @@
       wrap.appendChild(table);
       sec.appendChild(wrap);
     } else {
-      blockHead(sec, '제' + parts.hs4 + '호에 기재된 8단위', UAE_CONFIG.tariffAnnex);
+      blockHead(sec, '8-digit codes listed under heading ' + parts.hs4, UAE_CONFIG.tariffAnnex);
       sec.appendChild(el('p', 'uae-block-note',
-        '제' + parts.hs4 + '호로 시작하는 항목도 양허표에 기재되어 있지 않습니다. 상위 4단위(' +
-        parts.hs4 + ') 기준으로 품목분류를 다시 확인해 주십시오. TROPS는 해당 품목의 세율을 추정하지 않습니다.'));
+        'No items starting with heading ' + parts.hs4 + ' are listed in the tariff schedule either. Please re-check the classification against the 4-digit heading (' +
+        parts.hs4 + '). TROPS does not estimate the tariff rate for that item.'));
     }
     frag.appendChild(sec);
 
     const again = el('section', 'container uae-block');
-    again.appendChild(lookupForm('다른 HS 코드로 조회', ''));
+    again.appendChild(lookupForm('Look up a different HS code', ''));
     frag.appendChild(again);
 
     main.innerHTML = '';
     main.appendChild(frag);
-    document.title = parts.hs8 + ' · 조회 결과 없음 — TROPS';
+    document.title = parts.hs8 + ' · No results · TROPS';
   }
 
   /* ---------- 입력 폼 / 안내 ---------- */
@@ -970,15 +970,15 @@
     const frag = document.createDocumentFragment();
     const head = el('header', 'container uae-head');
     head.appendChild(el('p', 'uae-head-kicker', UAE_CONFIG.name + ' · ' + UAE_CONFIG.agreement));
-    head.appendChild(el('h1', 'uae-item-name', 'HS 코드로 협정 세율 조회'));
+    head.appendChild(el('h1', 'uae-item-name', 'Look up the tariff rate by HS code'));
     head.appendChild(el('p', 'uae-item-parent',
-      'HS 8단위를 입력하면 ' + UAE_CONFIG.tariffAnnex + '의 양허 내용과 연도별 적용 세율을 보여드립니다.'));
+      'Enter an 8-digit HS code and we’ll show you the concession details and yearly applicable rate from ' + UAE_CONFIG.tariffAnnex + '.'));
     if (noticeText) {
       const note = el('p', 'uae-block-note', noticeText);
       note.style.marginTop = '18px';
       head.appendChild(note);
     }
-    head.appendChild(lookupForm('HS 코드로 협정 세율 조회', ''));
+    head.appendChild(lookupForm('Look up the tariff rate by HS code', ''));
     frag.appendChild(head);
 
     main.innerHTML = '';
@@ -1014,7 +1014,7 @@
   if (!raw) {
     renderForm('');
   } else if (hs8.length !== 8) {
-    renderForm('HS 8단위(숫자 8자리)를 입력해 주십시오. 입력하신 값: ' + raw);
+    renderForm('Please enter an 8-digit HS code (numbers only). You entered: ' + raw);
   } else {
     const chapter = hs8.slice(0, 2);
     Promise.all([
@@ -1047,7 +1047,7 @@
 
       renderResult(record, psrAll[chapter] || null, provisions, trackItems, chapterNames);
     }).catch(function () {
-      renderForm('조회 데이터를 불러오지 못했습니다. 잠시 후 다시 시도해 주십시오.');
+      renderForm('We couldn’t load the lookup data. Please try again in a moment.');
     });
   }
 })();
