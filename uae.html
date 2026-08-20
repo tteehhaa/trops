@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>한-UAE CEPA 협정 세율 조회 — TROPS</title>
-<meta name="description" content="HS 8단위로 한-UAE CEPA 부속서의 양허 내용과 연도별 적용 세율을 조회합니다. 무료 · 로그인 없이 이용할 수 있습니다.">
+<!-- 🔄 「로그인 없이」 구절 제거 (핸드오프 3b 전환 · 2026-08-20) — 무료 사실만 남깁니다. -->
+<meta name="description" content="HS 8단위로 한-UAE CEPA 부속서의 양허 내용과 연도별 적용 세율을 조회합니다. 무료로 이용할 수 있습니다.">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
 <style>
   /* ============================================================
@@ -623,8 +624,9 @@
     form.appendChild(btn);
 
     box.appendChild(form);
+    // 🔄 「로그인 없이」 구절 제거 (핸드오프 3b 전환 · 2026-08-20) — 무료 사실만 남깁니다.
     box.appendChild(el('p', 'hs-meta',
-      UAE_CONFIG.name + ' · ' + UAE_CONFIG.agreement + ' 기준 · 무료 · 로그인 없이 조회'));
+      UAE_CONFIG.name + ' · ' + UAE_CONFIG.agreement + ' 기준 · 무료 조회'));
     return box;
   }
 

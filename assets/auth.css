@@ -1,0 +1,379 @@
+/*!
+ * auth.css — 랜딩 헤더 로그인 영역(핸드오프 3a·3d-A) + 로그인 모달(3c)
+ *
+ * 값의 정본은 dd-now/console_handoff/HANDOFF.md(trops_a 저장소) §1 디자인 토큰 ·
+ * §2.2 로그인 상태 영역 · §2.3 로그인 모달 · §3.2 상태 정의입니다.
+ * 토큰 값을 임의로 바꾸지 마십시오 — 콘솔(app.trops.kr)과 같은 문서를 봅니다.
+ *
+ * ⚠️ 폰트만 예외입니다. 핸드오프는 IBM Plex Sans KR 를 지정하지만 그것은 콘솔
+ *    기준이고, 이 랜딩의 전역 폰트는 Pretendard 입니다. 헤더 한 구역만 다른 한글
+ *    폰트를 불러오면 같은 줄의 메뉴와 글자가 갈립니다 — 크기·굵기·자간 값만 쓰고
+ *    폰트는 페이지를 따릅니다.
+ *
+ * 클래스 접두 ta- (trops auth) — 랜딩 기존 클래스와 충돌하지 않습니다.
+ */
+
+.trops-auth,
+.ta-overlay {
+  --ta-primary: #1f56c9;
+  --ta-primary-strong: #1b4bb0;
+  --ta-primary-bg: #eef3fe;
+  --ta-primary-border: #d6e2fb;
+  --ta-text: #0f1729;
+  --ta-text-body: #4a5568;
+  --ta-text-secondary: #5b6779;
+  --ta-text-muted: #7d8899;
+  --ta-border: #eceff3;
+  --ta-border-strong: #e0e5ec;
+  --ta-rate-up: #c8452f;
+  --ta-focus-ring: 0 0 0 3px rgba(31, 86, 201, 0.1);
+}
+
+/* ── 헤더 우측 영역 (3a) ─────────────────────────────────────────── */
+
+.trops-auth {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  white-space: nowrap;
+}
+
+.ta-divider {
+  width: 1px;
+  height: 22px;
+  background: #e6e7e2;
+  flex: none;
+}
+
+/* 세션 확인 중 — 118×36 스켈레톤 1개(§3.2 · 폭 예약으로 레이아웃 시프트 방지) */
+.ta-skeleton {
+  width: 118px;
+  height: 36px;
+  border-radius: 9px;
+  background: #f1f4f8;
+  flex: none;
+}
+
+.ta-login {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #37456b;
+  letter-spacing: -0.01em;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  flex: none;
+  font-family: inherit;
+}
+.ta-login:hover { color: var(--ta-text); }
+
+.ta-start {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 16px;
+  background: var(--ta-primary-bg);
+  border: 1px solid var(--ta-primary-border);
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ta-primary-strong);
+  letter-spacing: -0.01em;
+  flex: none;
+  cursor: pointer;
+}
+.ta-start:hover { color: var(--ta-primary-strong); background: #e4edfd; }
+.ta-start svg { flex: none; }
+
+/* 로그인 완료 — 사용자 칩 + 나의 대시보드 (3d-A) */
+.ta-signed { display: flex; align-items: center; gap: 10px; }
+
+.ta-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 6px 6px;
+  border: 1px solid #e6e7e2;
+  border-radius: 22px;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+.ta-chip:hover { border-color: #d5d7d1; }
+
+.ta-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #dfe6f4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #3c5480;
+  flex: none;
+}
+
+.ta-chip-name {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #37456b;
+  letter-spacing: -0.01em;
+  max-width: 8.5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ta-dashboard {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 15px;
+  min-height: 40px;
+  background: var(--ta-primary);
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: -0.01em;
+  flex: none;
+}
+.ta-dashboard:hover { background: var(--ta-primary-strong); color: #fff; }
+.ta-dashboard svg { flex: none; }
+.ta-dashboard .ta-arrow { opacity: 0.8; }
+
+/* 계정 메뉴 (3d-C 의 드롭다운 항목 규격) */
+.ta-menu-wrap { position: relative; display: flex; }
+.ta-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 212px;
+  background: #fff;
+  border: 1px solid var(--ta-border);
+  border-radius: 11px;
+  box-shadow: 0 10px 26px rgba(15, 23, 41, 0.1);
+  padding: 6px;
+  z-index: 40;
+}
+.ta-menu-head {
+  padding: 9px 10px 10px;
+  border-bottom: 1px solid #f4f6f9;
+  margin-bottom: 5px;
+}
+.ta-menu-head .ta-menu-name {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ta-text);
+}
+.ta-menu-head .ta-menu-mail {
+  font-size: 11px;
+  color: var(--ta-text-muted);
+  margin-top: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ta-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 9px 10px;
+  border-radius: 7px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ta-text-body);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+}
+.ta-menu-item:hover { background: #f6f8fa; }
+.ta-menu-item svg { color: var(--ta-text-muted); flex: none; }
+
+/* ── 로그인 모달 (3c) ────────────────────────────────────────────── */
+
+.ta-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 41, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 100;
+}
+
+.ta-modal {
+  width: 404px;
+  max-width: 100%;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 18px 44px rgba(15, 23, 41, 0.14);
+  padding: 30px 30px 24px;
+  position: relative;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+}
+
+.ta-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 40px;
+  height: 40px;
+  margin: -11px -11px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #b0bac7;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.ta-close:hover { color: var(--ta-text-secondary); }
+
+.ta-logo {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ta-text);
+  letter-spacing: -0.04em;
+}
+
+.ta-title {
+  font-size: 21px;
+  line-height: 1.35;
+  font-weight: 600;
+  color: var(--ta-text);
+  letter-spacing: -0.035em;
+  margin: 18px 0 0;
+  text-wrap: pretty;
+}
+
+.ta-sub {
+  font-size: 13px;
+  line-height: 1.55;
+  color: #6b7789;
+  margin: 6px 0 0;
+}
+
+.ta-form { display: flex; flex-direction: column; gap: 14px; margin-top: 22px; }
+
+.ta-label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 7px;
+}
+.ta-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ta-text-body);
+}
+.ta-forgot {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--ta-primary);
+}
+.ta-forgot:hover { color: var(--ta-primary-strong); }
+
+.ta-field {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 44px;
+  padding: 0 13px;
+  border: 1px solid var(--ta-border-strong);
+  border-radius: 9px;
+  background: #fff;
+}
+.ta-field svg { color: var(--ta-text-muted); flex: none; }
+.ta-field input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  font-size: 13.5px;
+  color: var(--ta-text);
+  background: none;
+  font-family: inherit;
+}
+.ta-field input::placeholder { color: #b0bac7; }
+.ta-field:focus-within {
+  border: 1.5px solid var(--ta-primary);
+  box-shadow: var(--ta-focus-ring);
+  padding: 0 12.5px;
+}
+.ta-field.ta-field-error { border-color: var(--ta-rate-up); }
+
+.ta-eye {
+  background: none;
+  border: 0;
+  padding: 0;
+  display: flex;
+  cursor: pointer;
+  color: var(--ta-text-muted);
+}
+.ta-eye:hover { color: var(--ta-text-secondary); }
+
+.ta-error {
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--ta-rate-up);
+  margin: -4px 0 0;
+}
+
+.ta-submit {
+  height: 46px;
+  background: var(--ta-primary);
+  border: 0;
+  border-radius: 9px;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: -0.02em;
+  cursor: pointer;
+  font-family: inherit;
+}
+.ta-submit:hover { background: var(--ta-primary-strong); }
+.ta-submit:disabled { opacity: 0.55; cursor: default; }
+
+.ta-signup-line {
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--ta-text-muted);
+  margin: 18px 0 0;
+}
+.ta-signup-line a {
+  color: var(--ta-primary);
+  font-weight: 600;
+}
+.ta-signup-line a:hover { color: var(--ta-primary-strong); }
+
+/* 포커스 표시 — 핸드오프 §3.1 focus-visible 규격 */
+.trops-auth :focus-visible,
+.ta-overlay :focus-visible {
+  outline: 2px solid var(--ta-primary);
+  outline-offset: -2px;
+}
+
+/* ── 모바일 (핸드오프 §4.2 — 드로어는 범위 밖 · 여기서는 폭만 지킵니다) ── */
+
+@media (max-width: 640px) {
+  .trops-auth { gap: 10px; }
+  .ta-start { padding: 10px 12px; }
+  .ta-dashboard { min-height: 44px; }
+}
+
+@media (max-width: 480px) {
+  .ta-chip-name { display: none; }
+  .ta-chip { padding: 5px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trops-auth *, .ta-overlay * { transition: none !important; }
+}
