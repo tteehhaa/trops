@@ -248,7 +248,15 @@
     color: var(--accent);
   }
   .btn-text:hover { color: var(--accent-press); }
-  /* nav 우측: 앱은 아직 메인 CTA가 아니므로 버튼이 아닌 저채도 텍스트 링크로 둔다 */
+  /* nav 우측: 앱은 아직 메인 CTA가 아니므로 버튼이 아닌 저채도 텍스트 링크로 둔다
+     🔴 **이 규칙은 헤더 우측 전체가 씁니다** 〔2026-08-21〕 — [EN]·[한국어] 뿐 아니라
+        로그인 영역의 [로그인]·[나의 대시보드]·[로그아웃]도 이 클래스를 입습니다
+        (assets/auth.js 가 `class="nav-quiet ta-link"` 로 붙이고, auth.css 는 색·크기
+        사본을 일부러 갖지 않습니다). 그래서 한 줄의 회색이 하나로 유지됩니다.
+     ⛔ **지우거나 이름을 바꾸지 마십시오** — 로그인 영역의 링크 3개가 색·크기를 잃고
+        브라우저 기본 파란 링크로 돌아갑니다. check.html 이 2026-08-19 에 「쓰는 자리가
+        없어졌다」며 이 규칙을 걷었던 전례가 있습니다(2026-08-21 에 되살렸습니다).
+        naming-consistency 검사가 이 짝을 지킵니다. */
   .nav-quiet { font-size: 14px; font-weight: 500; color: var(--muted); }
   .nav-quiet:hover { color: var(--ink-64); }
 

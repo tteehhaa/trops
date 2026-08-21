@@ -17,6 +17,29 @@
  * 전용 쿠키로 그 호스트 안에서만 동작합니다(도메인이 호스트와 안 맞는
  * 쿠키는 브라우저가 통째로 거부합니다).
  *
+ * ── 🔄 헤더를 납작한 한 줄로 (2026-08-21 · 대표 지시) ─────────────
+ * 종전 헤더는 「사용자 칩(드롭다운) + 파란 [나의 대시보드] 버튼」이었습니다. 대표가
+ * 실측 스크린샷을 보고 「EN · c contact · 나의 대시보드가 다 이상하다」고 지적했고,
+ * 원인은 셋이었습니다:
+ *   ① 칩의 이름 텍스트(`contact`)가 옆 nav 링크(서비스·이용 방법)와 같은 무게로 읽혀
+ *      **메뉴 항목처럼** 보였습니다 — 그것은 계정 표시인데 nav 로 읽힙니다.
+ *   ② 같은 계정 하나에 조작 지점이 둘(칩 드롭다운 + 파란 버튼)이었습니다.
+ *   ③ 파란 채움 버튼이 히어로의 메인 CTA(30초 만에 알아보기)와 무게를 다퉜습니다 —
+ *      이 파일 위쪽 nav 주석이 「app 진입은 저채도 텍스트 링크로만」이라 적어 둔 규칙을
+ *      정작 이 영역이 깨고 있었습니다.
+ * 그래서 app.trops.kr 헤더(`components/account-header.tsx`)와 **같은 패턴**으로 내렸습니다 —
+ * 아바타 + 이름 + 회색 텍스트 링크, 드롭다운 0 · 채움 버튼 0. 두 헤더가 형제로 보입니다.
+ *
+ * 🔴 **표시 규칙도 앱과 같은 것 하나로 합쳤습니다.** 종전에는 이 파일만
+ *    `user_metadata.name` 을 먼저 보고(있으면 「홍길동」·영문 이니셜 2자) 없을 때
+ *    로컬파트를 썼습니다. 앱의 `SessionUser` 는 `{id, email}` 뿐이고 저장소 전체에
+ *    `user_metadata` 를 **쓰는 코드가 0건**입니다(2026-08-21 실측) — 즉 그 분기는 지금
+ *    닿지 않는 길이면서, 언젠가 이름을 받기 시작하는 날 **두 헤더가 서로 다른 이름을
+ *    말하게** 되어 있었습니다. 규칙은 앱의 `initialOf`·`displayNameOf` 와 한 글자까지
+ *    같습니다(로컬파트 8자 · 초과 시 ellipsis · 전문은 `title`).
+ * ⚠️ 이름을 받기 시작하면 **두 파일을 같이** 고치십시오. 한쪽만 고치면 랜딩과 앱이
+ *    같은 사람을 다른 이름으로 부릅니다.
+ *
  * ── 이 모달에 없는 것 2가지 (핸드오프 3c 대비 · 의도된 차이) ──────
  * ① 「이메일 링크로 로그인」— 매직링크(signInWithOtp)는 창업자 결정
  *    (2026-08-10 폐기 · 2026-08-12 제거)으로 앱 전체 0건이며 되살리지
@@ -58,7 +81,7 @@ const COPY = {
     showPassword: '비밀번호 표시',
     hidePassword: '비밀번호 감추기',
     close: '닫기',
-    accountMenu: '계정 메뉴',
+    account: '계정',
     signupLead: '아직 계정이 없으세요?',
     signupLink: '무료로 가입하기',
     errEmailFormat: '이메일 형식을 확인해 주세요.',
@@ -83,7 +106,7 @@ const COPY = {
     showPassword: 'Show password',
     hidePassword: 'Hide password',
     close: 'Close',
-    accountMenu: 'Account menu',
+    account: 'Account',
     signupLead: 'New to trops?',
     signupLink: 'Sign up free',
     errEmailFormat: 'Please check the email format.',
@@ -115,11 +138,12 @@ function supabase() {
 /* ── 아이콘 (lucide 패스 · 핸드오프 §5 크기·굵기) ────────────────── */
 
 function icon(name, size, strokeWidth) {
+  /*
+   * ⛔ 소비처 0인 아이콘을 남기지 않습니다 — `arrow-right`·`dashboard`·`logout` 3종은
+   *    드롭다운 메뉴와 채움 버튼이 사라지며 부르는 곳이 없어졌습니다(2026-08-21).
+   *    남겨 두면 다음 화면이 근거 없이 집어 씁니다.
+   */
   const paths = {
-    'arrow-right': '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
-    dashboard:
-      '<rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/>' +
-      '<rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>',
     mail:
       '<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
     lock:
@@ -132,9 +156,6 @@ function icon(name, size, strokeWidth) {
       '<path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/>' +
       '<path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="m2 2 20 20"/>',
     x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
-    logout:
-      '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/>' +
-      '<line x1="21" x2="9" y1="12" y2="12"/>',
   };
   return (
     '<svg width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" ' +
@@ -149,24 +170,29 @@ function esc(value) {
   });
 }
 
-/* ── 사용자 표시 (핸드오프 §4.3 폴백 규칙) ───────────────────────── */
+/* ── 사용자 표시 (핸드오프 §2.2 · §4.3) ──────────────────────────────
+ * 🔴 아래 두 함수는 앱 `components/account-header.tsx` 의 `initialOf`·`displayNameOf`
+ *    **같은 규칙**입니다(값·상한·폴백까지). 한쪽만 고치지 마십시오 — 같은 사람을 두
+ *    헤더가 다른 이름으로 부르게 됩니다(파일 머리 주석 참조).
+ */
 
-function chipParts(user) {
-  const meta = user.user_metadata || {};
-  const name = String(meta.name || meta.full_name || '').trim();
-  const local = String(user.email || '').split('@')[0] || '?';
-  if (!name) {
-    // 이름 미입력 — 아바타는 이메일 로컬파트 첫 글자, 텍스트는 로컬파트(CSS ellipsis)
-    return { initial: local.charAt(0).toUpperCase(), label: local };
-  }
-  if (/^[A-Za-z\s.\-']+$/.test(name)) {
-    // 영문 이름 — 이니셜 2자 대문자
-    const words = name.split(/\s+/).filter(Boolean);
-    const two = (words[0].charAt(0) + (words[1] ? words[1].charAt(0) : '')).toUpperCase();
-    return { initial: two, label: name };
-  }
-  // 한글 등 — 성(첫 글자) 1자
-  return { initial: name.charAt(0), label: name };
+/** 표시 이름 상한 — 핸드오프 §2.2 「최대 8자 → 초과 시 ellipsis」. */
+const NAME_MAX = 8;
+
+/** 이메일 → 아바타 이니셜 1자. 비ASCII 는 그대로 둡니다(한글은 대소문자가 없습니다). */
+function initialOf(email) {
+  const first = String(email || '').trim().charAt(0);
+  return first ? first.toUpperCase() : '?';
+}
+
+/**
+ * 이메일 → 헤더 표시명(로컬파트 8자 · 초과분은 `…`).
+ * ⛔ 도메인을 붙이지 않습니다 — 폭만 먹고 계정 식별에 기여하지 않습니다(전문은 `title`).
+ */
+function displayNameOf(email) {
+  const local = String(email || '').trim().split('@')[0] || '';
+  if (!local) return T.account;
+  return local.length > NAME_MAX ? local.slice(0, NAME_MAX) + '…' : local;
 }
 
 /* ── 헤더 상태 렌더 (§3.2 — 비로그인 / 세션 확인 중 / 로그인 완료) ── */
@@ -181,73 +207,56 @@ function renderSkeleton() {
     '<span class="ta-skeleton" aria-hidden="true"></span>';
 }
 
+/*
+ * 🔴 링크·버튼은 랜딩의 `.nav-quiet`(index.html·en.html <style>)를 **그대로 입습니다** —
+ *    바로 왼쪽 [EN] 이 쓰는 그 클래스입니다. 색·크기 사본을 auth.css 에 두면 한 줄 안에서
+ *    두 회색이 갈립니다(실제로 갈려 있었습니다). `.ta-link` 는 <button> 을 링크처럼
+ *    보이게 하는 초기화(배경·테두리·패딩·폰트 상속)만 갖습니다.
+ */
 function renderSignedOut() {
   area.innerHTML =
     '<span class="ta-divider" aria-hidden="true"></span>' +
-    '<button type="button" class="ta-login" data-track="nav_login">' + esc(T.login) + '</button>' +
+    '<button type="button" class="nav-quiet ta-link" data-track="nav_login">' +
+    esc(T.login) + '</button>' +
     '<a class="ta-start" href="' + APP_ORIGIN + '/account/password" data-track="nav_signup">' +
-    esc(T.start) + icon('arrow-right', 14, 1.9) + '</a>';
-  area.querySelector('.ta-login').addEventListener('click', openModal);
+    esc(T.start) + '</a>';
+  area.querySelector('[data-track="nav_login"]').addEventListener('click', openModal);
 }
 
+/*
+ * 로그인 완료 — `[대시보드 링크] (아바타) 이름 [로그아웃]` 한 줄.
+ *
+ * 🔴 **순서가 앱 헤더와 같습니다** — 앱은 `[EN] [TROPS 홈] (아바타) 이름 [로그아웃]`,
+ *    여기는 `[EN] │ [나의 대시보드] (아바타) 이름 [로그아웃]` 입니다. 상대 오리진으로
+ *    건너가는 링크가 언어 링크 다음, 계정 3요소(아바타·이름·로그아웃) 앞에 옵니다.
+ *    ⛔ 대시보드 링크를 이름과 로그아웃 **사이**에 넣지 마십시오 — 계정 3요소가 갈립니다.
+ * 🔴 **드롭다운이 없습니다.** 종전 칩 메뉴가 담던 것은 이메일 전문과 로그아웃 둘인데,
+ *    전문은 `title` 이 갖고 로그아웃은 이제 줄 위에 그대로 있습니다 — 메뉴가 감출 것이
+ *    없어졌습니다(누르는 곳 하나 = 하는 일 하나).
+ * 🔴 **아바타는 무채색입니다** — 앱 `UI.HEADER.accountAvatar` 와 같은 값(#f1f4f8 /
+ *    #4a5568). 브랜드색을 주지 마십시오: 아바타는 상태가 아닙니다.
+ */
 function renderSignedIn(user) {
-  const parts = chipParts(user);
+  const email = String(user.email || '');
   area.innerHTML =
     '<span class="ta-divider" aria-hidden="true"></span>' +
-    '<div class="ta-signed">' +
-    '<div class="ta-menu-wrap">' +
-    '<button type="button" class="ta-chip" aria-haspopup="menu" aria-expanded="false" aria-label="' +
-    esc(T.accountMenu) + '">' +
-    '<span class="ta-avatar">' + esc(parts.initial) + '</span>' +
-    '<span class="ta-chip-name">' + esc(parts.label) + '</span>' +
-    '</button>' +
-    '</div>' +
-    '<a class="ta-dashboard" href="' + APP_ORIGIN + '/" data-track="nav_dashboard">' +
-    icon('dashboard', 15, 1.7) + esc(T.dashboard) +
-    '<span class="ta-arrow">' + icon('arrow-right', 13, 1.9) + '</span>' +
-    '</a>' +
+    '<a class="nav-quiet ta-link" href="' + APP_ORIGIN + '/" data-track="nav_dashboard">' +
+    esc(T.dashboard) + '</a>' +
+    // 계정 3요소는 한 덩어리(`.ta-account`)입니다 — 앱 `AccountHeader` 와 같은 묶음이고,
+    // 그래서 그룹 안(10px)이 그룹 사이(14px)보다 촘촘합니다.
+    '<div class="ta-account">' +
+    '<span class="ta-avatar" aria-hidden="true">' + esc(initialOf(email)) + '</span>' +
+    // 전문은 `title` 에 — 같은 로컬파트를 쓰는 두 계정을 가릴 수 있어야 합니다.
+    '<span class="ta-name"' + (email ? ' title="' + esc(email) + '"' : '') + '>' +
+    esc(displayNameOf(email)) + '</span>' +
+    '<button type="button" class="nav-quiet ta-link" data-track="nav_logout">' +
+    esc(T.logout) + '</button>' +
     '</div>';
 
-  const wrap = area.querySelector('.ta-menu-wrap');
-  const chip = area.querySelector('.ta-chip');
-  chip.addEventListener('click', function () {
-    const open = wrap.querySelector('.ta-menu');
-    if (open) { closeMenu(); return; }
-    const menu = document.createElement('div');
-    menu.className = 'ta-menu';
-    menu.setAttribute('role', 'menu');
-    menu.innerHTML =
-      '<div class="ta-menu-head">' +
-      '<div class="ta-menu-name">' + esc(parts.label) + '</div>' +
-      '<div class="ta-menu-mail">' + esc(user.email || '') + '</div>' +
-      '</div>' +
-      '<button type="button" class="ta-menu-item" role="menuitem" data-track="nav_logout">' +
-      icon('logout', 15, 1.7) + esc(T.logout) + '</button>';
-    wrap.appendChild(menu);
-    chip.setAttribute('aria-expanded', 'true');
-    menu.querySelector('.ta-menu-item').addEventListener('click', function () {
-      closeMenu();
-      supabase().auth.signOut().catch(function () {});
-    });
-    setTimeout(function () {
-      document.addEventListener('click', onOutsideMenu);
-      document.addEventListener('keydown', onMenuKey);
-    }, 0);
+  area.querySelector('[data-track="nav_logout"]').addEventListener('click', function () {
+    // 실패해도 토스트를 띄우지 않습니다 — onAuthStateChange 가 상태를 되돌립니다(§3.2).
+    supabase().auth.signOut().catch(function () {});
   });
-
-  function closeMenu() {
-    const menu = wrap.querySelector('.ta-menu');
-    if (menu) menu.remove();
-    chip.setAttribute('aria-expanded', 'false');
-    document.removeEventListener('click', onOutsideMenu);
-    document.removeEventListener('keydown', onMenuKey);
-  }
-  function onOutsideMenu(e) {
-    if (!wrap.contains(e.target)) closeMenu();
-  }
-  function onMenuKey(e) {
-    if (e.key === 'Escape') closeMenu();
-  }
 }
 
 function renderFor(session) {

@@ -169,9 +169,13 @@
   }
   .nav-links a:hover { color: var(--ink); }
   .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
-  /* .nav-quiet 규칙을 걷었습니다 〔2026-08-19〕 — 상단 링크가 [문의하기] 버튼(.btn-nav)으로
-     바뀌면서 이 페이지에서 쓰는 자리가 없어졌습니다. 되살릴 일이 있으면 en-check.html 의
-     같은 자리를 보십시오. */
+  /* 언어 전환 링크 — index.html·en.html 의 `.nav-quiet` 와 **같은 값**입니다
+     〔2026-08-21 · 대표 지시 「통일성 있게」〕. 종전에는 이 페이지의 언어 전환이 화면
+     우하단에 떠 있는 [English] 알약(assets/lang-switch.js)이었고, 랜딩만 헤더에 [EN] 을
+     갖고 있었습니다 — 같은 사이트에서 언어를 바꾸는 방법이 페이지마다 달랐습니다.
+     ⛔ 버튼으로 올리지 마십시오(index.html 의 같은 주석과 같은 규칙입니다). */
+  .nav-quiet { font-size: 14px; font-weight: 500; color: var(--muted); }
+  .nav-quiet:hover { color: var(--ink-64); }
 
   /* ---------- Buttons ----------
      세로 패딩 12px 만으로는 39.5px 라 터치 타깃 44px 에 못 미치므로
@@ -533,6 +537,8 @@
         <a href="/#qna">자주 묻는 질문</a>
       </div>
       <div class="nav-right">
+        <!-- 언어 전환 — 사이트 전체가 헤더 한 자리에서 합니다 〔2026-08-21〕. -->
+        <a class="nav-quiet" href="/en-check" hreflang="en" lang="en">EN</a>
         <!-- 🔄 「바로 비교해 보기」(href="/precheck" · data-bypass) → 「문의하기」
              〔대표 지시 2026-08-19〕. 목적지도 함께 바꿨습니다 — 랜딩 #interest 문의 칸으로
              연결됩니다(?focus=inquiry 는 index.html 도착 시 그 칸에 포커스를 줍니다

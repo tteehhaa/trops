@@ -54,19 +54,29 @@
   flex: none;
 }
 
-.ta-login {
-  font-size: 13.5px;
-  font-weight: 500;
-  color: #37456b;
-  letter-spacing: -0.01em;
+/*
+ * 헤더 우측 텍스트 링크·버튼 (로그인 · 나의 대시보드 · 로그아웃)
+ *
+ * 🔴 **색과 글자 크기를 여기에 적지 않습니다.** 마크업이 `class="nav-quiet ta-link"` 로
+ *    랜딩의 `.nav-quiet`(index.html·en.html <style>)를 입습니다 — 같은 줄 왼쪽의 [EN]·
+ *    [한국어] 가 쓰는 그 규칙입니다. 종전에는 이 파일이 `#37456b`/13.5px 사본을 들고
+ *    있어서 한 줄 안에 회색이 둘(#94A3B8 · #37456b), 크기가 둘(14 · 13.5)이었습니다.
+ * ⚠️ auth.css 는 <style> **앞에** 로드됩니다(index.html 34행 → 35행). 같은 특이도면
+ *    나중에 온 `.nav-quiet` 가 이깁니다 — 여기에 색을 다시 적으면 조용히 무시됩니다.
+ *
+ * 세로 패딩 11px 은 **터치 타깃**입니다(14px 글줄 20 + 22 = 42px). 64px nav 안에 들어가고
+ * flex 가운데 정렬이라 글자 위치는 그대로입니다. ⛔ 0 으로 줄이지 마십시오.
+ */
+.ta-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 11px 0;
   background: none;
   border: 0;
-  padding: 0;
   cursor: pointer;
   flex: none;
   font-family: inherit;
 }
-.ta-login:hover { color: var(--ta-text); }
 
 .ta-start {
   display: inline-flex;
@@ -84,115 +94,53 @@
   cursor: pointer;
 }
 .ta-start:hover { color: var(--ta-primary-strong); background: #e4edfd; }
-.ta-start svg { flex: none; }
 
-/* 로그인 완료 — 사용자 칩 + 나의 대시보드 (3d-A) */
-.ta-signed { display: flex; align-items: center; gap: 10px; }
-
-.ta-chip {
-  display: inline-flex;
+/* 로그인 완료 — 아바타 + 이름 (3d-A · 🔄 2026-08-21 납작한 한 줄)
+ *
+ * ⛔ **칩·드롭다운·채움 버튼을 되살리지 마십시오** 〔대표 지시 2026-08-21〕. 걷어낸 것은
+ *    `.ta-signed`(래퍼) · `.ta-chip`/`.ta-chip-name`(둥근 칩) · `.ta-menu*`(드롭다운 5규칙) ·
+ *    `.ta-dashboard`(파란 채움 버튼)입니다. 사유는 assets/auth.js 머리 주석에 있습니다 —
+ *    요약하면 ① 칩 이름이 nav 링크로 읽혔고 ② 계정 하나에 조작 지점이 둘이었고
+ *    ③ 파란 버튼이 히어로 메인 CTA 와 무게를 다퉜습니다.
+ *
+ * 🔴 아바타 값은 앱 `UI.HEADER.accountAvatar` 와 **같습니다**(28px · #f1f4f8 · 11px/700 ·
+ *    #4a5568). 무채색이라는 것이 규칙입니다 — 브랜드색을 주지 마십시오(아바타는 상태가
+ *    아닙니다). 이름 색 #4a5568 은 링크(#94A3B8)보다 진합니다: 앱과 같은 관계이고,
+ *    「이름은 라벨이고 옆의 둘은 누를 것」이라는 사실을 색으로 말합니다.
+ */
+/* 계정 덩어리 — 앱 `AccountHeader` 의 `gap-2.5`(10px)와 같은 값. 그룹 사이(14px)보다
+   촘촘해야 「아바타·이름·로그아웃이 한 사람의 것」으로 읽힙니다. */
+.ta-account {
+  display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 12px 6px 6px;
-  border: 1px solid #e6e7e2;
-  border-radius: 22px;
-  background: none;
-  cursor: pointer;
-  font-family: inherit;
+  gap: 10px;
+  min-width: 0;
 }
-.ta-chip:hover { border-color: #d5d7d1; }
 
 .ta-avatar {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  background: #dfe6f4;
+  background: #f1f4f8;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11.5px;
-  font-weight: 600;
-  color: #3c5480;
-  flex: none;
-}
-
-.ta-chip-name {
-  font-size: 12.5px;
-  font-weight: 500;
-  color: #37456b;
-  letter-spacing: -0.01em;
-  max-width: 8.5em;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.ta-dashboard {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 10px 15px;
-  min-height: 40px;
-  background: var(--ta-primary);
-  border-radius: 9px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #fff;
-  letter-spacing: -0.01em;
-  flex: none;
-}
-.ta-dashboard:hover { background: var(--ta-primary-strong); color: #fff; }
-.ta-dashboard svg { flex: none; }
-.ta-dashboard .ta-arrow { opacity: 0.8; }
-
-/* 계정 메뉴 (3d-C 의 드롭다운 항목 규격) */
-.ta-menu-wrap { position: relative; display: flex; }
-.ta-menu {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  width: 212px;
-  background: #fff;
-  border: 1px solid var(--ta-border);
-  border-radius: 11px;
-  box-shadow: 0 10px 26px rgba(15, 23, 41, 0.1);
-  padding: 6px;
-  z-index: 40;
-}
-.ta-menu-head {
-  padding: 9px 10px 10px;
-  border-bottom: 1px solid #f4f6f9;
-  margin-bottom: 5px;
-}
-.ta-menu-head .ta-menu-name {
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--ta-text);
-}
-.ta-menu-head .ta-menu-mail {
   font-size: 11px;
-  color: var(--ta-text-muted);
-  margin-top: 5px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-weight: 700;
+  color: var(--ta-text-body);
+  flex: none;
 }
-.ta-menu-item {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  width: 100%;
-  padding: 9px 10px;
-  border-radius: 7px;
-  font-size: 12.5px;
+
+.ta-name {
+  font-size: 13px;
   font-weight: 500;
   color: var(--ta-text-body);
-  background: none;
-  border: 0;
-  cursor: pointer;
-  font-family: inherit;
-  text-align: left;
+  letter-spacing: -0.01em;
+  /* 120px = 핸드오프 §2.2 「최대 8자」의 픽셀 짝(앱 accountName 과 같은 값). */
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.ta-menu-item:hover { background: #f6f8fa; }
-.ta-menu-item svg { color: var(--ta-text-muted); flex: none; }
 
 /* ── 로그인 모달 (3c) ────────────────────────────────────────────── */
 
@@ -366,12 +314,19 @@
 @media (max-width: 640px) {
   .trops-auth { gap: 10px; }
   .ta-start { padding: 10px 12px; }
-  .ta-dashboard { min-height: 44px; }
 }
 
+/*
+ * 🔴 **좁은 폭에서는 계정 표시(아바타·이름)가 양보하고 기능은 남습니다** — 남는 것은
+ *    [나의 대시보드]·[로그아웃] 두 링크입니다. 375px 실측 기준: 워드마크 68 + EN 20 +
+ *    구분선·간격 + 링크 둘(92 + 58) = 311px 로 들어가고, 여기에 아바타 28 + 이름 50 +
+ *    간격 20 을 더하면 409px 가 되어 **헤더가 두 줄로 늘어납니다**.
+ * ⚠️ 앱 헤더는 반대로 태그라인을 버리고 계정 표시를 지킵니다(창업자 지시) — 그쪽은
+ *    로그인한 사람만 보는 화면이라 「지금 누구로 들어와 있나」가 본문급 정보이고,
+ *    이 랜딩은 공개 페이지라 그 답이 보조 정보입니다. 두 판단이 어긋난 것이 아닙니다.
+ */
 @media (max-width: 480px) {
-  .ta-chip-name { display: none; }
-  .ta-chip { padding: 5px; }
+  .ta-avatar, .ta-name { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

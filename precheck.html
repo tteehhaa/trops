@@ -119,6 +119,13 @@
   .wordmark { font-size: 19px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); }
   /* 🔴 .nav-links 는 대표 지시(2026-08-16)로 마크업이 걷히며 죽은 규칙이 되어 삭제. */
   .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+  /* 언어 전환 링크 — index.html·en.html 의 `.nav-quiet` 와 **같은 값**입니다
+     〔2026-08-21 · 대표 지시 「통일성 있게」〕. 종전에는 이 페이지의 언어 전환이 화면
+     우하단에 떠 있는 [English] 알약(assets/lang-switch.js)이었고, 랜딩만 헤더에 [EN] 을
+     갖고 있었습니다 — 같은 사이트에서 언어를 바꾸는 방법이 페이지마다 달랐습니다.
+     ⛔ 버튼으로 올리지 마십시오(index.html 의 같은 주석과 같은 규칙입니다). */
+  .nav-quiet { font-size: 14px; font-weight: 500; color: var(--muted); }
+  .nav-quiet:hover { color: var(--ink-64); }
 
   /* `#how`·`#deliver` 는 2026-08-14 에 이 페이지에서 없어졌습니다(랜딩 중복 제거).
      남은 앵커는 접수 폼 하나뿐입니다 — 건너뛰기 링크와 nav CTA 가 씁니다. */
@@ -664,6 +671,8 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
       <!-- 🔴 .nav-links(「진행 방식」·「제공되는 것」, 랜딩 #how·#service 로 가는 링크)를
            대표 지시(2026-08-16)로 삭제했습니다. -->
       <div class="nav-right">
+        <!-- 언어 전환 — 사이트 전체가 헤더 한 자리에서 합니다 〔2026-08-21〕. -->
+        <a class="nav-quiet" href="/en-precheck" hreflang="en" lang="en">EN</a>
         <!-- 🔄 「서류 보내기」(href="#intake", 이 페이지 접수 폼으로 스크롤) →
              「문의하기」(대표 지시 2026-08-16). 목적지도 함께 바꿨습니다 — 랜딩
              #interest 문의 칸으로 연결됩니다(?focus=inquiry 는 index.html 도착 시

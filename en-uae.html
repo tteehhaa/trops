@@ -117,6 +117,13 @@
   }
   .nav-links a:hover { color: var(--ink); }
   .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+  /* 언어 전환 링크 — index.html·en.html 의 `.nav-quiet` 와 **같은 값**입니다
+     〔2026-08-21 · 대표 지시 「통일성 있게」〕. 종전에는 이 페이지의 언어 전환이 화면
+     우하단에 떠 있는 [English] 알약(assets/lang-switch.js)이었고, 랜딩만 헤더에 [EN] 을
+     갖고 있었습니다 — 같은 사이트에서 언어를 바꾸는 방법이 페이지마다 달랐습니다.
+     ⛔ 버튼으로 올리지 마십시오(index.html 의 같은 주석과 같은 규칙입니다). */
+  .nav-quiet { font-size: 14px; font-weight: 500; color: var(--muted); }
+  .nav-quiet:hover { color: var(--ink-64); }
   /* 앵커 이동 시 sticky .nav(64px)에 목표 지점이 가리지 않도록 */
   #uae-main { scroll-margin-top: 84px; }
   #uae-main:focus { outline: none; }
@@ -390,7 +397,20 @@
           <a href="/en#interest">Contact</a>
         </div>
         <div class="nav-right">
-          <a class="btn btn-secondary btn-nav" href="https://app.trops.kr/" target="_self">Start exporting</a>
+          <!-- 언어 전환 — 사이트 전체가 헤더 한 자리에서 합니다 〔2026-08-21〕. -->
+          <a class="nav-quiet" href="/uae" hreflang="ko" lang="ko">한국어</a>
+          <!-- 🔄 **버튼 → 저채도 텍스트 링크** 〔2026-08-21 · 대표 지시 「통일해」〕.
+               종전에는 `.btn.btn-secondary.btn-nav`(테두리 버튼)였습니다. 세 가지가 어긋났습니다:
+                 ① 이 링크는 **app.trops.kr 진입**이고, index.html nav 주석이 「앱은 아직 메인
+                    CTA 가 아니므로 버튼이 아닌 저채도 텍스트 링크로 둔다」고 적어 둔 자리입니다.
+                 ② **이 페이지의 진짜 CTA 와 다퉜습니다** — 조회 결과 영역이 그리는
+                    `.uae-check-cta` 의 [Apply for export pre-check](.btn-primary)가 이 페이지의
+                    전환 경로입니다. 헤더의 테두리 버튼이 그 위에서 같은 무게로 서 있었습니다
+                    (랜딩 헤더의 파란 [나의 대시보드] 가 히어로 CTA 와 다퉜던 것과 같은 형태).
+                 ③ 하위 페이지 헤더 중 `.btn-secondary` 를 쓰는 곳이 여기 하나뿐이었습니다.
+               ⛔ 버튼으로 되올리지 마십시오. 이 페이지의 버튼 예산은 결과 영역 CTA 하나입니다.
+               ⚠️ `target="_self"` 도 함께 걷었습니다 — 기본값과 같아 하는 일이 없었습니다. -->
+          <a class="nav-quiet" href="https://app.trops.kr/">Start exporting</a>
         </div>
       </div>
     </nav>

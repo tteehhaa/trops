@@ -78,7 +78,16 @@
   .nav { border-bottom: 1px solid var(--line); }
   .nav-inner { height: 64px; display: flex; align-items: center; gap: 40px; }
   .wordmark { font-size: 19px; font-weight: 700; letter-spacing: -0.02em; }
-  .nav-right { margin-left: auto; }
+  /* 🔄 flex 로 바꿨습니다 〔2026-08-21〕 — 언어 전환 링크가 CTA 옆에 서면서
+     자식이 둘이 됐습니다(간격 12px 은 나머지 페이지와 같은 값). */
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+  /* 언어 전환 링크 — index.html·en.html 의 `.nav-quiet` 와 **같은 값**입니다
+     〔2026-08-21 · 대표 지시 「통일성 있게」〕. 종전에는 이 페이지의 언어 전환이 화면
+     우하단에 떠 있는 [English] 알약(assets/lang-switch.js)이었고, 랜딩만 헤더에 [EN] 을
+     갖고 있었습니다 — 같은 사이트에서 언어를 바꾸는 방법이 페이지마다 달랐습니다.
+     ⛔ 버튼으로 올리지 마십시오(index.html 의 같은 주석과 같은 규칙입니다). */
+  .nav-quiet { font-size: 14px; font-weight: 500; color: var(--muted); }
+  .nav-quiet:hover { color: var(--ink-64); }
 
   /* V7 — 고정 height(46px)를 버리고 세로 패딩 12px로 전환.
      12+15.5+12 = 39.5px라 패딩만으로는 터치 타깃 44px에 못 미치므로
@@ -212,6 +221,8 @@
     <div class="container nav-inner">
       <a href="/" class="wordmark" aria-label="TROPS 홈">TROPS</a>
       <div class="nav-right">
+        <!-- 언어 전환 — 사이트 전체가 헤더 한 자리에서 합니다 〔2026-08-21〕. -->
+        <a class="nav-quiet" href="/en-privacy" hreflang="en" lang="en">EN</a>
         <a class="btn btn-primary btn-nav" href="/precheck">서류 보내기</a>
       </div>
     </div>
@@ -356,7 +367,11 @@
         <h2><span class="doc-num" aria-hidden="true">05</span><span>이용자가 요구할 수 있는 것</span></h2>
         <p>이용자는 자신의 개인정보에 대해 열람·정정·삭제·처리정지를 요구하실 수 있습니다. 선택 동의는 언제든 철회하실 수 있고, 철회하셔도 이미 신청하신 서비스는 그대로 이용하실 수 있습니다.</p>
         <p>접수 건은 확인 메일의 링크에서 상태를 보시고 즉시 삭제를 요청하실 수 있습니다. 그 밖의 요구는 <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a> 으로 보내 주시면 확인해 처리합니다.</p>
-        <p>개인정보 보호책임자는 범하나이며, 위 이메일로 문의하실 수 있습니다.</p>
+        <!-- 🔴 이름을 손으로 적지 않습니다 〔2026-08-21〕 — 값은 site.config.json
+             `biz.ko.ceo` 하나이고, 푸터 사업자정보의 대표자명도 같은 값을 씁니다.
+             종전에는 이 문장만 「범하나」를 직접 들고 있어서, 대표자가 바뀌면 푸터는
+             바뀌고 이 문장은 남는 형태였습니다(site-config 검사가 red 였습니다). -->
+        <p>개인정보 보호책임자는 {{biz.ceo}}이며, 위 이메일로 문의하실 수 있습니다.</p>
         <p>회사와 협의가 원활하지 않거나 추가 도움이 필요하시면 아래 기관에도 문의하실 수 있습니다.</p>
         <ul>
           <li>개인정보보호위원회 &mdash; 02-2100-3025</li>

@@ -787,7 +787,21 @@ test('en.html 푸터 태그라인이 한 기능만 말하지 않는다', () => {
 test('영문 경로가 끝까지 영문이다 — 국문 페이지로 새지 않는다', () => {
   const KO_ONLY = ['/precheck', '/check', '/refund', '/privacy'];
   for (const en of EN_PAGES) {
-    const hrefs = [...strip(read(en)).matchAll(/href="(\/[^"]*)"/g)].map((m) => m[1]);
+    /*
+     * ⚠️ **언어 전환 링크(`hreflang="ko"`)만 예외입니다** 〔2026-08-21〕. 그 링크가 국문
+     *    짝을 가리키는 것이 **그 링크의 일**입니다 — en.html 의 「한국어」가 `/` 를 가리켜
+     *    통과하던 것과 같은 자리이고, 하위 6쌍에 헤더 언어 전환을 넣으면서(우하단에 떠
+     *    있던 [English] 알약 대체 · assets/lang-switch.js) 그 링크가 `/privacy`·`/check`
+     *    처럼 KO_ONLY 목록에 든 경로를 직접 가리키게 됐습니다.
+     * 🔴 **클래스가 아니라 `hreflang` 으로 가립니다.** `.nav-quiet` 로 가리면 그 클래스를
+     *    입은 아무 링크나 이 검사를 빠져나갑니다. `hreflang="ko"` 는 「이것은 이 페이지의
+     *    국문판이다」라는 선언이고, 아래 hreflang 검사가 그 선언이 실제로 짝을 이루는지
+     *    따로 단정합니다 — 두 검사가 서로를 받칩니다.
+     * ⛔ 예외를 KO_ONLY 에서 경로를 빼는 방식으로 만들지 마십시오. 그러면 본문 링크가
+     *    국문으로 새는 것까지 같이 통과합니다(이 검사의 본래 목적입니다).
+     */
+    const scanned = strip(read(en)).replace(/<a[^>]*hreflang="ko"[^>]*>[^<]*<\/a>/g, '');
+    const hrefs = [...scanned.matchAll(/href="(\/[^"]*)"/g)].map((m) => m[1]);
     for (const h of hrefs) {
       const path = h.split(/[?#]/)[0];
       assert.ok(!KO_ONLY.includes(path),
@@ -807,6 +821,40 @@ test('영문 경로가 끝까지 영문이다 — 국문 페이지로 새지 않
   assert.ok(heroCta, 'en.html 히어로 CTA 가 /en-check 로 가지 않습니다');
   assert.ok(/<a class="btn btn-primary btn-full" href="\/en-check">/.test(section(M.en, 'act')),
     'en.html 결 CTA 가 /en-check 로 가지 않습니다');
+});
+
+/*
+ * 🔴 **로그인 영역의 색·크기는 페이지의 `.nav-quiet` 가 갖습니다** 〔2026-08-21〕.
+ *
+ * `assets/auth.js` 는 헤더 링크 3개(로그인 · 나의 대시보드 · 로그아웃)를
+ * `class="nav-quiet ta-link"` 로 그립니다 — 색과 글자 크기 사본을 auth.css 에 두지 않아서
+ * 같은 줄 왼쪽의 [EN]·[한국어] 와 회색이 갈리지 않습니다. 대신 **의존이 파일을 건넙니다**:
+ * 규칙은 각 페이지의 <style> 안에 있고, 쓰는 곳은 별 파일(auth.js)입니다.
+ *
+ * 이 검사가 막는 것은 **조용한 실패**입니다. `.nav-quiet` 를 지우면 링크 3개가 색·크기를
+ * 잃고 브라우저 기본 파란 링크로 돌아가는데, 그 상태는 **로그인한 사람에게만** 보여서
+ * 개발 중에 눈에 띄지 않습니다. 실제로 check.html 이 2026-08-19 에 「쓰는 자리가 없어졌다」며
+ * 이 규칙을 걷은 전례가 있습니다(그때는 로그인 영역이 그 페이지에 없어서 무해했습니다).
+ */
+test('로그인 영역을 싣는 페이지는 .nav-quiet 규칙을 갖는다 — auth.js 가 그 클래스로 그린다', () => {
+  const authJs = read('assets/auth.js');
+  assert.ok(authJs.indexOf("'nav-quiet ta-link'") !== -1 ||
+    authJs.indexOf('class="nav-quiet ta-link"') !== -1,
+    'auth.js 가 더는 .nav-quiet 를 쓰지 않습니다 — 그렇다면 이 검사와 두 페이지의 주석을 ' +
+    '같이 걷으십시오(auth.css 가 색·크기를 되찾아야 합니다)');
+
+  const pages = STATIC_PAGES.map((p) => p.file).filter((f) => read(f).indexOf('/assets/auth.js') !== -1);
+  assert.ok(pages.length >= 2,
+    '로그인 영역을 싣는 페이지가 ' + pages.length + '개입니다(index·en 최소 2개) — ' +
+    '목록이 비면 이 검사가 한 바퀴도 안 돌면서 초록이 됩니다: ' + JSON.stringify(pages));
+
+  for (const f of pages) {
+    const css = read(f);
+    assert.ok(/\.nav-quiet\s*\{[^}]*font-size:\s*14px/.test(css),
+      f + ' 에 `.nav-quiet` 규칙이 없습니다 — 로그인 영역의 링크 3개가 색·크기를 잃습니다');
+    assert.ok(/\.nav-quiet:hover\s*\{/.test(css),
+      f + ' 에 `.nav-quiet:hover` 가 없습니다 — 링크 3개가 hover 를 잃습니다');
+  }
 });
 
 /*

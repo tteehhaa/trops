@@ -3,8 +3,16 @@
  *
  * 기본은 영어(middleware.js 가 국문 경로를 /en* 로 리다이렉트한다). 이 파일이 하는 일은
  * 둘뿐이다 — ① 영문 페이지에서, 브라우저 언어가 한국어인 방문자에게 "한국어로 보기"
- * 배너를 보여준다. ② 국문 페이지에서(이미 lang=ko 를 고른 뒤에만 올 수 있다), 다시
- * 영어로 돌아갈 작은 링크를 둔다.
+ * 배너를 보여준다. ② 기존 언어 전환 링크(`a[hreflang]`)에 lang 쿠키를 심는다.
+ *
+ * 🔴 **화면 우하단에 떠 있던 [English] 알약을 걷었다** 〔2026-08-21 · 대표 지시〕. 그 알약이
+ *    하던 일(국문 페이지에서 영문으로 되돌아가기)은 이제 **헤더의 언어 전환 링크**가 한다 —
+ *    index.html·en.html 이 이미 갖고 있던 `.nav-quiet` 링크를 나머지 12개 페이지(check ·
+ *    precheck · refund · nda · uae · privacy 의 국문·영문)에도 같은 자리에 넣었다.
+ *    종전에는 랜딩만 헤더에 [EN] 이 있고 나머지는 알약이라, **한 페이지에 언어 전환이 둘**
+ *    (랜딩: 헤더 EN + 알약)이거나 **페이지마다 다른 자리**였다.
+ * ⛔ 알약을 되살리지 마십시오. 되살리면 랜딩에서 다시 둘이 된다 — 헤더에 링크가 없는
+ *    페이지를 새로 만들었다면, 알약을 부활시키는 대신 그 페이지 헤더에 링크를 넣으십시오.
  *
  * 🔴 쓰는 저장소는 쿠키 하나(`lang` = ko|en)뿐이다 — 광고·분석 목적이 아니고, 다른
  *    방문과 연결해 이용자를 식별하지 않는다(privacy.html §01 예외, 2026-08-21).
@@ -110,19 +118,10 @@
     bar.appendChild(closeBtn);
 
     document.body.insertBefore(bar, document.body.firstChild);
-  } else {
-    // 국문 페이지 — lang=ko 를 고른 뒤에만 여기 올 수 있다(middleware.js). 되돌아갈
-    // 링크 하나를 작게 둔다.
-    var back = document.createElement('a');
-    back.href = enPath;
-    back.textContent = 'English';
-    back.style.cssText =
-      'position:fixed;right:10px;bottom:10px;z-index:2147483000;background:#111827;color:#fff;' +
-      'font:12px/1 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;' +
-      'padding:6px 10px;border-radius:999px;text-decoration:none;opacity:.85;';
-    back.addEventListener('click', function () {
-      setCookie('lang', 'en');
-    });
-    document.body.appendChild(back);
   }
+  /*
+   * 국문 페이지에서는 이 파일이 아무것도 그리지 않는다 — 되돌아갈 [EN] 링크는 헤더에
+   * 마크업으로 있고(위 🔴 참조), 위쪽 `a[hreflang]` 루프가 그 링크에 쿠키를 심어 둔다.
+   * 그것이 없으면 middleware.js 가 쿠키 없음을 보고 다시 /en 으로 돌려보낸다.
+   */
 })();
