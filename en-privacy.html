@@ -275,11 +275,12 @@
         <p><strong>Document pre-check intake</strong> &mdash; thirty days after intake we delete the files you uploaded and the intake record. This is also why the confirmation email carries a link rather than an attachment: a deletion policy cannot reach an attached file.</p>
         <p>If you would rather not wait, open the link in your confirmation email and choose to delete your files. We delete them at that moment. Once deleted, the same material cannot be sent to you again.</p>
         <p><strong>Launch notification sign-up</strong> &mdash; there is no database behind this form, so it exists only in our staff mailbox. We delete the message once we have sent the launch notice, or sooner if you ask.</p>
-        <p>Where Korean law requires records to be kept &mdash; contract, payment and consumer complaint records under the Act on Consumer Protection in Electronic Commerce, for example &mdash; we keep those for the period that law sets.</p>
+        <p>Where Korean law requires records to be kept &mdash; contract, payment and consumer complaint records under the Act on Consumer Protection in Electronic Commerce, for example &mdash; we keep those for the period that law sets. Payment records are kept for five years, as set out in that Act's Enforcement Decree.</p>
+        <p>Personal information stored as an electronic file is deleted using a technical method that makes recovery or reconstruction impossible. Personal information recorded or stored on paper is destroyed by shredding or incineration.</p>
       </section>
       <section>
         <h2><span class="doc-num" aria-hidden="true">04</span><span>Who processes it for us</span></h2>
-        <p>Three providers process data on our behalf, only as far as running the service requires, and none may use it for anything outside that.</p>
+        <p>Providers process data on our behalf, only as far as running the service requires, and none may use it for anything outside that.</p>
         <div class="table-wrap">
         <table>
           <caption>Processors and what they do</caption>
@@ -288,10 +289,63 @@
             <tr><th scope="row">Resend</th><td>Sending notification and confirmation email</td></tr>
             <tr><th scope="row">Supabase</th><td>Storing intake records and uploaded files</td></tr>
             <tr><th scope="row">Vercel</th><td>Hosting the site and serving requests</td></tr>
+            <tr><th scope="row">Anthropic</th><td>OCR and AI analysis of uploaded documents</td></tr>
           </tbody>
         </table>
         </div>
         <p>Payments are taken in the Toss Payments window. Card numbers and other payment credentials go to the payment provider; we neither receive nor store them.</p>
+        <p class="lead">Some of these providers process personal information abroad, as set out below.</p>
+        <div class="table-wrap">
+        <table>
+          <caption>Subcontracting and cross-border transfer details</caption>
+          <thead>
+            <tr><th scope="col">Recipient</th><th scope="col">Items transferred</th><th scope="col">Country</th><th scope="col">Timing and method</th><th scope="col">Purpose</th><th scope="col">Retention</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Supabase, Inc.<br><span class="lead">(infrastructure: AWS)</span></th>
+              <td>Email, company information, uploaded documents, payment-related identifiers</td>
+              <td>Republic of Korea (Seoul, ap-northeast-2)</td>
+              <td>Transmitted in real time as you use the service</td>
+              <td>Database storage, running the service</td>
+              <td>Until you close your account or the purpose is met</td>
+            </tr>
+            <tr>
+              <th scope="row">Supabase, Inc.<br><span class="lead">(infrastructure: AWS)</span></th>
+              <td>Pre-check intake details, email, uploaded documents</td>
+              <td>India (Mumbai, ap-south-1)</td>
+              <td>Transmitted in real time as you use the service</td>
+              <td>Running the pre-check service</td>
+              <td>Source files deleted or hashed 30 days later</td>
+            </tr>
+            <tr>
+              <th scope="row">Vercel Inc.</th>
+              <td>Access logs, general service usage data</td>
+              <td>United States</td>
+              <td>Transmitted in real time (hosting)</td>
+              <td>Website hosting</td>
+              <td>For the duration of the service</td>
+            </tr>
+            <tr>
+              <th scope="row">Anthropic, PBC</th>
+              <td>Content of uploaded documents subject to OCR and analysis</td>
+              <td>United States</td>
+              <td>Transmitted in real time when analysis is requested</td>
+              <td>AI-based document analysis</td>
+              <td>Automatically deleted within 30 days by default, never used for model training (whether a separate Zero Data Retention agreement applies is <strong>to be confirmed</strong>)</td>
+            </tr>
+            <tr>
+              <th scope="row">Toss Payments Corp.</th>
+              <td>Payment-related information</td>
+              <td>Republic of Korea</td>
+              <td>At the time payment is requested</td>
+              <td>Processing payments and settlement</td>
+              <td>5 years (under the Enforcement Decree of the Act on Consumer Protection in Electronic Commerce)</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+        <p>You have the right to refuse a cross-border transfer. If you refuse, you may not be able to use services that require one, such as the pre-check or AI-based document analysis.</p>
       </section>
       <section>
         <h2><span class="doc-num" aria-hidden="true">05</span><span>What you can ask us to do</span></h2>
@@ -299,6 +353,13 @@
         <p>For an intake, the link in your confirmation email shows its status and lets you delete your files immediately. For anything else, write to <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a> and we will handle it.</p>
         <!-- ⚠️ "Hana Beom" 은 "범하나"의 잠정 로마자 표기입니다 — 공식 영문 표기가 따로 있으면 교체해 주십시오. -->
         <p>Our privacy officer is Hana Beom, reachable at the email address above.</p>
+        <p>If matters are not resolved with us directly, you may also contact the following bodies.</p>
+        <ul>
+          <li>Personal Information Protection Commission &mdash; 02-2100-3025</li>
+          <li>Personal Information Dispute Mediation Committee &mdash; 1833-6972 (<a href="https://www.kopico.go.kr">kopico.go.kr</a>, Government Complex Seoul, 209 Sejong-daero, Jongno-gu, Seoul)</li>
+          <li>Personal Information Infringement Report Center, Korea Internet and Security Agency (KISA) &mdash; 118, no area code needed (<a href="https://privacy.kisa.or.kr">privacy.kisa.or.kr</a>)</li>
+        </ul>
+        <p>This notice is governed by the laws of the Republic of Korea. If a dispute is brought to court, jurisdiction follows the Civil Procedure Act.</p>
       </section>
       <section>
         <h2><span class="doc-num" aria-hidden="true">06</span><span>How we keep it safe</span></h2>
@@ -314,9 +375,7 @@
         <h2><span class="doc-num" aria-hidden="true">08</span><span>Not settled yet</span></h2>
         <p class="lead">The following are for legal review to settle. <strong>We have left them blank rather than invent them.</strong></p>
         <ul>
-          <li>Details of any transfer abroad by our processors &mdash; countries, timing and method, and who receives the data</li>
-          <li>Routes to remedy, such as the Korean Personal Information Dispute Mediation Committee</li>
-          <li>A specific description of our destruction procedure and method</li>
+          <li>Whether a Zero Data Retention agreement applies to our data processing arrangement with Anthropic, PBC</li>
         </ul>
         <p>If you need certainty on any of these, write to <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>. Until the document is settled, what we actually do is exactly what is written above.</p>
       </section>
