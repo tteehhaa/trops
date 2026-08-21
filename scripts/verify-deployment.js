@@ -146,7 +146,44 @@ function cronPrivacyCheck(res) {
   return true;
 }
 
+/*
+ * 국문↔영문 짝 표 — **middleware.js 소스에서 읽습니다.**
+ *
+ * ⚠️ 여기에 표를 다시 적지 않습니다. 같은 표가 이미 두 곳(middleware.js · lang-switch.js)에
+ *    있고 둘 다 「한쪽만 고치면 갈라진다」고 적어 뒀습니다 — 세 번째 사본을 만들면 그 경고를
+ *    이 파일이 어기는 셈입니다. 경로를 추가하면 middleware 만 고치면 이 검사가 따라옵니다.
+ */
+const LANG_PAIRS = [...source('middleware.js').matchAll(/\['(\/[^']*)',\s*'(\/en[^']*)'\]/g)]
+  .map((m) => [m[1], m[2]]);
+
 const CHECKS = [
+  /* ── 현관 — 영어 우선 접속 〔2026-08-21 신설〕 ─────────────────────
+   * 🔴 **이것이 지금 이 사이트의 첫 화면을 정합니다.** middleware.js 가 `lang=ko` 쿠키가
+   *    없는 방문자를 국문 경로에서 `/en*` 로 307 돌려보냅니다. 그 리다이렉트가 조용히
+   *    사라지면(matcher 오타 · 미들웨어 미배포 · 런타임 변경) 국문이 첫 화면이 되는데,
+   *    **화면은 멀쩡해 보입니다** — 그래서 눈으로는 못 잡습니다.
+   * ⚠️ 이 검사만 쿠키를 안 보냅니다(`noCookie`). 나머지 검사는 쿠키를 보내야 국문
+   *    페이지에 닿습니다 — 위 `get()` 주석 참조.
+   */
+  {
+    id: '영어우선',
+    label: '쿠키 없는 첫 방문이 영문 짝으로 307 된다 (middleware.js PAIRS 전부)',
+    page: null,
+    noCookie: true,
+    raw: LANG_PAIRS.map(([ko]) => ko),
+    check: (res, target) => {
+      if (LANG_PAIRS.length < 7) {
+        return `middleware.js 에서 읽은 짝이 ${LANG_PAIRS.length}개입니다 — 표 파싱이 깨졌습니다`;
+      }
+      const expected = (LANG_PAIRS.find(([ko]) => ko === target) || [])[1];
+      if (res.status !== 307) return `${res.status} 로 답했습니다 (307 이어야 합니다)`;
+      if (!res.location.endsWith(expected)) {
+        return `307 목적지가 ${res.location} 입니다 (${expected} 이어야 합니다)`;
+      }
+      return true;
+    },
+  },
+
   /* ── C-1 ① V5 (H3 계층) ─────────────────────────────────────────── */
   {
     id: 'V5-h3-정의',
@@ -289,8 +326,18 @@ const CHECKS = [
     label: '영문 4개가 국문 페이지로 새지 않는다',
     pages: ['/en', '/en-check', '/en-precheck', '/en-refund'],
     check: (html) => {
-      /* hreflang·canonical 은 국문 주소를 **가리켜야 하는** 자리라 뺍니다. */
-      const body = html.replace(/<link[^>]+>/g, '');
+      /*
+       * hreflang·canonical 은 국문 주소를 **가리켜야 하는** 자리라 뺍니다.
+       * 🔴 **헤더의 언어 전환 링크(`<a hreflang="ko">`)도 같은 자리입니다** 〔2026-08-21〕 —
+       *    국문 짝을 가리키는 것이 그 링크의 일입니다. 우하단에 떠 있던 [English] 알약을
+       *    걷고 헤더 링크로 옮기면서 영문 하위 페이지들이 `/check`·`/precheck`·`/refund` 를
+       *    직접 가리키게 됐습니다. test/naming-consistency.test.js 의 같은 규칙과 **같은
+       *    방식으로** 가립니다(클래스가 아니라 `hreflang` — 클래스로 가리면 그 클래스를
+       *    입은 아무 링크나 이 검사를 빠져나갑니다).
+       */
+      const body = html
+        .replace(/<link[^>]+>/g, '')
+        .replace(/<a[^>]*hreflang="ko"[^>]*>[^<]*<\/a>/g, '');
       for (const ko of ['/precheck', '/check', '/refund', '/privacy']) {
         const re = new RegExp('["\'\\(]' + ko + '(["\'?#]|$)');
         if (re.test(body)) return `국문 경로 ${ko} 가 남아 있습니다`;
@@ -371,7 +418,7 @@ const CHECKS = [
   /* ── R-1 정가 취소선 제거 (2026-08-11) ──────────────────────────── */
   {
     id: 'R1-취소선',
-    label: '/precheck 에 정가 취소선이 없다 (판매가 ₩300,000 만 보인다)',
+    label: '/precheck 에 정가 취소선이 없다 (판매가 총액 하나만 보인다)',
     page: '/precheck',
     check: (html) => {
       // 세 겹으로 봅니다 — 마크업 · CSS · 값. 하나만 보면 되살아나는 형태를 놓칩니다.
@@ -381,18 +428,48 @@ const CHECKS = [
       if (/290,000/.test(html)) return '₩290,000 이 화면에 렌더되고 있습니다';
 
       /*
-       * 🔄 기대값 ₩99,000 → ₩300,000 〔2026-08-13 · 흐름 md §4 1차 테스트가〕.
-       *    고치는 순서의 마지막(⑤)입니다 — 정본(trops_a) → api/_payment.js → precheck.html
-       *    을 먼저 옮긴 뒤 이 기대값을 옮깁니다.
+       * 🔴 **기대값을 `api/_payment.js` 에서 읽습니다** 〔2026-08-21〕 — 하드코딩을 걷었습니다.
+       *
+       * 종전에는 이 줄이 `₩300,000` 을 직접 들고 있었고, 2026-08-17 에 판매가가
+       * **₩330,000(VAT 포함 총액)** 으로 바뀌면서 **조용히 낡았습니다.** 이 파일 머리의
+       * 「⚠️ 기대값을 여기 하드코딩하지 마십시오 — 소스를 고칠 때 이 파일이 조용히
+       * 낡습니다」를 정작 이 검사가 어기고 있었던 자리입니다.
+       *
+       * ⚠️ 그 실패가 오래 안 보인 이유가 하나 더 있습니다 — 영어 우선 접속(2026-08-21)
+       *    이후로 이 검사가 `/precheck` 에 **닿지도 못했습니다**(HTTP 307). 두 고장이
+       *    겹치면 하나가 다른 하나를 가립니다(위 `get()` 쿠키 주석과 같은 사건).
+       * 🔴 `PRICE` 는 **서버가 신뢰하는 그 값**입니다(결제 요청 금액과 같은 상수) —
+       *    화면 표기가 그 값과 갈라지는 순간이 이 검사가 잡아야 하는 순간입니다.
        */
-      if (!/₩300,000/.test(html)) return '₩300,000 이 없습니다 — 판매가 표기가 배포되지 않았습니다';
+      const price = require(path.join(ROOT, 'api', '_payment.js')).PRICE;
+      const priceText = '₩' + price.toLocaleString('en-US');
+      if (!new RegExp(priceText).test(html)) {
+        return `${priceText} 이 없습니다 — 판매가 표기가 배포되지 않았습니다 ` +
+          '(api/_payment.js PRICE 기준)';
+      }
       /*
        * 🔴 **폐기가가 남아 있지 않은지도 봅니다.** md §4 가 「99,000원 헤드라인 폐기 확정」을
        *    적었고, 값을 옮길 때 화면 3자리 중 하나만 고치는 것이 이 저장소에서 반복된 실수입니다.
        */
       if (/₩99,000/.test(html)) return '폐기된 ₩99,000 이 아직 렌더되고 있습니다 — 고친 자리가 일부뿐입니다';
-      // 부가세 병기 — md §4 가 「₩300,000(VAT별도)」로 표기까지 못질했습니다.
-      if (!/부가세\(VAT\) 별도/.test(html)) return 'VAT 별도 병기가 사라졌습니다';
+      /*
+       * 부가세 병기 — **문구도 소스(precheck.html)에서 읽습니다** 〔2026-08-21〕.
+       *
+       * 종전에는 `부가세(VAT) 별도` 를 하드코딩했습니다. 2026-08-17 에 판매가가 VAT 포함
+       * 총액(₩330,000)이 되면서 화면 문구가 **「부가세(VAT) 포함」으로 뒤집혔고**, 이 줄만
+       * 「별도」에 남아 있었습니다 — 위 금액과 **같은 한 번의 변경에서 같이 낡은** 자리입니다.
+       *
+       * 🔴 이 검사가 지켜야 하는 것은 「별도」라는 낱말이 아니라 **병기가 사라지지 않는 것**과
+       *    **배포본이 소스와 같은 말을 하는 것**입니다. 그래서 소스에서 찾은 그 문장을
+       *    배포본에 요구합니다 — 대표가 어느 쪽으로 정하든 검사가 따라갑니다.
+       */
+      const vat = (source('precheck.html').match(/부가세\(VAT\) (포함|별도)/) || [])[0];
+      if (!vat) {
+        return '소스 precheck.html 에서 부가세 병기를 찾지 못했습니다 — 병기가 사라졌습니다';
+      }
+      if (!html.includes(vat)) {
+        return `배포본에 「${vat}」 병기가 없습니다 (소스 precheck.html 기준)`;
+      }
       return true;
     },
   },
@@ -480,12 +557,34 @@ const CHECKS = [
  * 실행
  * ────────────────────────────────────────────────────────────── */
 
-async function get(url) {
+/*
+ * 🔴 **`lang=ko` 쿠키를 보냅니다** 〔2026-08-21〕 — 없으면 국문 검사가 전부 못 돕니다.
+ *
+ * `middleware.js`(영어 우선 접속 · 2026-08-21)가 국문 경로를 **쿠키가 없으면** `/en*` 으로
+ * 307 돌려보냅니다. 이 스크립트는 쿠키를 안 보냈으므로 `/`·`/nda`·`/precheck`·`/refund`·
+ * `/uae`·`/privacy` 검사가 **전부 `HTTP 307` 로 실패**했습니다(실측 14건). 페이지가 깨진 게
+ * 아니라 **검사가 페이지에 닿지 못한 것**이고, 그 상태로는 배포 확인이 아무것도 확인하지
+ * 못합니다 — 「빨간불이 원래 저래요」가 되는 가장 나쁜 형태입니다.
+ *
+ * ⚠️ 영문 경로에는 영향이 없습니다 — middleware 의 matcher 는 국문 경로만 잡고, 반대 방향
+ *    (`/en*` → 국문) 리다이렉트는 없습니다. 그래서 전 요청에 같은 쿠키를 붙입니다.
+ * 🔴 **리다이렉트 자체는 아래 `영어우선` 검사가 따로 잽니다** — 쿠키로 우회한 동작을
+ *    검사에서 지우지 않습니다(그 리다이렉트가 지금 이 사이트의 현관입니다).
+ */
+async function get(url, cookie = 'lang=ko') {
   const response = await fetch(url, {
     redirect: 'manual',
-    headers: { 'Cache-Control': 'no-cache', 'User-Agent': 'trops-verify-deployment' },
+    headers: {
+      'Cache-Control': 'no-cache',
+      'User-Agent': 'trops-verify-deployment',
+      ...(cookie ? { Cookie: cookie } : {}),
+    },
   });
-  return { status: response.status, body: await response.text() };
+  return {
+    status: response.status,
+    body: await response.text(),
+    location: response.headers.get('location') || '',
+  };
 }
 
 async function main(argv) {
@@ -498,23 +597,27 @@ async function main(argv) {
   console.log('확인 대상: ' + base + '\n');
 
   const cache = new Map();
-  const fetchPage = async (url) => {
-    if (!cache.has(url)) cache.set(url, await get(url));
-    return cache.get(url);
+  /* 캐시 키에 쿠키를 넣습니다 — 같은 주소를 쿠키 있이/없이 두 번 재기 때문입니다. */
+  const fetchPage = async (url, cookie = 'lang=ko') => {
+    const key = (cookie || 'none') + ' ' + url;
+    if (!cache.has(key)) cache.set(key, await get(url, cookie));
+    return cache.get(key);
   };
 
   let failed = 0;
   let passed = 0;
 
   for (const item of CHECKS) {
-    const targets = item.raw ? [item.raw] : (item.pages || [item.page]);
+    /* `raw` 는 문자열 하나 또는 여러 개 — 200 을 전제하지 않는 검사(cron 비공개 · 영어 우선). */
+    const targets = item.raw ? [].concat(item.raw) : (item.pages || [item.page]);
     const results = [];
 
     for (const target of targets) {
-      const res = await fetchPage(base + target);
+      /* `noCookie` — 쿠키 없는 첫 방문을 재는 검사(영어 우선 리다이렉트)만 씁니다. */
+      const res = await fetchPage(base + target, item.noCookie ? null : 'lang=ko');
 
       if (item.raw) {
-        results.push([target, item.check(res)]);
+        results.push([target, item.check(res, target)]);
         continue;
       }
 
