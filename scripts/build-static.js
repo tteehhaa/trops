@@ -81,6 +81,9 @@ const STATIC = {
 /** 배포되지 않는 것. api/ 는 Vercel 이 소스 루트에서 직접 함수로 잡습니다. */
 const NOT_DEPLOYED = new Set([
   'api',                  // 서버리스 함수 — Vercel 이 별도로 처리
+  // 라우팅 미들웨어 — Vercel 이 소스 루트에서 직접 집어간다(outputDirectory 와 무관).
+  // dist/ 로 복사하면 정적 파일로 그냥 배포돼 버려서 아무 효과가 없다(2026-08-21).
+  'middleware.js',
   'scripts', 'test',      // .vercelignore
   'docs',                 // 정본·와이어프레임. 공개되면 안 됩니다
   // 사용자 흐름·결정 문서(doc/s9/…). docs 와 별개 폴더이고 성격은 같습니다 —
