@@ -40,6 +40,24 @@
  * ⚠️ 이름을 받기 시작하면 **두 파일을 같이** 고치십시오. 한쪽만 고치면 랜딩과 앱이
  *    같은 사람을 다른 이름으로 부릅니다.
  *
+ * ── 🔄 계정 3요소를 아바타 메뉴 안으로 (2026-08-21 2차 · 대표 지시) ──
+ * 「그 아이콘 안으로 필요한 메뉴 넣어주고 나머진 안 보이게 해줘 — contact · TROPS 홈 ·
+ * 나의 대시보드 이 3개」. 그래서 헤더에 남는 것은 **[EN] 과 아바타 하나**뿐입니다.
+ *
+ *   랜딩(여기)      EN │ (C)▾ → [contact · 이메일] [나의 대시보드] [로그아웃]
+ *   앱(app.trops.kr) EN  (C)▾ → [contact · 이메일] [TROPS 홈]      [로그아웃]
+ *
+ * 즉 **양쪽이 같은 자리에서 상대편으로 건너갑니다** — 랜딩 메뉴는 앱으로, 앱 메뉴는
+ * 랜딩으로. 같은 아바타를 누르면 「지금 없는 쪽」이 나옵니다.
+ *
+ * 🔴 **이름 텍스트가 헤더에서 사라졌습니다.** 아바타 옆 `contact` 는 아바타와 같은 말을
+ *    두 번 하고 있었고(대표 지적), 이제 메뉴 머리에서 이메일 전문과 함께 한 번만 말합니다.
+ * 🔴 **아바타에 캐럿(▾)을 붙였습니다.** 종전에는 `aria-hidden` 인 장식용 원이었고 실제로
+ *    「이 c 아이콘은 뭘 의미하냐」는 질문을 받았습니다 — 이제 누르는 것이 됐으므로 누를 수
+ *    있다고 화면에 적습니다. ⛔ 캐럿을 떼지 마십시오: 떼면 다시 장식으로 읽힙니다.
+ * ⛔ [EN] 은 메뉴에 넣지 않습니다 — 언어 전환은 계정이 아니고, 로그인하지 않은 방문자도
+ *    써야 합니다(전 페이지 헤더에 같은 자리로 두기로 한 것이 같은 날 1차 지시입니다).
+ *
  * ── 이 모달에 없는 것 2가지 (핸드오프 3c 대비 · 의도된 차이) ──────
  * ① 「이메일 링크로 로그인」— 매직링크(signInWithOtp)는 창업자 결정
  *    (2026-08-10 폐기 · 2026-08-12 제거)으로 앱 전체 0건이며 되살리지
@@ -82,6 +100,7 @@ const COPY = {
     hidePassword: '비밀번호 감추기',
     close: '닫기',
     account: '계정',
+    accountMenu: '계정 메뉴',
     signupLead: '아직 계정이 없으세요?',
     signupLink: '무료로 가입하기',
     errEmailFormat: '이메일 형식을 확인해 주세요.',
@@ -107,6 +126,7 @@ const COPY = {
     hidePassword: 'Hide password',
     close: 'Close',
     account: 'Account',
+    accountMenu: 'Account menu',
     signupLead: 'New to trops?',
     signupLink: 'Sign up free',
     errEmailFormat: 'Please check the email format.',
@@ -224,38 +244,82 @@ function renderSignedOut() {
 }
 
 /*
- * 로그인 완료 — `[대시보드 링크] (아바타) 이름 [로그아웃]` 한 줄.
+ * 로그인 완료 — 아바타 버튼 하나 + 그 안의 메뉴 3요소 (3d-A · 3d-C).
  *
- * 🔴 **순서가 앱 헤더와 같습니다** — 앱은 `[EN] [TROPS 홈] (아바타) 이름 [로그아웃]`,
- *    여기는 `[EN] │ [나의 대시보드] (아바타) 이름 [로그아웃]` 입니다. 상대 오리진으로
- *    건너가는 링크가 언어 링크 다음, 계정 3요소(아바타·이름·로그아웃) 앞에 옵니다.
- *    ⛔ 대시보드 링크를 이름과 로그아웃 **사이**에 넣지 마십시오 — 계정 3요소가 갈립니다.
- * 🔴 **드롭다운이 없습니다.** 종전 칩 메뉴가 담던 것은 이메일 전문과 로그아웃 둘인데,
- *    전문은 `title` 이 갖고 로그아웃은 이제 줄 위에 그대로 있습니다 — 메뉴가 감출 것이
- *    없어졌습니다(누르는 곳 하나 = 하는 일 하나).
- * 🔴 **아바타는 무채색입니다** — 앱 `UI.HEADER.accountAvatar` 와 같은 값(#f1f4f8 /
- *    #4a5568). 브랜드색을 주지 마십시오: 아바타는 상태가 아닙니다.
+ * 🔴 **헤더에 보이는 것은 아바타뿐입니다.** 계정 이름·상대 오리진 링크·로그아웃이 전부
+ *    메뉴 안입니다(파일 머리 주석의 대표 지시). 종전 납작한 줄에서 되돌린 것이 아니라
+ *    **더 접은 것**입니다 — 그때는 이름이 헤더에 남아 아바타와 겹쳐 말했습니다.
+ * 🔴 메뉴는 **열 때 만들고 닫을 때 지웁니다**(DOM 에 상주하지 않습니다). 닫힌 메뉴가
+ *    남아 있으면 `hidden` 을 빠뜨린 순간 조용히 화면에 나타납니다.
+ * ⚠️ 바깥 클릭·Escape 로 닫고, 닫을 때 포커스를 버튼으로 되돌립니다 — 키보드 사용자가
+ *    메뉴를 닫은 뒤 문서 처음으로 튕기지 않게 하는 자리입니다.
  */
 function renderSignedIn(user) {
   const email = String(user.email || '');
   area.innerHTML =
     '<span class="ta-divider" aria-hidden="true"></span>' +
-    '<a class="nav-quiet ta-link" href="' + APP_ORIGIN + '/" data-track="nav_dashboard">' +
-    esc(T.dashboard) + '</a>' +
-    // 계정 3요소는 한 덩어리(`.ta-account`)입니다 — 앱 `AccountHeader` 와 같은 묶음이고,
-    // 그래서 그룹 안(10px)이 그룹 사이(14px)보다 촘촘합니다.
-    '<div class="ta-account">' +
+    '<div class="ta-menu-wrap">' +
+    '<button type="button" class="ta-avatar-btn" aria-haspopup="menu" aria-expanded="false" ' +
+    'aria-label="' + esc(T.accountMenu) + '">' +
     '<span class="ta-avatar" aria-hidden="true">' + esc(initialOf(email)) + '</span>' +
-    // 전문은 `title` 에 — 같은 로컬파트를 쓰는 두 계정을 가릴 수 있어야 합니다.
-    '<span class="ta-name"' + (email ? ' title="' + esc(email) + '"' : '') + '>' +
-    esc(displayNameOf(email)) + '</span>' +
-    '<button type="button" class="nav-quiet ta-link" data-track="nav_logout">' +
-    esc(T.logout) + '</button>' +
+    '<span class="ta-caret" aria-hidden="true"></span>' +
+    '</button>' +
     '</div>';
 
-  area.querySelector('[data-track="nav_logout"]').addEventListener('click', function () {
-    // 실패해도 토스트를 띄우지 않습니다 — onAuthStateChange 가 상태를 되돌립니다(§3.2).
-    supabase().auth.signOut().catch(function () {});
+  const wrap = area.querySelector('.ta-menu-wrap');
+  const button = area.querySelector('.ta-avatar-btn');
+
+  function open() {
+    const menu = document.createElement('div');
+    menu.className = 'ta-menu';
+    menu.setAttribute('role', 'menu');
+    menu.innerHTML =
+      '<div class="ta-menu-head">' +
+      '<div class="ta-menu-name">' + esc(displayNameOf(email)) + '</div>' +
+      (email ? '<div class="ta-menu-mail">' + esc(email) + '</div>' : '') +
+      '</div>' +
+      '<a class="ta-menu-item" role="menuitem" href="' + APP_ORIGIN + '/" ' +
+      'data-track="nav_dashboard">' + esc(T.dashboard) + '</a>' +
+      '<button type="button" class="ta-menu-item" role="menuitem" data-track="nav_logout">' +
+      esc(T.logout) + '</button>';
+    wrap.appendChild(menu);
+    button.setAttribute('aria-expanded', 'true');
+
+    menu.querySelector('[data-track="nav_logout"]').addEventListener('click', function () {
+      close();
+      // 실패해도 토스트를 띄우지 않습니다 — onAuthStateChange 가 상태를 되돌립니다(§3.2).
+      supabase().auth.signOut().catch(function () {});
+    });
+    // 여는 클릭 자체가 바깥 클릭으로 잡히지 않게 한 틱 뒤에 붙입니다.
+    setTimeout(function () {
+      document.addEventListener('click', onOutside);
+      document.addEventListener('keydown', onKey);
+    }, 0);
+    menu.querySelector('.ta-menu-item').focus();
+  }
+
+  function close() {
+    const menu = wrap.querySelector('.ta-menu');
+    if (!menu) return;
+    menu.remove();
+    button.setAttribute('aria-expanded', 'false');
+    document.removeEventListener('click', onOutside);
+    document.removeEventListener('keydown', onKey);
+  }
+
+  function onOutside(e) {
+    if (!wrap.contains(e.target)) close();
+  }
+
+  function onKey(e) {
+    if (e.key !== 'Escape') return;
+    close();
+    button.focus();
+  }
+
+  button.addEventListener('click', function () {
+    if (wrap.querySelector('.ta-menu')) close();
+    else open();
   });
 }
 
