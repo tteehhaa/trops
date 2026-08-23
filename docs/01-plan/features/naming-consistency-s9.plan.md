@@ -18,7 +18,7 @@
 
 ## 1. 최우선 제약 (절대 위반 금지)
 
-**무료 접수 경로(`precheck.html` 선착순 20건 · `plan=free` · `checked`)는 비활성화·제거하지
+**무료 접수 경로(`precheck.html` 초기 20건 · `plan=free` · `checked`)는 비활성화·제거하지
 않는다.** 유상 과금이 법적 게이트(`paid_charge_enabled: false`)로 닫혀 있어 현재 **유일하게
 동작하는 접수 경로**다. `precheck.html:762-787`의 라디오 마크업, `checked` 기본값,
 `plan-free-*` id, 이를 읽는 JS(`:1091-1279`, `:1723`, `:1919`) — 전부 무변경.

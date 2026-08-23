@@ -213,7 +213,7 @@
   .lang-notice-inner a { color: var(--accent); font-weight: 600; }
 
   /* ---------- Slot counter (2026-08-13: 화면 비노출 · 단일 흐름 배치) =====
-       남은 자리 문구는 이제 화면에 내지 않습니다 — 무료/유료 선택 자체를 없애면서
+       잔여 자리 문구는 이제 화면에 내지 않습니다 — 무료/유료 선택 자체를 없애면서
        "몇 자리 남았는지"도 더는 보여줄 대상이 없어졌습니다. JS 는 그대로 이 요소에
        텍스트를 씁니다(내부적으로 열림·닫힘 판단은 여전히 필요합니다) — 엘리먼트를
        지우면 그 대입에서 오류가 나 닫힘 처리(lockFreePlan 등)까지 멈춥니다. */
@@ -792,7 +792,7 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
 
         <p class="slots" id="slots-badge" role="status" aria-live="polite">
           <span class="slots-mark" id="slots-mark" aria-hidden="true"></span>
-          <span id="slots-text">남은 자리를 확인하는 중입니다…</span>
+          <span id="slots-text">접수 가능 여부를 확인하는 중입니다…</span>
         </p>
       </section>
 
@@ -813,11 +813,11 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
             <label class="plan plan-on" id="plan-free-card">
               <input type="radio" name="plan" value="free" id="plan-free" checked>
               <div>
-                <span class="plan-tag" id="plan-free-tag">선착순 20건</span>
+                <span class="plan-tag" id="plan-free-tag">무상 접수</span>
                 <p class="plan-name">무료</p>
                 <p class="plan-price">₩0</p>
                 <p class="plan-desc" id="plan-free-desc">
-                  자리가 남아 있을 때 신청하실 수 있습니다. 카드 정보를 받지 않으며, 결제 절차도 없습니다.
+                  접수가 열려 있을 때 신청하실 수 있습니다. 카드 정보를 받지 않으며, 결제 절차도 없습니다.
                 </p>
               </div>
             </label>
@@ -832,7 +832,7 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
                 <p class="plan-name">수출 사전점검</p>
                 <p class="plan-price">₩330,000</p>
                 <p class="plan-desc" id="plan-paid-desc">
-                  남은 자리와 관계없이 오늘 접수됩니다. 신용·체크카드로 건별 1회 결제하며, 정기결제가 아닙니다.
+                  무상 접수 상태와 관계없이 오늘 접수됩니다. 신용·체크카드로 건별 1회 결제하며, 정기결제가 아닙니다.
                 </p>
               </div>
             </label>
@@ -1406,7 +1406,7 @@ if (/[?&]lang=en(&|$)/.test(location.search)) document.documentElement.classList
     }
 
     // 2026-08-13: 뱃지(#slots-badge)는 화면에 내지 않습니다(위 .slots 규칙이 숨김) —
-    // 남은 자리 수를 더는 보여줄 선택 UI가 없어졌습니다. 그래도 setSlotText 는 그대로
+    // 잔여 자리 수를 더는 보여줄 선택 UI가 없어졌습니다. 그래도 setSlotText 는 그대로
     // 부릅니다 — lockFreePlan·blockEverything 을 부르기 전에 두는 자리라, 텍스트만
     // 없앤다고 이 호출을 지우면 그 뒤에 오는 잠금 처리까지 함께 끊깁니다.
     function applySlots(state) {

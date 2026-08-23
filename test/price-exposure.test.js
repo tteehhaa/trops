@@ -192,3 +192,80 @@ test('금액을 대조 가능한 상태로 서버가 내려준다 — 화면이 
   const cfg = read('api/payment-config.js');
   assert.ok(/amount: PRICE/.test(cfg), 'payment-config 가 amount 를 내려주지 않습니다');
 });
+
+/* ══ 3. 무상 제공 문구 ═══════════════════════════════════════════════════════
+ *
+ * 🔴 **신설 〔2026-08-23 · PRD v2.1 B1-6 · landing-b1-facts-freecopy〕**
+ *
+ * 무상(초기 20건) 제공이 **끝났습니다** 〔PRD v2.1 P-2〕. 끝난 약속이 랜딩에 남아 있으면
+ * 지킬 수 없는 약속을 계속 하는 것이고, 접수 뒤에 기대가 어긋납니다. 지우는 것은 한 번이면
+ * 되지만 **되살아나는 것은 쉽습니다** — 이 문면은 옛 원고(docs/copy/·docs/wireframe/)에
+ * 여러 벌 남아 있어서, 원고를 참고해 문구를 되돌리는 순간 조용히 되돌아옵니다.
+ * 그래서 `*.html` 만이 아니라 **저장소 전체**를 봅니다.
+ *
+ * ⛔ **금지 문자열을 이 파일에 리터럴로 적지 마십시오.** 이 파일도 검사 대상이라,
+ *    적는 순간 이 검사가 자기 자신을 잡습니다. 아래처럼 조각으로 조립합니다
+ *    (scripts/check-b1-gates.js G2 도 같은 방식입니다 — 그쪽은 CI·수동 실행용).
+ */
+
+const { execFileSync } = require('node:child_process');
+
+/** ⛔ 조각 조립 — 위 주석 참조. */
+const RETIRED_OFFER_PHRASES = [
+  ['First 20 submissions', 'free'].join(' '),
+  ['No login', 'required'].join(' '),
+  ['남은', '자리'].join(' '),
+  '선' + '착순',
+  ['무료', '실증'].join(' '),
+];
+
+/** 빌드 산출물·의존성·git 내부는 소스가 아닙니다. dist/ 는 소스에서 파생되므로 소스만 보면 됩니다. */
+const NOT_SOURCE_RE = /^(dist|node_modules|\.git)\//;
+const BINARY_RE = /\.(png|jpe?g|gif|webp|svg|ico|pdf|woff2?|ttf|eot|mp4|zip)$/i;
+
+test('🔴 종료된 무상 제공 문구가 저장소 어디에도 없다 — PRD v2.1 P-2', () => {
+  /*
+   * ⚠️ -z (NUL 구분) 가 필수입니다. git 기본 출력은 한글 경로를 "…\353…" 로 따옴표
+   *    인용해 내보내고, 그 문자열로 파일을 열면 ENOENT 가 나 **조용히 건너뜁니다** —
+   *    이 저장소는 한글 경로 문서가 많아 그대로 두면 검사가 통과하는 척만 합니다.
+   * ⚠️ --others --exclude-standard 로 아직 커밋되지 않은 새 파일도 봅니다.
+   */
+  const files = execFileSync(
+    'git', ['ls-files', '-z', '--cached', '--others', '--exclude-standard'],
+    { cwd: ROOT, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 }
+  )
+    .split('\0')
+    .filter((f) => f && !NOT_SOURCE_RE.test(f) && !BINARY_RE.test(f));
+
+  assert.ok(files.length > 50, 'git ls-files 가 ' + files.length + '개만 냈습니다 — 목록이 비면 검사가 무의미해집니다');
+
+  const offenders = [];
+  const unreadable = [];
+
+  for (const f of files) {
+    let text;
+    try {
+      if (!fs.statSync(path.join(ROOT, f)).isFile()) continue;
+      text = fs.readFileSync(path.join(ROOT, f), 'utf8');
+    } catch (e) {
+      // 못 읽은 파일은 「0건」의 근거가 될 수 없습니다 — 조용히 넘기지 않습니다.
+      unreadable.push(f + '(' + e.code + ')');
+      continue;
+    }
+    for (const phrase of RETIRED_OFFER_PHRASES) {
+      let at = text.indexOf(phrase);
+      while (at !== -1) {
+        offenders.push(f + ':' + (text.slice(0, at).split('\n').length));
+        at = text.indexOf(phrase, at + 1);
+      }
+    }
+  }
+
+  assert.deepStrictEqual(unreadable, [], '읽지 못한 소스 파일이 있습니다: ' + unreadable.join(', '));
+  assert.deepStrictEqual(
+    offenders,
+    [],
+    '종료된 무상 제공 문구가 ' + offenders.length + '곳에 남아 있습니다: ' + offenders.join(', ') +
+    ' — PRD v2.1 P-2 로 무상 제공은 끝났습니다. 옛 원고를 참고해 되살리지 마십시오.'
+  );
+});

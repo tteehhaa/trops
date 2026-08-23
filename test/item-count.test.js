@@ -1,20 +1,23 @@
 'use strict';
 
 /**
- * 대조 항목 수(「18개 항목」)의 단일소스화를 지키는 테스트 (2026-08-11).
+ * 대조 항목 수(「N개 항목」)의 단일소스화를 지키는 테스트 (2026-08-11).
+ *
+ * 🔄 2026-08-23 〔PRD v2.1 B1-1〕 값이 18 → 17 로 바뀌었습니다(판정 엔진 UK IPO 17항목).
+ *    이 파일이 지키는 것은 값 자체가 아니라 **값이 한 곳뿐이다** 입니다.
  *
  * 왜 필요한가: 이 숫자가 5곳에 하드코딩돼 있었습니다 —
  *   nda.html 2곳(본문 · QnA) · uae.html 1곳(CTA 노트) · refund.html 2곳(01 적용대상 · 04 표)
  *
  * 값의 정본은 이 저장소가 아니라 판정층 trops_a 이고, 거기서 파생됩니다:
- *   ICC_ITEM_IDS(19개) − V1_EXCLUDED_ITEM_IDS(["15"]) = 18
+ *   ICC_ITEM_IDS − V1_EXCLUDED_ITEM_IDS (2026-08-23 기준 17)
  *
  * 자동 연동은 불가능합니다(정적 HTML · 판정층 코드를 가져오면 경계 위반).
  * 그래서 여기서 지킬 수 있는 것은 「이 저장소 안에서 값이 한 곳뿐이다」입니다:
  *
  *   1. 소스 HTML 에 숫자가 없다 (토큰만 있다)
  *   2. site.config.json 한 줄을 바꾸면 5곳이 전부 따라온다
- *   3. 지금 값(18)이 5곳에 그대로 나온다 — 토큰화가 화면을 바꾸지 않았다
+ *   3. 지금 값이 5곳에 그대로 나온다 — 토큰화가 화면을 바꾸지 않았다
  *   4. 값이 양의 정수가 아니면 빌드가 선다
  *
  * ⚠️ 이 파일은 site-config.test.js · build-static.test.js 와 같은 dist/ 를 만들고
@@ -128,13 +131,13 @@ test('현재 설정값이 5곳 산출물에 그대로 들어간다', () => {
   }
 });
 
-test('토큰화 전 값(18)이 그대로 나온다 — 화면이 바뀌지 않았다', () => {
+test('현재 확정값(17)이 설정에 들어 있다 — 엔진 항목 수와 맞는다', () => {
   // 이 테스트는 회귀 방지용입니다. 항목 수가 정말로 바뀌는 날 이 단정도 함께
   // 고쳐야 하고, 그때 「환불규정 04 의 근거가 바뀐다」는 것을 사람이 한 번 보게 됩니다.
   assert.equal(
     readConfig().precheck.itemCount,
-    18,
-    'precheck.itemCount 가 18 이 아닙니다. trops_a 의 ICC(19) − v1 제외(1) 와 맞는지 ' +
+    17,
+    'precheck.itemCount 가 17 이 아닙니다. 판정 엔진(UK IPO 기준 17항목)과 맞는지 ' +
       '확인하고, 정말 바뀐 것이면 이 단정과 refund.html 04 의 환불 사유를 함께 검토하십시오.'
   );
 });
@@ -145,7 +148,7 @@ test('항목 수를 한 곳에서 바꾸면 5곳이 전부 따라온다', () => 
   const original = fs.readFileSync(CONFIG, 'utf8');
   const config = JSON.parse(original);
 
-  const PROBE = 23;   // 18 과 겹치지 않고, 다른 숫자(20건·30일)와도 겹치지 않는 값
+  const PROBE = 23;   // 17 과 겹치지 않고, 다른 숫자(20건·30일)와도 겹치지 않는 값
   config.precheck.itemCount = PROBE;
 
   try {
@@ -160,7 +163,7 @@ test('항목 수를 한 곳에서 바꾸면 5곳이 전부 따라온다', () => 
       for (const n of found) {
         assert.equal(n, String(PROBE), `${page}: 바뀐 항목 수가 반영되지 않았습니다`);
       }
-      assert.ok(!html.includes('18개 항목'), `${page}: 예전 값 18 이 남아 있습니다`);
+      assert.ok(!html.includes('17개 항목'), `${page}: 예전 값 17 이 남아 있습니다`);
     }
   } finally {
     fs.writeFileSync(CONFIG, original);

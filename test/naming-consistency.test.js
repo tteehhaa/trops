@@ -63,7 +63,7 @@ function section(markup, className) {
  * 이 묶음이 깨지면 서비스가 완전히 멈춥니다. 어떤 개편도 여기를 건드리지 않습니다.
  */
 
-test('무료 접수 경로가 살아 있다 — 라디오·기본선택·선착순 표기', () => {
+test('무료 접수 경로가 살아 있다 — 라디오·기본선택·태그', () => {
   const m = M.precheck;
 
   assert.ok(
@@ -73,7 +73,14 @@ test('무료 접수 경로가 살아 있다 — 라디오·기본선택·선착�
   assert.ok(m.indexOf('id="plan-free-card"') !== -1, '무료 플랜 카드 id 가 없습니다');
   assert.ok(m.indexOf('id="plan-free-tag"') !== -1, 'JS 가 마감 문구를 쓸 태그 id 가 없습니다');
   assert.ok(m.indexOf('id="plan-free-desc"') !== -1, 'JS 가 마감 문구를 쓸 설명 id 가 없습니다');
-  assert.ok(B.precheck.indexOf('선착순 20건') !== -1, '선착순 표기가 사라졌습니다');
+  /*
+   * 🔄 2026-08-23 〔landing-b1-facts-freecopy · PRD v2.1 B1-5〕
+   *    「초기 20건」 프로모션 표기 존재 단정을 뗐습니다 — 무상 제공이 종료되어(PRD P-2)
+   *    그 문면이 저장소에서 사라졌고, 이 단정이 남으면 **되살리라고 요구하는 검사**가
+   *    됩니다. 이 test 가 지키려던 것(무료 경로가 살아 있는가)은 위 라디오·checked·
+   *    id 4종 단정과 아래 ₩0 단정이 그대로 지킵니다.
+   *    ⛔ 프로모션 문면 단정을 여기 되살리지 마십시오.
+   */
   assert.ok(B.precheck.indexOf('₩0') !== -1, '무료 가격 표기가 사라졌습니다');
 });
 
