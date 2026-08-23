@@ -324,9 +324,11 @@ test('JS 비활성 시 뒷단계·결과 화면이 새어 나오지 않는다', 
 
 test('Q2 — none 을 고르면 나머지가 풀린다', () => {
   const p = boot();
-  p.pick('step-2', 'nda');
-  p.pick('step-2', 'quote_pi');
-  assert.deepStrictEqual(p.checkedValues('step-2'), ['nda', 'quote_pi']);
+  /* 🔄 보기 코드를 §5-18 신 어휘로 갈았습니다 〔2026-08-23 · B3-b〕 — 이 구획이 보는
+     것은 **상호배제 배선**이지 어느 서류인가가 아닙니다. 값만 따라옵니다. */
+  p.pick('step-2', 'contract');
+  p.pick('step-2', 'quotation_pi');
+  assert.deepStrictEqual(p.checkedValues('step-2'), ['contract', 'quotation_pi']);
 
   p.pick('step-2', 'none');
   assert.deepStrictEqual(p.checkedValues('step-2'), ['none'], 'none 이 나머지를 풀지 못했습니다');
@@ -340,40 +342,40 @@ test('Q2 — none 이 켜진 채 다른 보기를 고르면 none 이 풀린다 (
   p.pick('step-2', 'none');
   assert.deepStrictEqual(p.checkedValues('step-2'), ['none']);
 
-  p.pick('step-2', 'sales_contract');
-  assert.deepStrictEqual(p.checkedValues('step-2'), ['sales_contract'], '나머지가 none 을 풀지 못했습니다');
+  p.pick('step-2', 'contract');
+  assert.deepStrictEqual(p.checkedValues('step-2'), ['contract'], '나머지가 none 을 풀지 못했습니다');
 
   p.flush();
-  assert.deepStrictEqual(p.sent[p.sent.length - 1].body.docs, ['sales_contract']);
+  assert.deepStrictEqual(p.sent[p.sent.length - 1].body.docs, ['contract']);
 });
 
 test('Q2 — none 아닌 보기끼리는 서로를 풀지 않는다', () => {
   const p = boot();
-  p.pick('step-2', 'nda');
-  p.pick('step-2', 'service_license');
-  p.pick('step-2', 'other_doc');
-  assert.deepStrictEqual(p.checkedValues('step-2'), ['nda', 'service_license', 'other_doc']);
+  p.pick('step-2', 'contract');
+  p.pick('step-2', 'insurance_policy');
+  p.pick('step-2', 'other');
+  assert.deepStrictEqual(p.checkedValues('step-2'), ['contract', 'insurance_policy', 'other']);
 });
 
 test('Q2 — 저장되는 순서는 클릭 순서가 아니라 화면 순서다', () => {
   /* 작업 6 의 위치 표시(「① · ②」)가 이 배열 순서를 그대로 읽습니다. 클릭 순서로
      모으면 「② · ①」 이 화면에 나갑니다 — 정렬을 넣지 말라는 주석의 짝입니다. */
   /* ⚠️ 보기 두 개는 **화면 순서와 사전순이 어긋나는 짝**으로 골라야 합니다.
-        nda·quote_pi 처럼 둘이 우연히 같은 짝을 쓰면, 누가 sort() 를 끼워 넣어도
-        이 검사가 통과합니다. sales_contract(화면 둘째) · quote_pi(화면 셋째)는
+        둘이 우연히 같은 짝을 쓰면, 누가 sort() 를 끼워 넣어도
+        이 검사가 통과합니다. contract(화면 첫째) · quotation_pi(화면 둘째)는
         사전순으로 뒤집힙니다. */
   const p = boot();
-  p.pick('step-2', 'quote_pi');        /* 화면 셋째 · 사전순 앞 */
-  p.pick('step-2', 'sales_contract');  /* 화면 둘째 · 사전순 뒤 */
+  p.pick('step-2', 'quotation_pi');  /* 화면 둘째 · 사전순 뒤 */
+  p.pick('step-2', 'contract');      /* 화면 첫째 · 사전순 앞 */
   p.flush();
-  assert.deepStrictEqual(p.sent[p.sent.length - 1].body.docs, ['sales_contract', 'quote_pi']);
+  assert.deepStrictEqual(p.sent[p.sent.length - 1].body.docs, ['contract', 'quotation_pi']);
 });
 
 test('Q2 — 골랐다 도로 지우면 빈 배열이 저장된다 (이전 답이 남지 않는다)', () => {
   const p = boot();
-  p.pick('step-2', 'nda');
+  p.pick('step-2', 'contract');
   p.flush();
-  p.pick('step-2', 'nda', false);
+  p.pick('step-2', 'contract', false);
   p.flush();
   const last = p.sent[p.sent.length - 1].body;
   assert.ok(Object.prototype.hasOwnProperty.call(last, 'docs'), 'docs 키가 빠지면 서버의 이전 값이 살아남습니다');
@@ -426,8 +428,9 @@ test('전부 스킵한 사람의 마지막 기록은 skip 이 아니라 complete
   assert.strictEqual(last.exitedVia, 'completed', 'exited_via 는 「어떤 문항을 건너뛰었나」가 아니라 「어떻게 나갔나」입니다');
   assert.strictEqual(last.completedStep, 3);
   /* 값이 없는 필드는 키째로 빠집니다 — null 을 실어 보내면 upsert 가 이전 값을 지웁니다. */
-  assert.ok(!('situation' in last), '고르지 않은 값이 실려 나갔습니다');
-  assert.ok(!('experience' in last), '고르지 않은 값이 실려 나갔습니다');
+  /* 🔄 `situation`·`experience` → `stage`·`management` 〔2026-08-23 · §5-18 · B3-b〕. */
+  assert.ok(!('stage' in last), '고르지 않은 값이 실려 나갔습니다');
+  assert.ok(!('management' in last), '고르지 않은 값이 실려 나갔습니다');
   assert.ok(!('docs' in last), '건드리지 않은 문항은 키째로 빠져야 합니다');
 });
 
@@ -492,14 +495,14 @@ test('같은 탭에서 다시 들어오면 보관된 세션과 진행도를 이�
   /* 직접 진입의 짝입니다 — 「보관이 없으면 새로」가 「보관이 있어도 새로」가 되면
      한 사람이 두 건으로 세어져 §10 의 지표가 전부 어긋납니다. */
   const seed = JSON.stringify({
-    sessionKey: 'seeded-key-1', situation: 'docs_received', docs: ['nda'],
-    experience: null, completedStep: 2, exitedVia: null, ctaClicked: null,
+    sessionKey: 'seeded-key-1', stage: 'negotiating', docs: ['contract'],
+    management: null, completedStep: 2, exitedVia: null, ctaClicked: null,
     docsTouched: true, referrerSent: false,
   });
   const p = boot({ seed });
   assert.deepStrictEqual(p.visible(), ['step-3'], '진행하던 자리로 돌아가지 못했습니다');
-  assert.deepStrictEqual(p.checkedValues('step-1'), ['docs_received']);
-  assert.deepStrictEqual(p.checkedValues('step-2'), ['nda']);
+  assert.deepStrictEqual(p.checkedValues('step-1'), ['negotiating']);
+  assert.deepStrictEqual(p.checkedValues('step-2'), ['contract']);
   p.skip('step-3');
   assert.strictEqual(p.sent[p.sent.length - 1].body.sessionKey, 'seeded-key-1');
 });

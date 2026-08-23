@@ -397,6 +397,13 @@
      ⚠️ 이 줄은 **문서와 칸의 대응만** 진술합니다. 「현재 위치」·「해당합니다」로
         바꾸지 마십시오 — 복수 선택이 자연스럽게 처리되는 것도 이 표현 덕입니다.
      ⚠️ 판정색(초록·빨강)을 쓰지 마십시오. 여기는 좋고 나쁨을 말하는 자리가 아닙니다. */
+  /* 🔴 §5-18 이 새로 준 마지막 한 줄(기업별 도입 문의) 〔2026-08-23 · B3-b〕.
+     본문(<p>)보다 작고 흐리게 둡니다 — 이 갈래의 주된 답은 위 [무료로 사전점검
+     시작하기]이고, 이 줄은 「그 길이 아닌 분들께」입니다. 링크는 이 페이지의 다른
+     본문 링크와 같은 결(밑줄 + --accent)을 그대로 씁니다. */
+  .result-inquiry { margin: 10px 0 0; font-size: 13.5px; line-height: 1.7; color: var(--muted); }
+  .result-inquiry a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+
   .result-place {
     margin: 20px 0 0;
     padding: 14px 18px;
@@ -432,13 +439,13 @@
         재사용 클래스의 값은 바꾸지 않습니다). line-height 를 함께 내리는 이유는 원래 값
         1.95 가 13px 글자를 20px 제목의 시각 중심에 맞추려던 보정이기 때문입니다. */
   #result-stages .flow-num { font-size: 16.5px; line-height: 1.5; color: var(--ink); }
-  /* 위치 표시 한 칸 안에 문장이 둘 앉는 경우가 있습니다(other_doc + 다른 값 · §2-6 F-7).
+  /* 위치 표시 한 칸 안에 문장이 둘 앉는 경우가 있습니다(표에 없는 서류 + 있는 서류 · §2-6 F-7).
      <br> 로 끊지 않고 블록으로 세우는 이유: 두 문장은 각각 독립한 진술이고,
      JS 가 한쪽만 켜고 끄기 때문입니다. */
   #result-place > span { display: block; }
   /* 🔴 위 한 줄의 짝입니다. `[hidden]{display:none}` 은 브라우저 기본 스타일이라 우선순위가
      가장 낮고, 바로 위의 `display: block` 이 그것을 이깁니다 — 이 줄이 없으면 두 문장이
-     **항상 함께** 보여서, other_doc 을 고르지 않은 사람에게도 「어느 자리인지는 서류를
+     **항상 함께** 보여서, 표에 없는 서류를 고르지 않은 사람에게도 「어느 자리인지는 서류를
      봐야」가 붙고 자리를 못 찾은 사람에게도 「놓이는 자리: (빈칸)」이 남습니다.
      ⛔ 지우지 마십시오. 이 파일의 `.cta-row .btn[hidden]` 이 같은 이유로 있습니다 —
         규칙이 하나 더 필요한 것이 아니라 **display 를 지정한 선택자마다 짝이 필요합니다.** */
@@ -626,24 +633,30 @@
         </p>
         <!-- 제목과 보조문을 한 덩이로 묶습니다 — .feat-panel-pad 는 자식 사이를 24px 로
              벌리므로, 따로 두면 제목과 그 보조문이 남남처럼 떨어집니다. -->
+        <!-- 🔄 **전면교체** 〔2026-08-23 · PRD v2.1 §5-18 · B3-b〕.
+             🔴 **축이 「사건」에서 「수출 진행 단계」로 바뀌었습니다.** 종전 보기는
+                「연락이 왔어요 / 서류를 받았어요」처럼 **일어난 일**을 물었고, 그래서
+                「가장 최근에 있었던 일 하나만 골라주세요」라는 보조문이 붙어 있었습니다.
+                §5-18 은 계획 → 협상 → 계약 → 선적 → 결제대기로 **단계**를 묻습니다.
+                보기가 이미 서로 배타적인 단계라 그 보조문이 가리킬 「일」이 없어졌고,
+                남겨 두면 단계를 묻는 질문에 사건을 고르라고 말하는 화면이 됩니다 —
+                **그 한 줄만 함께 걷었습니다.** 다른 문장을 지어 넣지 않았습니다.
+             ⚠️ `name` 이 `situation` → `stage` 로 바뀝니다. 받는 쪽(`trops_a`
+                `lib/precheck/prestep.ts`)은 **필드 이름으로** 구·신 형식을 가릅니다 —
+                이름을 되돌리면 신 어휘 값이 전부 버려집니다.
+             ⚠️ 원문 그대로입니다. 한 글자도 바꾸지 마십시오. -->
         <div>
-          <h2 class="h3" id="step-1-title" tabindex="-1">지금 어느 단계에 있으신가요?</h2>
-          <!-- 🔴 이 한 줄이 Q1 의 축을 「상태」가 아니라 「사건」으로 고정합니다(T8).
-               연락도 왔고 서류도 받은 사람은 상태로 물으면 둘 다 참이라 답이 갈립니다.
-               지우면 같은 상황이 두 값으로 저장되어 검수 우선순위가 랜덤화됩니다(§2-3). -->
-          <p>가장 최근에 있었던 일 하나만 골라주세요.</p>
+          <h2 class="h3" id="step-1-title" tabindex="-1">현재 귀사의 수출 진행 단계는 어디에 해당하시나요?</h2>
         </div>
         <div class="form-purpose opt-list" id="step-1-opts" role="radiogroup" aria-labelledby="step-1-title">
-          <label class="purpose-opt opt-row"><input type="radio" name="situation" value="not_started"><span data-title>아직 시작 전이에요</span></label>
-          <label class="purpose-opt opt-row"><input type="radio" name="situation" value="talk_invited"><span data-title>해외에서 이야기를 나누자는 연락이 왔어요</span></label>
-          <!-- ⛔ 「서류를 주고받는 중이에요」로 되돌리지 마십시오 〔F-1〕. 「주고받는」은
-               상호적으로 읽혀서, 한 장 받기만 한 사람이 위 보기로 빠집니다. -->
-          <label class="purpose-opt opt-row"><input type="radio" name="situation" value="docs_received"><span data-title>서류를 받았어요</span></label>
-          <label class="purpose-opt opt-row"><input type="radio" name="situation" value="pre_contract"><span data-title>계약을 앞두고 있어요</span></label>
-          <!-- 진행 축이 아니라 병렬 상태입니다(D2 수용구). 순서상 뒤에 두되 지우지 마십시오 —
-               이 보기가 없으면 「해외 매출은 있는데 서류는 없는」 사람이 답할 칸이 없습니다. -->
-          <label class="purpose-opt opt-row"><input type="radio" name="situation" value="has_revenue"><span data-title>이미 해외에서 주문·매출이 있어요</span></label>
-          <label class="purpose-opt opt-row"><input type="radio" name="situation" value="unsure"><span data-title>잘 모르겠어요</span></label>
+          <label class="purpose-opt opt-row"><input type="radio" name="stage" value="planning"><span data-title>아직 수출을 계획·준비하고 있어요</span></label>
+          <label class="purpose-opt opt-row"><input type="radio" name="stage" value="negotiating"><span data-title>해외 바이어와 계약 조건을 협상 중이에요</span></label>
+          <label class="purpose-opt opt-row"><input type="radio" name="stage" value="pre_contract"><span data-title>본 계약 체결을 앞두고 있어요</span></label>
+          <label class="purpose-opt opt-row"><input type="radio" name="stage" value="shipping"><span data-title>계약을 마치고 선적·납품을 준비 중이에요</span></label>
+          <label class="purpose-opt opt-row"><input type="radio" name="stage" value="awaiting_payment"><span data-title>이미 선적을 완료하고 결제 대금을 기다리고 있어요</span></label>
+          <!-- ⚠️ `pre_contract` 는 구 어휘(`situation`)에도 **같은 문자열로** 있습니다.
+               그래서 받는 쪽이 값이 아니라 필드 이름으로 가릅니다(위 주석). -->
+          <label class="purpose-opt opt-row"><input type="radio" name="stage" value="unsure"><span data-title>아직 정확한 단계를 모르겠어요</span></label>
         </div>
         <div class="cta-row">
           <button type="button" class="btn btn-primary" data-next hidden>다음</button>
@@ -665,23 +678,36 @@
           <a href="/precheck" data-bypass>바로 비교해 보기 →</a>
         </p>
         <div>
-          <h2 class="h3" id="step-2-title" tabindex="-1">해외에서 받으신 서류가 있나요?</h2>
+          <h2 class="h3" id="step-2-title" tabindex="-1">현재 보유하고 계신 서류나 데이터가 있나요? (복수 선택)</h2>
           <p>이메일 첨부·링크로 받으신 것도 포함이고, 여러 개 고르셔도 됩니다.</p>
         </div>
         <!-- 🔴 영문 병기는 장식이 아닙니다 〔F-8〕. 해외에서 오는 문서는 **영문 제목으로**
              옵니다 — 사용자가 대조하는 대상은 한글 용어가 아니라 파일 이름입니다.
              `Confidentiality Undertaking` 을 받은 사람이 NDA 와 같은 것인 줄 몰라
              「이름을 잘 모르는 문서」로 가는 것을 이 괄호가 막습니다. 지우지 마십시오. -->
+        <!-- 🔄 **보기 6개 전면교체** 〔2026-08-23 · PRD v2.1 §5-18 · B3-b〕. 종전 보기는
+             **계약 문서 4종**(NDA · 매매 · 견적 · 용역/라이선스)이었습니다 — 문서 대조가
+             상품의 전부였던 때의 목록입니다. §5-18 은 선적 서류와 무역보험 증권까지
+             넓혀 **거래 전 구간의 서류**를 묻습니다(상품 3종과 같은 폭입니다).
+             🔴 `name="docs"` 는 **그대로**입니다 — 구·신 두 어휘가 같은 필드를 씁니다.
+                받는 쪽이 값을 두 어휘로 **분배**하고(`partitionDocs`), 두 어휘에 모두 있는
+                `none` 은 같은 배열의 다른 값이 어느 쪽인지 정합니다.
+             ⚠️ 영문 병기는 장식이 아닙니다 〔F-8 · 유지〕. 해외에서 오는 문서는 영문
+                제목으로 오고, 사용자가 대조하는 대상은 한글 용어가 아니라 파일 이름입니다.
+                §5-18 이 괄호로 적어 둔 영문을 종전과 **같은 구조**(`data-title` + 
+                `.consent-body`)로 나눠 담았습니다 — 화면에 나가는 글자는 §5-18 원문 그대로이고,
+                되짚기(블록1)가 읽는 `data-title` 만 한글 이름으로 남습니다.
+             ⚠️ 원문 그대로입니다. 한 글자도 바꾸지 마십시오. -->
         <div class="opt-list" id="step-2-opts" role="group" aria-labelledby="step-2-title">
-          <label class="consent opt-row"><input type="checkbox" name="docs" value="nda"><span><span data-title>NDA·비밀유지계약서</span><br><span class="consent-body">(NDA / Confidentiality Agreement / Undertaking)</span></span></label>
-          <label class="consent opt-row"><input type="checkbox" name="docs" value="sales_contract"><span><span data-title>매매계약서</span><br><span class="consent-body">(Sales Contract / Purchase Agreement)</span></span></label>
-          <label class="consent opt-row"><input type="checkbox" name="docs" value="quote_pi"><span><span data-title>견적서·PI</span><br><span class="consent-body">(Quotation / Proforma Invoice / Term Sheet)</span></span></label>
-          <label class="consent opt-row"><input type="checkbox" name="docs" value="service_license"><span><span data-title>용역·라이선스 계약서</span><br><span class="consent-body">(Service / License / Publishing Agreement)</span></span></label>
-          <label class="consent opt-row"><input type="checkbox" name="docs" value="other_doc"><span><span data-title>이름을 잘 모르는 문서가 있어요</span></span></label>
+          <label class="consent opt-row"><input type="checkbox" name="docs" value="contract"><span><span data-title>수출 계약서</span><br><span class="consent-body">(Contract / Agreement)</span></span></label>
+          <label class="consent opt-row"><input type="checkbox" name="docs" value="quotation_pi"><span><span data-title>견적서</span><br><span class="consent-body">(Quotation) / 프로포마 인보이스 (P/I)</span></span></label>
+          <label class="consent opt-row"><input type="checkbox" name="docs" value="invoice_bl"><span><span data-title>상업송장</span><br><span class="consent-body">(Commercial Invoice) / 선하증권 (B/L)</span></span></label>
+          <label class="consent opt-row"><input type="checkbox" name="docs" value="insurance_policy"><span><span data-title>무역보험 증권</span><br><span class="consent-body">(K-SURE 등)</span></span></label>
+          <label class="consent opt-row"><input type="checkbox" name="docs" value="other"><span><span data-title>기타 수출 관련 서류</span></span></label>
           <!-- 🔴 `none` 은 나머지와 **양방향 상호배제**입니다(§9). 이것을 고르면 나머지가
                풀리고, 나머지 중 하나를 고르면 이것이 풀립니다. 한 방향만 걸면
-               「아직 없어요 + NDA」 라는 앞뒤가 맞지 않는 레코드가 저장됩니다. -->
-          <label class="consent opt-row"><input type="checkbox" name="docs" value="none"><span><span data-title>아직 없어요</span></span></label>
+               「아직 없어요 + 수출 계약서」 라는 앞뒤가 맞지 않는 레코드가 저장됩니다. -->
+          <label class="consent opt-row"><input type="checkbox" name="docs" value="none"><span><span data-title>아직 작성된 서류가 없어요</span></span></label>
         </div>
         <div class="cta-row">
           <button type="button" class="btn btn-primary" data-next>다음</button>
@@ -700,11 +726,23 @@
           <span aria-live="polite">3 / 3</span>
           <a href="/precheck" data-bypass>바로 비교해 보기 →</a>
         </p>
-        <h2 class="h3" id="step-3-title" tabindex="-1">해외 거래는 어느 정도 해보셨나요?</h2>
+        <!-- 🔄 **전면교체** 〔2026-08-23 · PRD v2.1 §5-18 · B3-b〕.
+             🔴 **축이 바뀌었습니다** — 「수출 경험이 얼마나 있는가」(횟수)에서
+                「지금 무엇으로 관리하는가」(도구)로. 종전 축은 이 페이지에서 데이터 목적이
+                가장 약한 문항이었고(D10 「첫 삭제 후보」), 답을 알아도 다음에 할 말이
+                없었습니다. 관리 방식은 상품 ②③(계약관리·채권관리)이 대체하려는 바로
+                그것이라 답이 곧 쓰임이 됩니다.
+             ⚠️ `name` 이 `experience` → `management` 로 바뀝니다(Q1 과 같은 이유).
+             ⚠️ 원문 그대로입니다. 한 글자도 바꾸지 마십시오. -->
+        <h2 class="h3" id="step-3-title" tabindex="-1">평소 수출 거래와 결제 일정은 어떻게 관리하고 계신가요?</h2>
         <div class="form-purpose opt-list" id="step-3-opts" role="radiogroup" aria-labelledby="step-3-title">
-          <label class="purpose-opt opt-row"><input type="radio" name="experience" value="first"><span data-title>이번이 처음이에요</span></label>
-          <label class="purpose-opt opt-row"><input type="radio" name="experience" value="few"><span data-title>몇 번 해봤어요</span></label>
-          <label class="purpose-opt opt-row"><input type="radio" name="experience" value="regular"><span data-title>계속 하고 있어요</span></label>
+          <label class="purpose-opt opt-row"><input type="radio" name="management" value="excel"><span data-title>엑셀(Excel) 시트로 수기 관리해요</span></label>
+          <label class="purpose-opt opt-row"><input type="radio" name="management" value="erp"><span data-title>사내 ERP 시스템을 활용해요</span></label>
+          <label class="purpose-opt opt-row"><input type="radio" name="management" value="calendar"><span data-title>개인 캘린더나 업무 메모장에 적어둬요</span></label>
+          <label class="purpose-opt opt-row"><input type="radio" name="management" value="memory"><span data-title>담당자 개인의 기억에 의존해 챙겨요</span></label>
+          <!-- ⚠️ `none` 이 Q2 에도 있습니다. 필드 이름(`management`)이 갈라 주므로
+               같은 값이어도 섞이지 않습니다. -->
+          <label class="purpose-opt opt-row"><input type="radio" name="management" value="none"><span data-title>체계화된 별도 관리 툴이 없어요</span></label>
         </div>
         <div class="cta-row">
           <button type="button" class="btn btn-primary" data-next hidden>다음</button>
@@ -736,7 +774,7 @@
         <!-- ── 블록1. 되짚기 ── 조건부입니다 (설계서 §2-6 표시 규칙) ──────────────
              값(<strong>)만 JS 가 채웁니다. 그 글자는 위 문항의 <span data-title> 을
              **그대로 읽어온 것**입니다 — 여기에 같은 문구를 한 벌 더 적지 마십시오.
-             🔴 situation = unsure 는 행을 내립니다. 「상황: 잘 모르겠어요」는 정보량이
+             🔴 stage = unsure 는 행을 내립니다. 「상황: 아직 정확한 단계를 모르겠어요」는 정보량이
                 0이고, 모른다고 답한 것을 화면이 되읽어주면 무안합니다(§2-6 근거).
                 unsure 는 **「답이 있는 결측」**이라 「값이 없으면 숨긴다」로는 안 걸립니다.
              🔴 두 행이 모두 비표시 대상이면 이 <div> 통째로 내리고 블록2 로 바로 갑니다.
@@ -772,12 +810,12 @@
         </div>
 
         <!-- 위치 표시 — Q2 만으로 계산합니다(설계서 §2-6 F-7).
-             ⛔ Q1(situation)으로 계산하지 마십시오. Q1 은 그 사람 사업의 진행 상태이고,
+             ⛔ Q1(stage)으로 계산하지 마십시오. Q1 은 그 사람 사업의 진행 단계이고,
                 Q2 는 실제로 손에 있는 문서입니다.
-             ⛔ other_doc 을 ①②③ 중 하나에 임의 배정하지 마십시오 — 모르는 것은
+             ⛔ 표에 없는 서류를 ①②③ 중 하나에 임의 배정하지 마십시오 — 모르는 것은
                 모른다고 쓰는 것이 유일한 안전한 처리입니다. 배정 규칙이 없으면 구현자가
                 임의로 정하고, 그 순간 근거 없는 주장이 나갑니다.
-             ⚠️ 두 <span> 이 동시에 켜지는 경우가 있습니다(other_doc + 다른 값). 그때는
+             ⚠️ 두 <span> 이 동시에 켜지는 경우가 있습니다(표에 없는 서류 + 있는 서류). 그때는
                 「놓이는 자리: ① · ②」 아래에 「어느 자리인지는 서류를 봐야」가 함께 섭니다. -->
         <p class="result-place" id="result-place" role="status" hidden><span id="result-place-known" hidden>받으신 서류가 놓이는 자리: <strong id="result-place-marks"></strong></span><span id="result-place-unknown" hidden>받으신 서류가 어느 자리인지는 서류를 봐야 알 수 있습니다.</span></p>
 
@@ -790,7 +828,7 @@
         <p class="result-place" id="result-none" hidden>주문으로 이어지는 판매와, 문서를 주고받는 거래는 서로 다른 흐름입니다. 위 (1)에 해당하는 서류를 받으시면, 그때 쓰시는 도구입니다.</p>
 
         <!-- ── 블록3. 다음 행동 ── 서류 있음 / 서류 없음 두 갈래 ─────────────────
-             ⚠️ 갈림의 기준은 **docs 하나**입니다(situation 아님). 위 위치 표시와 같은
+             ⚠️ 갈림의 기준은 **docs 하나**입니다(stage 아님). 위 위치 표시와 같은
                 기준을 써야 「자리를 보여주고 다른 것을 권하는」 화면이 안 됩니다.
              ⚠️ 두 링크 다 클릭 시 cta_clicked 를 저장합니다(작업 7 저장 로직 재사용).
                 **막지 않습니다** — preventDefault 를 넣지 마십시오. 요청은 keepalive 가
@@ -800,11 +838,23 @@
                href 는 JS 가 완성합니다(?pre=…&docs=…). 기본값을 파라미터 없는 /precheck
                로 두는 이유: JS 가 죽어도 링크가 살아 있어야 하고, 파라미터가 없으면
                프리필만 안 될 뿐 접수는 그대로 됩니다(fail-open). -->
+          <!-- 🔄 **라벨·목적지·보조문 전면교체** 〔2026-08-23 · PRD v2.1 §5-18 · B3-b〕.
+               종전에는 랜딩 `/precheck`(접수·결제 화면)로 보내면서 세션키와 문서유형을
+               쿼리에 실었습니다(`?pre=…&docs=…`). §5-18 은 서류를 가진 사람을
+               **거래 등록**으로 보냅니다 — 목적지가 앱이 되면서 그 쿼리를 읽는 쪽이
+               없어졌고, 프리필 계산(`DOCTYPE_OF`)을 아래 스크립트에서 함께 걷었습니다.
+               🔴 **퍼널 영향(인계)** — `/check` 경유 접수의 `intake_id` 역기입
+                  (`trops_a` `app/api/cron/precheck-prestep-link`)이 더 이상 발생하지
+                  않습니다. `prestep_session` 행 자체는 그대로 쌓입니다.
+               ⚠️ `id="cta-send-docs"` 를 지우지 마십시오 — 아래 IIFE 와 test 가 이 id 로
+                  분기 표시와 클릭 기록을 겁니다. 라벨과 목적지만 바뀌었습니다.
+               ⚠️ 목적지는 PRD §6-1 이 정한 등록 화면입니다(상품② 「수출 계약 등록하기」와
+                  같은 문). 목록(`/procedures`)으로 바꾸지 마십시오 — 라벨이 「등록하고」입니다. -->
           <div id="cta-has-docs" hidden>
             <div class="cta-row">
-              <a class="btn btn-primary btn-full" id="cta-send-docs" href="/precheck">이 서류 비교해 보기</a>
+              <a class="btn btn-primary btn-full" id="cta-send-docs" href="https://app.trops.kr/procedures/new">거래 등록하고 시작하기</a>
             </div>
-            <p>공개된 표준 서식과 항목별로 비교해서, 어디가 다른지 위치를 보여드립니다.</p>
+            <p>보유하신 계약서나 견적서를 등록하시면 바로 관리를 시작하실 수 있습니다.</p>
           </div>
           <!-- 서류 없음 — 이메일은 **랜딩의 문의 폼(§10)**이 받습니다.
                /check 안에 이메일 칸을 두지 않은 이유: 그 절차는 이름·개인정보 동의가
@@ -830,11 +880,25 @@
                ⚠️ 목적지는 §6-1 이 정한 `app.trops.kr/account/password` 입니다.
                ⚠️ id 는 `cta-notify-me` 그대로 둡니다 — 아래 IIFE 와 test 가 이 id 로
                   분기 표시를 켜고 끕니다. 라벨과 목적지만 바뀌었습니다. -->
+          <!-- 🔄 **라벨·목적지·보조문 교체 + 문의 안내 한 줄 신설** 〔2026-08-23 · §5-18 · B3-b〕.
+               B2-9 는 이 자리를 앱 **가입**으로 보냈습니다. §5-18 은 한 걸음 더 들어가
+               **사전점검 화면**으로 곧장 보냅니다 — 가입 화면을 먼저 보여주는 것보다
+               「무엇을 해 주는 곳인지」가 먼저 보이는 편이 낫고, 앱의 `/precheck` 는
+               로그인 없이 열립니다(2026-08-23 라이브 실측 · `middleware.ts`
+               `PROTECTED_PREFIXES` 에 `/precheck` 없음).
+               🔴 마지막 한 줄(기업별 도입 문의)이 §5-18 에서 새로 왔습니다. 목적지는
+                  이 페이지가 이미 쓰는 랜딩 문의 칸입니다(헤더 [문의하기]와 같은 주소) —
+                  `?focus=inquiry` 는 그 칸에 포커스를 주고, JS 가 죽어도 앵커 이동은 됩니다.
+               ⚠️ `id="cta-notify-me"` 를 지우지 마십시오 — 위 [거래 등록하고 시작하기]와
+                  같은 이유입니다(IIFE·test 가 이 id 로 분기를 켜고 끕니다).
+               ⛔ 여기에 이메일 입력칸을 만들지 마십시오. 사전 확인 단계가 **개인정보 0** 인
+                  것이 「동의를 안 받아도 되는 근거」입니다(§5-2 원칙 3). -->
           <div id="cta-no-docs" hidden>
             <div class="cta-row">
-              <a class="btn btn-primary btn-full" id="cta-notify-me" href="https://app.trops.kr/account/password" target="_self">무료로 시작하기</a>
+              <a class="btn btn-primary btn-full" id="cta-notify-me" href="https://app.trops.kr/precheck" target="_self">무료로 사전점검 시작하기</a>
             </div>
-            <p>계약서가 없어도 수출 품목과 대상 국가만 입력하시면 사전점검을 이용하실 수 있습니다.</p>
+            <p>서류가 없으셔도 품목과 국가 입력만으로 수출 사전점검을 이용하실 수 있습니다.</p>
+            <p class="result-inquiry">* 기업별 도입 문의가 필요하시면 <a href="/?focus=inquiry#interest">문의하기</a>를 이용해 주세요.</p>
           </div>
         </div>
       </div>
@@ -950,9 +1014,13 @@
        ⛔ 추론값(D1/D2 판정)을 여기에 얹지 마십시오 — 저장 금지 항목입니다(§3-2, 하지말것 9). */
     var state = {
       sessionKey: '',
-      situation: null,
+      /* 🔄 `situation`·`experience` → `stage`·`management` 〔2026-08-23 · §5-18 · B3-b〕.
+         받는 쪽이 **필드 이름으로** 구·신 형식을 가릅니다(trops_a `lib/precheck/prestep.ts`
+         `formatOf()`) — 이름을 되돌리면 신 어휘 값이 조용히 전부 버려집니다.
+         ⛔ 한 세션이 두 형식을 섞어 보내지 않습니다. 여기 세 이름이 함께 움직입니다. */
+      stage: null,
       docs: [],
-      experience: null,
+      management: null,
       completedStep: 0,
       exitedVia: null,
       ctaClicked: null,
@@ -1006,9 +1074,9 @@
         return;
       }
       state.sessionKey = saved.sessionKey;
-      state.situation = saved.situation || null;
+      state.stage = saved.stage || null;
       state.docs = Object.prototype.toString.call(saved.docs) === '[object Array]' ? saved.docs : [];
-      state.experience = saved.experience || null;
+      state.management = saved.management || null;
       state.completedStep = typeof saved.completedStep === 'number' ? saved.completedStep : 0;
       state.exitedVia = saved.exitedVia || null;
       state.ctaClicked = saved.ctaClicked || null;
@@ -1026,11 +1094,11 @@
     /* 새로고침·재진입 시 고른 것이 그대로 남아 있게 합니다. */
     (function applySaved() {
       var list = inputsIn(0), k;
-      for (k = 0; k < list.length; k += 1) list[k].checked = (list[k].value === state.situation);
+      for (k = 0; k < list.length; k += 1) list[k].checked = (list[k].value === state.stage);
       list = inputsIn(1);
       for (k = 0; k < list.length; k += 1) list[k].checked = (indexOf(state.docs, list[k].value) !== -1);
       list = inputsIn(2);
-      for (k = 0; k < list.length; k += 1) list[k].checked = (list[k].value === state.experience);
+      for (k = 0; k < list.length; k += 1) list[k].checked = (list[k].value === state.management);
     })();
 
     /* ── 전송 ──────────────────────────────────────────────────────────────── */
@@ -1039,11 +1107,11 @@
       var body = { sessionKey: state.sessionKey, completedStep: state.completedStep };
       /* 위 주석대로 **없는 값은 키째로 뺍니다.** null 을 실어 보내면 upsert 가
          이전 문항에서 저장한 값을 지웁니다. */
-      if (state.situation) body.situation = state.situation;
+      if (state.stage) body.stage = state.stage;
       /* 빈 배열은 **고른 뒤 도로 지운 사람**의 답이므로 실어 보냅니다(위 docsTouched 주석).
          한 번도 안 건드린 문항만 키째로 빠집니다. */
       if (state.docs.length || state.docsTouched) body.docs = state.docs.slice();
-      if (state.experience) body.experience = state.experience;
+      if (state.management) body.management = state.management;
       if (state.exitedVia) body.exitedVia = state.exitedVia;
       if (state.ctaClicked) body.ctaClicked = state.ctaClicked;
       /* 유입 경로는 최초 1회만. **성공한 뒤에야** 보냈다고 표시하므로, 첫 호출이
@@ -1115,30 +1183,27 @@
           항상 같은 자리에 그대로 있습니다(§5-1). 여기서 조건을 붙이지 마십시오. */
 
     /* 위치 표시 매핑 — **docs(Q2) 만** 봅니다 (§2-6 F-7).
-       ⛔ situation(Q1)을 여기 끌어들이지 마십시오. Q1 은 그 사람 사업의 진행 상태이고
+       ⛔ stage(Q1)를 여기 끌어들이지 마십시오. Q1 은 그 사람 사업의 진행 단계이고
           Q2 는 실제로 손에 있는 문서입니다. 「우리가 아는 것으로만 진술한다」는 원칙이
           지켜지는 자리가 이 표 하나입니다.
-       ⚠️ other_doc·none 이 이 표에 **없는 것은 의도**입니다. 값을 채우지 마십시오 —
-          other_doc 을 (1)(2)(3) 어디에 넣든 그 순간 근거 없는 주장이 화면에 나갑니다.
+       ⚠️ `other`·`invoice_bl`·`insurance_policy`·`none` 이 이 표에 **없는 것은 의도**입니다.
+          값을 채우지 마십시오 — (1)(2)(3) 어디에 넣든 그 순간 근거 없는 주장이 화면에 나갑니다.
        🔄 기호를 ①②③ → (1)(2)(3) 로 바꿨습니다 〔2026-08-16 · 대표 피드백 「가독성
           떨어짐」〕. 위 .flow-num 세 칸·아래 result-none 문안과 반드시 같은 기호를
           씁니다 — 하나만 바꾸면 「(1)에 해당하는 서류」가 가리킬 칸이 화면에 없어집니다. */
+    /* 🔄 **신 어휘로 다시 적었습니다** 〔2026-08-23 · §5-18 · B3-b〕.
+       위 블록2 세 칸이 문면으로 적고 있는 문서는 이렇습니다:
+         (1) NDA·비밀유지계약서   (2) 견적서·PI·매매계약서   (3) 유통·라이선스 계약
+       신 어휘 6개 중 **(2)번 칸이 이름으로 적고 있는 것**은 계약서와 견적서·PI 둘입니다.
+       ⛔ `invoice_bl`(상업송장·B/L) · `insurance_policy`(무역보험 증권) 을 여기 넣지
+          마십시오 — 세 칸 어디에도 그 이름이 없습니다. 없는 칸에 억지로 배정하는 순간
+          근거 없는 주장이 화면에 나갑니다(이 파일이 처음부터 금지한 것입니다).
+          그 둘은 `other` 와 함께 아래 미지 경로(「어느 자리인지는 서류를 봐야」)로 갑니다.
+       ⚠️ 블록2 세 칸은 §5-18 의 교체 범위가 아니라 그대로 둡니다. 그 칸을 신 어휘에
+          맞춰 다시 쓰려면 확정 문안부터 받아야 합니다. */
     var PLACE_OF = {
-      nda: '(1)',
-      sales_contract: '(2)',
-      quote_pi: '(2)',
-      service_license: '(3)'
-    };
-
-    /* /precheck 폼 문서유형과의 **다대일** 매핑 (§5-3 · 작업 8).
-       service_license·other_doc 이 한 값으로 접힙니다 — 접수 폼에는 그 둘을 가르는
-       칸이 없기 때문입니다. 받는 쪽은 [data-doctype] 속성으로만 찾습니다. */
-    var DOCTYPE_OF = {
-      nda: 'nda',
-      sales_contract: 'sales_contract',
-      quote_pi: 'quote_pi',
-      service_license: 'other',
-      other_doc: 'other'
+      contract: '(2)',
+      quotation_pi: '(2)'
     };
 
     function el(id) { return document.getElementById(id); }
@@ -1171,27 +1236,42 @@
         if (v) names.push(v);
       }
       var showDocs = names.length > 0;
-      var showSituation = !!state.situation && state.situation !== 'unsure';
+      /* 🔄 `state.situation` → `state.stage` 〔2026-08-23 · §5-18 · B3-b〕.
+         🔴 **엘리먼트 id 는 그대로입니다**(`recap-situation-row` · `recap-situation`).
+            id 는 문구가 아니라 배선이고, 이미 test 가 그 이름으로 이 행을 잡고 있습니다.
+            바꾸면 화면은 멀쩡한 채 검사만 조용히 대상을 잃습니다.
+         ⚠️ 화면 라벨 「상황:」도 그대로입니다 — §5-18 이 되짚기 문안을 주지 않았고,
+            없는 문구를 지어 넣지 않는 것이 이 배치의 규칙입니다. */
+      var showStage = !!state.stage && state.stage !== 'unsure';
 
       if (showDocs) el('recap-docs').textContent = names.join(' · ');
-      if (showSituation) el('recap-situation').textContent = titleOf(0, state.situation);
+      if (showStage) el('recap-situation').textContent = titleOf(0, state.stage);
       el('recap-docs-row').hidden = !showDocs;
-      el('recap-situation-row').hidden = !showSituation;
+      el('recap-situation-row').hidden = !showStage;
       /* 두 행이 다 내려가면 상자째 내립니다 — 빈 상자는 「뭔가 안 나왔다」로 읽힙니다. */
-      el('result-recap').hidden = !(showDocs || showSituation);
+      el('result-recap').hidden = !(showDocs || showStage);
 
       /* ── 위치 표시 ──
          화면에 보이는 순서 그대로 모으므로 ①②③ 순서가 저절로 맞습니다(state.docs 를
          정렬하지 않는 이유 — 작업 5 의 wireMulti 주석과 짝입니다). */
+      /* 🔄 **미지 판정을 「값 하나」가 아니라 「표에 없음」으로 바꿨습니다**
+         〔2026-08-23 · §5-18 · B3-b〕. 종전에는 `other_doc` **한 값만** 미지로 보냈고,
+         나머지는 전부 PLACE_OF 에 있다는 전제였습니다. 신 어휘에는 세 칸 어디에도 이름이
+         없는 서류가 둘 더 있습니다(`invoice_bl` · `insurance_policy`).
+         🔴 전제를 값 목록이 아니라 **표에 있는가**로 옮기지 않으면, 그 둘을 고른 사람에게는
+            위치 표시가 통째로 사라집니다 — 답을 했는데 화면이 아무 말도 안 하는 상태이고,
+            이 페이지에서 가장 나쁜 실패 형태입니다(조용한 무응답).
+         ⛔ 표를 채워서 이 문제를 풀지 마십시오. 모르는 것은 모른다고 쓰는 것이 유일한
+            안전한 처리입니다(위 PLACE_OF 주석). */
       var marks = [];
       var hasOther = false;
       var hasDocs = false;
       for (k = 0; k < state.docs.length; k += 1) {
         if (state.docs[k] === 'none') continue;
         hasDocs = true;
-        if (state.docs[k] === 'other_doc') { hasOther = true; continue; }
         v = PLACE_OF[state.docs[k]];
-        if (v && indexOf(marks, v) === -1) marks.push(v);
+        if (!v) { hasOther = true; continue; }
+        if (indexOf(marks, v) === -1) marks.push(v);
       }
 
       el('result-place-marks').textContent = marks.join(' · ');
@@ -1207,18 +1287,17 @@
       el('cta-has-docs').hidden = !hasDocs;
       el('cta-no-docs').hidden = hasDocs;
 
-      if (!hasDocs) return;
-      /* /precheck 로 넘길 것: 세션키(접수 성사 시 intake_id 역기입용)와 문서유형.
-         ⚠️ 서버 조회 없이 쿼리로 곧장 넘깁니다(§6) — 받는 쪽이 즉시 렌더할 수 있고,
-            /precheck 가 사전 확인 저장소를 몰라도 됩니다. */
-      var mapped = [];
-      for (k = 0; k < state.docs.length; k += 1) {
-        v = DOCTYPE_OF[state.docs[k]];
-        if (v && indexOf(mapped, v) === -1) mapped.push(v);
-      }
-      var href = '/precheck?pre=' + encodeURIComponent(state.sessionKey);
-      if (mapped.length) href += '&docs=' + encodeURIComponent(mapped.join(','));
-      el('cta-send-docs').href = href;
+      /* 🔄 **프리필 계산이 여기서 사라졌습니다** 〔2026-08-23 · §5-18 · B3-b〕.
+         종전에는 `?pre=<세션키>&docs=<문서유형>` 을 만들어 랜딩 `/precheck` 접수 폼에
+         넘겼습니다(그쪽이 `[data-doctype]` 로 받았습니다). §5-18 이 이 분기의 목적지를
+         **앱 거래 등록**으로 바꾸면서 그 쿼리를 읽는 쪽이 없어졌습니다.
+         🔴 읽히지 않는 파라미터를 계속 실어 보내지 않습니다 — 남겨 두면 「연결돼 있다」는
+            오해만 남고, 다음 사람이 그 쿼리를 근거로 배선을 추측하게 됩니다.
+         🔴 **인계** — `/check` 경유 접수의 `intake_id` 역기입(`trops_a`
+            `app/api/cron/precheck-prestep-link`)이 더 이상 발생하지 않습니다.
+            `prestep_session` 행은 그대로 쌓입니다(`stage`·`docs`·`management` 축).
+         ⚠️ 그래서 `cta-send-docs` 의 href 는 **마크업에 적힌 값이 최종값**입니다.
+            여기서 덧쓰지 마십시오. */
     }
 
     /* CTA 기록. **한 번만** 겁니다 — renderResult 안에 두면 결과 화면을 다시 열 때마다
@@ -1336,9 +1415,9 @@
       if (skip) skip.addEventListener('click', function () { goTo(index + 1, 'skip'); });
     }
 
-    wireSingle(0, 'situation');
+    wireSingle(0, 'stage');
     wireMulti(1);
-    wireSingle(2, 'experience');
+    wireSingle(2, 'management');
 
     /* ── 우회 링크 ───────────────────────────────────────────────────────────
        기록만 하고 **막지 않습니다.** preventDefault 를 넣지 마십시오 — 저장을 기다리게

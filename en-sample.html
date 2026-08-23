@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sample report · TROPS export pre-check</title>
+<meta name="description" content="An example of how a TROPS export pre-check report is put together. Built with fictional company information.">
+<meta name="robots" content="noindex">
+<link rel="alternate" hreflang="ko" href="/sample">
+<link rel="alternate" hreflang="en" href="/en-sample">
+<style>
+:root{
+  --ink:#0F172A; --ink-2:#0f172a; --mut:#64748b; --mut-2:#475569;
+  --line:#e2e8f0; --line-2:#cbd5e1; --bg:#f8fafc; --brand:#1D4ED8;
+  --ok-bg:#ecfdf5; --ok-fg:#047857; --ok-bd:#a7f3d0;
+  --wr-bg:#fffbeb; --wr-fg:#b45309; --wr-bd:#fde68a;
+  --bk-bg:#fef2f2; --bk-fg:#991b1b; --bk-bd:#fca5a5;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:#eef2f6; color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+  font-size:15px; line-height:1.62; -webkit-text-size-adjust:100%;
+}
+a{color:var(--brand)}
+
+.pagebar{background:var(--brand); color:#fff; padding:14px 20px; text-align:center; font-size:14px}
+.pagebar b{font-weight:700}
+.pagebar a{color:#bae6fd; text-decoration:underline; margin-left:10px}
+
+.sheet{
+  position:relative; max-width:860px; margin:26px auto 60px; background:#fff;
+  border:1px solid var(--line); border-radius:8px;
+  box-shadow:0 2px 16px rgba(15,23,42,.07); padding:34px 38px 30px; overflow:hidden;
+}
+.sheet::before{
+  content:"S A M P L E"; position:absolute; inset:0; pointer-events:none; z-index:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:clamp(38px,9vw,86px); font-weight:800; letter-spacing:.16em;
+  color:rgba(7,89,133,.07); transform:rotate(-24deg);
+}
+.wm2{
+  position:absolute; left:0; right:0; text-align:center; pointer-events:none; z-index:0;
+  font-size:clamp(13px,2.6vw,23px); font-weight:800; letter-spacing:.12em;
+  color:rgba(7,89,133,.055); transform:rotate(-24deg);
+}
+.wm2.t{top:15%} .wm2.b{bottom:15%}
+.sheet>*:not(.wm2){position:relative; z-index:1}
+
+.topbar{
+  display:flex; justify-content:space-between; align-items:flex-end; gap:12px;
+  border-bottom:2px solid var(--brand); padding-bottom:10px; margin-bottom:18px; flex-wrap:wrap;
+}
+.brand{font-size:20px; font-weight:800; color:var(--brand); letter-spacing:-.02em}
+.brand span{font-size:13px; font-weight:400; color:var(--mut); margin-left:9px; letter-spacing:0}
+.samptag{
+  font-size:12px; font-weight:700; color:var(--wr-fg);
+  background:var(--wr-bg); border:1px solid var(--wr-bd); border-radius:4px; padding:3px 9px;
+}
+
+h1{font-size:26px; margin:0 0 5px; letter-spacing:-.02em; color:var(--ink-2)}
+.certline{font-size:13px; color:var(--mut-2); margin-bottom:4px}
+.certno{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-weight:700; color:var(--brand)}
+.rel{font-size:12.5px; color:var(--mut)}
+
+.kpis{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:18px 0 12px}
+.kpi{border:1px solid var(--line); border-radius:6px; padding:12px 14px; background:var(--bg)}
+.kpi .lb{font-size:12px; color:var(--mut); margin-bottom:4px}
+.kpi .vl{font-size:26px; font-weight:800; color:var(--ink-2); line-height:1.15}
+.kpi .sb{font-size:12px; color:var(--mut); margin-top:3px}
+.kpi.muted .vl{color:#94a3b8}
+
+.reqline{font-size:13.5px; color:var(--mut-2); margin-bottom:11px}
+.blocker{
+  border:1px solid var(--bk-bd); background:var(--bk-bg); border-radius:6px;
+  padding:12px 15px; font-size:15px; font-weight:700; color:var(--bk-fg); margin-bottom:6px;
+}
+.basisnote{
+  font-size:12.5px; color:var(--mut); border-left:3px solid var(--line-2);
+  padding-left:11px; margin-top:14px;
+}
+
+h2{font-size:18px; margin:30px 0 6px; padding-bottom:6px; border-bottom:1px solid var(--line-2); color:var(--ink-2)}
+h2 .sub{font-size:13px; font-weight:400; color:var(--mut); margin-left:9px}
+.secnote{font-size:13px; color:var(--mut); margin:7px 0 12px}
+
+.step{border:1px solid var(--line); border-radius:6px; padding:12px 15px; margin-bottom:8px}
+.step .hd{display:flex; align-items:center; gap:9px; margin-bottom:5px; flex-wrap:wrap}
+.step .no{
+  background:var(--brand); color:#fff; font-size:12px; font-weight:700;
+  width:20px; height:20px; border-radius:4px; text-align:center; line-height:20px; flex:none;
+}
+.step .ti{font-size:15.5px; font-weight:700; color:var(--ink-2)}
+.badge{font-size:11.5px; padding:2px 9px; border-radius:11px; font-weight:700; margin-left:auto; flex:none}
+.b-ok{background:var(--ok-bg); color:var(--ok-fg); border:1px solid var(--ok-bd)}
+.b-need{background:var(--wr-bg); color:var(--wr-fg); border:1px solid var(--wr-bd)}
+.step .bd{font-size:14px; color:#334155}
+.step .dt{font-size:13px; color:var(--mut); margin-top:4px}
+.src{font-size:12.5px; color:var(--brand); margin-top:6px}
+.src b{color:var(--mut-2); font-weight:700}
+.expert{font-size:13px; color:var(--wr-fg); font-weight:700; margin-top:5px}
+
+.tablewrap{overflow-x:auto; -webkit-overflow-scrolling:touch}
+table.req{width:100%; border-collapse:collapse; margin-top:6px; min-width:660px}
+table.req th{
+  background:#f1f5f9; font-size:12px; color:var(--mut-2); text-align:left;
+  padding:8px 9px; border-bottom:1px solid var(--line-2); font-weight:700; white-space:nowrap;
+}
+table.req td{padding:8px 9px; border-bottom:1px solid #f1f5f9; font-size:13.5px; vertical-align:top}
+table.req td.nm{font-weight:700; color:var(--ink-2)}
+table.req td.dt{color:var(--mut); font-size:12px; white-space:nowrap}
+.tag{font-size:11px; padding:2px 8px; border-radius:10px; font-weight:700; white-space:nowrap; display:inline-block}
+.t-first{background:var(--bk-bg); color:#b91c1c; border:1px solid #fecaca}
+.t-norm{background:#f1f5f9; color:var(--mut-2); border:1px solid var(--line)}
+.note{font-size:12px; color:var(--mut); display:block; margin-top:3px; font-weight:400}
+
+.pending{
+  border:1px dashed var(--line-2); border-radius:6px; padding:16px 18px;
+  color:#94a3b8; font-size:13.5px; background:#fafafa;
+}
+.pending b{color:var(--mut); display:block; font-size:15px; margin-bottom:4px}
+
+.docfoot{
+  margin-top:26px; border-top:1px solid var(--line); padding-top:12px;
+  font-size:12px; color:var(--mut); line-height:1.78;
+}
+.docfoot b{color:var(--wr-fg)}
+
+.after{max-width:860px; margin:0 auto 70px; text-align:center; padding:0 20px}
+.after p{color:var(--mut-2); font-size:15px; margin:0 0 16px}
+.btn{
+  display:inline-block; background:var(--brand); color:#fff; text-decoration:none;
+  padding:13px 26px; border-radius:6px; font-weight:700; font-size:15px;
+}
+.btn.ghost{background:#fff; color:var(--brand); border:1px solid var(--brand); margin-left:8px}
+
+@media (max-width:640px){
+  .sheet{margin:14px 10px 40px; padding:22px 18px 20px; border-radius:6px}
+  .kpis{grid-template-columns:1fr; gap:8px}
+  h1{font-size:21px}
+  .badge{margin-left:0}
+}
+@media print{
+  body{background:#fff}
+  .pagebar,.after{display:none}
+  .sheet{margin:0; border:0; box-shadow:none; max-width:none; padding:0}
+}
+</style>
+</head>
+<body>
+
+<div class="pagebar">
+  This document is <b>an example built with fictional company information</b>. It is not an issued report.
+  <a href="/en">Go to TROPS</a>
+</div>
+
+<div class="sheet">
+  <div class="wm2 t">Fictional company data</div>
+  <div class="wm2 b">Not an issued document</div>
+
+  <div class="topbar">
+    <div class="brand">TROPS<span>Export pre-check report</span></div>
+    <div class="samptag">Sample · fictional data</div>
+  </div>
+
+  <h1>Hanbit Mobility Co., Ltd.</h1>
+  <div class="certline">
+    Reference no. <span class="certno">CK-20260823-SAMPLE00-v1</span> · Issued 2026-08-23 22:00 (KST)
+  </div>
+  <div class="rel">U.S. Harmonized Tariff Schedule release 2026HTSRev16 · Checked as of 2026-08-23</div>
+
+  <div class="kpis">
+    <div class="kpi">
+      <div class="lb">Findings</div><div class="vl">1</div><div class="sb">step still open</div>
+    </div>
+    <div class="kpi muted">
+      <div class="lb">Readiness</div><div class="vl">—</div><div class="sb">not yet available</div>
+    </div>
+    <div class="kpi muted">
+      <div class="lb">Documents checked</div><div class="vl">0</div><div class="sb">no contract uploaded</div>
+    </div>
+  </div>
+
+  <div class="reqline">19 requirements to work through · 7 of them to handle first</div>
+  <div class="blocker">⚠ Currently blocking : do not approve bank account changes by email alone</div>
+
+  <div class="basisnote">
+    Only items confirmed against the source regulation are listed. Items without a source do not appear.<br>
+    Every item carries its governing rule and the date it was checked. Items without a check date are not displayed.
+  </div>
+
+  <h2>① Export feasibility <span class="sub">tariff path · 8703.10 · United States</span></h2>
+  <div class="secnote">Each classification candidate goes through the same path once.</div>
+
+  <div class="step">
+    <div class="hd"><span class="no">1</span><span class="ti">Product classification</span><span class="badge b-need">Open</span></div>
+    <div class="bd">Which HS code does this product fall under?</div>
+    <div class="dt">This step has not been determined. You can compare it directly against the enumerated list below.</div>
+    <div class="expert">This step needs review by a qualified professional.</div>
+    <div class="src"><b>Where to check</b> Korea Customs Service advance classification ruling · CBP Binding Ruling</div>
+  </div>
+
+  <div class="step">
+    <div class="hd"><span class="no">2</span><span class="ti">Section 232 product-specific action</span><span class="badge b-ok">Confirmed</span></div>
+    <div class="bd">8703.10 is not included in the list enumerated in U.S. Note 33(b).</div>
+    <div class="dt">Enumerated : 8703.22.01–8703.90.01, 8704.21.01–8704.60.00</div>
+    <div class="src"><b>Source</b> HTSUS Ch.99 Rev16 · U.S. Note 33(b) · checked 2026-08-23</div>
+  </div>
+
+  <div class="step">
+    <div class="hd"><span class="no">3</span><span class="ti">Section 301 exclusion eligibility</span><span class="badge b-ok">Confirmed</span></div>
+    <div class="bd">8703.10 is not included in the exclusion list.</div>
+    <div class="dt">Full review of 9903.05.86–92 (general exclusions) and 9903.05.93–9903.06.21 (economy-specific exclusions). No Korea-specific exclusion heading was found. Canada 9903.05.93 · Mexico 9903.05.94 · CAFTA-DR 9903.05.95 do exist.</div>
+    <div class="src"><b>Source</b> CBP Forced Labor HTS LIST · CSMS #69326983 attachment (39p) · checked 2026-08-23</div>
+  </div>
+
+  <div class="step">
+    <div class="hd"><span class="no">4</span><span class="ti">Chapter 99 heading applied to Korea</span><span class="badge b-ok">Confirmed</span></div>
+    <div class="bd">Which heading applies depends on the column 1 rate, and this pre-check does not determine that value.</div>
+    <div class="dt">9903.05.70 — where the column 1 rate is 12.5% or higher / 9903.05.71 — where it is below 12.5%</div>
+    <div class="src"><b>Source</b> HTSUS Ch.99 Rev16 · 9903.05.70 / 9903.05.71 · checked 2026-08-23</div>
+  </div>
+
+  <div class="step">
+    <div class="hd"><span class="no">5</span><span class="ti">Duty rate</span><span class="badge b-ok">Confirmed</span></div>
+    <div class="bd">Where 9903.05.71 applies, the column 1 rate plus the additional ad valorem rate is stated as 12.5%.</div>
+    <div class="dt">Both the General and Special sub-columns of heading 9903.05.71 read 12.5%.</div>
+    <div class="src"><b>Source</b> HTSUS Ch.99 Rev16 · U.S. Note 52(k) · 9903.05.71 · checked 2026-08-23</div>
+  </div>
+
+  <div class="step">
+    <div class="hd"><span class="no">6</span><span class="ti">Relationship with the KORUS preferential rate</span><span class="badge b-ok">Confirmed</span></div>
+    <div class="bd">U.S. Note 52(k) sets out the ad valorem conversion method where a column 1-Special rate is properly claimed for Korean goods, and heading 9903.05.71 reads 12.5% in both the General and Special sub-columns.</div>
+    <div class="dt">Whether the purpose of origin documentation is duty reduction or origin substantiation needs to be confirmed. 8703.10.50.30 is the same code subject to trade remedy measures on Chinese goods.</div>
+    <div class="expert">This step needs review by a qualified professional.</div>
+    <div class="src"><b>Source</b> HTSUS Ch.99 Rev16 · U.S. Note 52(k) · checked 2026-08-23</div>
+  </div>
+
+  <h2>Requirements to work through <span class="sub">19 items · 7 to handle first</span></h2>
+  <div class="secnote">Only items confirmed against the source regulation are listed. Items without a source do not appear.</div>
+
+  <div class="tablewrap">
+  <table class="req">
+    <thead>
+      <tr><th style="width:13%">Priority</th><th style="width:37%">Item</th>
+      <th style="width:13%">Owner</th><th style="width:10%">Cost</th>
+      <th style="width:13%">Lead time</th><th style="width:14%">Checked as of</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><span class="tag t-first">Handle first</span></td>
+        <td class="nm">Do not approve bank account changes by email alone
+          <span class="note">Source FBI/IC3 · Interpol OFL 2026 · K-SURE common guidance</span></td>
+        <td>Internal</td><td>Low</td><td>1 week</td><td class="dt">2026-08-23</td></tr>
+      <tr><td><span class="tag t-first">Handle first</span></td>
+        <td class="nm">Call back on a pre-established number
+          <span class="note">Use the number on the contract, master vendor file or past remittance records. Do not use the number in the email signature. Where time zones or language make a call impractical, substitute a video call, a portal change request, or a shared-secret question.</span></td>
+        <td>Internal</td><td>Low</td><td>1 week</td><td class="dt">2026-08-23</td></tr>
+      <tr><td><span class="tag t-first">Handle first</span></td>
+        <td class="nm">UN38.3 testing (T.1–T.8)
+          <span class="note">Retesting is required on design or chemistry changes. Off-the-shelf cells and packs are often already tested.</span></td>
+        <td>Battery vendor</td><td>$2,000–7,000</td><td>3–6 weeks</td><td class="dt">2026-08-23</td></tr>
+      <tr><td><span class="tag t-first">Handle first</span></td>
+        <td class="nm">Obtain the UN38.3 Test Summary
+          <span class="note">Shipment is refused without it. A request to the vendor usually resolves it.</span></td>
+        <td>Battery vendor</td><td>Low</td><td>2–4 weeks</td><td class="dt">2026-08-23</td></tr>
+      <tr><td><span class="tag t-first">Handle first</span></td>
+        <td class="nm">MSDS including Section 14 transport information</td>
+        <td>Battery vendor</td><td>—</td><td>—</td><td class="dt">2026-08-23</td></tr>
+      <tr><td><span class="tag t-first">Handle first</span></td>
+        <td class="nm">IMDG Class 9 label · lithium battery mark · CTU placard</td>
+        <td>Forwarder</td><td>—</td><td>—</td><td class="dt">2026-08-23</td></tr>
+      <tr><td><span class="tag t-first">Handle first</span></td>
+        <td class="nm">Dangerous Goods Declaration (DGD)</td>
+        <td>Forwarder</td><td>—</td><td>—</td><td class="dt">2026-08-23</td></tr>
+      <tr><td><span class="tag t-norm">Check</span></td>
+        <td class="nm">Dual approval (requester and approver separated)</td>
+        <td>Internal</td><td>Low</td><td>1 week</td><td class="dt">2026-08-23</td></tr>
+      <tr><td><span class="tag t-norm">Check</span></td>
+        <td class="nm">Retain verification records</td>
+        <td>Internal</td><td>—</td><td>—</td><td class="dt">2026-08-23</td></tr>
+      <tr><td><span class="tag t-norm">Check</span></td>
+        <td class="nm">Monitor the first remittance after an account change</td>
+        <td>Internal</td><td>—</td><td>—</td><td class="dt">2026-08-23</td></tr>
+      <tr><td><span class="tag t-norm">Check</span></td>
+        <td class="nm">SPF / DKIM / DMARC configuration
+          <span class="note">This does not by itself prevent account takeover. Email MFA has to run alongside it.</span></td>
+        <td>External</td><td>Low</td><td>SPF·DKIM 1 wk / DMARC 2–8 wks</td><td class="dt">2026-08-23</td></tr>
+      <tr><td><span class="tag t-norm">Check</span></td>
+        <td class="nm">Look-alike domain monitoring
+          <span class="note">Domains with altered spelling are used to impersonate the counterparty.</span></td>
+        <td>External</td><td>Low</td><td>—</td><td class="dt">2026-08-23</td></tr>
+      <tr><td><span class="tag t-norm">Check</span></td>
+        <td class="nm">Insert an account-change clause into the sales contract and PI
+          <span class="note">Risk allocation follows the neutral option (decision log no. 7): the party that fails to follow the paragraph 1 procedure bears the resulting loss.</span></td>
+        <td>Internal</td><td>Low</td><td>1 week</td><td class="dt">2026-08-23</td></tr>
+      <tr><td><span class="tag t-norm">Check</span></td>
+        <td class="nm">KORUS certificate of origin (self-certification)
+          <span class="note">Body Korea Customs Service FTA portal · You receive certificate of origin and origin determination · Prepare digital certificate (signature registered), BOM, process chart, supporting origin records · Can be filed directly in Korea · See S6 — purpose needs reconfirmation</span></td>
+        <td>Internal</td><td>Free if self-certified — up to KRW 500,000 for customs broker advice</td><td>1–4 weeks</td><td class="dt">2026-08-23</td></tr>
+      <tr><td><span class="tag t-norm">Check</span></td>
+        <td class="nm">Export declaration certificate
+          <span class="note">Body Korea Customs Service UNI-PASS · You receive the export declaration certificate and customs unique code · Prepare business registration certificate, digital certificate, invoice, packing list · Can be filed directly in Korea</span></td>
+        <td>Internal</td><td>—</td><td>—</td><td class="dt">2026-08-23</td></tr>
+      <tr><td><span class="tag t-norm">Check</span></td>
+        <td class="nm">Advance classification ruling
+          <span class="note">Body Korea Customs Service · Prepare product specification, catalogue, description of use, photographs · Shown automatically when there are two or more classification candidates</span></td>
+        <td>External</td><td>—</td><td>—</td><td class="dt">2026-08-23</td></tr>
+      <tr><td><span class="tag t-norm">Check</span></td>
+        <td class="nm">U.S. product liability insurance
+          <span class="note">Based on a secondary source, so amounts and durations are not stated as figures. Confirm the actual values by quotation.</span></td>
+        <td>External</td><td>Medium</td><td>—</td><td class="dt">2026-08-23</td></tr>
+      <tr><td><span class="tag t-norm">Check</span></td>
+        <td class="nm">Legal review of the distributor agreement
+          <span class="note">Based on a secondary source, so amounts and durations are not stated as figures. Confirm the actual values by quotation.</span></td>
+        <td>External</td><td>Low</td><td>—</td><td class="dt">2026-08-23</td></tr>
+      <tr><td><span class="tag t-norm">Check</span></td>
+        <td class="nm">USPTO trademark application
+          <span class="note">Body USPTO · You receive the registration certificate and serial number · Prepare the mark, Nice classification, specimen of use or intent to use (ITU) · Engaging U.S. counsel is advisable</span></td>
+        <td>External</td><td>$850–2,500 per class</td><td>8–14 months</td><td class="dt">2026-08-23</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2>② Readiness</h2>
+  <div class="pending">
+    <b>Not yet available.</b>
+    This section brings the status of documents and procedures together in one place.
+    It has not opened yet; when it does, the matching field on the cover fills in with it.
+  </div>
+
+  <h2>③ Document check</h2>
+  <div class="pending">
+    <b>Once you receive a contract, it is checked here.</b>
+    Upload the contract sent by the counterparty (.pdf or .docx) and we show which clauses differ from the reference form.
+  </div>
+
+  <div class="docfoot">
+    <b>This document is an example built with fictional company information to show how the report is put together. It is not an issued report.</b><br>
+    The report sets out a comparison between information submitted by the user company and publicly available regulations. It is a self-assessment record, not a certification, authorisation or inspection result. The reference number exists so an issued report can be viewed again.<br>
+    Judgements on legal disputes or insurance assessment should be confirmed with a customs broker, a lawyer, or the relevant public body.<br>
+    TROPS · Theone Co., Ltd. · contact@theo-ne.com
+  </div>
+</div>
+
+<div class="after">
+  <p>Received a TROPS report and want to check what it covers?</p>
+  <a class="btn" href="/en#interest">Contact</a>
+  <a class="btn ghost" href="/en">Go to TROPS</a>
+</div>
+
+</body>
+</html>

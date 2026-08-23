@@ -67,10 +67,14 @@ function options(id) {
 /* ══ 1. 문항 문구 — 설계서 §2-3 · §2-4 · §2-5 정본 ═════════════════════════ */
 
 test('세 문항의 제목이 정본 그대로다', () => {
+  /* 🔄 **세 제목 전부 교체** 〔2026-08-23 · PRD v2.1 §5-18 · B3-b〕. 정본이
+     `doc/s10/TROPS_사전확인_설계서_v3.md` 에서 **PRD §5-18** 로 옮겨 갔습니다 —
+     설계서 v3 는 문서 대조가 상품의 전부였던 때의 문항이고, §5-18 은 상품 3종
+     (사전점검·계약관리·채권관리)의 폭에 맞춰 다시 물었습니다. */
   const titles = [
-    ['step-1-title', '지금 어느 단계에 있으신가요?'],
-    ['step-2-title', '해외에서 받으신 서류가 있나요?'],
-    ['step-3-title', '해외 거래는 어느 정도 해보셨나요?'],
+    ['step-1-title', '현재 귀사의 수출 진행 단계는 어디에 해당하시나요?'],
+    ['step-2-title', '현재 보유하고 계신 서류나 데이터가 있나요? (복수 선택)'],
+    ['step-3-title', '평소 수출 거래와 결제 일정은 어떻게 관리하고 계신가요?'],
   ];
   for (const [id, text] of titles) {
     const got = (B.match(new RegExp('id="' + id + '"[^>]*>([^<]*)<')) || [])[1];
@@ -78,10 +82,26 @@ test('세 문항의 제목이 정본 그대로다', () => {
   }
 });
 
-test('Q1 보조문이 살아 있다 — 답의 축을 사건으로 고정하는 줄이다 (F-1 · T8)', () => {
-  assert.ok(step('step-1').indexOf('가장 최근에 있었던 일 하나만 골라주세요.') !== -1,
-    '이 줄이 없으면 「연락도 왔고 서류도 받은」 사람의 답이 두 값으로 갈립니다 — ' +
-    '같은 상황이 다른 값으로 저장되면 검수 우선순위(§3-1)가 랜덤화됩니다');
+/*
+ * 🔄 **뒤집혔습니다** 〔2026-08-23 · PRD v2.1 §5-18 · B3-b〕.
+ *
+ * 종전 검사는 「가장 최근에 있었던 일 하나만 골라주세요.」가 **살아 있는지**를 봤습니다.
+ * 그 줄이 하던 일은 Q1 의 축을 상태가 아니라 **사건**으로 고정하는 것이었고, 보기가
+ * 「연락이 왔어요 / 서류를 받았어요」처럼 일어난 일이라 둘 다 참인 사람의 답이 갈리는
+ * 것을 막았습니다(F-1 · T8).
+ *
+ * §5-18 은 Q1 을 **수출 진행 단계**로 다시 물었고, 보기 여섯이 계획 → 협상 → 계약 →
+ * 선적 → 결제대기로 **서로 배타적인 단계**입니다. 겹침이 구조적으로 사라졌으므로 그
+ * 보조문이 막던 실패도 함께 사라졌고, 남겨 두면 **단계를 묻는 질문에 사건을 고르라고
+ * 말하는 화면**이 됩니다.
+ *
+ * 그래서 검사도 뒤집습니다 — 이제 그 줄이 **없어야** 합니다. ⛔ 「없어졌으니 검사도
+ * 지우자」로 가지 마십시오. 지우면 그 줄이 슬그머니 돌아와도 아무도 모릅니다.
+ */
+test('Q1 보조문이 없다 — 축이 사건에서 단계로 바뀌었다 (§5-18)', () => {
+  assert.ok(step('step-1').indexOf('가장 최근에 있었던 일 하나만 골라주세요.') === -1,
+    '사건을 고르라는 보조문이 남아 있습니다 — §5-18 의 Q1 은 **단계**를 묻습니다. ' +
+    '보기 여섯이 이미 서로 배타적이라 이 줄이 가리킬 「일」이 없습니다');
 });
 
 test('Q2 보조문의 「이메일 첨부·링크」가 살아 있다 — 삭제 금지 항목 (§2-4)', () => {
@@ -91,34 +111,47 @@ test('Q2 보조문의 「이메일 첨부·링크」가 살아 있다 — 삭제
 });
 
 test('Q1 보기 6개가 코드·문구·순서까지 정본과 같다', () => {
+  /* 🔄 **보기 6개 전량 교체** 〔2026-08-23 · §5-18 · B3-b〕. 코드는 `trops_a`
+     `lib/precheck/prestep.ts` 의 `PRESTEP_STAGES` 와 **글자까지 같아야** 합니다 —
+     받는 쪽이 어휘 밖 값을 그 필드만 버리므로, 어긋나면 화면은 멀쩡한 채 Q1 만
+     영원히 빈 칸으로 쌓입니다.
+     ⚠️ `pre_contract` 는 구 어휘에도 같은 문자열로 있습니다. 그래서 받는 쪽이 값이
+        아니라 **필드 이름**(`stage` ↔ `situation`)으로 형식을 가릅니다. */
   assert.deepStrictEqual(options('step-1'), [
-    ['not_started', '아직 시작 전이에요'],
-    ['talk_invited', '해외에서 이야기를 나누자는 연락이 왔어요'],
-    // ⛔ 「서류를 주고받는 중이에요」로 되돌리지 마십시오 (F-1) — 「주고받는」은 상호적으로
-    //    읽혀서 한 장 받기만 한 사람이 위 보기로 빠집니다.
-    ['docs_received', '서류를 받았어요'],
-    ['pre_contract', '계약을 앞두고 있어요'],
-    ['has_revenue', '이미 해외에서 주문·매출이 있어요'],
-    ['unsure', '잘 모르겠어요'],
+    ['planning', '아직 수출을 계획·준비하고 있어요'],
+    ['negotiating', '해외 바이어와 계약 조건을 협상 중이에요'],
+    ['pre_contract', '본 계약 체결을 앞두고 있어요'],
+    ['shipping', '계약을 마치고 선적·납품을 준비 중이에요'],
+    ['awaiting_payment', '이미 선적을 완료하고 결제 대금을 기다리고 있어요'],
+    ['unsure', '아직 정확한 단계를 모르겠어요'],
   ]);
 });
 
 test('Q2 보기 6개와 영문 병기 4개가 정본과 같다 (F-8)', () => {
+  /* 🔄 **보기 6개 전량 교체** 〔2026-08-23 · §5-18 · B3-b〕. 종전 목록은 계약 문서 4종
+     (NDA·매매·견적·용역/라이선스)이었고, §5-18 은 선적 서류와 무역보험 증권까지 넓혀
+     거래 전 구간의 서류를 묻습니다. 코드는 `trops_a` 의 `PRESTEP_DOC_KINDS` 와 같습니다.
+     ⚠️ `data-title` 은 **한글 이름만** 담습니다 — 괄호 안 영문은 `.consent-body` 로
+        내려갑니다(종전과 같은 구조). 되짚기(블록1)가 읽는 것이 `data-title` 이라,
+        괄호까지 넣으면 「받으신 서류: 수출 계약서 (Contract / Agreement)」가 됩니다. */
   assert.deepStrictEqual(options('step-2'), [
-    ['nda', 'NDA·비밀유지계약서'],
-    ['sales_contract', '매매계약서'],
-    ['quote_pi', '견적서·PI'],
-    ['service_license', '용역·라이선스 계약서'],
-    ['other_doc', '이름을 잘 모르는 문서가 있어요'],
-    ['none', '아직 없어요'],
+    ['contract', '수출 계약서'],
+    ['quotation_pi', '견적서'],
+    ['invoice_bl', '상업송장'],
+    ['insurance_policy', '무역보험 증권'],
+    ['other', '기타 수출 관련 서류'],
+    ['none', '아직 작성된 서류가 없어요'],
   ]);
 
+  /* 🔄 영문 병기 4개도 §5-18 원문으로 교체했습니다. 지키는 것은 그대로입니다 —
+     해외에서 오는 문서는 영문 제목으로 오고, 사용자가 대조하는 대상은 한글 용어가
+     아니라 **파일 이름**입니다(F-8). */
   const src = step('step-2');
   for (const en of [
-    '(NDA / Confidentiality Agreement / Undertaking)',
-    '(Sales Contract / Purchase Agreement)',
-    '(Quotation / Proforma Invoice / Term Sheet)',
-    '(Service / License / Publishing Agreement)',
+    '(Contract / Agreement)',
+    '(Quotation) / 프로포마 인보이스 (P/I)',
+    '(Commercial Invoice) / 선하증권 (B/L)',
+    '(K-SURE 등)',
   ]) {
     assert.ok(src.indexOf(en) !== -1,
       '영문 병기가 없습니다: ' + en + '\n해외에서 오는 문서는 영문 제목으로 옵니다 — ' +
@@ -126,21 +159,51 @@ test('Q2 보기 6개와 영문 병기 4개가 정본과 같다 (F-8)', () => {
   }
 });
 
-test('Q3 보기 3개가 정본과 같다', () => {
+test('Q3 보기 5개가 정본과 같다', () => {
+  /* 🔄 **축과 개수가 함께 바뀌었습니다** 〔2026-08-23 · §5-18 · B3-b〕. 3개(수출 경험
+     횟수) → 5개(관리 방식). 코드는 `trops_a` 의 `PRESTEP_MANAGEMENTS` 와 같습니다. */
   assert.deepStrictEqual(options('step-3'), [
-    ['first', '이번이 처음이에요'],
-    ['few', '몇 번 해봤어요'],
-    ['regular', '계속 하고 있어요'],
+    ['excel', '엑셀(Excel) 시트로 수기 관리해요'],
+    ['erp', '사내 ERP 시스템을 활용해요'],
+    ['calendar', '개인 캘린더나 업무 메모장에 적어둬요'],
+    ['memory', '담당자 개인의 기억에 의존해 챙겨요'],
+    ['none', '체계화된 별도 관리 툴이 없어요'],
   ]);
 });
 
 test('보기 코드가 스키마 enum 과 같다 (§5-2)', () => {
   // 화면이 저장하는 값과 테이블이 받는 값이 갈리면 그 필드만 조용히 버려집니다.
+  /* 🔄 신 어휘 3종으로 교체 〔2026-08-23 · §5-18 · B3-b〕. 정본은 `trops_a`
+     `lib/precheck/prestep.ts` 의 `PRESTEP_STAGES` · `PRESTEP_DOC_KINDS` ·
+     `PRESTEP_MANAGEMENTS` 입니다. 그쪽은 구 어휘를 **지우지 않고 옆에** 두었으므로
+     (하위호환) 이 저장소가 두 어휘를 섞어 보내지만 않으면 됩니다. */
   assert.deepStrictEqual(options('step-1').map((o) => o[0]).sort(),
-    ['docs_received', 'has_revenue', 'not_started', 'pre_contract', 'talk_invited', 'unsure']);
+    ['awaiting_payment', 'negotiating', 'planning', 'pre_contract', 'shipping', 'unsure']);
   assert.deepStrictEqual(options('step-2').map((o) => o[0]).sort(),
-    ['nda', 'none', 'other_doc', 'quote_pi', 'sales_contract', 'service_license']);
-  assert.deepStrictEqual(options('step-3').map((o) => o[0]).sort(), ['few', 'first', 'regular']);
+    ['contract', 'insurance_policy', 'invoice_bl', 'none', 'other', 'quotation_pi']);
+  assert.deepStrictEqual(options('step-3').map((o) => o[0]).sort(),
+    ['calendar', 'erp', 'excel', 'memory', 'none']);
+});
+
+/*
+ * 🔴 **한 세션이 두 어휘를 섞어 보내지 않는다** 〔2026-08-23 · B3-b 신설〕.
+ *
+ * 받는 쪽(`trops_a` `lib/precheck/prestep.ts` `formatOf()`)은 **Q1·Q3 의 필드 이름**으로
+ * 구·신 형식을 가릅니다 — `situation`/`experience` 면 구, `stage`/`management` 면 신,
+ * **둘 다 오면 `unknown`** 입니다. unknown 이 되면 Q2 의 `none` 이 구 어휘 쪽으로
+ * 떨어져(하위호환 기본값) 신 문항의 「아직 작성된 서류가 없어요」가 옛 축에 쌓입니다.
+ *
+ * 화면은 아무 이상이 없고 집계만 어긋나는 형태라, 사람 눈으로는 절대 안 잡힙니다.
+ */
+test('전송 페이로드에 구 어휘 필드가 섞이지 않는다 (하위호환 경계)', () => {
+  for (const old of ['body.situation', 'body.experience']) {
+    assert.ok(JS.indexOf(old) === -1,
+      '전송 본문에 구 어휘 필드 「' + old + '」가 남아 있습니다 — 신 어휘와 함께 가면 ' +
+      '받는 쪽이 형식을 unknown 으로 판정하고 Q2 의 none 이 옛 축으로 떨어집니다');
+  }
+  for (const now of ['body.stage', 'body.management']) {
+    assert.ok(JS.indexOf(now) !== -1, '전송 본문에 「' + now + '」가 없습니다');
+  }
 });
 
 /* ══ 2. 안전장치 G1~G4 ═════════════════════════════════════════════════════ */
@@ -328,21 +391,39 @@ test('(1)(2)(3) 표기가 한 벌로 통일돼 있다 (칸 기호 = 위치 표�
   assert.deepStrictEqual(marks, ['(1)', '(2)', '(3)'],
     '결과 화면 3칸의 기호가 (1)(2)(3) 이 아닙니다 — 위치 표시가 「(1) · (2)」로 가리키므로 ' +
     '칸에 찍힌 기호가 같아야 그 줄이 무언가를 가리킵니다(랜딩의 01·02·03 과 섞지 마십시오)');
+  /* 🔄 **(3) 이 매핑에서 빠졌습니다** 〔2026-08-23 · §5-18 · B3-b〕. 신 어휘 6개 중
+     (3)번 칸(「유통·라이선스 계약」)이 이름으로 적고 있는 보기가 **없습니다** —
+     종전 `service_license` 가 그 자리였고 §5-18 에 그 보기가 없습니다.
+     ⛔ 빈 칸을 채우려고 아무 값이나 (3) 에 배정하지 마십시오. 칸 기호와 매핑 기호가
+        같아야 한다는 이 검사의 취지는, **매핑에 있는 기호는 반드시 칸에도 있어야**
+        한다는 방향입니다(그 반대가 아닙니다). */
   for (const mark of ['(1)', '(2)', '(3)']) {
-    assert.ok(JS.indexOf("'" + mark + "'") !== -1, '위치 표시 매핑에 ' + mark + ' 가 없습니다');
+    if (JS.indexOf("'" + mark + "'") === -1) continue;
+    assert.ok(marks.indexOf(mark) !== -1,
+      '매핑이 ' + mark + ' 를 가리키는데 결과 화면에 그 칸이 없습니다');
   }
+  assert.ok(JS.indexOf("'(2)'") !== -1,
+    '위치 표시 매핑이 비었습니다 — 신 어휘에서 (2)번 칸에 이름이 적힌 보기가 둘 있습니다');
 });
 
-test('위치 표시는 docs(Q2)로만 계산하고 other_doc·none 을 배정하지 않는다 (F-7)', () => {
-  const map = JS.slice(JS.indexOf('var PLACE_OF'), JS.indexOf('var DOCTYPE_OF'));
-  assert.ok(/nda:\s*'\(1\)'/.test(map) && /sales_contract:\s*'\(2\)'/.test(map) &&
-    /quote_pi:\s*'\(2\)'/.test(map) && /service_license:\s*'\(3\)'/.test(map),
+test('위치 표시는 docs(Q2)로만 계산하고 이름 없는 서류를 배정하지 않는다 (F-7)', () => {
+  /* 🔄 **신 어휘로 다시 적었습니다** 〔2026-08-23 · §5-18 · B3-b〕. 블록2 세 칸이 문면으로
+     적고 있는 문서 중 신 어휘에 **이름이 있는 것은 (2)번 칸의 둘뿐**입니다
+     (「견적서·PI·매매계약서」 ↔ `contract` · `quotation_pi`).
+     ⛔ `invoice_bl`(상업송장·B/L) · `insurance_policy`(무역보험 증권) 은 세 칸 어디에도
+        이름이 없습니다. 넣는 순간 근거 없는 주장이 화면에 나갑니다 — 그 둘은 `other` 와
+        함께 「어느 자리인지는 서류를 봐야」 경로로 갑니다.
+     🔄 `DOCTYPE_OF` 가 사라져 슬라이스 끝을 `function el(` 로 옮겼습니다. */
+  const map = JS.slice(JS.indexOf('var PLACE_OF'), JS.indexOf('function el('));
+  assert.ok(/contract:\s*'\(2\)'/.test(map) && /quotation_pi:\s*'\(2\)'/.test(map),
     '위치 표시 매핑이 정본(§2-6 F-7 표)과 다릅니다');
-  assert.ok(map.indexOf('other_doc') === -1 && map.indexOf('none') === -1,
-    'other_doc·none 이 (1)(2)(3) 중 하나로 배정됐습니다 — 모르는 것을 모른다고 쓰는 것이 ' +
-    '유일한 안전한 처리입니다. 배정하는 순간 근거 없는 주장이 화면에 나갑니다');
-  // situation(Q1) 값이 위치 계산에 섞이면 「우리가 아는 것으로만 진술한다」가 깨집니다.
-  for (const v of ['docs_received', 'pre_contract', 'has_revenue', 'talk_invited', 'not_started']) {
+  for (const v of ['other', 'none', 'invoice_bl', 'insurance_policy']) {
+    assert.ok(!new RegExp('\\b' + v + ':').test(map),
+      '「' + v + '」이 (1)(2)(3) 중 하나로 배정됐습니다 — 모르는 것을 모른다고 쓰는 것이 ' +
+      '유일한 안전한 처리입니다. 배정하는 순간 근거 없는 주장이 화면에 나갑니다');
+  }
+  // stage(Q1) 값이 위치 계산에 섞이면 「우리가 아는 것으로만 진술한다」가 깨집니다.
+  for (const v of ['planning', 'negotiating', 'shipping', 'awaiting_payment', 'unsure']) {
     assert.ok(map.indexOf(v) === -1, '위치 계산에 Q1 값 「' + v + '」이 섞였습니다 (F-7)');
   }
 });
@@ -385,16 +466,25 @@ test('블록1 되짚기의 값을 JS 로 복사하지 않고 화면 글자를 �
 /* 🔄 대표 수정안(2026-08-16) — 「서류 없음」 갈래를 곧장 [문의하기]로 바꿨습니다.
  *    옛 라벨(「NDA를 받으시면 그때 보내주세요」)·문구(「이메일을 남겨두시면…」)와
  *    목적지(파라미터 없는 /#interest)는 더 이상 정본이 아닙니다. */
-test('블록3 두 갈래 문구와 행선지가 정본과 같다 (§2-6)', () => {
-  assert.ok(S4.indexOf('이 서류 비교해 보기') !== -1 &&
-    S4.indexOf('공개된 표준 서식과 항목별로 비교해서, 어디가 다른지 위치를 보여드립니다.') !== -1,
+test('블록3 두 갈래 문구와 행선지가 정본과 같다 (§5-18)', () => {
+  /* 🔄 **두 갈래 모두 교체** 〔2026-08-23 · PRD v2.1 §5-18 · §6-1 · B3-b〕. 정본이
+     설계서 §2-6 에서 **PRD §5-18 「분기 결과」** 로 옮겨 갔습니다.
+       서류 있음 → 랜딩 `/precheck`(접수·결제) → **앱 거래 등록**
+       서류 없음 → 앱 가입                     → **앱 사전점검 화면** + 문의 안내 한 줄 */
+  assert.ok(S4.indexOf('>거래 등록하고 시작하기<') !== -1 &&
+    S4.indexOf('href="https://app.trops.kr/procedures/new"') !== -1 &&
+    S4.indexOf('보유하신 계약서나 견적서를 등록하시면 바로 관리를 시작하실 수 있습니다.') !== -1,
     '서류 있음 CTA 가 정본과 다릅니다');
-  /* 🔄 2026-08-23 〔PRD v2.1 B2-9 · §6-1〕 — 「서류 없음」 갈래가 **앱 가입**으로 바뀌었습니다.
-     종전에는 갈 곳이 [문의하기] 하나뿐이라 「지금 바로 써 볼 수 있는 길」이 없었습니다. */
-  assert.ok(S4.indexOf('>무료로 시작하기<') !== -1 &&
-    S4.indexOf('href="https://app.trops.kr/account/password"') !== -1 &&
-    S4.indexOf('계약서가 없어도 수출 품목과 대상 국가만 입력하시면 사전점검을 이용하실 수 있습니다.') !== -1,
+  assert.ok(S4.indexOf('>무료로 사전점검 시작하기<') !== -1 &&
+    S4.indexOf('href="https://app.trops.kr/precheck"') !== -1 &&
+    S4.indexOf('서류가 없으셔도 품목과 국가 입력만으로 수출 사전점검을 이용하실 수 있습니다.') !== -1,
     '서류 없음 CTA 가 정본과 다릅니다');
+  /* 🔴 §5-18 이 새로 준 마지막 한 줄. 「그 길이 아닌 분」에게 남은 유일한 문이라,
+     빠지면 도입 문의 경로가 이 페이지에서 사라집니다. */
+  assert.ok(S4.indexOf('* 기업별 도입 문의가 필요하시면 ') !== -1 &&
+    S4.indexOf('href="/?focus=inquiry#interest"') !== -1 &&
+    S4.indexOf('를 이용해 주세요.') !== -1,
+    '기업별 도입 문의 안내 줄이 정본과 다릅니다');
 });
 
 test('블록3 클릭이 cta_clicked 를 저장하고 링크를 막지 않는다', () => {
@@ -406,14 +496,27 @@ test('블록3 클릭이 cta_clicked 를 저장하고 링크를 막지 않는다'
     '요청은 keepalive 가 들고 갑니다(우회 링크와 같은 처리)');
 });
 
-test('/precheck 로 세션키와 문서유형을 쿼리로 넘긴다 (§6 · 작업 8)', () => {
-  assert.ok(JS.indexOf("'/precheck?pre='") !== -1 && JS.indexOf("'&docs='") !== -1,
-    '/precheck?pre=…&docs=… 를 만들지 않습니다 — 서버 조회 없이 쿼리로 넘기는 것이 §6 입니다');
-  const map = JS.slice(JS.indexOf('var DOCTYPE_OF'), JS.indexOf('function el('));
-  assert.ok(/service_license:\s*'other'/.test(map) && /other_doc:\s*'other'/.test(map),
-    'service_license·other_doc 이 「other」로 접히는 다대일 매핑이 없습니다 (§5-3)');
-  assert.ok(map.indexOf('none') === -1,
-    'docs=none 이 프리필 값으로 나갑니다 — 서류가 없는 사람에게는 파라미터 자체를 붙이지 않습니다');
+/*
+ * 🔄 **뒤집혔습니다** 〔2026-08-23 · PRD v2.1 §5-18 · B3-b〕.
+ *
+ * 종전 검사는 `/check` 가 `?pre=<세션키>&docs=<문서유형>` 을 만들어 랜딩 `/precheck`
+ * 접수 폼에 넘기는지를 봤습니다(§6 · 작업 8). §5-18 이 「서류 있음」 갈래의 목적지를
+ * **앱 거래 등록**으로 바꾸면서 그 쿼리를 읽는 쪽이 없어졌고, 계산도 함께 걷었습니다.
+ *
+ * ⛔ 「없어졌으니 검사도 지우자」로 가지 마십시오 — 읽는 쪽 없는 쿼리가 슬그머니
+ *    돌아오면 다음 사람이 그것을 근거로 배선을 추측합니다.
+ * 🔴 **인계** — `/check` 경유 접수의 `intake_id` 역기입(`trops_a`
+ *    `app/api/cron/precheck-prestep-link`)이 더 이상 발생하지 않습니다.
+ *    `prestep_session` 행 자체는 그대로 쌓입니다.
+ */
+test('읽는 쪽 없는 프리필 쿼리를 만들지 않는다 (§5-18 로 목적지가 앱이 됐다)', () => {
+  for (const dead of ["'/precheck?pre='", "'&docs='", 'DOCTYPE_OF']) {
+    assert.ok(JS.indexOf(dead) === -1,
+      '「' + dead + '」이 남아 있습니다 — 목적지가 앱이라 이 쿼리를 읽는 쪽이 없습니다');
+  }
+  /* href 는 마크업에 적힌 값이 최종값입니다 — 스크립트가 덧쓰지 않습니다. */
+  assert.ok(JS.indexOf("el('cta-send-docs').href") === -1,
+    '스크립트가 서류 있음 CTA 의 href 를 덧쓰고 있습니다 — 마크업 값이 최종값입니다');
 });
 
 test('결과 화면이 내용을 보여주므로 noindex 가 걷혔다', () => {

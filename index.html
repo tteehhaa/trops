@@ -1277,6 +1277,58 @@
   .pricing-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 15px; line-height: 1.75; color: var(--ink-64); }
   .pricing-note { color: var(--muted); font-size: 13.5px; }
 
+  /* ══ B3-b 신설 〔2026-08-23〕 ═══════════════════════════════════════════
+     진단 가능 범위(§5-6) · 샘플(§5-11) 이 쓰는 규칙입니다.
+
+     🔴 **`.pricing-inner` 가 여기 함께 있습니다** — B3-a 가 무료·유료 섹션을 세우면서
+        `-inner` 세로 여백 규칙을 빠뜨려, 그 섹션만 위아래 여백 0 으로 나가 있었습니다.
+        바로 위에 샘플 섹션이 붙는 이번 배치에서 그 결손이 눈에 보이게 되므로 함께 답니다.
+        값은 페이지의 다른 본문 섹션과 **같은 값**입니다(.how-inner · .cards-inner 등). */
+  .scope-inner, .sample-inner, .pricing-inner { padding-block: clamp(60px, 8vw, 96px); }
+
+  /* ── 진단 가능 범위(§5-6) ─────────────────────────────────────────────
+     🔴 **입력창인 것이 이 섹션의 요지입니다.** PRD §2 P-4 가 「커버리지를 목록이 아닌
+        입력창으로 처리」로 정했습니다 — 지원 품목이 P1 시점 1개라 목록으로 보이면 그
+        1개가 곧 한계로 읽힙니다. 목록을 다시 만들지 마십시오. */
+  /* 🔴 두 입력칸에 **보이는 라벨이 없습니다** — §5-6 이 정한 화면 문면은 placeholder 와
+     첫 option 뿐이고, 그 위에 라벨을 지어 붙이면 정본에 없는 문구가 생깁니다. 대신 스크린
+     리더용 라벨을 두어 「이름 없는 입력칸」이 되지 않게 합니다(placeholder 는 라벨이
+     아닙니다 — 값을 넣는 순간 사라집니다).
+     ⚠️ `display: none` 으로 숨기지 마십시오. 그러면 보조기술에서도 사라져 라벨이 없는
+        것과 같아집니다. */
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+    overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0;
+  }
+
+  .scope-lead { margin: 10px 0 0; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); }
+  .scope-form { margin: 26px 0 0; display: grid; gap: 10px; }
+  /* 두 칸을 한 규칙으로 씁니다 — 나란히 놓였을 때 높이·테두리가 갈리면 한 줄로 안 읽힙니다.
+     값은 .form-row input 과 같습니다(사전등록 폼과 같은 크기 감각). */
+  .scope-form input,
+  .scope-form select {
+    font: inherit;
+    font-size: 16px;
+    height: 46px;
+    padding: 0 14px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background-color: var(--bg);
+    color: var(--ink);
+  }
+  .scope-form input::placeholder { color: var(--muted); }
+  /* 버튼은 페이지의 .btn 규칙을 그대로 씁니다 — 높이만 두 입력칸에 맞춥니다. */
+  .scope-form .btn { height: 46px; }
+  .scope-note { margin: 16px 0 0; font-size: 13px; line-height: 1.7; color: var(--muted); }
+
+  /* ── 샘플(§5-11) ──────────────────────────────────────────────────────
+     구성표 3열. 좁은 폭에서는 세로로 쌓입니다(무료·유료 두 칸과 같은 자세). */
+  .sample-cols { margin: 26px 0 0; display: grid; gap: 26px; }
+  .sample-head { margin: 0 0 10px; font-size: 15px; font-weight: 700; letter-spacing: -0.01em; color: var(--ink); }
+  .sample-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 15px; line-height: 1.75; color: var(--ink-64); }
+  /* 하단 고지 3행. §5-11 의 「※ …」 블록이고 예시 문서임을 여기서 한 번 더 말합니다. */
+  .sample-note { margin: 22px 0 0; font-size: 13px; line-height: 1.75; color: var(--muted); }
+
   /* 중간 CTA 의 보조 문단 2개(§5-16). .act-note 아래에 옵니다. */
   .act-body { margin: 18px 0 0; font-size: 16px; line-height: 1.76; color: var(--ink-64); }
   .act-legal { margin: 18px 0 0; font-size: 12.5px; line-height: 1.7; color: var(--muted); }
@@ -1363,6 +1415,11 @@
           그림의 캡션처럼 읽힙니다. */
     /* 무료·유료 두 칸 — 이 폭부터 나란히 놓습니다(위 .pricing-cols 참조). */
     .pricing-cols { grid-template-columns: 1fr 1fr; gap: 48px; }
+    /* 진단 가능 범위 입력줄 — 품목(넓게) · 대상국 · 버튼 한 줄. 품목이 자유 입력이라
+       가장 넓고, 버튼은 글자만큼만 차지합니다(auto). */
+    .scope-form { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) auto; gap: 12px; }
+    /* 샘플 구성표 세 칸 — 표지 · 수출 가능성 · 준비 현황. */
+    .sample-cols { grid-template-columns: repeat(3, 1fr); gap: 40px; }
     /* 근거 3축 — dt 를 왼쪽 열로 빼 훑어보기가 됩니다. */
     .basis-src > div { grid-template-columns: 88px minmax(0, 1fr); }
 
@@ -1519,7 +1576,7 @@
            ⚠️ 이전 헤드라인·리드는 세 페이지(index · nda · precheck)가 공유하던 문장이었습니다.
               여기만 §2 로 교체됐으므로 nda·precheck 와 더 이상 같지 않습니다 — 두 페이지를
               여기에 맞추는 것은 별도 배치입니다. 임의로 되돌리지 마십시오. -->
-      <h1>첫 해외 거래,<br>놓치면 안 되는 것부터 확인하세요.</h1>
+      <h1>무엇부터 챙겨야 할지 막막할 때,<br>사전 점검 리포트로 기준을 세우세요.</h1>
       <!-- 🔴 2026-08-13: 리드 1행의 「NDA」→「서류」 한 낱말만 교체했습니다.
            위 「한 글자도 바꾸지 마십시오」 가드에 대한 유일한 예외이고, 근거는 두 가지입니다:
            ① 흐름 md §1 이 「NDA」 비노출 원칙의 적용 범위를 <title>·메타description·og:title 뿐
@@ -1530,23 +1587,34 @@
               「NDA」로 두면 검색결과·공유카드와 화면 첫 문장이 서로 다른 말을 합니다.
            나머지 두 행과 <br> 위치는 확정본 §2 원문 그대로입니다. 문장을 더 손대지 마십시오.
            상위 카테고리명은 「수출 사전점검」이고, 「NDA」는 접수 화면 안에서만 씁니다. -->
-      <p class="hero-lead">서류의 다른 조건부터 거래 상대, 놓치기 쉬운 기한까지<br>거래 전에 확인해야 할 것을 하나씩 짚어드립니다.</p>
+      <p class="hero-lead">한 장에 적용 규제와 준비 사항, 그 근거까지 정리해 드립니다.<br>수출 품목과 대상 국가만 입력하시면 됩니다.<br>사내 검토와 바이어 협상에 바로 활용해 보세요.</p>
       <!-- 🔴 히어로 미니 신호(3상품 앵커 링크)는 v-next 전면교체(2026-08-16)로 삭제했습니다.
            사유·이력은 위 CSS .hero-signal 삭제 주석 참조. -->
       <!-- 주 + 보조 2단 (v-next 전면교체 2026-08-16 · 히어로 CTA 3→2).
            C-1 대로 주는 채움(btn-primary), 보조는 아웃라인(btn-secondary), 둘 다 풀사이즈
            (btn-full 좌우 32px)입니다. 세 번째 텍스트링크([기한관리 미리보기])는 삭제했습니다.
            ⚠️ 「상담」이라는 낱말을 쓰지 마십시오 — 유상 자문으로 오인돼 제거된 이력이 있습니다. -->
+      <!-- 🔄 **목적지가 둘 다 바뀌었습니다** 〔2026-08-23 · PRD v2.1 §5-1 · §6-1 · B3-b〕.
+             주 = `/check`(사전 확인 3문항) → **앱 가입**(§6-1 「히어로 1」).
+             보조 = `#interest`(문의) → **`/sample`**(§6-1 「히어로 2」).
+           🔴 `id="hero-cta"` 를 지우지 마십시오 — `assets/track.js` 의 클릭 집계와
+              test/landing-flow-s9.test.js 의 「/precheck 라벨 통일」 예외가 이 id 로 이 버튼을
+              찾습니다. 목적지가 바뀌어도 **이 버튼이 히어로의 주 CTA 라는 사실**은 그대로입니다.
+           ⚠️ 보조 버튼에서 `data-purpose="inquiry"`·`data-track="inquiry_cta"` 가 함께
+              빠졌습니다 — 히어로가 더 이상 문의 폼으로 가지 않기 때문입니다. 문의 진입로는
+              헤더 [문의하기] · 사전등록 폼 · `/check` 안내 한 줄로 남아 있습니다.
+           ⚠️ `/sample` 은 `scripts/build-static.js` STATIC 등재로만 존재합니다. 그 등재를
+              지우면 이 버튼이 404 가 됩니다(PRD §4 「B3-1은 B3-5 없이 배포 불가」). -->
       <div class="cta-row">
-        <a id="hero-cta" class="btn btn-primary btn-full" href="/check">30초 만에 알아보기</a>
-        <a class="btn btn-secondary btn-full" href="#interest" data-purpose="inquiry" data-track="inquiry_cta">문의하기</a>
+        <a id="hero-cta" class="btn btn-primary btn-full" href="https://app.trops.kr/account/password">무료로 시작하기</a>
+        <a class="btn btn-secondary btn-full" href="/sample">샘플 리포트 보기</a>
       </div>
       <!-- 마이크로카피는 버튼 옆이 아니라 아래 줄입니다 — 버튼이 둘로 늘면서 같은 행에
            두면 모바일에서 세 덩어리가 세로로 쌓입니다. 마감 CTA(.close-cta-note)와 같은 배치. -->
       <!-- 🔄 「로그인 없이 바로」→ 가입 유도 카피 (핸드오프 3b · 2026-08-20).
            랜딩 로그인·세션 공유가 서면서 「로그인 없음」을 파는 문구를 걷었습니다.
            문장은 3b 히어로 note 원문 그대로입니다. -->
-      <p class="hero-note">신용카드 없이 가입 · 진단 결과 저장 무료</p>
+      <p class="hero-note">* 계약서가 없어도 조회하실 수 있습니다 · 점검 결과 확인은 무료입니다</p>
     </section>
 
     <!-- 🔴 03 안심 문구가 **여기 없습니다** 〔2026-08-13 이동 · 2026-08-14 재이동〕.
@@ -1679,22 +1747,27 @@
         <!-- 🔄 v-next 전면교체(2026-08-16)로 h2·3단계 이름/설명을 새 원고로 교체했습니다.
              03단계에서 #orgs 앵커 링크는 걷었습니다 — 새 문구가 "어디에 물어보시면" 구절을
              쓰지 않습니다. 기관안내(#orgs) 섹션은 페이지 스크롤로 계속 도달 가능합니다. -->
-        <h2>지금은 서명 전에 달라진 조건부터<br>확인할 수 있습니다.</h2>
+        <!-- 🔄 **전면교체** 〔2026-08-23 · PRD v2.1 §5-4 · B3-b〕. 종전 3단계는 「올립니다 →
+             비교합니다 → 확인합니다」로 **파일 업로드를 첫 문**으로 두고 있었습니다. 앱은
+             이미 품목·국가만으로 돌고(2026-08-23 라이브 실측 · 접수 폼 `required` 0),
+             01 이 그 사실을 먼저 말합니다 — 「없더라도 바로 시작하실 수 있습니다」.
+             ⚠️ 원문 그대로입니다. 한 글자도 바꾸지 마십시오. -->
+        <h2>품목과 국가를 입력하시면,<br>확인이 필요한 것부터 정리해 드립니다.</h2>
 
         <div class="flow">
           <div class="flow-row">
-            <p class="flow-name"><span class="flow-num" aria-hidden="true">01</span><span>올립니다</span></p>
-            <p class="flow-desc">확인하려는 거래 서류를 그대로 올리세요.<br>바이어에게 받은 서류도, 회사에서 사용하는 자사 서류도 가능합니다.</p>
+            <p class="flow-name"><span class="flow-num" aria-hidden="true">01</span><span>입력합니다</span></p>
+            <p class="flow-desc">수출 품목과 대상 국가 등 다섯 가지만 입력하시면 됩니다.<br>계약서나 증권 파일이 있으시면 함께 등록하실 수 있고,<br>없더라도 바로 시작하실 수 있습니다.</p>
           </div>
 
           <div class="flow-row">
-            <p class="flow-name"><span class="flow-num" aria-hidden="true">02</span><span>비교합니다</span></p>
-            <p class="flow-desc">문서 종류에 맞는 공개된 표준 서식과 비교해<br>다른 부분과 그 위치를 표시합니다.</p>
+            <p class="flow-name"><span class="flow-num" aria-hidden="true">02</span><span>대조합니다</span></p>
+            <p class="flow-desc">입력하신 정보를 대상국 규정과 대조하여<br>어떤 요건이 적용되는지, 무엇이 걸려 있는지 정리합니다.</p>
           </div>
 
           <div class="flow-row">
-            <p class="flow-name"><span class="flow-num" aria-hidden="true">03</span><span>확인합니다</span></p>
-            <p class="flow-desc">달라진 부분을 먼저 살펴보고, 비교에 사용한 표준 서식의<br>출처와 확인 시점도 함께 확인합니다.</p>
+            <p class="flow-name"><span class="flow-num" aria-hidden="true">03</span><span>받아보십니다</span></p>
+            <p class="flow-desc">확인번호가 부여된 리포트 한 장으로 정리해 드립니다.<br>모든 항목에 근거 규정과 확인 기준일이 함께 표기됩니다.</p>
           </div>
         </div>
 
@@ -1710,9 +1783,16 @@
              색·테두리는 .btn-secondary 규칙(투명 배경·var(--line) 테두리·var(--ink)
              글자)을 그대로 따르므로 이 섹션 배경에 맞춰 새로 정의할 것이 없습니다.
              ⚠️ btn-primary 나 btn-full 로 올리지 마십시오. 링크는 그대로입니다. -->
+        <!-- 🔄 **목적지와 라벨이 함께 바뀌었습니다** 〔2026-08-23 · §5-4 · §6-1 · B3-b〕.
+             `/precheck`(랜딩 접수·결제 화면) → **앱 가입**. §5-4 의 CTA 는 「무료로 시작하기」
+             하나이고, PRD §6-1 이 그 라벨의 목적지를 `app.trops.kr/account/password` 로
+             정합니다 — 히어로 주버튼과 같은 문입니다.
+             🔄 `.cta-row-note`(「지금 신청 가능」)를 걷었습니다 — §5-4 에 없는 문장이고,
+                유상 접수를 가리키던 말이라 앱 가입 앞에 두면 뜻이 어긋납니다.
+             ⚠️ btn-secondary 를 유지합니다. btn-primary 로 올리면 주버튼이 3회가 됩니다
+                (시각사양 2 「페이지당 최대 2회」 — 히어로와 06 결, 둘뿐입니다). -->
         <div class="cta-row">
-          <a class="btn btn-secondary" href="/precheck">비교해 보기</a>
-          <span class="cta-row-note">지금 신청 가능</span>
+          <a class="btn btn-secondary" href="https://app.trops.kr/account/password">무료로 시작하기</a>
         </div>
       </div>
     </section>
@@ -1991,14 +2071,17 @@
           <div class="feat-panel" id="feat-precheck-panel" role="tabpanel" aria-labelledby="feat-precheck" tabindex="0">
             <div class="feat-panel-pad">
               <div class="feat-body">
-                <span class="feat-avail">지금 쓸 수 있습니다</span>
-                <!-- 🔄 v-next 전면교체(2026-08-16)로 .feat-sum·.feat-desc 를 새 원고로 교체. -->
-                <p class="feat-sum">서명하기 전에, 다른 조건부터 확인하세요.</p>
-                <p class="feat-desc">바이어가 보낸 NDA를 표준 서식과 비교해 달라진 부분부터 보여드립니다. 중요한 조건을 모르고 지나치지 않도록 먼저 확인할 수 있습니다.</p>
-                <span class="feat-bullets">
-                  <!-- 🔄 「로그인 없이 바로」→ 가입 유도 카피 (핸드오프 3b · 2026-08-20) -->
-                  <span>· 신용카드 없이 가입 · 진단 결과 저장 무료</span>
-                </span>
+                <!-- 🔄 **전면교체** 〔2026-08-23 · PRD v2.1 §5-5 · B3-b〕. B3-a 가 「이 탭의
+                     **문구**는 B3-b 영역이라 손대지 않았습니다」로 남겨 둔 자리입니다.
+                     종전 문면은 「바이어가 보낸 NDA를 표준 서식과 비교해」 — 문서 대조가 상품의
+                     전부였던 때의 말입니다. §5-5 는 품목·대상국 입력을 첫 문으로 두고 계약서
+                     대조를 **선택 항목**으로 내립니다(앱 실동작과 같은 순서입니다).
+                     🔄 `.feat-bullets` 한 줄을 걷었습니다 — §5-5 에 없고, 같은 사실을 히어로
+                        `.hero-note`(「점검 결과 확인은 무료입니다」)가 이미 말합니다.
+                     ⚠️ 원문 그대로입니다. 한 글자도 바꾸지 마십시오. -->
+                <span class="feat-avail">지금 이용하실 수 있습니다</span>
+                <p class="feat-sum">이 품목을 이 국가로 수출할 때<br>어떤 규정과 서류부터 챙겨야 할까요?</p>
+                <p class="feat-desc">수출 품목과 대상국을 입력하시면 적용되는 규제와 사전 준비 사항을 리포트 한 장으로 정리해 드립니다. 검토 중이신 계약서 초안이 있으시면 함께 등록하여 조항을 대조하실 수 있습니다.</p>
                 <!-- ✅ **실행버튼이 생겼습니다** 〔2026-08-14 · tab-cta-parity-s14〕.
                      여기에는 「사전점검·바이어확인 패널에 실행버튼을 넣지 마십시오」라는 금지가
                      있었고, 사유는 「**바로 다음** 「결」 섹션의 주 CTA 와 중복」이었습니다.
@@ -2007,10 +2090,13 @@
                      두 버튼은 더 이상 한 화면에 함께 놓이지 않습니다.
                      ⚠️ btn-secondary 입니다. btn-primary 로 올리면 주버튼이 3회가 됩니다
                         (시각사양 2 「페이지당 최대 2회」 — 히어로와 06 결, 둘뿐입니다).
-                     ⚠️ 라벨은 **목적지가 정합니다**. /precheck 로 가는 것은 페이지에서 전부
-                        「비교해 보기」입니다(히어로 · 여기 · 바이어확인 탭 · HOW 하단 · 06 결).
-                        같은 곳으로 가는데 다른 말을 쓰면 다른 곳으로 읽힙니다. -->
-                <div><a class="btn btn-secondary" href="/precheck">비교해 보기</a></div>
+                     🔄 **「같은 목적지면 같은 말」의 대상이 바뀌었습니다** 〔2026-08-23 · B3-b〕.
+                        종전에는 랜딩 `/precheck` 로 가는 자리가 전부 「비교해 보기」였습니다.
+                        이제 이 버튼과 진단 가능 범위 두 자리가 **앱 `/precheck`** 로 가고,
+                        라벨은 §5-5·§5-6 이 각각 정합니다(「수출 사전점검 시작하기」·
+                        「점검 범위 확인하기」) — 같은 화면을 여는 문이지만 **묻는 것이 다릅니다**
+                        (하나는 시작, 하나는 범위 확인). PRD 가 두 라벨을 따로 확정했습니다. -->
+                <div><a class="btn btn-secondary" href="https://app.trops.kr/precheck">수출 사전점검 시작하기</a></div>
               </div>
               <!-- 🔄 **그림·캡션만 교체** 〔2026-08-23 · B3-a 작업 6〕. 이 탭의 **문구**는
                    B3-b 영역이라 손대지 않았습니다(게이트 G6 가 그 부분을 못질합니다).
@@ -2117,6 +2203,198 @@
           </div>
 
         </div>      </div>
+    </section>
+
+    <!-- ===== 진단 가능 범위 (PRD v2.1 §5-6 · 신설 2026-08-23 · B3-b) =====
+         🔴 **자리가 여기인 이유**: 바로 위 상품소개가 「무엇을 해 주는가」를 말하고 나면
+            다음 질문은 「그래서 **내 품목**이 되는가」입니다. 그 답을 FAQ 까지 찾아
+            들어가게 두지 않습니다. 아래 샘플이 「그래서 무엇을 받는가」로 이어받고,
+            그다음 무료·유료가 「얼마인가」를 답합니다 — 네 섹션이 한 사람의 질문 순서입니다.
+
+         🔴 **이 배치는 섹션을 «둘» 끼웁니다(진단 범위 + 샘플).** 짝수라서 아래 무료·유료부터
+            푸터까지 배경이 **한 칸도 밀리지 않습니다** — bg↔surface 완전 교차가 그대로
+            유지됩니다(test/landing-order-s9.test.js O7 「연속 배경 0」).
+            ⛔ 둘 중 **하나만** 지우지 마십시오. 홀수가 되는 순간 하류 다섯 섹션의
+               sec-surface 를 전부 뒤집어야 합니다(B3-a 가 실제로 그렇게 했습니다).
+
+         ⚠️ 문구는 §5-6 원문입니다. 한 글자도 바꾸지 마십시오.
+         ⛔ 지원 품목·국가 **목록**을 여기에 만들지 마십시오 — PRD §2 P-4 가 「커버리지를
+            목록이 아닌 입력창으로 처리」로 정한 자리입니다. 룰셋 커버리지가 P1 시점 1건
+            (전동카트·전동차량)이라, 목록으로 적는 순간 그 1건이 곧 제품의 한계로 읽힙니다.
+            앱도 같은 자세입니다 — 룰셋 밖 품목은 에러가 아니라 「대기 목록에 남겼습니다」로
+            받습니다(2026-08-23 라이브 실측 · trops_a `lib/rulesets/coverage-notice.ts`). -->
+    <section class="scope-sec sec-surface" id="scope" aria-labelledby="scope-title">
+      <div class="container scope-inner">
+        <div class="body-w">
+          <h2 id="scope-title">계약 전 단계라면, 수출 사전점검부터 시작하세요</h2>
+          <p class="scope-lead">아직 계약 전이라도 수출 품목과 대상 국가만 입력해 보세요.<br>해당 국가로 수출하실 때 검토하셔야 할 규제와 필수 인증,<br>기본 요건을 정리해 안내해 드립니다.</p>
+
+          <!-- 🔴 **진짜 폼이고, 목적지는 앱입니다**(PRD §6-1 「진단 범위 → app.trops.kr/precheck」).
+               method="get" 이라 JS 가 죽어도 버튼이 동작합니다 — 값이 없으면 파라미터 없는
+               주소로 갈 뿐이고 접수 화면은 그대로 열립니다(fail-open).
+               🔴 **미결(인계)** — 앱 `/precheck/diagnose` 는 지금 `?category=` 만 읽습니다.
+                  `product`·`destination` 을 읽어 프리필하는 것은 `trops_a` 후행 작업입니다.
+                  그때까지 적으신 값은 주소창까지 갑니다.
+               ⚠️ 개인정보를 이 폼에 넣지 마십시오 — 품목명과 국가코드뿐이라 동의 대상이
+                  아닌 것이 이 폼이 이 자리에 설 수 있는 근거입니다. -->
+          <form class="scope-form" method="get" action="https://app.trops.kr/precheck">
+            <label class="sr-only" for="scope-product">수출 품목</label>
+            <input type="text" id="scope-product" name="product" placeholder="수출 품목을 입력해 주세요" autocomplete="off">
+            <label class="sr-only" for="scope-destination">수출 대상국</label>
+            <!-- 🔴 국가 목록의 **원본은 이 파일이 아닙니다** — `trops_a/lib/constants/countries.ts`
+                 의 `COUNTRY_GROUPS` 를 값(ISO-2)까지 그대로 비춥니다. 앱의 목적국 축과 같은
+                 값이어야 넘어간 뒤에 층이 붙습니다.
+                 ⛔ 여기서 국가를 새로 만들거나 이름을 다듬지 마십시오. 원본을 먼저 고치십시오. -->
+            <select id="scope-destination" name="destination">
+              <option value="">수출 대상국</option>
+            <optgroup label="아시아 · 태평양">
+              <option value="KR">한국</option>
+              <option value="JP">일본</option>
+              <option value="CN">중국</option>
+              <option value="HK">홍콩</option>
+              <option value="TW">대만</option>
+              <option value="VN">베트남</option>
+              <option value="TH">태국</option>
+              <option value="SG">싱가포르</option>
+              <option value="MY">말레이시아</option>
+              <option value="ID">인도네시아</option>
+              <option value="PH">필리핀</option>
+              <option value="IN">인도</option>
+              <option value="BD">방글라데시</option>
+              <option value="PK">파키스탄</option>
+              <option value="KH">캄보디아</option>
+              <option value="BN">브루나이</option>
+              <option value="LA">라오스</option>
+              <option value="MM">미얀마</option>
+              <option value="MN">몽골</option>
+              <option value="AU">호주</option>
+              <option value="NZ">뉴질랜드</option>
+            </optgroup>
+            <optgroup label="유럽 (EU 회원국)">
+              <option value="DE">독일</option>
+              <option value="FR">프랑스</option>
+              <option value="IT">이탈리아</option>
+              <option value="ES">스페인</option>
+              <option value="NL">네덜란드</option>
+              <option value="BE">벨기에</option>
+              <option value="PL">폴란드</option>
+              <option value="SE">스웨덴</option>
+              <option value="AT">오스트리아</option>
+              <option value="DK">덴마크</option>
+              <option value="FI">핀란드</option>
+              <option value="IE">아일랜드</option>
+              <option value="PT">포르투갈</option>
+              <option value="CZ">체코</option>
+              <option value="HU">헝가리</option>
+              <option value="RO">루마니아</option>
+              <option value="GR">그리스</option>
+              <option value="SK">슬로바키아</option>
+              <option value="BG">불가리아</option>
+              <option value="HR">크로아티아</option>
+              <option value="SI">슬로베니아</option>
+              <option value="LT">리투아니아</option>
+              <option value="LV">라트비아</option>
+              <option value="EE">에스토니아</option>
+              <option value="LU">룩셈부르크</option>
+              <option value="CY">키프로스</option>
+              <option value="MT">몰타</option>
+            </optgroup>
+            <optgroup label="유럽 (비EU)">
+              <option value="GB">영국</option>
+              <option value="CH">스위스</option>
+              <option value="NO">노르웨이</option>
+              <option value="IS">아이슬란드</option>
+              <option value="LI">리히텐슈타인</option>
+              <option value="TR">튀르키예</option>
+              <option value="RU">러시아</option>
+              <option value="UA">우크라이나</option>
+              <option value="RS">세르비아</option>
+            </optgroup>
+            <optgroup label="중동 · 아프리카">
+              <option value="AE">아랍에미리트</option>
+              <option value="SA">사우디아라비아</option>
+              <option value="QA">카타르</option>
+              <option value="KW">쿠웨이트</option>
+              <option value="OM">오만</option>
+              <option value="BH">바레인</option>
+              <option value="IL">이스라엘</option>
+              <option value="JO">요르단</option>
+              <option value="EG">이집트</option>
+              <option value="ZA">남아프리카공화국</option>
+              <option value="NG">나이지리아</option>
+              <option value="KE">케냐</option>
+              <option value="MA">모로코</option>
+            </optgroup>
+            <optgroup label="미주">
+              <option value="US">미국</option>
+              <option value="CA">캐나다</option>
+              <option value="MX">멕시코</option>
+              <option value="BR">브라질</option>
+              <option value="CL">칠레</option>
+              <option value="PE">페루</option>
+              <option value="CO">콜롬비아</option>
+              <option value="AR">아르헨티나</option>
+            </optgroup>
+            <optgroup label="중앙아시아">
+              <option value="UZ">우즈베키스탄</option>
+              <option value="KZ">카자흐스탄</option>
+            </optgroup>            </select>
+            <button class="btn btn-secondary" type="submit">점검 범위 확인하기</button>
+          </form>
+
+          <p class="scope-note">* 실무자 요청이 많은 품목과 국가를 우선으로 지원 범위를 지속 확대하고 있습니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 샘플 (PRD v2.1 §5-11 · 신설 2026-08-23 · B3-b) =====
+         🔴 **자리가 여기인 이유**: 위 진단 범위가 「내 품목이 되는가」를 물었으니, 그다음은
+            「그래서 무엇을 받는가」입니다. 말로 설명하는 대신 **실물을 엽니다**.
+
+         🔴 `/sample` 은 `scripts/build-static.js` STATIC 등재로만 존재합니다. 등재를 지우면
+            이 버튼과 히어로 CTA2 가 함께 404 가 됩니다
+            (PRD §4 「B3-1은 B3-5 없이 배포 불가」).
+         ⚠️ 문구는 §5-11 원문입니다. 한 글자도 바꾸지 마십시오.
+         ⛔ 샘플 문서에 등급 표기·위험 점수·「즉시 조치 필요」를 넣지 마십시오
+            (§5-11 「금지」 · scripts/check-b3b-gates.js G3 이 두 파일을 전수 검사합니다). -->
+    <section class="sample-sec" id="sample" aria-labelledby="sample-title">
+      <div class="container sample-inner">
+        <div class="body-w">
+          <h2 id="sample-title">받아보시는 리포트는 이렇게 구성됩니다</h2>
+          <div class="sample-cols">
+            <div class="sample-col">
+              <p class="sample-head">표지</p>
+              <ul class="sample-list">
+                <li>확인번호·발급일자</li>
+                <li>판정 요약 3항목</li>
+                <li>지금 조치할 사항</li>
+              </ul>
+            </div>
+            <div class="sample-col">
+              <p class="sample-head">수출 가능성</p>
+              <ul class="sample-list">
+                <li>적용되는 요건과 근거</li>
+                <li>지금 걸려 있는 사항</li>
+                <li>관세 비교(확인 기준일)</li>
+              </ul>
+            </div>
+            <div class="sample-col">
+              <p class="sample-head">준비 현황</p>
+              <ul class="sample-list">
+                <li>항목별 부족한 부분</li>
+                <li>예상 소요 기간·비용대</li>
+                <li>다음 조치 사항</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="cta-row">
+            <a class="btn btn-secondary" href="/sample">샘플 리포트 보기</a>
+          </div>
+
+          <p class="sample-note">※ 서비스 이해를 돕기 위해 가상의 기업 정보로 구성한 예시 문서입니다.<br>본 리포트는 이용 기업이 제출한 정보와 공개 규정을 대조한 자가점검 자료이며,<br>인증·허가·검사 결과가 아닙니다.</p>
+        </div>
+      </div>
     </section>
 
     <!-- ===== 무료·유료 (PRD v2.1 §5-13 · 신설 2026-08-23 · B3-a) =====

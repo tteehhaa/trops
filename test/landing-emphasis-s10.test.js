@@ -367,7 +367,12 @@ test('E12 강약을 고치면서 콘텐츠·기능이 빠지지 않았다', () =
   assert.strictEqual((M.match(/aria-controls="qa-\d+"/g) || []).length, 15, 'FAQ 가 15문항이 아닙니다');
   assert.ok(/id="interest-form"/.test(M), '사전등록 폼이 사라졌습니다');
   // 🔄 목적지가 /precheck → /check 로 바뀌었습니다(2026-08-16 대표 수정안 2차) — 히어로와 같은 목적지.
-  assert.ok(/class="btn btn-primary btn-full" href="\/check"/.test(M), '결 CTA 주버튼이 사라졌습니다');
+  /* 🔄 **`/check` → 앱 가입** 〔2026-08-23 · B3-b · PRD §5-1 · §6-1 「히어로 1」〕.
+     이 단언이 실제로 잡고 있던 것은 **히어로 주버튼**입니다(중간 CTA 는 B3-a 에서 이미
+     앱 가입으로 갔고 `btn-full` 을 함께 씁니다). 지키려는 것은 그대로입니다 —
+     **풀사이즈 주버튼이 페이지에 살아 있는가**. 목적지만 갱신합니다. */
+  assert.ok(/class="btn btn-primary btn-full" href="https:\/\/app\.trops\.kr\/account\/password"/.test(M),
+    '풀사이즈 주버튼이 사라졌습니다');
 
   // 태그 짝 — 신뢰증명에 <div> 를 한 겹 더 씌웠으므로 여기서 셉니다.
   const trust = M.slice(M.indexOf('<section class="trust"'));

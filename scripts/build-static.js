@@ -73,6 +73,15 @@ const STATIC = {
     // nda.html · uae.html 을 서로 가리킵니다.
     { file: 'en-nda.html', locale: 'en' },
     { file: 'en-uae.html', locale: 'en' },
+    // 샘플 리포트 2종 〔2026-08-23 · PRD v2.1 §5-11 · B3-b〕. cleanUrls 가 /sample ·
+    // /en-sample 에 붙습니다. 히어로 CTA2 와 샘플 섹션이 이 두 경로를 가리키므로
+    // 여기서 빠지면 **랜딩 첫 화면의 버튼이 404** 가 됩니다(PRD §4 「B3-1은 B3-5 없이
+    // 배포 불가」). 파일 자체는 trops_a/doc/self12 에서 내용 무수정으로 옮겨 왔고,
+    // :root 의 --ink · --brand 두 값만 랜딩 브랜드 토큰에 맞췄습니다.
+    // ⚠️ 두 파일은 <meta name="robots" content="noindex"> 입니다 — 예시 문서라
+    //    검색 결과에 실제 발급 문서처럼 뜨면 안 됩니다. 지우지 마십시오.
+    { file: 'sample.html', locale: 'ko' },
+    { file: 'en-sample.html', locale: 'en' },
   ],
   // assets/ = track.js(2026-08-18 페이지 조회·클릭 익명 집계). 주석 제거 없이 통째 복사.
   dirs: ['data', 'img', 'assets'],

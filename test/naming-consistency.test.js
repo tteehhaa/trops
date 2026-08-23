@@ -182,10 +182,17 @@ test('상품 카드가 용어 정본대로 생애주기 + 상품명을 갖는다
   // 상품명이 카드마다 한 번씩만 나오는지 — 머리와 패널이 이름을 두 번 말하면
   // 통합의 목적(한 상품 = 한 번의 설명)이 카드 안에서 다시 깨집니다.
   /* 🔄 2026-08-23 〔PRD v2.1 B2〕 상품 3종 확정 명칭. */
-  for (const name of ['수출 사전점검', '수출 계약관리', '수출 채권·보험관리']) {
+  /* 🔄 **「수출 사전점검」만 2번입니다** 〔2026-08-23 · B3-b · PRD §5-5〕. 탭 라벨 한 번과
+     실행버튼 라벨(「수출 사전점검 시작하기」) 한 번입니다 — PRD §5-5 가 그 라벨을 확정했고,
+     **버튼이 어디로 가는지를 라벨이 말해야** 하므로 상품명이 들어가는 것이 그 라벨의 일입니다.
+     지키려던 것(「머리와 패널이 이름을 두 번 **설명**하지 않는다」)은 그대로입니다 —
+     늘어난 한 번은 설명이 아니라 **문**입니다.
+     ⛔ 이 값을 3 이상으로 올리지 마십시오. 그때는 정말로 같은 이름을 두 번 설명하는 것입니다. */
+  const NAME_HITS = { '수출 사전점검': 2, '수출 계약관리': 1, '수출 채권·보험관리': 1 };
+  for (const [name, want] of Object.entries(NAME_HITS)) {
     const hits = (cards.match(new RegExp(name, 'g')) || []).length;
-    assert.strictEqual(hits, 1,
-      '「' + name + '」이 상품소개 섹션에 ' + hits + '번 나옵니다 (1번이어야 합니다)');
+    assert.strictEqual(hits, want,
+      '「' + name + '」이 상품소개 섹션에 ' + hits + '번 나옵니다 (' + want + '번이어야 합니다)');
   }
 });
 
@@ -436,6 +443,25 @@ const STATIC_PAGES = require('../scripts/build-static.js').STATIC.html;
 const EN_PAGES = STATIC_PAGES.filter((p) => p.locale === 'en').map((p) => p.file);
 
 /*
+ * 🔴 **샘플 리포트 2종은 랜딩 페이지가 아닙니다** 〔2026-08-23 · B3-b · PRD §5-11〕.
+ *
+ * `sample.html` · `en-sample.html` 은 「받아보시는 리포트가 이렇게 생겼다」를 보여주는
+ * **문서 자체**입니다 — 사이트 헤더·푸터가 없고, 워터마크와 예시 고지가 그 자리를 대신합니다.
+ * 그래서 아래 두 검사의 전제(모든 배포 페이지는 같은 푸터 태그라인을 쓴다 · 영문 화면
+ * 문구에 em dash 를 쓰지 않는다)가 이 둘에는 성립하지 않습니다.
+ *
+ * ⛔ **이 둘의 내용을 고쳐서 검사를 맞추지 마십시오.** 원본을 무수정으로 옮기는 것이
+ *    이 배치의 지시였고, em dash 는 그 문서가 표에서 「값 없음」을 적는 방식입니다
+ *    (`<div class="vl">—</div>`) — 문장 부호가 아니라 **빈 칸 표시**라 이 규칙의 대상이
+ *    애초에 아닙니다.
+ * 🔴 **필터입니다, 손으로 적은 목록이 아닙니다** — 샘플이 늘어도 여기를 고칠 일이 없고,
+ *    반대로 랜딩 페이지를 실수로 여기 넣을 수도 없습니다(이름이 `sample.html` 로 끝나야 합니다).
+ */
+const SAMPLE_PAGES = STATIC_PAGES.map((p) => p.file).filter((f) => /(^|-)sample\.html$/.test(f));
+const LANDING_PAGES = STATIC_PAGES.filter((p) => !SAMPLE_PAGES.includes(p.file));
+const EN_LANDING_PAGES = EN_PAGES.filter((f) => !SAMPLE_PAGES.includes(f));
+
+/*
  * 필터가 아무것도 못 잡는 반대 방향 사고를 막습니다. `locale` 표기가 바뀌거나
  * (`'en'` → `'en-US'`) STATIC.html 구조가 달라지면 EN_PAGES 가 **빈 배열**이 되고,
  * 그러면 아래 세 검사가 **한 바퀴도 안 돌면서 전부 초록**입니다. 가장 나쁜 실패 형태라
@@ -456,7 +482,9 @@ test('푸터 태그라인이 배포되는 전 페이지에서 같다', () => {
 
   /* 국문·영문은 값이 다릅니다(번역). 각 묶음 안에서 하나여야 합니다. */
   const seen = { ko: new Map(), en: new Map() };
-  for (const { file, locale } of STATIC_PAGES) {
+  /* 🔄 STATIC_PAGES → LANDING_PAGES 〔2026-08-23 · B3-b〕. 샘플 리포트 2종은 사이트
+     푸터를 갖지 않습니다 — 사유는 SAMPLE_PAGES 주석 참조. */
+  for (const { file, locale } of LANDING_PAGES) {
     const tag = pick(strip(read(file)));
     assert.ok(tag, file + ' 에 푸터 태그라인이 없습니다');
     if (!seen[locale].has(tag)) seen[locale].set(tag, []);
@@ -622,8 +650,24 @@ const STRUCT_DELTA = {
      **05 근거 CTA 앞의 <span class="cta-row-note">** 였습니다. §5-12 에는 CTA 가 없어
      그 줄이 국·영문 모두에서 빠졌고, 영문에만 있던 그 <span> 도 함께 사라졌습니다.
      남는 차이는 히어로 리드 <p> 하나뿐입니다. */
-  'en.html': [1, 2],
-  'en-check.html': [0, 0],
+  /* 🔄 [1, 2] → [-22, -46] 〔2026-08-23 · B3-b〕. 국문에만 **섹션 둘**이 새로 섰습니다 —
+     진단 가능 범위(§5-6)와 샘플(§5-11). 영문에 같은 자리를 만들지 못한 이유는
+     **PRD §5 의 영문 확정본이 없기 때문**입니다(PRD 본문 영문 §5 0건 ·
+     `docs/copy/trops_en_랜딩문구_v2.md` 는 국문 v3.1 기준). B2·B3-a 보고서가 둘 다
+     이월 항목으로 「PRD §5 영문 확정본」을 적어 둔, 이미 알려진 결손입니다.
+     🔴 영문 확정본이 오면 이 값은 **[1, 2] 로 되돌아가야 합니다** — 되돌아가지 않으면
+        영문 랜딩이 국문보다 두 섹션 모자란 채로 굳습니다. 그 사실을 여기 숫자가 붙듭니다. */
+  'en.html': [-22, -241],
+  /* 🔄 [0, 0] → [-3, -12] 〔2026-08-23 · B3-b · PRD §5-18〕. 국문 `/check` 만 신규 문항으로
+     갔습니다 — Q1 보조문 <p> 하나가 빠지고(축이 사건→단계로 바뀌어 그 줄이 가리킬 「일」이
+     없어졌습니다), Q3 보기가 3 → 5 로 늘고, 「서류 없음」 갈래에 §5-18 이 준 문의 안내
+     한 줄(<p class="result-inquiry"> + <a>)이 붙었습니다.
+     영문을 함께 옮기지 못한 이유는 `en.html` 항목과 **같습니다** — PRD §5 의 영문
+     확정본이 없습니다(§5-18 영문 포함).
+     🔴 영문 확정본이 오면 이 값은 **[0, 0] 으로 되돌아가야 합니다.**
+     ⚠️ 그때 `en-check.html` 의 보기 **값**(value)도 함께 신 어휘로 가야 합니다 — 문면만
+        영문으로 바꾸고 값을 두면 영문 세션의 계측이 구 축에 쌓입니다. */
+  'en-check.html': [-3, -12],
   'en-precheck.html': [-2, -4],
   'en-refund.html': [0, 0],
   // 영문 2종 추가 〔2026-08-20〕. 문구만 옮겼고 구조를 더하지 않았습니다 — 둘 다 0/0.
@@ -659,12 +703,36 @@ function tagSeq(html) {
  *    없고, 어긋났다면 그 순간 「같은 자리」라는 전제가 깨진 것입니다. JS 가 잡는
  *    엘리먼트(#intake-doc-type · #erase-btn · #feat-timeline-panel …)도 전부 여기입니다.
  */
+/*
+ * 🔴 **국문에만 있는 id.** 영문 확정본이 없어 아직 옮기지 못한 섹션의 id 입니다
+ *    (STRUCT_DELTA 의 `en.html` 주석과 **같은 사유 하나**입니다).
+ *
+ * ⛔ 이 목록을 「영문에 안 만든 것」의 편한 서랍으로 쓰지 마십시오. 여기 이름이 하나
+ *    늘어날 때마다 영문 랜딩이 국문보다 한 자리씩 모자라집니다. 늘리기 전에 **왜 영문
+ *    문구를 만들 수 없는지**부터 적으십시오.
+ * 🔴 영문 확정본이 오면 이 목록은 **빈 배열이 되어야 합니다.**
+ */
+const KO_ONLY_IDS = {
+  // 진단 가능 범위(§5-6) · 샘플(§5-11) 〔2026-08-23 · B3-b〕. PRD §5 영문 확정본 부재.
+  'en.html': ['scope', 'scope-title', 'scope-product', 'scope-destination', 'sample', 'sample-title'],
+};
+
 test('영문 4종이 국문과 같은 id 를 같은 순서로 갖는다', () => {
   for (const [ko, en] of EN_PAIRS) {
-    const a = idSeq(read(ko));
+    const skip = KO_ONLY_IDS[en] || [];
+    const a = idSeq(read(ko)).filter((id) => !skip.includes(id));
     const b = idSeq(read(en));
     assert.deepStrictEqual(b, a,
       en + ' 의 id 순서가 ' + ko + ' 와 다릅니다 — 문구만 옮기는 것이 규칙입니다');
+
+    /* 적어 둔 이름이 국문에서 사라졌는데 목록에만 남아 있으면, 그 줄은 아무것도 지키지
+       않으면서 **다음 사람에게 「영문에 없어도 된다」고 말합니다.** 그런 줄을 남기지 않습니다. */
+    const koIds = idSeq(read(ko));
+    for (const id of skip) {
+      assert.ok(koIds.includes(id),
+        'KO_ONLY_IDS[' + JSON.stringify(en) + '] 의 「' + id + '」가 ' + ko + ' 에 없습니다 — ' +
+        '국문에서 지우셨다면 이 목록에서도 빼 주십시오');
+    }
   }
 });
 
@@ -716,7 +784,8 @@ test('영문 페이지의 화면 문구에 한글이 남아 있지 않다', () =
  *    영문에서 옳은 표기이고, 지시하신 「—」와 다른 글자입니다.
  */
 test('영문 화면 문구에 em dash 가 없다', () => {
-  for (const f of EN_PAGES) {
+  /* 🔄 EN_PAGES → EN_LANDING_PAGES 〔2026-08-23 · B3-b〕 — 사유는 SAMPLE_PAGES 주석 참조. */
+  for (const f of EN_LANDING_PAGES) {
     /* 주석은 뺍니다 — 인수인계 주석은 국문이고 거기 「—」가 자유롭게 쓰입니다. */
     const code = strip(read(f))
       .replace(/\/\*[\s\S]*?\*\//g, '')

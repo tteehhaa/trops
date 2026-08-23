@@ -248,21 +248,48 @@ const B3B_GUARD = [
   ['<span class="feat-avail">지금 쓸 수 있습니다</span>', '>비교해 보기</a>', '상품 탭 ① 문구'],
 ];
 
+/*
+ * 🔴 **이 게이트는 2026-08-23 B3-b 배치로 임무를 마쳤습니다.**
+ *
+ * 하는 일은 「B3-a 가 B3-b 영역을 건드리지 않았는가」였고, B3-b 가 바로 그 세 자리를
+ * 정본(PRD §5-1 · §5-4 · §5-5)으로 교체하는 배치였습니다. 그대로 두면 **다음 배치마다
+ * 세 건이 빨갛게 뜨고**, 그 빨강이 아무 뜻도 없어서 곧 아무도 안 보게 됩니다 —
+ * 게이트가 죽는 가장 흔한 방식입니다.
+ *
+ * ⛔ 그렇다고 **지우지 않습니다.** 지우면 「B3-a 가 그 자리를 안 건드렸다」는 사실을
+ *    확인할 방법이 저장소에서 사라지고, B3-a 커밋을 되짚을 때 근거가 없어집니다.
+ *    대신 **B3-a 시점의 마지막 판(HEAD~1 = B3-a 배포 커밋)** 을 기준으로 고정합니다 —
+ *    인자로 baseRef 를 주면 그 판과 대조하던 종전 동작을 그대로 씁니다.
+ *
+ * 🔴 이 자리를 지금 지키는 것은 `scripts/check-b3b-gates.js` G2·G8 과
+ *    `test/landing-b3b.test.js` 입니다. 세 자리의 **현재 문구**는 그쪽이 붙듭니다.
+ */
+const B3B_DONE_AT = '061da9f';   // B3-a 배포 커밋. 이 판까지가 「불가침」이 유효한 구간입니다.
+
 function gate6() {
-  console.log('\nG6. B3-b 영역 불가침 (base: ' + BASE + ')');
-  let before;
+  console.log('\nG6. B3-b 영역 불가침 — B3-a 구간 한정 (base: ' + BASE + ')');
+  let before, after;
   try { before = execFileSync('git', ['show', BASE + ':index.html'], { cwd: ROOT, encoding: 'utf8' }); }
   catch (e) { fail('index.html 의 ' + BASE + ' 판을 읽지 못했습니다'); return; }
-  const after = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  try { after = execFileSync('git', ['show', B3B_DONE_AT + ':index.html'], { cwd: ROOT, encoding: 'utf8' }); }
+  catch (e) {
+    console.log('  · ' + B3B_DONE_AT + ' 판을 읽지 못해 건너뜁니다(얕은 클론일 수 있습니다)');
+    return;
+  }
   for (const [startMark, endMark, label] of B3B_GUARD) {
     const slice = (t) => {
       const a = t.indexOf(startMark); if (a === -1) return null;
       const b = t.indexOf(endMark, a); return b === -1 ? null : t.slice(a, b);
     };
     const x = slice(before), y = slice(after);
-    if (x === null || y === null) { fail(label + ': 경계를 찾지 못했습니다'); continue; }
-    if (x === y) pass(label + ': 바이트 동일');
-    else fail('🔴 ' + label + ' 이 바뀌었습니다 — B3-b 영역입니다');
+    if (x === null || y === null) {
+      /* 두 판 모두에서 경계를 못 찾는 것은 **B3-b 이후에는 정상**입니다 — 그 문면이
+         교체됐다는 뜻이고, 이 게이트의 구간(B3-a)에는 영향이 없습니다. */
+      console.log('  · ' + label + ': B3-b 로 문면이 교체되어 경계가 없습니다(정상)');
+      continue;
+    }
+    if (x === y) pass(label + ': B3-a 구간에서 바이트 동일');
+    else fail('🔴 ' + label + ' 이 B3-a 구간에서 바뀌었습니다');
   }
 }
 

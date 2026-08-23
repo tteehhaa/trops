@@ -319,7 +319,9 @@ function actionButtons(block) {
 
 /** 상품 → [버튼 라벨, 목적지]. 목적지가 라벨을 정합니다 — 같은 곳이면 같은 말. */
 const PANEL_CTA = {
-  'feat-precheck': ['비교해 보기', '/precheck'],
+  /* 🔄 2026-08-23 〔B3-b · PRD §5-5·§6-1〕 상품 ① 교체 — 라벨·목적지가 함께 바뀌었습니다.
+     목적지가 랜딩 `/precheck`(접수·결제 화면)에서 **앱 진단 화면**으로 갑니다. */
+  'feat-precheck': ['수출 사전점검 시작하기', 'https://app.trops.kr/precheck'],
   // 🔄 2026-08-23 〔B2 · PRD §5-2·§5-3·§6-1〕 상품 ②③ 교체 — 라벨·목적지가 함께 바뀌었습니다.
   'feat-contract': ['수출 계약 등록하기', 'https://app.trops.kr/procedures/new'],
   'feat-timeline': ['가입 상품 등록하기', 'https://app.trops.kr/profile/insurance'],
@@ -373,9 +375,17 @@ test('같은 곳으로 가는 버튼은 같은 말을 쓴다 — /precheck 는 �
      05 근거 셋입니다. */
   /* 🔄 3 → 2 〔2026-08-23 · B3-a〕. §5-12 에는 CTA 가 없어 05 근거의 버튼이 빠졌습니다.
      남는 자리는 탭1 과 HOW 하단 둘입니다. */
-  assert.ok(toPrecheck.length >= 2,
-    '/precheck 로 가는 「비교해 보기」 버튼이 ' + toPrecheck.length + '개입니다 — ' +
-    '탭1 · HOW 하단 두 자리가 있어야 합니다');
+  /* 🔄 **2 → 0** 〔2026-08-23 · B3-b · PRD §5-4·§5-5·§6-1〕. 마지막 두 자리가 함께 나갔습니다:
+       · 탭1     → 앱 진단 화면(`app.trops.kr/precheck`) · 라벨 「수출 사전점검 시작하기」
+       · HOW 하단 → 앱 가입(`app.trops.kr/account/password`) · 라벨 「무료로 시작하기」
+     랜딩 `/precheck`(접수·결제 화면)로 가는 **버튼**은 이제 페이지에 없습니다 — 그 페이지는
+     푸터 링크와 `/check` 우회 링크로만 닿습니다(둘 다 .btn 이 아닙니다).
+     🔴 **규칙 자체는 살아 있습니다** — 「같은 목적지면 같은 말」입니다. 대상만 0 이 됐으므로
+        아래 루프는 자연히 비고, 랜딩 `/precheck` 로 가는 .btn 을 다시 만드는 날 라벨 통일이
+        곧바로 다시 걸립니다. ⛔ 이 검사를 지우지 마십시오 — 지우면 그 회귀가 조용히 통과합니다. */
+  assert.strictEqual(toPrecheck.length, 0,
+    '랜딩 /precheck 로 가는 .btn 이 ' + toPrecheck.length + '개입니다 — B3-b 로 0 이 됐습니다. ' +
+    '다시 만드셨다면 라벨을 하나로 통일하고 이 기대값을 사유와 함께 고쳐 주십시오');
 
   for (const a of toPrecheck) {
     const label = a.replace(/<[^>]*>/g, '').trim();
@@ -389,6 +399,17 @@ test('같은 곳으로 가는 버튼은 같은 말을 쓴다 — /precheck 는 �
   assert.strictEqual(primary.length, 0,
     '주버튼이 ' + primary.length + '개입니다 — /precheck 목적지에는 주버튼이 없어야 합니다' +
     '(히어로·06 결 둘 다 /check 담당)');
+
+  /* 🔴 **새 규칙 — 앱 진단 화면으로 가는 두 문은 서로 다른 라벨을 씁니다** 〔B3-b〕.
+     탭①(「수출 사전점검 시작하기」)과 진단 가능 범위(「점검 범위 확인하기」)는 같은 화면을
+     열지만 **묻는 것이 다릅니다** — 하나는 시작, 하나는 내 품목이 되는지 확인입니다.
+     PRD §5-5·§5-6 이 두 라벨을 각각 확정했으므로 여기서 통일하지 않습니다. 대신 **둘 다
+     살아 있는지**를 셉니다 — 하나가 사라지면 그 질문에 답할 자리가 없어집니다. */
+  const toAppPrecheck = links.filter((a) => /href="https:\/\/app\.trops\.kr\/precheck"/.test(a));
+  const appLabels = toAppPrecheck.map((a) => a.replace(/<[^>]*>/g, '').trim()).sort();
+  assert.deepStrictEqual(appLabels, ['수출 사전점검 시작하기'],
+    '앱 진단 화면으로 가는 .btn 라벨이 PRD §5-5 와 다릅니다: ' + JSON.stringify(appLabels) +
+    ' (진단 가능 범위의 「점검 범위 확인하기」는 <button type="submit"> 이라 이 목록에 없습니다)');
 });
 
 /*

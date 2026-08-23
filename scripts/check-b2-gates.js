@@ -195,7 +195,14 @@ function gate4() {
 const CTA = [
   ['index.html', 'https://app.trops.kr/procedures/new',   '상품 ② 수출 계약 등록하기'],
   ['index.html', 'https://app.trops.kr/profile/insurance', '상품 ③ 가입 상품 등록하기'],
-  ['check.html', 'https://app.trops.kr/account/password',  '/check 서류 없음 분기'],
+  /* 🔄 **목적지가 바뀌었습니다** 〔2026-08-23 · B3-b · PRD §5-18 「분기 결과」〕.
+     B2-9 는 이 자리를 앱 **가입**으로 보냈습니다(그때는 「지금 바로 써 볼 수 있는 길」을
+     만드는 것이 목적이었습니다). §5-18 은 한 걸음 더 들어가 **사전점검 화면**으로 곧장
+     보냅니다 — 앱 `/precheck` 는 로그인 없이 열립니다(2026-08-23 라이브 실측).
+     🔴 B2 가 세운 것(「유료 아니면 문의뿐」을 없앤다)은 그대로입니다 — 무료 경로가
+        더 짧아졌을 뿐입니다. ⛔ 이 줄을 지우지 마십시오. 목적지가 사라지면 그때는
+        정말로 B2 가 되돌아간 것입니다. */
+  ['check.html', 'https://app.trops.kr/precheck',  '/check 서류 없음 분기'],
 ];
 
 function gate5() {
@@ -226,13 +233,27 @@ const B3_GUARD = [
   ['index.html', '<button class="tab" type="button" role="tab" id="feat-precheck"', '</button>', '상품 탭 ① 버튼'],
 ];
 
+/*
+ * 🔴 **이 게이트는 2026-08-23 B3-b 배치로 임무를 마쳤습니다** — `check-b3a-gates.js` G6 과
+ *    같은 사유·같은 처리입니다(그쪽 주석에 자세히 적어 두었습니다).
+ *    요약: 지키던 세 자리를 B3-b 가 정본(PRD §5-1·§5-4·§5-5)으로 정당하게 교체했습니다.
+ *    그대로 두면 다음 배치마다 뜻 없는 빨강이 뜨고, 뜻 없는 빨강은 곧 안 보게 됩니다.
+ * ⛔ 지우지 않습니다 — 「B2 가 그 자리를 안 건드렸다」는 확인 수단이 사라집니다.
+ */
+const B3_DONE_AT = '061da9f';   // B3-a 배포 커밋. B2~B3-a 구간이 이 게이트의 유효 범위입니다.
+
 function gate6() {
-  console.log('\nG6. B3 영역 불가침 (base: ' + BASE + ')');
-  let before;
+  console.log('\nG6. B3 영역 불가침 — B2~B3-a 구간 한정 (base: ' + BASE + ')');
+  let before, after;
   try {
     before = execFileSync('git', ['show', BASE + ':index.html'], { cwd: ROOT, encoding: 'utf8' });
   } catch (e) { fail('index.html 의 ' + BASE + ' 판을 읽지 못했습니다'); return; }
-  const after = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  try {
+    after = execFileSync('git', ['show', B3_DONE_AT + ':index.html'], { cwd: ROOT, encoding: 'utf8' });
+  } catch (e) {
+    console.log('  · ' + B3_DONE_AT + ' 판을 읽지 못해 건너뜁니다(얕은 클론일 수 있습니다)');
+    return;
+  }
 
   for (const [, startMark, endMark, label] of B3_GUARD) {
     const slice = (t) => {
@@ -242,9 +263,14 @@ function gate6() {
       return b === -1 ? null : t.slice(a, b + endMark.length);
     };
     const x = slice(before), y = slice(after);
-    if (x === null || y === null) { fail(label + ': 경계를 찾지 못했습니다'); continue; }
-    if (x === y) pass(label + ': 바이트 동일');
-    else fail('🔴 ' + label + ' 이 바뀌었습니다 — B3 영역입니다');
+    if (x === null || y === null) {
+      /* B3-b 이후에는 **정상**입니다 — 그 문면이 교체됐다는 뜻이고, 이 게이트의
+         구간(B2~B3-a)에는 영향이 없습니다. */
+      console.log('  · ' + label + ': B3-b 로 문면이 교체되어 경계가 없습니다(정상)');
+      continue;
+    }
+    if (x === y) pass(label + ': B2~B3-a 구간에서 바이트 동일');
+    else fail('🔴 ' + label + ' 이 B2~B3-a 구간에서 바뀌었습니다');
   }
 }
 
