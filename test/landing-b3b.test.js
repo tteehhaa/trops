@@ -55,42 +55,21 @@ test('진단 범위·샘플이 **둘 다** 있다 — 하나만 지우면 하류
 
   /* 자리도 함께 봅니다 — 상품소개(무엇을) → 진단범위(내 품목이) → 샘플(무엇을 받나)
      → 무료·유료(얼마) 가 한 사람의 질문 순서입니다(설계 §1). */
-  /* 🔄 흐름도(§5-19)가 상품소개와 진단 범위 사이에 들어왔습니다 〔2026-08-24〕.
-     「무엇을 파는가(상품 셋) → 그래서 서로 어떻게 이어지는가(흐름도) → 내 품목이
-     되는가(진단 범위) → 무엇을 받는가(샘플) → 얼마인가(무료·유료)」 순입니다. */
-  const flow = M.indexOf('<section class="flowmap-sec');
-  assert.ok(flow !== -1, '흐름도 섹션이 없습니다 (§5-19)');
-  assert.ok(cards < flow && flow < scope && scope < sample && sample < pricing,
-    '섹션 순서가 설계와 다릅니다 — 상품소개 → 흐름도 → 진단 범위 → 샘플 → 무료·유료 여야 합니다');
+  assert.ok(cards < scope && scope < sample && sample < pricing,
+    '섹션 순서가 설계와 다릅니다 — 상품소개 → 진단 범위 → 샘플 → 무료·유료 여야 합니다');
 });
 
-/*
- * 🔄 **배경이 한 칸씩 밀렸습니다** 〔2026-08-24 · 흐름도 §5-19 신설〕.
- *
- * B3-b 는 섹션을 **둘**(진단 범위 + 샘플) 끼워 짝수였고, 그래서 하류가 안 밀린다는 것이
- * 이 검사의 원래 요지였습니다. §5-19 흐름도가 **하나** 더 들어오면서 홀수가 됐고,
- * 상품소개(bg) 와 진단 범위(surface) 사이에는 넣을 수 있는 배경이 수학적으로 없어
- * (bg 면 앞과 연속·surface 면 뒤와 연속·다크는 O9 가 금지) 흐름도를 surface 로 두고
- * 하류 여덟 섹션을 뒤집었습니다.
- *
- * 그래서 이 검사는 「안 밀렸다」가 아니라 **「정확히 한 칸 밀렸다」**를 봅니다.
- * 뜻은 그대로입니다 — 교차가 유지되는지, 그리고 다음 사람이 흐름도를 지웠을 때
- * 여기서 걸리는지. 완전 교차 자체는 landing-order-s9.test.js O7 이 LAYOUT 으로 봅니다.
- */
-test('배경 교차 — 흐름도 삽입으로 한 칸 밀렸다 (흐름도 surface · 진단 범위 bg · 샘플 surface)', () => {
-  const tag = (key) => M.slice(M.indexOf(key), M.indexOf('>', M.indexOf(key)));
-  const has = (key) => /\bsec-surface\b/.test(tag(key));
+test('배경 교차 — 진단 범위는 surface, 샘플은 bg 다 (짝수라서 하류가 안 밀린다)', () => {
+  const scopeTag = M.slice(M.indexOf('<section class="scope-sec'), M.indexOf('>', M.indexOf('<section class="scope-sec')));
+  const sampleTag = M.slice(M.indexOf('<section class="sample-sec'), M.indexOf('>', M.indexOf('<section class="sample-sec')));
+  assert.ok(/\bsec-surface\b/.test(scopeTag), '진단 범위에 .sec-surface 가 없습니다');
+  assert.ok(!/\bsec-surface\b/.test(sampleTag),
+    '샘플에 .sec-surface 가 붙었습니다 — 위 진단 범위와 배경이 연속이 되어 경계가 사라집니다');
 
-  assert.ok(M.indexOf('<section class="flowmap-sec') !== -1,
-    '흐름도 섹션이 없습니다 (§5-19) — 지웠다면 아래 여덟 섹션의 배경도 함께 되돌려야 합니다');
-  assert.ok(has('<section class="flowmap-sec'),
-    '흐름도에 .sec-surface 가 없습니다 — 위 상품소개(bg)와 배경이 연속이 됩니다');
-  assert.ok(!has('<section class="scope-sec'),
-    '진단 범위에 .sec-surface 가 남아 있습니다 — 위 흐름도와 배경이 연속이 됩니다');
-  assert.ok(has('<section class="sample-sec'),
-    '샘플에 .sec-surface 가 없습니다 — 위 진단 범위(bg)와 배경이 연속이 됩니다');
-  assert.ok(!has('<section class="pricing-sec'),
-    '무료·유료에 .sec-surface 가 남아 있습니다 — 흐름도 삽입으로 한 칸 밀렸어야 합니다');
+  /* 무료·유료가 여전히 surface 인지 — 여기가 밀렸다면 짝수 삽입 전제가 깨진 것입니다. */
+  const pricingTag = M.slice(M.indexOf('<section class="pricing-sec'), M.indexOf('>', M.indexOf('<section class="pricing-sec')));
+  assert.ok(/\bsec-surface\b/.test(pricingTag),
+    '무료·유료의 배경이 밀렸습니다 — 삽입이 홀수가 됐다는 뜻이고, 하류 다섯 섹션을 전부 뒤집어야 합니다');
 });
 
 test('새 섹션 셋에 세로 여백 규칙이 있다', () => {
