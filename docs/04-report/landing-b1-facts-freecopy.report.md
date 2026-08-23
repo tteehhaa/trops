@@ -33,9 +33,9 @@
 | SC-1 게이트 전건 PASS | ✅ | G1~G5 |
 | SC-2 `npm test` 전량 green | ✅ | 541/541 |
 | SC-3 build 성공 · `dist/` 0건 | ✅ | G5 |
-| SC-4 배포 후 `/precheck` 가격·결제 버튼 노출 | ⏳ | 배포 후 확인 |
+| SC-4 배포 후 `/precheck` 가격·결제 버튼 노출 | ✅ | 2026-08-23 프로덕션 실측 — 아래 §배포 확인 |
 
-**4/4 중 3 완료, 1 배포 대기.**
+**4/4 완료.**
 
 ## 재실행 방법
 
@@ -44,6 +44,29 @@ npm test                          # 541건
 node scripts/check-b1-gates.js    # 절대 조건 5개
 node scripts/check-b1-gates.js <ref>   # 다른 기준 판과 비교
 ```
+
+## 배포 확인 (2026-08-23 · 프로덕션 실측)
+
+배포: `dpl_BcnvujmAEdpUeH8ivRojAJmDS3xf` → `https://www.trops.kr` (READY)
+
+라이브 슬롯 상태가 `{"open":false,"remaining":0}` 이라 `lockFreePlan()` 이 유료 경로를 자동 선택합니다 —
+따라서 **지금 실제 방문자가 보는 화면이 결제 화면**입니다.
+
+| 항목 | `/precheck` (ko) | `/en-precheck` (en) |
+|---|---|---|
+| `#pay-area` | VISIBLE 520x819 | VISIBLE 520x340 |
+| `.pay-summary-value` | **W330,000** VISIBLE 132x47 | **W330,000** VISIBLE 132x47 |
+| `.pay-vat` | 부가세(VAT) 포함입니다. | VAT included. |
+| 결제 버튼 | **W330,000 결제하고 보내기** VISIBLE 520x52 | **Pay W330,000 and send** VISIBLE 520x52 |
+| 토스 위젯 | iframe 렌더 (결제수단 480px + 약관 80px) | iframe 렌더 |
+| 콘솔 오류 | 없음 | 없음 |
+| 금지 문자열 | 0건 | 0건 |
+
+토스 위젯 실측: 퀵계좌이체 · 신용/체크카드 · 토스페이 · PAYCO · 카카오페이 · 네이버페이 · 신한카드 무이자 할부 ·
+[필수] 약관 동의 체크박스 정상. `api/payment-config` → `amount:330000` · `chargeEnabled:true` · `displayEnabled:true`.
+
+그 밖 라이브 확인: 알림 주기 30·7·1일(index·en) · 「17개 항목」(nda·refund) · CTA 노트 교체(nda·en-nda) ·
+환불 무상 조항 교체(refund·en-refund) · 8개 페이지 금지 문자열 0건.
 
 ## Lessons Learned
 
