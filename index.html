@@ -1228,6 +1228,10 @@
     letter-spacing: -0.030em;
     font-weight: 700;
   }
+  /* 좁은 화면에서는 강제 줄바꿈을 걷습니다 — 28px 글자가 이미 자연스럽게 두 줄로
+     나뉘는데 여기서 또 끊으면 「건부터」 한 어절만 남는 줄이 생깁니다.
+     769px 부터 살아나는 짝은 아래 @media (min-width: 769px) 블록에 있습니다. */
+  .act h2 br { display: none; }
   .act-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 12px; }
   .act-note { margin: 0; font-size: 12.5px; line-height: 1.7; color: var(--ink-62); }
 
@@ -1423,6 +1427,12 @@
     /* 신뢰 인용문은 <p> 지만 2026-08-14 부터 헤드라인 크기라 같은 처리를 받습니다 —
        큰 글자에서 마지막 줄에 한 어절만 남으면 덩어리가 깨집니다. */
     .trust .stat-line { text-wrap: balance; }
+
+    /* 중간 CTA 만 balance 에 맡기지 않고 끊을 자리를 못박습니다 〔2026-08-24 · 창업자 지시〕.
+       balance 는 줄 길이를 고르게 맞추려 들어 「…수출 / 건부터 등록해 보세요.」처럼
+       끊을 수 있는데, 지시받은 자리는 「건부터」 **뒤**입니다. <br> 이 자리를 잡고
+       balance 는 그 두 줄 안에서만 일합니다 — 문구는 손대지 않았습니다. */
+    .act h2 br { display: inline; }
   }
 
   /* ---------- Responsive ---------- */
@@ -2021,7 +2031,16 @@
               더 붙이지 마십시오.
            ⚠️ 목적지는 PRD §6-1 이 「무료로 시작하기」에 지정한 앱 가입 화면입니다. -->
       <div class="container narrow-c sec-center act-inner">
-        <h2 id="act-title">지금 검토 중이신 수출 건부터 등록해 보세요.</h2>
+        <!-- ⚠️ 이 <br> 은 **줄바꿈 지정일 뿐 문구가 아닙니다** 〔2026-08-24 · 창업자 지시〕.
+             §5-16 원문에서 한 글자도 더하거나 빼지 않았습니다 — 「건부터」 뒤에서 끊을
+             자리만 지정합니다. 좁은 화면에서는 이 <br> 을 숨깁니다(자연 줄바꿈이
+             이미 두 줄로 나누므로, 강제로 끊으면 「건부터」만 남는 세 줄이 됩니다).
+             CSS 는 `.act h2 br` 규칙 두 개를 보십시오.
+             ⛔ 「건부터」와 `<br>` 사이의 **공백 한 칸을 지우지 마십시오.** `<br>` 은
+                엘리먼트라서 공백이 아닙니다 — 붙여 쓰면 `display:none` 이 걸리는 좁은
+                화면에서 「건부터등록해」로 어절이 들러붙습니다(실측으로 확인). 넓은
+                화면에서는 줄 끝 공백이라 렌더링에 영향이 없습니다. -->
+        <h2 id="act-title">지금 검토 중이신 수출 건부터 <br>등록해 보세요.</h2>
         <div class="act-row">
           <a class="btn btn-primary btn-full" href="https://app.trops.kr/account/password" target="_self">무료로 시작하기</a>
         </div>
