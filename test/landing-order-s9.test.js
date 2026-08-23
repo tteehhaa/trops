@@ -194,7 +194,11 @@ test('O4 세 상품이 각각 한 번씩만 소개된다', () => {
   // 각 상품이 카드 머리에서 한 번만 이름 불린다.
   const titles = (block.match(/<span class="feat-title">([^<]*)<\/span>/g) || [])
     .map((s) => s.replace(/<[^>]*>/g, '').trim());
-  assert.deepStrictEqual(titles, ['수출 사전점검', '바이어 확인', '기한 관리'],
+  /* 🔄 2026-08-23 〔PRD v2.1 B2〕 상품 3종이 확정 명칭으로 바뀌었습니다:
+     수출 사전점검 · 수출 계약관리 · 수출 채권·보험관리. 종전 2번 상품은 랜딩에서
+     빠졌고(PRD §8-1 결정 3), 3번은 이름만 바뀌었습니다(id 는 `feat-timeline` 유지 —
+     나간 메일이 그 앵커로 들어옵니다). */
+  assert.deepStrictEqual(titles, ['수출 사전점검', '수출 계약관리', '수출 채권·보험관리'],
     '상품 카드 제목이 용어 정본과 다릅니다: ' + JSON.stringify(titles));
 
   // 한 상품 안에서 개요(.feat-sum)와 상세(.feat-desc)가 층을 나눠 갖는가.
@@ -222,7 +226,7 @@ test('O4-a 한 카드 안에서 머리와 패널이 같은 말을 하지 않는�
     .map((x) => x.replace(/[\s·,.]/g, ''))
     .filter((x) => x.length > 12);
 
-  for (const id of ['feat-precheck', 'feat-buyer', 'feat-timeline']) {
+  for (const id of ['feat-precheck', 'feat-contract', 'feat-timeline']) {
     // 🔄 카드 <div> → 탭 패널 〔2026-08-14 · cards-tabs-s12〕. 요약도 <span> 에서 <p> 로
     //    바뀌었습니다(버튼 밖으로 나왔으므로 문단을 쓸 수 있습니다). 층 검사는 그대로입니다.
     const at = block.indexOf('<div class="feat-panel" id="' + id + '-panel"');
@@ -230,8 +234,15 @@ test('O4-a 한 카드 안에서 머리와 패널이 같은 말을 하지 않는�
     const next = block.indexOf('<div class="feat-panel" id=', at + 10);
     const card = block.slice(at, next === -1 ? undefined : next);
 
-    const sum = (card.match(/<p class="feat-sum">([^<]*)<\/p>/) || [])[1];
-    const desc = (card.match(/<p class="feat-desc">([^<]*)<\/p>/) || [])[1];
+    /* 🔄 `[^<]*` → `[\s\S]*?` + 태그 제거 〔2026-08-23 · B2〕. PRD §5-3 의 요약은 두 줄로
+       확정돼 있어 <br> 가 들어갑니다 — 종전 정규식은 안쪽에 태그가 하나라도 있으면
+       매칭에 실패해 「요약이 없다」고 잘못 말했습니다. 층 검사 자체는 그대로입니다. */
+    const inner = (re) => {
+      const m = card.match(re);
+      return m ? m[1].replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() : undefined;
+    };
+    const sum = inner(/<p class="feat-sum">([\s\S]*?)<\/p>/);
+    const desc = inner(/<p class="feat-desc">([\s\S]*?)<\/p>/);
     assert.ok(sum && desc, id + ' 에 요약이나 설명이 없습니다');
 
     const shared = keys(sum).filter((k) => keys(desc).includes(k));
@@ -488,9 +499,11 @@ test('재배치로 콘텐츠가 사라지지 않았다 — 각 블록이 한 번
     ['안심 선언', '지금 놓치기 쉬운 것이 무엇인지, 30초 만에 확인해보세요.'],
     ['법적 고지', '법률 자문 서비스가 아닙니다'],
     ['HOW h2', '지금은 서명 전에 달라진 조건부터'],
-    ['기한관리 훅', '계약서 하나에 기한이 몇 개나 숨어있는지 아세요?'],
-    ['바이어확인 안내', '사전점검 결과화면에서 바로 확인하실 수 있습니다'],
-    ['기한관리 무료 명시', '지금은 무료입니다.'],
+    // 🔄 2026-08-23 〔B2〕 세 줄을 뺐습니다 — 전부 교체된 상품 ②③ 의 문면이고,
+    //    PRD §5-2·§5-3 이 그 자리를 새 원고로 덮었습니다. 새 원고의 존재는
+    //    scripts/check-b2-gates.js 와 아래 상품명 검사가 지킵니다.
+    ['상품 ② 확정 문구', '계약서를 드라이브에 보관하는 것만으로는 부족합니다.'],
+    ['상품 ③ 확정 문구', '가입하신 보험 상품을 등록하시면 약관이 정한 기한이 항목으로 정리됩니다.'],
   ];
   for (const [name, s] of MUST) {
     assert.ok(B.indexOf(s) !== -1, name + ' 이(가) 페이지에서 사라졌습니다: 「' + s + '」');

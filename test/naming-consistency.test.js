@@ -104,13 +104,15 @@ test('05 배지 3개가 생애주기만 말한다', () => {
   const metas = (M.index.match(/<span class="feat-meta">([^<]*)<\/span>/g) || [])
     .map((s) => s.replace(/<[^>]*>/g, '').trim());
 
-  assert.deepStrictEqual(metas, ['거래 시작 전', '거래 시작 전', '거래 시작 후'],
+  /* 🔄 2026-08-23 〔PRD v2.1 B2〕 상품 3종 확정 명칭 반영. */
+  assert.deepStrictEqual(metas, ['거래 시작 전', '계약 체결 단계', '이행 및 사후관리 단계'],
     '배지에 생애주기 아닌 값이 섞였습니다: ' + JSON.stringify(metas));
 });
 
 test('바이어확인 카드에 「준비 중」이 없다 — 라우트가 이미 돈다', () => {
   // 🔄 카드 <div> → 탭 패널 〔2026-08-14 · cards-tabs-s12〕.
-  const start = M.index.indexOf('<div class="feat-panel" id="feat-buyer-panel"');
+  // 🔄 2026-08-23 〔B2〕 탭② id 교체(feat-buyer → feat-contract).
+  const start = M.index.indexOf('<div class="feat-panel" id="feat-contract-panel"');
   const block = M.index.slice(start, M.index.indexOf('<div class="feat-panel" id=', start + 10));
   assert.ok(!/준비\s*중/.test(block),
     '「준비 중」이 남아 있습니다 — 같은 카드가 「바로 확인하실 수 있습니다」라고도 말합니다');
@@ -124,8 +126,13 @@ test('기한관리 「지금은 무료」가 배지에서 빠지고 본문에 �
   assert.ok(!/<span class="feat-meta">[^<]*무료/.test(block), '배지에 가격이 남아 있습니다');
   // 흐름 md §4 Give/Get 은 「무료임을 밝히되 유료화 여지를 남기는 문구로」를 요구합니다.
   // 배지에서 뺀 것이지 정책을 지운 것이 아니므로 본문에는 반드시 남아 있어야 합니다.
-  assert.ok(/class="feat-desc"[^>]*>[^<]*지금은 무료/.test(block),
-    '본문에서도 「지금은 무료」가 사라졌습니다 — 흐름 md §4 요구가 깨집니다');
+  /* 🔄 **자리가 바뀌었습니다** 〔2026-08-23 · PRD v2.1 §5-3〕. 무료임을 밝히는 자리가
+     .feat-desc 마지막 문장(「지금은 무료입니다.」)에서 **상태줄(.feat-avail)**로 올라갔고,
+     문면도 「무료로 이용하실 수 있습니다」로 확정됐습니다. 흐름 md §4 Give/Get 이 요구하는
+     것은 「무료임을 밝힌다」이지 그것이 어느 줄에 있느냐가 아닙니다 — 요구는 그대로
+     지켜집니다. ⛔ 두 곳에 함께 쓰지 마십시오(한 상품 = 한 번의 설명). */
+  assert.ok(/class="feat-avail">무료로 이용하실 수 있습니다</.test(block),
+    '상태줄에서도 「무료로 이용하실 수 있습니다」가 사라졌습니다 — Give/Get 요구가 깨집니다');
 });
 
 /* ══ 2. 04 2층카드 ↔ 05 아코디언 명칭 통일 ══════════════════════════════════ */
@@ -162,7 +169,8 @@ test('상품 카드가 용어 정본대로 생애주기 + 상품명을 갖는다
 
   const metas = (cards.match(/<span class="feat-meta">([^<]*)<\/span>/g) || [])
     .map((s) => s.replace(/<[^>]*>/g, '').trim());
-  assert.deepStrictEqual(metas, ['거래 시작 전', '거래 시작 전', '거래 시작 후'],
+  /* 🔄 2026-08-23 〔PRD v2.1 B2〕 상품 3종 확정 명칭 반영. */
+  assert.deepStrictEqual(metas, ['거래 시작 전', '계약 체결 단계', '이행 및 사후관리 단계'],
     '생애주기 축이 용어 정본과 다릅니다: ' + JSON.stringify(metas));
 
   assert.ok(cards.indexOf('NDA 비교') === -1, '옛 이름 「NDA 비교」가 남아 있습니다');
@@ -170,7 +178,8 @@ test('상품 카드가 용어 정본대로 생애주기 + 상품명을 갖는다
 
   // 상품명이 카드마다 한 번씩만 나오는지 — 머리와 패널이 이름을 두 번 말하면
   // 통합의 목적(한 상품 = 한 번의 설명)이 카드 안에서 다시 깨집니다.
-  for (const name of ['수출 사전점검', '바이어 확인', '기한 관리']) {
+  /* 🔄 2026-08-23 〔PRD v2.1 B2〕 상품 3종 확정 명칭. */
+  for (const name of ['수출 사전점검', '수출 계약관리', '수출 채권·보험관리']) {
     const hits = (cards.match(new RegExp(name, 'g')) || []).length;
     assert.strictEqual(hits, 1,
       '「' + name + '」이 상품소개 섹션에 ' + hits + '번 나옵니다 (1번이어야 합니다)');
@@ -180,7 +189,8 @@ test('상품 카드가 용어 정본대로 생애주기 + 상품명을 갖는다
 test('상품 카드 3장의 제목이 용어 정본과 같다', () => {
   const titles = (M.index.match(/<span class="feat-title">([^<]*)<\/span>/g) || [])
     .map((s) => s.replace(/<[^>]*>/g, '').trim());
-  assert.deepStrictEqual(titles, ['수출 사전점검', '바이어 확인', '기한 관리'],
+  /* 🔄 2026-08-23 〔PRD v2.1 B2〕 상품 3종 확정 명칭 반영. */
+  assert.deepStrictEqual(titles, ['수출 사전점검', '수출 계약관리', '수출 채권·보험관리'],
     '05 세 카드 제목이 용어 정본과 다릅니다: ' + JSON.stringify(titles));
 });
 
@@ -247,10 +257,16 @@ test('상품 카드 3장이 모두 상태줄을 갖는다 — 배지를 지운 �
     .map((s) => s.replace(/<[^>]*>/g, '').trim());
   assert.strictEqual(avails.length, 3,
     'index.html 의 상태줄이 ' + avails.length + '개입니다 — 세 카드 모두 필요합니다');
-  assert.strictEqual(new Set(avails).size, 3,
-    '상태줄 3개가 서로 다르지 않습니다 — 세 상품의 실제 상태가 다릅니다: ' + JSON.stringify(avails));
-  // 「무료」는 덤처럼 보여 가치를 저평가시킵니다(흐름 md §4 Give/Get 은 「포함」 계열).
-  assert.ok(!avails.some((a) => /무료/.test(a)), '상태줄에 「무료」가 들어왔습니다: ' + JSON.stringify(avails));
+  /* 🔄 **두 단언을 갈아 적었습니다** 〔2026-08-23 · PRD v2.1 §5-2·§5-3〕.
+     ① 「3개가 서로 다르다」 — 상품 ②③ 이 **둘 다 무료**라 상태줄이 같은 말을 합니다.
+        다르게 적으려면 사실이 아닌 차이를 지어내야 합니다. 지킬 것은 「빈 상태줄이
+        없다」이므로 개수만 봅니다.
+     ② 「상태줄에 무료 금지」 — 그 규칙은 종전 2번 상품이 사전점검의 **덤**으로 붙어
+        있던 시절의 것입니다(그래서 「포함」 계열을 썼습니다). 지금 ②③ 은 독립 상품이고
+        무료가 **가치 제안 자체**입니다. PRD §5-2·§5-3 이 상태줄 문면을 확정했습니다. */
+  for (const a of avails) {
+    assert.ok(a.length > 0, '빈 상태줄이 있습니다: ' + JSON.stringify(avails));
+  }
 
   // 🔄 en.html 이 같은 구조가 됐습니다 〔2026-08-16 · 영문화〕. 종전에는 옛 04 2층카드
   //    (.card-title × 2)를 단언하고 있었고, 그것이 en.html 이 다섯 커밋 뒤에 남아 있던
@@ -259,11 +275,16 @@ test('상품 카드 3장이 모두 상태줄을 갖는다 — 배지를 지운 �
     .map((s) => s.replace(/<[^>]*>/g, '').trim());
   assert.strictEqual(enAvails.length, 3,
     'en.html 의 상태줄이 ' + enAvails.length + '개입니다 — 세 카드 모두 필요합니다');
-  assert.strictEqual(new Set(enAvails).size, 3,
-    'en.html 상태줄 3개가 서로 다르지 않습니다: ' + JSON.stringify(enAvails));
-  // 국문의 「무료」와 같은 이유 — 덤처럼 보이면 가치가 저평가됩니다.
-  assert.ok(!enAvails.some((a) => /\bfree\b/i.test(a)),
-    'en.html 상태줄에 「free」가 들어왔습니다: ' + JSON.stringify(enAvails));
+  /* 🔄 「3개가 서로 다르다」를 뗐습니다 〔2026-08-23 · B2〕 — 국문과 같은 사유입니다.
+     상품 ②③ 이 둘 다 무료라 상태줄이 같은 말을 합니다. 지킬 것은 「빈 상태줄이 없다」. */
+  for (const a of enAvails) {
+    assert.ok(a.length > 0, 'en.html 에 빈 상태줄이 있습니다: ' + JSON.stringify(enAvails));
+  }
+  /* 🔄 「free 금지」를 뗐습니다 〔2026-08-23 · B2〕 — 국문과 같은 사유입니다. 그 규칙은
+     이 자리의 상품이 사전점검의 덤이던 시절의 것이고, PRD §5-2·§5-3 은 상품 ②③ 을
+     독립 상품으로 두면서 무료를 **가치 제안**으로 확정했습니다. */
+  assert.ok(enAvails.filter((a) => /\bfree\b/i.test(a)).length === 2,
+    'en.html 상태줄의 무료 표기가 상품 ②③ 두 곳이 아닙니다: ' + JSON.stringify(enAvails));
 });
 
 /*
@@ -443,8 +464,11 @@ test('푸터 태그라인이 배포되는 전 페이지에서 같다', () => {
   assert.strictEqual(pre, ko, 'index 와 precheck 이 다릅니다: ' + ko + ' / ' + pre);
 
   // 3기능을 아우르는지 — 한 기능 이름만 박아 두면 나머지 둘이 부록이 됩니다.
-  assert.ok(/확인/.test(ko) && /기한/.test(ko),
-    '태그라인이 3기능(문서대조·바이어확인·기한관리)을 아우르지 않습니다: ' + ko);
+  /* 🔄 2026-08-23 〔B2 · PRD §6-2〕 상품 3종 확정 명칭으로 바뀌었습니다. 세 이름이
+     전부 들어 있는지를 봅니다 — 하나라도 빠지면 그 상품이 부록이 됩니다. */
+  for (const name of ['수출 사전점검', '수출 계약관리', '수출 채권관리']) {
+    assert.ok(ko.indexOf(name) !== -1, '태그라인에 「' + name + '」이 없습니다: ' + ko);
+  }
 });
 
 test('precheck 의 description 류에 「NDA」가 없다', () => {
@@ -705,7 +729,8 @@ test('en.html 상품 탭 3개가 국문 3상품과 1:1 로 대응한다', () => 
   const cards = section(M.en, 'cards-sec');
   const titles = (cards.match(/<span class="feat-title">([^<]*)<\/span>/g) || [])
     .map((s) => s.replace(/<[^>]*>/g, '').trim());
-  assert.deepStrictEqual(titles, ['Export pre-check', 'Buyer check', 'Deadline tracking'],
+  /* 🔄 2026-08-23 〔PRD v2.1 B2〕 상품 3종 확정 명칭 반영. */
+  assert.deepStrictEqual(titles, ['Export pre-check', 'Export contract management', 'Export receivables &amp; insurance'],
     '상품 탭 이름이 다릅니다: ' + JSON.stringify(titles));
 
   /* 옛 **상품명** — 상품소개 섹션 안에 하나라도 살아 있으면 한 상품이 두 이름이 됩니다.
@@ -775,8 +800,10 @@ test('en.html 푸터 태그라인이 한 기능만 말하지 않는다', () => {
   const tag = (M.en.match(/<span class="footer-meta">([^<]*)<\/span>/) || [])[1] || '';
   assert.ok(tag.indexOf('Buyer document pre-check') === -1,
     '태그라인이 3기능 중 하나만 말합니다: ' + tag);
-  assert.ok(/check/i.test(tag) && /deadline/i.test(tag),
-    '확인(문서대조·바이어확인)과 기한관리를 함께 담고 있지 않습니다: ' + tag);
+  /* 🔄 2026-08-23 〔B2 · PRD §6-2〕 국문과 짝을 이루는 영문 3종입니다. */
+  for (const name of ['Export pre-check', 'Export contract management', 'Export receivables management']) {
+    assert.ok(tag.indexOf(name) !== -1, '태그라인에 「' + name + '」이 없습니다: ' + tag);
+  }
 });
 
 /*

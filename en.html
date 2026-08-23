@@ -515,6 +515,10 @@
      ⚠️ en.html 은 자기 <style> 에 같은 규칙 사본과 마크업(.interest-sub)을 **그대로**
         갖고 있습니다. 이번 배치는 국문 한정이라 그쪽은 손대지 않았습니다 — 영문을
         맞출 때 CSS·마크업 두 곳을 함께 옮기십시오. */
+  /* 🔄 신설 〔2026-08-23 · B2-8〕 — §5-9 4단 구성(제목·버튼·안내·폼 리드). */
+  .interest-cta { margin: 20px 0 0; }
+  .interest-note { margin: 12px 0 0; font-size: 14px; line-height: 1.7; color: var(--muted); }
+  .interest-lead { margin: 28px 0 0; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); }
   .interest-form {
     max-width: 440px;
     margin-top: 32px;
@@ -1248,6 +1252,8 @@
   }
   .orgs { margin: 28px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px; }
   .orgs li { font-size: 16.5px; line-height: 1.76; color: var(--ink-64); }
+  /* 🔄 신설 〔2026-08-23 · B2-6〕 — §5-7 이 제목과 다음 문장을 나눴습니다. */
+  .orgs-lead { margin: 10px 0 0; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); }
   .orgs-note { margin: 28px 0 0; font-size: 12.5px; line-height: 1.7; color: var(--muted); }
 
   /* 신설 섹션 헤딩의 줄바꿈 — 769px 이상에서만 balance 를 씁니다.
@@ -1334,6 +1340,8 @@
       gap: 48px;
       align-items: start;
     }
+    /* 🔄 신설 〔2026-08-23 · B2〕 — 예시 화면이 없는 패널을 1열로 폅니다(국문과 같음). */
+    .feat-panel-pad.is-solo { grid-template-columns: minmax(0, 1fr); }
     /* 근거 섹션도 **같은 두 열**입니다 〔2026-08-14 · basis-split-s13〕. 바로 위 이웃과
        열 구조가 다르면 페이지에 격자가 두 종류로 보입니다. 값을 따로 두지 않는 이유도
        같습니다 — 한쪽만 고치면 두 섹션이 조용히 어긋납니다.
@@ -1784,8 +1792,10 @@
             끊깁니다.
             ⚠️ 상품 이름이 페이지 앞쪽에서 완전히 사라지지 않도록 **히어로 미니 신호**를
                같은 배치에서 신설했습니다(A3 §3) — 이 섹션의 세 탭으로 앵커가 걸려
-               있습니다. 탭 id 3개(feat-precheck · feat-buyer · feat-timeline)를 바꾸면
-               히어로의 그 세 링크가 함께 죽습니다.
+               있었습니다.
+               🔄 2026-08-23 〔B2 실측〕 — 그 히어로 앵커는 v-next 전면교체(2026-08-16)로
+                  이미 사라졌습니다(페이지에 `href="#feat-*"` 가 없습니다).
+               🔴 다만 `feat-timeline` 은 그대로 둡니다 — 나간 메일이 그 앵커로 들어옵니다.
             ⚠️ 이 섹션을 다시 위로 올리려면 배경 교차부터 다시 계산하십시오 — 지금은
                안심(--surface) → 여기(--bg) → 로드맵(--surface) 로 맞물려 있습니다
                (test/landing-order-s9.test.js O7 「연속 배경 0」).
@@ -1864,22 +1874,22 @@
               <span class="feat-meta">Before your trade starts</span>
               <span class="feat-title">Export pre-check</span>
             </button>
-            <button class="tab" type="button" role="tab" id="feat-buyer" aria-controls="feat-buyer-panel" aria-selected="false" tabindex="-1">
-              <!-- 「· 준비 중」을 걷었습니다 〔2026-08-13〕. buyer-guard 라우트가 이미 돌고
-                   있어 사실과 달랐고, 이 상품의 .feat-note 가 「사전점검 결과화면에서 바로
-                   확인하실 수 있습니다」라고 말하는 것과 정면으로 충돌했습니다.
-                   ⚠️ 이 자리에는 생애주기만 넣습니다(흐름 md §4-1 3분류). -->
-              <span class="feat-meta">Before your trade starts</span>
-              <span class="feat-title">Buyer check</span>
+            <button class="tab" type="button" role="tab" id="feat-contract" aria-controls="feat-contract-panel" aria-selected="false" tabindex="-1">
+              <!-- 🔄 종전 2번 상품 → 「Export contract management」 〔2026-08-23 · PRD v2.1 B2-2〕.
+                   국문 index.html 과 같은 자리·같은 처리입니다. 원문은 §5-2 이고, 영문은
+                   그 뜻을 옮긴 것입니다(PRD 는 국문만 확정했습니다). -->
+              <span class="feat-meta">At contract signing</span>
+              <span class="feat-title">Export contract management</span>
             </button>
             <button class="tab" type="button" role="tab" id="feat-timeline" aria-controls="feat-timeline-panel" aria-selected="false" tabindex="-1">
-              <!-- 「· 지금은 무료」를 걷었습니다 〔2026-08-13〕. 가격 정책이 바뀐 것이
-                   **아닙니다** — 배지 자리에서 본문으로 내린 것뿐입니다. 이 자리는 생애주기를
-                   말하는 축인데 여기만 가격이 섞여 있었습니다.
-                   ✅ 흐름 md §4 Give/Get 이 요구하는 「지금은 무료」 명시는 아래 패널의
-                      .feat-desc 마지막 문장이 계속 집니다. 지우지 마십시오. -->
-              <span class="feat-meta">After your trade starts</span>
-              <span class="feat-title">Deadline tracking</span>
+              <!-- 🔄 「Deadline tracking」 → 「Export receivables & insurance」
+                   〔2026-08-23 · PRD v2.1 B2-3〕. 원문은 §5-3.
+                   ⛔ 이 패널에 「we'll notify you」류의 발송 약속을 쓰지 마십시오 —
+                      `L1_EMAIL_TOKEN` 미설정으로 메일이 나가지 않습니다(PRD P-3).
+                   🔴 id 는 `feat-timeline` 그대로 둡니다 — 나간 메일이 이 앵커로 들어옵니다
+                      (api/_notify.js `buildTimelinePreviewLink`). -->
+              <span class="feat-meta">During fulfilment and after</span>
+              <span class="feat-title">Export receivables &amp; insurance</span>
             </button>
           </div>
 
@@ -1923,119 +1933,53 @@
             </div>
           </div>
 
-          <!-- ===== 02 바이어확인 패널 — 실행버튼 [비교해 보기] → /precheck =====
-               대신 .feat-note 한 줄로 사전점검에 잇습니다. 죽은 클릭(눌러도 아무 일 없는
-               버튼)을 만들지 않으려는 결정이고, 흐름 md §1 이 「안내로 사전점검에 연결
-               (죽은 클릭 방지)」로 명시한 처리입니다.
-               ⚠️ 「무료」라는 낱말을 쓰지 마십시오 — 덤처럼 보여 가치가 저평가됩니다.
-                  「포함」 계열 표현을 씁니다(흐름 md §4 Give/Get 표). 상태줄도 그 표를 따릅니다. -->
-          <div class="feat-panel" id="feat-buyer-panel" role="tabpanel" aria-labelledby="feat-buyer" tabindex="0" hidden>
-            <div class="feat-panel-pad">
+          <!-- 🔴 TODO 〔B2 이월 · 2026-08-23〕 — 종전 2번 상품(앱 실명칭 「기업검증」)의
+               산출물 캡처를 보관합니다. 국문 index.html 의 같은 주석과 짝입니다 —
+               되살릴 때의 규칙(실명 → 가상값)은 그쪽에 적혀 있습니다. 지우지 마십시오.
+
+          <figure class="feat-shot">
+            <img src="/img/buyer-doc.jpg" alt="Supplier information sheet: corporate existence and fraud-signal checks with their status, evidence and verification time, laid out as a document you can send to your counterparty" width="1644" height="1085" loading="lazy">
+            <figcaption class="feat-cap">An example document built from fictional company information. Not real customer data.</figcaption>
+          </figure>
+          -->
+
+          <!-- ===== 02 Export contract management 패널 =====
+               ⚠️ 목적지는 PRD §6-1 이 정한 `app.trops.kr/procedures/new` 입니다. -->
+          <div class="feat-panel" id="feat-contract-panel" role="tabpanel" aria-labelledby="feat-contract" tabindex="0" hidden>
+            <!-- .is-solo — 예시 화면이 아직 없어 2열 그리드의 오른쪽이 빕니다(국문과 같음). -->
+            <div class="feat-panel-pad is-solo">
               <div class="feat-body">
-                <span class="feat-avail">Included in Export pre-check</span>
-                <p class="feat-sum">Before you spend time, check who you’re dealing with.</p>
-                <p class="feat-desc">We check whether the company you’re dealing with actually exists, based on publicly available information. This helps you spot a counterparty that needs a closer look early, before you spend time on a deal that won’t go anywhere. We work only from public information, and we don’t broker or make introductions.</p>
-                <p class="feat-note">You can see this right in your Export pre-check results.</p>
-                <!-- ✅ **실행버튼이 생겼습니다** 〔2026-08-14 · tab-cta-parity-s14〕.
-                     종전에는 위 .feat-note 한 줄이 실행버튼을 **대신**했고, 사유는 「죽은 클릭
-                     (눌러도 아무 일 없는 버튼)을 만들지 않는다」였습니다. 그 사유는 **버튼에
-                     갈 곳이 없을 때**만 성립합니다 — 이 상품은 사전점검 안에서 진행되므로
-                     갈 곳이 있고(/precheck), 바로 위 한 줄이 그 사실을 이미 말합니다.
-                     즉 안내문은 남고, 버튼이 그 안내를 실행합니다.
-                     ⚠️ 목적지를 app.trops.kr 이나 별도 라우트로 바꾸지 마십시오. 이 상품은
-                        전용 진입로가 없습니다 — trops_a 의 buyer-guard 화면은 접수 1건이
-                        있어야 열립니다(캡처 주석 참조). 지금 유효한 문은 /precheck 하나입니다.
-                     ⚠️ 라벨을 이 탭 전용으로 새로 짓지 마십시오 — 같은 곳으로 가는 문은 같은
-                        말을 씁니다. 그리고 상품명(「바이어 확인」)을 버튼에 넣으면 상품소개
-                        섹션 안 상품명 1회 규칙(test/naming-consistency.test.js)이 깨집니다. -->
-                <div><a class="btn btn-secondary" href="/en-precheck">Compare now</a></div>
+                <span class="feat-avail">Free to use</span>
+                <p class="feat-sum">Keeping contracts in a shared drive isn’t enough.</p>
+                <p class="feat-desc">We bring each buyer’s contract terms, payment terms, Incoterms and key fulfilment dates together in one place. After signing, you can track what still needs attention through delivery and payment, deal by deal.</p>
+                <div><a class="btn btn-secondary" href="https://app.trops.kr/procedures/new" target="_self">Register an export contract</a></div>
               </div>
-              <!-- 🔄 **캡처를 결과화면 → 산출 문서로 교체했습니다** 〔2026-08-16 · 대표 지시〕.
-                   종전 buyer-guard.jpg(A-2 공개정보 조회 결과 화면)를 걷어내고, 그 조회가
-                   만드는 **문서 그 자체**(trops_a `/self-report/[id]/document` · Supplier
-                   Information Sheet, doc/s10/TROPS.pdf 원본)로 갈았습니다 — 화면보다 문서가
-                   「상대에게 보낼 수 있는 결과물」이라는 상품 가치를 더 직접 보여줍니다.
-
-                   🔴 **실명(자사 상호·사업자등록번호·주소·해외 바이어명)을 가상값으로 치환한
-                      뒤 찍었습니다.** 원본 문서는 자사(주식회사 테오네) 실제 정보로 만들어진
-                      견본이었고, 그대로 실으면 실제 사업자등록번호·주소가 공개되고 실재하는
-                      해외 유통기업명이 「우리 바이어」처럼 읽힙니다. buyer-guard.jpg 가 지켰던
-                      규칙(실명 → 가상값)을 그대로 이었습니다 — 상호는 한울무역 주식회사
-                      (HANUL TRADING CO., LTD.) · 사업자등록번호 104-86-77231 · 주소 서울특별시
-                      성동구 왕십리로 100 · 바이어는 Meridian Retail Group. 렌더는 프로덕션과
-                      같은 경로(`buildReportDoc` → `<ReportDocument>`)를 쓰는 임시 dev 하네스로
-                      찍고 지웠습니다(`/dev` 접두어라 프로덕션에는 애초에 없는 화면).
-                      운영 주체 표기(하단 「Issued by THEO-NE Co., Ltd.」)는 실제 서비스 발급
-                      주체라 그대로 남겼습니다 — 고객 정보가 아니라 TROPS 자신의 사업자 표시
-                      입니다.
-                   ⛔ 실명이 든 캡처로 갈아 끼우지 마십시오.
-                   ⚠️ alt·캡션에 상품명(「바이어 확인」)을 다시 적지 마십시오. 위 탭이 이미 그
-                      이름을 말하고, test/naming-consistency.test.js 가 **상품명 1회**를
-                      못질합니다(한 상품 = 한 번의 설명).
-
-                   🔄 **높이를 2846 → 1085 로 줄였습니다** 〔2026-08-16 · 대표 지시〕. A4 2쪽
-                      전체를 다 담으면 탭1(c03-result.jpg 904px)·탭3(timeline-map.jpg 983px)
-                      보다 2.6배 이상 길어져, 탭을 넘길 때 세로 이동이 커집니다(§6-2 창틀
-                      도구가 막으려던 문제와 같은 축). SUMMARY 박스 바로 뒤(1. Company
-                      existence 표 시작 전)에서 잘라 두 탭과 비슷한 세로 길이(1644:1085 ≈
-                      1383:904 · 1480:983)로 맞췄습니다.
-                   ⛔ 표 섹션까지 다시 늘리지 마십시오 — 늘리는 순간 이 문제가 되돌아옵니다. -->
-              <figure class="feat-shot">
-                <img src="/img/buyer-doc.jpg" alt="Supplier information sheet: a table of company-existence and fraud-signal checks with their status, evidence and timestamp, formatted as a document you can send to the other company" width="1644" height="1085" loading="lazy">
-                <figcaption class="feat-cap">Illustrative document built from fictional company details. Not real customer information.</figcaption>
-              </figure>
+              <!-- 🔴 TODO 〔B2 이월〕 — /procedures 캡처가 없습니다. 국문 index.html 의
+                   같은 자리 주석 참조. 다른 화면을 빌려다 붙이지 마십시오. -->
             </div>
           </div>
 
-          <!-- ===== 03 기한관리 패널 — 실행버튼 [미리보기] → app.trops.kr =====
-               (결 섹션과 별도 흐름이라 중복 없음)
-               🔄 라벨을 「계약 등록해보기」→「미리보기」로 바꿨습니다〔2026-08-16 · 대표
-               지시〕. 목적지(app.trops.kr)는 그대로입니다 — 문구만 교체했습니다.
-               ⚠️ 이 패널이 페이지에서 유일한 기한관리 미리보기입니다. 로드맵
-                  **한 곳**의 [data-timeline-open] 트리거가 이 하나를 엽니다(히어로·마감 CTA
-                  트리거는 v-next 전면교체〔2026-08-16〕와 대표 수정안 3차로 삭제됐습니다) —
-                  다른 자리에 패널을 복제하지 마십시오.
-               ⚠️ 실행버튼은 btn-secondary 입니다. btn-primary 로 올리면 주버튼이 3회가 됩니다. -->
+          <!-- ===== 03 Export receivables & insurance 패널 =====
+               ⛔ 발송 약속(「we'll notify you」) 금지 — PRD P-3.
+               ⚠️ 증권 목록은 `/policies`, 등록은 `/profile/insurance` 입니다(PRD §6-1). -->
           <div class="feat-panel" id="feat-timeline-panel" role="tabpanel" aria-labelledby="feat-timeline" tabindex="0" hidden>
             <div class="feat-panel-pad">
               <div class="feat-body">
-                <span class="feat-avail">Available to explore now</span>
-                <p class="feat-sum">Don’t miss a deadline tied to money you’re owed.</p>
+                <span class="feat-avail">Free to use</span>
+                <p class="feat-sum">With trade insurance, meeting the notification and filing deadlines<br>matters more than signing up.</p>
+                <!-- 🔴 훅 문장은 그대로 둡니다 — 국문 index.html 의 같은 자리와 짝입니다
+                     (그쪽은 발송된 대기실 메일이 이 문장을 싣고 있습니다). 한쪽만 지우면
+                     test/naming-consistency.test.js STRUCT_DELTA 가 갈라집니다. -->
                 <p class="feat-hook">Do you know how many deadlines are hiding in a single contract?</p>
-                <!-- ✅ 「지금은 무료입니다.」는 흐름 md §4 Give/Get 이 요구하는 명시입니다.
-                     이 문장을 지우면 md 요구가 깨집니다 — 지우지 마십시오. -->
-                <p class="feat-desc">We gather the key deadlines from your trade documents and customs/FX procedures in one place, so you can take care of the steps and paperwork you need, like trade insurance, in time. We email you 30 days, 7 days, and 1 day before each deadline. It’s free for now.</p>
-                <span class="feat-bullets">
-                  <span>· All you need is a contract</span>
-                </span>
-                <div><a class="btn btn-secondary" href="https://app.trops.kr/" target="_self">Preview</a></div>
+                <p class="feat-desc">Register the insurance products you hold and the deadlines set by their terms are laid out as individual items. Each item carries the clause it comes from, and you can see overdue notifications separately from cases where the reference date still needs to be fixed. We support the main products from K-SURE and KODIT.</p>
+                <div><a class="btn btn-secondary" href="https://app.trops.kr/profile/insurance" target="_self">Register your policy</a></div>
               </div>
-              <!-- ✅ **실제 화면 캡처** 〔2026-08-14 · card-shot-reveal-s11〕.
-                   app.trops.kr 홈(화면 4)을 그대로 찍었습니다. 손으로 그리던 자리표시자
-                   (`<div class="feat-map">` + 세로 핀 목록)를 대체한 것입니다.
-                   ⛔ 핀 목록·가짜 지도로 되돌리지 마십시오. 사유는 CSS 쪽 주석에 있습니다.
-
-                   🔄 **지도 패널만 → 홈 대시보드 전체(지도 + 건수 카드 3장)**
-                      〔2026-08-14 · timeline-shot-dashboard-s15〕.
-                      담는 범위가 넓어졌습니다 — 종전에는 「계약이 향하는 곳」 패널
-                      (trops_a `components/l1/world-map-panel.tsx`) 하나만 잘라 찍었고,
-                      지도는 **어디로 가는가**만 말합니다. 이 상품이 파는 것은
-                      「기한이 지났는지 · 임박했는지」이고, 그 답은 지도가 아니라 **아래
-                      건수 카드 3장**(기한 지남 / D-7 이내 / 그 밖)에 있습니다.
-                      이제 캡처가 바로 위 .feat-sum(「… 남은 날짜로 보여드립니다」)과
-                      .feat-desc(「기한 30일 전, 7일 전, 1일 전에 …」)를 화면으로 뒷받침합니다.
-
-                   ⚠️ **건수가 0 / 0 / 0 인 것은 사실입니다** — 로그아웃 상태(계약 0건)의
-                      실제 화면입니다. 보기 좋으라고 숫자를 지어 넣지 마십시오. 지어 넣는
-                      순간 「제품 화면을 그대로 싣는다」가 깨지고, 랜딩이 제품 상태를 손으로
-                      흉내 내던 s11 이전으로 되돌아갑니다(그것을 없앤 것이 s11 입니다).
-                      숫자가 든 화면이 필요하면 **데모 계약을 만들어 그 화면을 찍으십시오.**
-                   ⚠️ 캡처 안의 「프랑스 · 아랍에미리트 계약 2건을 예시로 표시했습니다」는
-                      제품이 스스로 싣는 고지입니다(trops_a world-map-boundary 정책 ①).
-                      그 위에 아래 캡션이 한 겹 더 밝힙니다 — 지우지 마십시오. -->
+              <!-- ✅ 실제 화면 캡처 — 아래 건수 카드 3장이 위 .feat-desc 의 「overdue /
+                   reference date to be fixed」와 문자 그대로 대응합니다(국문과 같음).
+                   ⚠️ 건수 0/0/0 은 로그아웃 상태의 사실입니다. 지어 넣지 마십시오. -->
               <figure class="feat-shot">
-                <img src="/img/timeline-map.jpg" alt="Deadline tracking dashboard: a world map with registered contracts marked over their destination countries, and three count cards splitting them into overdue, due soon, and the rest" width="1480" height="983" loading="lazy">
-                <figcaption class="feat-cap">Illustrative screen. Not a real customer deal.</figcaption>
+                <img src="/img/timeline-map.jpg" alt="Policy deadline dashboard: a world map with registered contracts marked over their destination countries, and three count cards splitting overdue, imminent and everything else" width="1480" height="983" loading="lazy">
+                <figcaption class="feat-cap">We lay out the notification deadlines for the policies you register, together with the clause each one comes from.<br>* An example screen, shown to illustrate.</figcaption>
               </figure>
             </div>
           </div>
@@ -2102,145 +2046,129 @@
     <section class="qna" id="qna" aria-labelledby="qna-title">
       <div class="container qna-inner">
         <h2 id="qna-title">FAQ</h2>
+        <!-- 🔄 **전면교체** 〔2026-08-23 · PRD v2.1 B2-7〕. 국문 index.html 과 짝입니다 —
+             원문은 §5-8 이고 영문은 그 뜻을 옮긴 것입니다. 종전 4그룹은 사전점검 하나만
+             설명해서, 상품이 3종이 된 지금 「이 회사가 무엇을 파는가」에 답하지 못했습니다.
+             ⚠️ 국문과 문항 수·순서를 맞춰 두십시오. 한쪽만 고치면 두 페이지가 다른 제품을
+                설명하게 됩니다. -->
         <div class="body-w qgroups">
 
           <div class="qgroup">
-            <p class="eyebrow-quiet">▸ Is this for me?</p>
-            <div class="qitem" data-open="0">
-              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-11">
-                <span>What actually changes if I use TROPS?</span>
-                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-              </button>
-              <div class="qans" id="qa-11">
-                <p>In overseas trade, it’s sometimes less about not knowing something and more about not realizing what you’re missing.</p>
-                <p>TROPS helps you check things that could become a problem later, like a different term in a document, the counterparty, or a deadline you need to track, early and at each stage of the deal.</p>
-              </div>
-            </div>
-            <div class="qitem" data-open="0">
-              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-12">
-                <span>Do I need TROPS for every overseas deal?</span>
-                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-              </button>
-              <div class="qans" id="qa-12">
-                <p>Not necessarily. If it’s a deal you’re already familiar with, or your company already has a solid review process, you may not need it as much.</p>
-                <p>But it’s useful as an extra check when you’re dealing with a new buyer, the documents you’ve received aren’t familiar, or you’re not sure which procedures and deadlines you need to track.</p>
-              </div>
-            </div>
+            <p class="eyebrow-quiet">▸ Deciding to adopt</p>
             <div class="qitem" data-open="0">
               <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-1">
-                <span>Which companies should use Export pre-check?</span>
+                <span>What changes in day-to-day work if we adopt TROPS?</span>
                 <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
               </button>
               <div class="qans" id="qa-1">
-                <p>This is for companies exporting for the first time who aren’t sure where to start with a document they’ve received, companies who want to check a document from their buyer, and companies who want to compare their own company’s form against a public standard.</p>
+                <p>Export trade information that was scattered across contract PDFs, insurance policies, your ERP, spreadsheets and personal calendars comes together on one screen. For each deal you see what needs action now alongside what is coming up, so you don’t have to rely on someone’s memory or handwritten notes.</p>
               </div>
             </div>
             <div class="qitem" data-open="0">
               <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-2">
-                <span>Can I use this without my own company’s form?</span>
+                <span>What kind of company is this for?</span>
                 <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
               </button>
               <div class="qans" id="qa-2">
-                <p>Yes. If you have a document from your buyer, you don’t need your own form.</p>
-                <p>TROPS uses a public standard form matching the document type as the comparison standard.</p>
+                <p>It suits small and mid-sized exporters who track export contracts and receivable schedules in spreadsheets or calendars, or where someone has to keep on top of notification and filing deadlines themselves after taking out trade insurance. We built it with teams in mind that have no dedicated trade-admin staff, or where one person covers several jobs at once.</p>
               </div>
             </div>
           </div>
 
           <div class="qgroup">
-            <p class="eyebrow-quiet">▸ What will I learn?</p>
+            <p class="eyebrow-quiet">▸ Using it</p>
             <div class="qitem" data-open="0">
               <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-3">
-                <span>What do I see after I upload a document?</span>
+                <span>Can I use this without a contract file?</span>
                 <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
               </button>
               <div class="qans" id="qa-3">
-                <p>We compare your document against a public standard form and show you exactly where it differs, down to the spot in the document.</p>
-                <p>You can also see which standard form we used.</p>
+                <p>Yes. Enter just your export item and destination country and you can use the pre-check straight away. When you register a deal you can also type in the key details yourself, such as buyer name, payment terms and due date.</p>
               </div>
             </div>
             <div class="qitem" data-open="0">
               <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-4">
-                <span>What documents can I compare?</span>
+                <span>Can I manage ordinary export deals that have no trade insurance?</span>
                 <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
               </button>
               <div class="qans" id="qa-4">
-                <p>For now, just NDAs.</p>
-                <p>An NDA (Non-Disclosure Agreement) is a document where both sides agree not to share information they learn during a deal.</p>
-                <p>We’ll add more document types to compare over time.</p>
+                <p>Yes. You can use it purely for delivery schedules, Incoterms and invoice due dates on ordinary export contracts. If you take out trade insurance later, you can link the policy details and notification deadlines on top.</p>
               </div>
             </div>
-          </div>
-
-          <div class="qgroup">
-            <p class="eyebrow-quiet">▸ How do I use it?</p>
             <div class="qitem" data-open="0">
               <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-5">
-                <span>How do I get started?</span>
+                <span>Which insurance products do you support?</span>
                 <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
               </button>
               <div class="qans" id="qa-5">
-                <!-- 🔄 "No login needed" 구절 제거 (핸드오프 3b 전환 · 국문 qa-5 와 같은 판단) -->
-                <p>Just upload the document you want to compare.</p>
-              </div>
-            </div>
-            <div class="qitem" data-open="0">
-              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-6">
-                <span>How do I get my results?</span>
-                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-              </button>
-              <div class="qans" id="qa-6">
-                <p>You’ll get a link by email.</p>
+                <p>We support K-SURE’s short-term export insurance blanket policies (per-shipment and aggregate notification), SME/Mid-cap Plus+, Direct SME Plus+ and Direct Post-Shipment, along with KODIT’s online accounts-receivable insurance. We keep adding to the list.</p>
               </div>
             </div>
           </div>
 
           <div class="qgroup">
-            <p class="eyebrow-quiet">▸ Can I trust this?</p>
+            <p class="eyebrow-quiet">▸ Features and operations</p>
+            <div class="qitem" data-open="0">
+              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-6">
+                <span>What information can I manage, specifically?</span>
+                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+              </button>
+              <div class="qans" id="qa-6">
+                <p>Per-deal contract terms (Incoterms, payment terms), invoice due dates, buyer details, outstanding receivables, and trade insurance policy details with their notification and filing deadlines, all in one place.</p>
+              </div>
+            </div>
             <div class="qitem" data-open="0">
               <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-7">
-                <span>Where does AI come in?</span>
+                <span>We already run an ERP. Do we still need TROPS?</span>
                 <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
               </button>
               <div class="qans" id="qa-7">
-                <p>We use it to find the wording to compare.</p>
-                <p>You can check what it found against the original text.</p>
+                <p>A typical ERP focuses on accounting and on sales and inventory data. TROPS focuses on the trade-practice side: meeting contract obligations, keeping to trade insurance notification deadlines, tracking receivable maturities by buyer. It covers the scheduling-driven admin that is easy to let slip.</p>
               </div>
             </div>
             <div class="qitem" data-open="0">
               <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-8">
-                <span>What happens to the document I upload?</span>
+                <span>How is this different from managing it in a spreadsheet?</span>
                 <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
               </button>
               <div class="qans" id="qa-8">
-                <p>The original is automatically deleted after 30 days. We’ll tell you the deletion date when you upload.</p>
-                <p>You can also request immediate deletion at any time before that.</p>
+                <p>If you have few deals and someone checks them daily, a spreadsheet works. But as you add counterparties and insurance conditions get more complex, missed entries and date mistakes become easy. TROPS turns the deadlines set by the policy terms into individual items and shows the clause each one comes from, so you can see what to attend to and why.</p>
               </div>
             </div>
             <div class="qitem" data-open="0">
               <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-9">
-                <span>What if the document includes the other party’s name or information?</span>
+                <span>How do I check deadlines?</span>
                 <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
               </button>
               <div class="qans" id="qa-9">
-                <p>We only use that information for comparison purposes. We don’t collect it separately or use it for training.</p>
-                <p>It’s deleted along with the original after 30 days.</p>
+                <p>Based on the contracts and policies you register, the screen separates what is overdue, what still needs its reference date fixed, and what is coming up. You can download the deadline list as a spreadsheet.</p>
               </div>
             </div>
             <div class="qitem" data-open="0">
               <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-10">
-                <span>Is this legal advice?</span>
+                <span>Where is AI used?</span>
                 <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
               </button>
-              <!-- 🔴 이 문항을 삭제하지 마십시오 — 법률자문 오인 리스크의 방어선입니다.
-                   🔄 맺음말을 교체했습니다 〔2026-08-16 · 대표 확인〕 — 원래 로드맵 01행에
-                   잠깐 붙어 있던 문구("더 확인할 내용이 있다면 TROPS의 결과물을 가지고
-                   가시면 관련 기관이나 전문가에게 더 효율적으로 물어보실 수 있습니다.")가
-                   실은 이 답변의 맺음말 자리였습니다 — 옮겨왔습니다. -->
               <div class="qans" id="qa-10">
-                <p>No.</p>
-                <p>TROPS compares your document against a public standard form and shows you where it differs and what source we used for comparison.</p>
-                <p>If you need more than that, bring what TROPS gives you to the right agency or expert. It’ll make that conversation faster.</p>
+                <p>It reads the contracts and policy documents you register and pulls out the clauses, payment dates and special conditions needed to manage them. You can always check what it produced against the original.</p>
+              </div>
+            </div>
+            <div class="qitem" data-open="0">
+              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-11">
+                <span>How are uploaded documents stored?</span>
+                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+              </button>
+              <div class="qans" id="qa-11">
+                <p>Original documents you register are deleted automatically after 30 days. If you ask us to delete one sooner, we do it right away.</p>
+              </div>
+            </div>
+            <div class="qitem" data-open="0">
+              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-12">
+                <span>How is buyer information inside a document handled?</span>
+                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+              </button>
+              <div class="qans" id="qa-12">
+                <p>Documents and company information you register are used only to provide the service and run the comparison. We don’t pass them to third parties or use them to train models.</p>
               </div>
             </div>
           </div>
@@ -2307,18 +2235,24 @@
                 상태였습니다. 신뢰신호는 폼이 아니라 **버튼 옆**에 있어야 합니다.
              ⚠️ 여기에 KOTRA 문구를 되살리지 마십시오. 두 곳에 두면 같은 오독이 다시 생깁니다.
                 근거 주석은 09 마감 CTA 의 .close-cta-kotra 위에 있습니다. -->
-        <h2>Sign up for launch updates or reach out, right here.</h2>
+        <!-- 🔄 PRD v2.1 §5-9 대응 〔2026-08-23 · B2-8〕. 국문 index.html 과 짝입니다.
+             ⚠️ [Talk to us about rollout]은 btn-secondary 입니다 — 이 폼의 제출 버튼이
+                이미 btn-primary 라 여기까지 올리면 페이지 주버튼이 3회가 됩니다. -->
+        <h2>Need a company-wide rollout or a feature partnership?</h2>
+        <div class="interest-cta"><button class="btn btn-secondary" type="button" data-focus-inquiry>Talk to us about rollout</button></div>
+        <p class="interest-note">Leave us a note and we’ll review and reply in the order received.</p>
+        <p class="interest-lead">Be first to hear about TROPS feature updates and our full launch.</p>
         <form class="interest-form" id="interest-form" novalidate>
           <!-- 🔴 목적 선택 라디오(사전 등록/문의하기)는 대표 수정안(2026-08-16)으로
                삭제했습니다 — 이메일 아래 [문의하기] 입력창 하나로 대체했습니다(아래).
                ⚠️ 「상담」이라는 낱말을 쓰지 마십시오 — 유상 자문 오인 이력이 있어 명칭을
                   「문의하기」로 확정했습니다(흐름 md §2 · §6-2). -->
           <div class="form-row">
-            <label for="interest-name">Name <span class="req" aria-hidden="true">*</span></label>
+            <label for="interest-name">Full name <span class="req" aria-hidden="true">*</span></label>
             <input type="text" id="interest-name" name="name" autocomplete="name" required>
           </div>
           <div class="form-row">
-            <label for="interest-email">Email <span class="req" aria-hidden="true">*</span></label>
+            <label for="interest-email">Work email <span class="req" aria-hidden="true">*</span></label>
             <input type="email" id="interest-email" name="email" autocomplete="email" required>
           </div>
           <!-- 🔴 신설 〔2026-08-16 · 대표 수정안〕. 목적 라디오를 대체합니다 — 무엇을
@@ -2326,7 +2260,7 @@
                바로 아래에 둡니다. 비워도 제출됩니다(사전 등록만 하고 싶은 사람도 있으므로
                필수 아님). .form-row input 을 그대로 써서 이름·이메일과 크기가 같습니다. -->
           <div class="form-row">
-            <label for="interest-inquiry">What can we help with? <span class="optional">(optional)</span></label>
+            <label for="interest-inquiry">Your message <span class="optional">(optional)</span></label>
             <input type="text" id="interest-inquiry" name="inquiry" autocomplete="off">
           </div>
           <div class="form-row">
@@ -2346,9 +2280,9 @@
               <div>
                 <label class="consent-head" for="interest-consent-privacy">
                   <span class="consent-tag" aria-hidden="true">*</span>
-                  <span>Consent to collect and use personal information</span>
+                  <span>Consent to the collection and use of personal information</span>
                 </label>
-                <p class="consent-body">We collect your name, email, and company name (optional) to send you launch updates. Handled as described in our <a href="/en-privacy">Privacy Policy</a>.</p>
+                <p class="consent-body">We collect your name, email and company name (optional) to confirm your enquiry and send you service information. What we collect is handled under the applicable law and our <a href="/en-privacy">Privacy Policy</a>.</p>
               </div>
             </div>
 
@@ -2357,14 +2291,14 @@
               <div>
                 <label class="consent-head" for="interest-consent-marketing">
                   <span class="consent-tag consent-tag-optional">Optional</span>
-                  <span>Opt in to service updates</span>
+                  <span>Opt in to feature updates and the export-practice newsletter</span>
                 </label>
-                <p class="consent-body">We’ll also send feature updates and resources beyond launch news. You’ll still get launch updates even without this.</p>
+                <p class="consent-body">We’ll send feature release news and export-practice resources. (Declining doesn’t limit your use of the core service.)</p>
               </div>
             </div>
           </div>
 
-          <button type="submit" class="btn btn-primary interest-submit" data-track="interest_submit">Sign up</button>
+          <button type="submit" class="btn btn-primary interest-submit" data-track="interest_submit">Register your interest</button>
           <p class="interest-msg" id="interest-msg" role="status" aria-live="polite"></p>
         </form>
       </div>
@@ -2383,15 +2317,19 @@
     <section class="orgs-sec sec-surface" id="orgs" aria-labelledby="orgs-title">
       <div class="container orgs-inner">
         <div class="body-w">
-          <h2 id="orgs-title">Where to check further</h2>
+          <!-- 🔄 PRD v2.1 §5-7 〔2026-08-23 · B2-6〕. 국문이 원문이고 영문은 그 뜻을
+               옮긴 것입니다. 괄호 안 설명이 새로 들어왔습니다 — 기관 이름만으로는
+               어디에 물어볼지 알 수 없었습니다. -->
+          <h2 id="orgs-title">If you need legal, customs or public-support advice</h2>
+          <p class="orgs-lead">You can consult specialists at the public agencies below.</p>
           <ul class="orgs">
-            <li>· Korea Customs Service, Customs Valuation and Classification Institute</li>
-            <li>· KOTRA overseas trade offices</li>
-            <li>· FTA Support Center</li>
-            <li>· Korea International Trade Association, Trade SOS</li>
-            <li>· Ministry of SMEs and Startups, Business Support Division</li>
+            <li>· Korea Customs Service, Customs Valuation and Classification Institute (tariff classification and HS codes)</li>
+            <li>· KOTRA overseas trade offices (local market research and buyer information)</li>
+            <li>· FTA Support Center (certificates of origin and preferential tariffs)</li>
+            <li>· Korea International Trade Association, Trade SOS (trade practice, legal and trade-policy advice)</li>
+            <li>· Ministry of SMEs and Startups, Business Support Division (sector specialist advice for SMEs)</li>
           </ul>
-          <p class="orgs-note">※ We have no partnership with these agencies and receive no compensation from them.</p>
+          <p class="orgs-note">※ TROPS has no partnership with these agencies and receives no compensation of any kind for listing them.</p>
         </div>
       </div>
     </section>
@@ -2400,7 +2338,8 @@
   <!-- ===== Footer ===== -->
   <footer class="footer">
     <div class="container footer-inner">
-      <p class="footer-tag">Before you trade abroad</p>
+      <!-- 🔄 PRD v2.1 §5-10 〔2026-08-23 · B2-8〕. -->
+      <p class="footer-tag">From export contracts to receivables and insurance, your export admin in one place</p>
       <div class="footer-row">
         <span class="footer-mark">TROPS</span>
         <!-- 태그라인 통일 〔2026-08-13〕. index 는 「바이어 서류 사전 확인」, precheck 는
@@ -2409,15 +2348,15 @@
              🔴 2026-08-16 마무리 정리 3 — 3기능을 뭉뚱그린 「수출 거래 확인과 기한 관리」
                 (「확인」이 사전점검+바이어확인을 함께 가리켜, 상품소개(§5) 탭 이름과
                 1:1로 안 읽혔습니다)에서 세 상품명을 그대로 나열하는 쪽으로 바꿨습니다 —
-                「수출 사전점검 · 바이어 확인 · 기한 관리」. 탭 라벨(.feat-title) 세 개와
-                문자 그대로 대응합니다.
+                「수출 사전점검 · 수출 계약관리 · 수출 채권관리」. 탭 라벨(.feat-title) 세 개와 문자 그대로 대응합니다.
+                🔄 2026-08-23 〔B2〕 상품 3종 확정 명칭으로 갱신했습니다(PRD v2.1 §6-2).
              ⚠️ 아래 .footer-links 의 /precheck 링크 라벨은 그 페이지 <title> 과 맞춰야 하므로
                 「수출 사전점검」입니다(2026-08-13 상품명 통일 반영). 태그라인은 3기능을 아우르는
                 별개 역할이라 그 이름을 그대로 쓰지 않습니다.
              ⚠️ 고칠 때 precheck.html · check.html 의 .footer-meta 도 함께 고치십시오.
                 한쪽만 고치면 다시 어긋납니다(test/naming-consistency.test.js 가 index·
                 precheck 를 막습니다 — check.html 은 코드주석 짝으로만 관리됩니다). -->
-        <span class="footer-meta">Export pre-check · Buyer check · Deadline tracking · contact@theo-ne.com</span>
+        <span class="footer-meta">Export pre-check · Export contract management · Export receivables management · contact@theo-ne.com</span>
       </div>
       <nav class="footer-links" aria-label="Policies">
         <a href="/en-precheck">Export pre-check</a>
@@ -2436,14 +2375,17 @@
              국문 5개 페이지가 함께 따라옵니다. 여기를 직접 고치지 마십시오. -->
         <div><dt>E-Commerce Registration No.</dt><dd>{{biz.ecommerceNo}}</dd></div>
         <div><dt>Address</dt><dd>{{biz.address}}</dd></div>
-        <div><dt>Phone</dt><dd>{{biz.phone}}</dd></div>
+        <!-- 🔄 §5-10 이 라벨을 「고객센터」로 확정했습니다 〔B2-8〕. -->
+        <div><dt>Customer support</dt><dd>{{biz.phone}}</dd></div>
       </dl>
 
       <div class="footer-legal">
         <!-- "판단이 필요한 사안은 파트너 전문가로 연결됩니다" 는 뺐습니다(2026-08-09 승인).
              아직 연결해 드릴 파트너 망이 없는 상태에서 약속으로 읽히는 문장이었습니다. -->
         <p>TROPS · {{biz.companyName}}</p>
-        <p>※ TROPS is a B2B trade service supporting trade document comparison and export data management. It does not provide legal advice or legal representation.</p>
+        <!-- 🔄 PRD v2.1 §5-10 원문 대응 〔2026-08-23 · B2-8〕. 보험 관련 면책이 새로
+             들어왔습니다 — 상품 ③(수출 채권·보험관리)이 생겼기 때문입니다. -->
+        <p>※ TROPS is B2B software that helps you organise and manage information and working schedules related to export contracts, receivables and trade insurance. It does not provide legal advice under the Attorney-at-Law Act, nor does it carry out insurance underwriting or claim decisions on anyone’s behalf.</p>
         <p>© 2026 TROPS · {{biz.companyName}}. All rights reserved.</p>
       </div>
     </div>
@@ -2700,6 +2642,17 @@
        포커스를 줍니다. */
     if (new URLSearchParams(window.location.search).get('focus') === 'inquiry' && inquiryInput) {
       inquiryInput.focus();
+    }
+
+    /* ---------- [Talk to us about rollout] (PRD §5-9 · 2026-08-23) ----------
+       같은 섹션 안의 문의 입력칸으로 포커스를 옮깁니다. 앵커는 스크롤만 하고 포커스를
+       주지 않아 죽은 클릭처럼 읽힙니다(국문 index.html 과 같은 처리). */
+    var focusInquiryBtn = document.querySelector('[data-focus-inquiry]');
+    if (focusInquiryBtn && inquiryInput) {
+      focusInquiryBtn.addEventListener('click', function () {
+        inquiryInput.focus();
+        inquiryInput.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      });
     }
 
     form.addEventListener('submit', function (e) {

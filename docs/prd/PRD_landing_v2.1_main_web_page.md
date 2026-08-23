@@ -477,7 +477,8 @@ WHAT'S NEXT
 
 「수출 사전점검 · 바이어 확인 · 기한 관리」 → 「**수출 사전점검 · 수출 계약관리 · 수출 채권관리**」
 
-국문 6: `index.html:2437` · `uae.html:447` · `nda.html:303` · `refund.html:429` · `precheck.html:1149` · `check.html:849`
+국문 **7**: `index.html` · `uae.html` · `nda.html` · `refund.html` · `precheck.html` · `check.html` · **`privacy.html`**
+> 🔴 정정 〔2026-08-23 · B2 구현 실측〕 — 이 목록은 국문 6개로 적혀 있었으나 `privacy.html` 에도 같은 구 문자열이 있었습니다. 「잔여 0건」을 지키려면 **14개**입니다. 라인 번호는 배치마다 밀리므로 뺐습니다 — `scripts/check-b2-gates.js` G3 이 파일 목록을 들고 있습니다.
 영문 7: `en.html:2420` · `en-precheck.html:1143` · `en-nda.html:304` · `en-check.html:848` · `en-privacy.html:409` · `en-refund.html:425` · `en-uae.html:447`
 
 ---

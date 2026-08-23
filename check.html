@@ -822,11 +822,19 @@
                (라디오 선택)에서 `?focus=inquiry`(그 칸에 포커스)로 맞춰 바꿨습니다
                (index.html 폼 IIFE 참조) — JS 가 죽어도 앵커 이동 자체는 그대로 되고,
                #interest 에서 그 칸에 바로 타이핑하면 됩니다. -->
+          <!-- 🔄 **무료 진입로** 〔2026-08-23 · PRD v2.1 B2-9 · §6-1〕. 종전에는 서류가
+               없으면 갈 곳이 [문의하기] 하나뿐이었습니다 — 유료 아니면 문의뿐이라
+               「지금 바로 써 볼 수 있는 길」이 없었습니다(PRD §1). 앱 가입으로 잇습니다:
+               계약서가 없어도 수출 품목·대상 국가만 입력하면 사전점검을 쓸 수 있습니다
+               (§5-8 「계약서 파일이 없어도 이용할 수 있나요?」와 같은 사실).
+               ⚠️ 목적지는 §6-1 이 정한 `app.trops.kr/account/password` 입니다.
+               ⚠️ id 는 `cta-notify-me` 그대로 둡니다 — 아래 IIFE 와 test 가 이 id 로
+                  분기 표시를 켜고 끕니다. 라벨과 목적지만 바뀌었습니다. -->
           <div id="cta-no-docs" hidden>
             <div class="cta-row">
-              <a class="btn btn-primary btn-full" id="cta-notify-me" href="/?focus=inquiry#interest">문의하기</a>
+              <a class="btn btn-primary btn-full" id="cta-notify-me" href="https://app.trops.kr/account/password" target="_self">무료로 시작하기</a>
             </div>
-            <p>연락처를 남겨주시면, 서비스가 개발 되는대로 연락드리겠습니다.</p>
+            <p>계약서가 없어도 수출 품목과 대상 국가만 입력하시면 사전점검을 이용하실 수 있습니다.</p>
           </div>
         </div>
       </div>
@@ -846,7 +854,7 @@
         <!-- 태그라인은 index.html · precheck.html 과 같은 문구입니다.
              ⚠️ 고칠 때 그 두 곳도 함께 고치십시오
                 (test/naming-consistency.test.js 가 두 값이 같은지 봅니다). -->
-        <span class="footer-meta">수출 사전점검 · 바이어 확인 · 기한 관리 · contact@theo-ne.com</span>
+        <span class="footer-meta">수출 사전점검 · 수출 계약관리 · 수출 채권관리 · contact@theo-ne.com</span>
       </div>
       <nav class="footer-links" aria-label="정책">
         <a href="/precheck">수출 사전점검</a>

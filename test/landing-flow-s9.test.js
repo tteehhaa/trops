@@ -224,7 +224,8 @@ test('🔴 가짜 지도를 그리지 않았다 — 그리는 대신 제품 화�
     '없는 캡처 파일을 참조합니다 — 깨진 이미지가 배포됩니다');
 
   // 예시임을 밝히는 문장이 남아 있어야 합니다.
-  assert.ok(/실제 고객 거래가 아닙니다/.test(card), '예시 표기가 없습니다');
+  // 🔄 2026-08-23 〔B2 · PRD §5-17〕 캡션이 확정 문구로 바뀌었습니다.
+  assert.ok(/이해를 돕기 위한 예시 화면입니다/.test(card), '예시 표기가 없습니다');
 });
 
 test('탭 전환이 같은 자리에서 일어난다 — 높이가 변하는 펼침이 아니다', () => {
@@ -316,8 +317,9 @@ function actionButtons(block) {
 /** 상품 → [버튼 라벨, 목적지]. 목적지가 라벨을 정합니다 — 같은 곳이면 같은 말. */
 const PANEL_CTA = {
   'feat-precheck': ['비교해 보기', '/precheck'],
-  'feat-buyer': ['비교해 보기', '/precheck'],
-  'feat-timeline': ['미리보기', 'https://app.trops.kr/'], // 🔄 2026-08-16 대표 지시로 라벨 교체(목적지 불변)
+  // 🔄 2026-08-23 〔B2 · PRD §5-2·§5-3·§6-1〕 상품 ②③ 교체 — 라벨·목적지가 함께 바뀌었습니다.
+  'feat-contract': ['수출 계약 등록하기', 'https://app.trops.kr/procedures/new'],
+  'feat-timeline': ['가입 상품 등록하기', 'https://app.trops.kr/profile/insurance'],
 };
 
 test('세 상품 패널이 각각 실행버튼을 하나씩 갖는다', () => {
@@ -363,9 +365,12 @@ test('같은 곳으로 가는 버튼은 같은 말을 쓴다 — /precheck 는 �
    */
   const links = (BODY.match(/<a[^>]*class="[^"]*\bbtn\b[^"]*"[^>]*>[^<]*<\/a>/g) || []);
   const toPrecheck = links.filter((a) => /href="\/precheck"/.test(a) && !/id="hero-cta"/.test(a));
-  assert.ok(toPrecheck.length >= 4,
+  /* 🔄 4 → 3 〔2026-08-23 · B2〕. 탭② 가 종전 2번 상품에서 「수출 계약관리」로 바뀌면서
+     목적지가 app.trops.kr 로 갔습니다 — /precheck 로 가는 자리는 탭1 · HOW 하단 ·
+     05 근거 셋입니다. */
+  assert.ok(toPrecheck.length >= 3,
     '/precheck 로 가는 「비교해 보기」 버튼이 ' + toPrecheck.length + '개입니다 — ' +
-    '탭1 · 탭2 · HOW 하단 · 05 근거 네 자리가 있어야 합니다');
+    '탭1 · HOW 하단 · 05 근거 세 자리가 있어야 합니다');
 
   for (const a of toPrecheck) {
     const label = a.replace(/<[^>]*>/g, '').trim();
@@ -381,15 +386,29 @@ test('같은 곳으로 가는 버튼은 같은 말을 쓴다 — /precheck 는 �
     '(히어로·06 결 둘 다 /check 담당)');
 });
 
-test('바이어확인 카드 — 버튼이 생겨도 연결 안내문은 남아 있다', () => {
-  const block = card('feat-buyer');
+/*
+ * 🔄 **갈아 적었습니다** 〔2026-08-23 · PRD v2.1 B2-2〕. 종전 검사는 2번 상품이 전용
+ *    진입로 없이 사전점검 안에서만 돌던 시절의 것이라, 「왜 이 탭의 버튼이 /precheck 로
+ *    가는가」를 설명하는 안내문이 남아 있는지를 봤습니다. 그 상품이 랜딩에서 빠지고
+ *    「수출 계약관리」가 자리를 이어받으면서 **전용 진입로가 생겼고**(/procedures/new),
+ *    설명해야 할 불일치 자체가 사라졌습니다. 지금 지킬 것은 그 반대입니다 —
+ *    이 탭이 사전점검에 얹혀 있지 **않다**는 것.
+ */
+test('탭② 수출 계약관리 — 전용 진입로를 갖는다, 사전점검에 얹혀 있지 않다', () => {
+  const block = card('feat-contract');
   assert.ok(
-    block.indexOf('사전점검 결과화면에서 바로 확인하실 수 있습니다') !== -1,
-    '흐름 md §1 이 지정한 연결 안내문이 없습니다 — 버튼만 남으면 「비교해 보기」가 왜 ' +
-    '바이어확인 탭에 있는지 설명하는 문장이 사라집니다'
+    block.indexOf('/precheck') === -1,
+    '탭② 가 아직 /precheck 를 가리킵니다 — 이 상품은 전용 진입로(/procedures/new)가 있습니다'
   );
-  assert.ok(!/무료/.test(block),
-    '「무료」는 덤처럼 보여 가치를 저평가시킵니다 — 흐름 md §4 Give/Get 은 「포함」 계열을 씁니다');
+  assert.ok(
+    block.indexOf('사전점검') === -1,
+    '탭② 문면이 사전점검에 기대고 있습니다 — 독립 상품입니다(PRD §5-2)'
+  );
+  /* 🔄 「무료 금지」 단언을 뗐습니다 〔2026-08-23 · B2〕 — 그 규칙은 이 자리의 상품이
+     사전점검의 **덤**이던 시절의 것입니다. PRD §5-2 는 「무료로 이용하실 수 있습니다」를
+     이 상품의 상태줄 문면으로 확정했습니다(독립 상품이고 무료가 가치 제안입니다). */
+  assert.ok(block.indexOf('무료로 이용하실 수 있습니다') !== -1,
+    'PRD §5-2 가 확정한 상태줄 문면이 없습니다');
 });
 
 test('사전점검 카드 — 설명과 예시화면이 그대로다', () => {
@@ -405,7 +424,8 @@ test('세 탭이 같은 인터랙션이다 — 누르면 같은 자리에서 내
    *    지키려는 것은 그대로입니다: **셋이 서로 다르게 반응하지 않는다.** 기준을 최소개발
    *    상태인 바이어확인에 맞춘 결정이고(흐름 md §1), 탭이 되어도 바뀌지 않습니다.
    */
-  const ids = ['feat-precheck', 'feat-buyer', 'feat-timeline'];
+  // 🔄 2026-08-23 〔B2〕 탭② id 교체. 탭③ id 는 나간 메일 앵커라 그대로입니다.
+  const ids = ['feat-precheck', 'feat-contract', 'feat-timeline'];
   const tabs = (M.match(/<button class="tab"[^>]*>/g) || []);
   assert.strictEqual(tabs.length, 3, '탭이 ' + tabs.length + '개입니다');
 
