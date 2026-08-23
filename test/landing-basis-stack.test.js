@@ -151,14 +151,55 @@ test('상자 비율과 세 장의 top·width 가 함께 선언돼 있다', () =>
   }
 });
 
-test('회전은 1.5도 안쪽이다 — 근거 묶음이지 사진이 아니다', () => {
-  /* 대표 지시: 「큰 회전각 금지 · 과도한 폴라로이드/엽서 스타일 금지」.
-     이 페이지의 다른 어디에도 기울어진 요소가 없습니다. */
+test('회전을 쓰지 않는다 — 깊이는 위치·겹침·그림자로만 만든다', () => {
+  /* 🔄 「1.5도 안쪽」 → **0도** 〔2026-08-24 2차 · 대표 지시「위치와 겹침만으로 차분한
+     document stack」〕. 종전에는 1도 안팎을 허용했는데, 지시가 회전을 구성 수단에서
+     아예 뺐습니다. 이 페이지의 다른 어디에도 기울어진 요소가 없습니다.
+     ⛔ 되살리지 마십시오 — 「조금만 기울이면 자연스러울 것」이라는 판단이 이 블록을
+        사진처럼 보이게 만듭니다. 이건 근거 묶음입니다. */
   for (const p of PAGES) {
-    for (const m of css(p).matchAll(/\.basis-doc-[a-z]+\s*\{[^}]*rotate\((-?[\d.]+)deg\)/g)) {
-      const deg = Math.abs(parseFloat(m[1]));
-      assert.ok(deg <= 1.5, p + ': 회전이 ' + deg + '도입니다 — 1.5도를 넘으면 장난스러워집니다');
+    const hits = [...css(p).matchAll(/\.basis-doc-[a-z]+\s*\{[^}]*rotate\(/g)];
+    assert.strictEqual(hits.length, 0,
+      p + ': 스택 카드에 rotate 가 ' + hits.length + '개 있습니다 — 깊이는 위치·겹침·그림자로만 만듭니다');
+  }
+});
+
+test('앞장이 뒤 두 장보다 넓지 않다 — 뒤가 배경 장식으로 밀리지 않게', () => {
+  /* 🔴 **이 검사가 지키는 것이 2차 조정의 요지입니다** 〔2026-08-24〕. 앞장(eCFR)이 크면
+     뒤 두 장이 배경처럼 읽히고, 그러면 「여러 정부 공식 근거를 본다」가 아니라
+     「eCFR 을 본다」가 됩니다. 앞장을 다시 키우려면 그 사유부터 여기 적으십시오. */
+  for (const p of PAGES) {
+    const w = {};
+    for (const [cls] of LAYERS) {
+      const rule = (css(p).match(new RegExp('\\.' + cls + '\\s*\\{[^}]*\\}')) || [])[0] || '';
+      w[cls] = parseFloat((rule.match(/width:\s*([\d.]+)%/) || [])[1]);
+      assert.ok(!Number.isNaN(w[cls]), p + ': .' + cls + ' 의 width 를 읽지 못했습니다');
     }
+    assert.ok(w['basis-doc-front'] <= w['basis-doc-back'],
+      p + ': 앞장(' + w['basis-doc-front'] + '%)이 뒷장(' + w['basis-doc-back'] + '%)보다 넓습니다');
+    assert.ok(w['basis-doc-front'] <= w['basis-doc-mid'],
+      p + ': 앞장(' + w['basis-doc-front'] + '%)이 중간장(' + w['basis-doc-mid'] + '%)보다 넓습니다');
+  }
+});
+
+test('뒤 두 장이 서로 반대쪽으로 삐져나온다 — 좌우로 갈라져야 세 장으로 읽힌다', () => {
+  /* 뒷장 OGL 은 앞장보다 **왼쪽에서** 시작하고, 중간장 HTS 는 앞장보다 **오른쪽에서**
+     끝나야 합니다. 둘을 같은 쪽으로 몰면 한 장이 통째로 가려집니다. */
+  for (const p of PAGES) {
+    const c = css(p);
+    const geo = {};
+    for (const [cls] of LAYERS) {
+      const rule = (c.match(new RegExp('\\.' + cls + '\\s*\\{[^}]*\\}')) || [])[0] || '';
+      geo[cls] = {
+        left: parseFloat((rule.match(/left:\s*(-?[\d.]+)%?/) || [])[1]),
+        width: parseFloat((rule.match(/width:\s*([\d.]+)%/) || [])[1]),
+      };
+    }
+    const f = geo['basis-doc-front'], b = geo['basis-doc-back'], mm = geo['basis-doc-mid'];
+    assert.ok(b.left < f.left,
+      p + ': 뒷장(OGL)이 앞장보다 왼쪽에서 시작하지 않습니다 — 기관명이 가려집니다');
+    assert.ok(mm.left + mm.width > f.left + f.width,
+      p + ': 중간장(HTS)이 앞장보다 오른쪽에서 끝나지 않습니다');
   }
 });
 
@@ -176,6 +217,21 @@ test('죽은 클래스(.basis-shot)가 규칙·마크업에 남아 있지 않다
 });
 
 /* ══ 4. 왼쪽 텍스트는 손대지 않았다 ══════════════════════════════════════ */
+
+test('고유명사가 줄 중간에서 갈리지 않는다 (국·영문)', () => {
+  /* 🔴 body 에 `word-break: keep-all` 이 걸려 있어 **한글 낱말은** 통째로 움직이지만,
+     라틴 문자 이름은 그 규칙 밖이라 띄어쓰기마다 끊깁니다 — 「Open Government /
+     Licence v3.0」처럼 이름 한가운데가 갈리면 한글 문장 안에서 그것이 하나의 이름이라는
+     것이 안 읽힙니다(2026-08-24 대표 지시 「한글 맥락에 맞춰서 줄바꿈」).
+     ⚠️ 글자는 한 자도 바뀌지 않았습니다 — 어디서 줄이 갈리는지만 정합니다. */
+  for (const p of PAGES) {
+    const m = strip(read(p));
+    assert.ok(m.indexOf('<span class="nobr">Open Government Licence v3.0</span>') !== -1,
+      p + ': 「Open Government Licence v3.0」이 줄바꿈 보호를 잃었습니다');
+    assert.match(css(p), /\.nobr\s*\{[^}]*white-space:\s*nowrap/,
+      p + ': .nobr 규칙이 없습니다 — 보호 클래스만 붙어 있고 아무 일도 하지 않습니다');
+  }
+});
 
 test('왼쪽 세 축(규정 근거 · 관세 근거 · 문서 기준)이 그대로다', () => {
   /* 대표 지시: 「왼쪽 텍스트는 수정하지 않는다.」 오른쪽 세 장은 이 세 축과 짝이므로,
