@@ -266,7 +266,53 @@ function gate6() {
   }
 }
 
+/* ══ G7. FAQ 「결과물의 성격」 확정본 ═════════════════════════════════════ */
+
+/*
+ * 🔴 사용자 지정 필수 문장. 이 자리는 B3-a 구현 시점에 원본이 없어 임시 문안으로
+ *    나갔고(커밋 061da9f), PRD §5-8 「결과물의 성격」 확정본으로 교체됐습니다.
+ * ⚠️ **주석을 걷고 봅니다** — 인수인계 주석이 이 문장을 인용하고 있어서, 걷지 않으면
+ *    답변에서 지워도 검사가 통과합니다(주석이 오탐이 됩니다).
+ */
+const FAQ_REQUIRED = '확인번호는 발급된 리포트를 다시 열람하시기 위한 번호입니다';
+/** 세 문항이 전부 「아닙니다」로 시작하는지 — 완곡하게 다듬으면 오인 방어가 풀립니다. */
+const FAQ_KO = [
+  '발급받은 사전 점검 리포트가 인증서인가요?',
+  'TROPS를 이용하면 무역보험 보상금이 보장되나요?',
+  'TROPS가 제공하는 정리 결과가 법률 자문을 대신하나요?',
+];
+const FAQ_EN = [
+  'Is the pre-check report I receive a certificate?',
+  'Does using TROPS guarantee a trade insurance payout?',
+  'Does what TROPS organises replace legal advice?',
+];
+
+function gate7() {
+  console.log('\nG7. FAQ 「결과물의 성격」 — PRD §5-8 확정본');
+  const strip = (t) => t.replace(/<!--[\s\S]*?-->/g, '');
+  const ko = strip(fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8'));
+  const en = strip(fs.readFileSync(path.join(ROOT, 'en.html'), 'utf8'));
+
+  if (ko.indexOf(FAQ_REQUIRED) !== -1) pass('필수 문장 포함(주석 제외): 「' + FAQ_REQUIRED + '」');
+  else fail('🔴 필수 문장이 답변에 없습니다: 「' + FAQ_REQUIRED + '」');
+
+  for (const q of FAQ_KO) {
+    if (ko.indexOf(q) !== -1) pass('국문 문항: ' + q);
+    else fail('국문 문항이 없습니다: ' + q);
+  }
+  for (const q of FAQ_EN) {
+    if (en.indexOf(q) !== -1) pass('영문 문항: ' + q);
+    else fail('영문 문항이 없습니다: ' + q);
+  }
+  /* 세 답변이 부정으로 시작하는지 — 이 그룹의 존재 이유입니다. */
+  const answers = (ko.match(/<div class="qans" id="qa-1[345]">\s*<p>([^<]*)</g) || [])
+    .map((m) => m.slice(m.indexOf('<p>') + 3).trim());
+  const soft = answers.filter((a) => a.indexOf('아닙니다') !== 0);
+  if (answers.length === 3 && soft.length === 0) pass('세 답변이 모두 「아닙니다」로 시작');
+  else fail('부정으로 시작하지 않는 답변이 있습니다: ' + JSON.stringify(soft));
+}
+
 console.log('═══ B3-a 필수 조건 게이트 ═══');
-gate1(); gate2(); gate3(); gate4(); gate5(); gate6();
+gate1(); gate2(); gate3(); gate4(); gate5(); gate6(); gate7();
 console.log('\n' + (failed === 0 ? '✅ 전 게이트 PASS' : '❌ ' + failed + '건 FAIL'));
 process.exit(failed === 0 ? 0 : 1);
