@@ -739,6 +739,12 @@
      ⛔ 두 섹션으로 다시 가르지 마십시오. 가르는 순간 P1 중복이 그대로 돌아옵니다. */
   .cards-sec { border-top: 1px solid var(--line); }
   .cards-inner { padding-block: clamp(60px, 8vw, 96px); }
+
+  /* 🔴 **`.pricing-inner` 의 세로 여백이 여기 없었습니다** 〔2026-08-24〕.
+     국문 index.html 은 B3-b 가 `.scope-inner, .sample-inner, .pricing-inner` 한 줄로 이미
+     메웠지만 영문은 빠진 채였고, 그 섹션만 위아래 여백 0 으로 나가 있었습니다.
+     값은 페이지의 다른 본문 섹션과 같은 값입니다. */
+  .pricing-inner { padding-block: clamp(60px, 8vw, 96px); }
   /* max-width 를 24ch → 30ch 로 넓혔습니다. 24ch 에서는 「…시작한 후에 / 한 번.」으로
      끊겨 「전에 한 번 / 후에 한 번」의 대구가 깨지고 「한 번.」만 홀로 남았습니다.
      text-wrap 은 폭에 따라 다른 값이 맞아서 아래 미디어쿼리에서 갈라 줍니다 —
@@ -1308,6 +1314,8 @@
         클릭 추적으로 순서를 바꾸지 마십시오.
      2열 그리드를 쓰지 않습니다 — 5개를 2열로 나누면 읽는 순서가 갈려 순위처럼 보입니다. */
   .orgs-sec { border-top: 1px solid var(--line); }
+  /* 🔴 감춤 〔2026-08-24〕 — UA 기본값에 기대지 않고 못박습니다(.feat-panel[hidden] 과 같은 방식). */
+  .orgs-sec[hidden] { display: none; }
   .orgs-inner { padding-block: clamp(60px, 8vw, 96px); }
   .orgs-sec h2 {
     margin: 0;
@@ -2507,7 +2515,17 @@
             클릭 추적으로 순서를 바꾸지 마십시오.
          ⚠️ 외부 링크를 걸지 않았습니다 — 링크를 걸면 액센트색이 5번 등장해
             「로고 금지」가 막으려던 제휴 오인이 같은 방식으로 생깁니다. -->
-    <section class="orgs-sec" id="orgs" aria-labelledby="orgs-title">
+    <!-- 🔴 **일단 감춰 뒀습니다** 〔2026-08-24 · 사용자 지시 「일단 안보이게」〕.
+         지우지 않고 [hidden] 로만 막았습니다 — 되돌릴 때 `hidden` 두 글자만 빼면 됩니다.
+         문구·목록은 PRD §5-7 원문 그대로 남아 있습니다.
+
+         ⚠️ 배경 교차는 그대로입니다. 이 섹션은 bg 였고 바로 위 사전등록폼이 surface,
+            아래 푸터가 dark 라 빠져도 같은 배경끼리 만나지 않습니다 — 하류를 뒤집을
+            필요가 없었습니다(test/landing-order-s9.test.js O7).
+         ⚠️ LAYOUT 검사는 마크업 존재로 세므로 감춰도 통과합니다. 아주 지우실 거라면
+            test/landing-order-s9.test.js 의 「기관안내」 행도 함께 빼야 합니다.
+         ⚠️ 이 섹션으로 오는 앵커·링크는 없습니다(실측 0건) — 감춰도 끊기는 링크 없음. -->
+    <section class="orgs-sec" id="orgs" aria-labelledby="orgs-title" hidden>
       <div class="container orgs-inner">
         <div class="body-w">
           <!-- 🔄 PRD v2.1 §5-7 〔2026-08-23 · B2-6〕. 국문이 원문이고 영문은 그 뜻을
