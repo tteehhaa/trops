@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 480" width="1600" height="480" font-family="Pretendard, Noto Sans KR, Noto Sans CJK KR, sans-serif">
+  <rect width="1600" height="480" fill="#ffffff"/>
+
+  <!-- 왼쪽 아이콘 -->
+  <g stroke="#666a76" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M300 66h58l22 22v72h-80z"/>
+    <path d="M358 66v22h22"/>
+    <path d="M316 108h48M316 124h48M316 140h30"/>
+    <path d="M340 208l30 12v24c0 19-12 33-30 40-18-7-30-21-30-40v-24z"/>
+    <path d="M327 246l9 9 17-18"/>
+    <circle cx="340" cy="382" r="34"/>
+    <path d="M306 382h68M340 348c14 16 14 52 0 68M340 348c-14 16-14 52 0 68"/>
+  </g>
+  <g font-size="18" font-weight="600" fill="#666a76" text-anchor="middle">
+    <text x="340" y="188">계약서</text>
+    <text x="340" y="318">증권</text>
+    <text x="340" y="446">품목</text>
+  </g>
+
+  <!-- 수렴선 -->
+  <g stroke="#a8adba" stroke-width="2" fill="none">
+    <path d="M430 120 C 540 120, 560 240, 640 240"/>
+    <path d="M430 240 L 640 240"/>
+    <path d="M430 372 C 540 372, 560 240, 640 240"/>
+  </g>
+
+  <!-- 중앙 -->
+  <rect x="640" y="192" width="280" height="96" rx="10" fill="#e7ecf2" stroke="#101729" stroke-width="2"/>
+  <text x="780" y="252" font-size="34" font-weight="700" fill="#101729" text-anchor="middle" letter-spacing="3">TROPS</text>
+
+  <!-- 발산선 -->
+  <g stroke="#101729" stroke-width="2" fill="none" opacity="0.55">
+    <path d="M920 240 C 1000 240, 1020 120, 1130 120"/>
+    <path d="M920 240 L 1130 240"/>
+    <path d="M920 240 C 1000 240, 1020 372, 1130 372"/>
+  </g>
+
+  <!-- 오른쪽 아이콘 -->
+  <g stroke="#101729" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="1220" cy="120" r="34"/>
+    <path d="M1220 100v22l15 10"/>
+    <path d="M1186 214h68v60h-68z"/>
+    <path d="M1198 232l8 8 14-15M1198 256l8 8 14-15M1232 236h14M1232 260h14"/>
+    <path d="M1188 350h44l22 22v52h-66z"/>
+    <path d="M1232 350v22h22"/>
+    <path d="M1200 392h34M1200 408h22"/>
+  </g>
+  <g font-size="20" font-weight="700" fill="#101729" text-anchor="middle">
+    <text x="1220" y="198">기한</text>
+    <text x="1220" y="316">요건</text>
+    <text x="1220" y="460">근거</text>
+  </g>
+</svg>

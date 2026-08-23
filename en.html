@@ -739,6 +739,25 @@
      ⛔ 두 섹션으로 다시 가르지 마십시오. 가르는 순간 P1 중복이 그대로 돌아옵니다. */
   .cards-sec { border-top: 1px solid var(--line); }
   .cards-inner { padding-block: clamp(60px, 8vw, 96px); }
+
+  /* ── 흐름도(§5-19) ─────────────────────────────────────────────────────
+     국문 index.html 의 같은 이름 규칙과 짝입니다.
+     ⛔ `.flow-*` 는 HOW 섹션이 이미 씁니다 — 여기는 `.flowmap-*` 입니다.
+     🔴 가로 스크롤 래퍼가 없는 것이 의도입니다(PRD §5-19) — 낱말 일곱 개뿐이라
+        390px 로 줄여도 읽힙니다.
+     ⚠️ `height:auto` 가 핵심입니다. SVG 에 width/height(1600×480) 속성이 남아 있어
+        이걸 빼면 폭만 줄고 높이가 480px 로 남아 그림이 납작해집니다. */
+  .flowmap-inner { padding-block: clamp(60px, 8vw, 96px); }
+  .flowmap-lead  { margin: 10px 0 0; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); }
+  .flowmap-fig   { margin: 28px 0 0; }
+  .flowmap-fig svg { display: block; width: 100%; height: auto; }
+
+  /* 🔴 **`.pricing-inner` 의 세로 여백이 여기 없었습니다** 〔2026-08-24 · §5-19 배치에서 발견〕.
+     국문 index.html 은 B3-b 가 `.scope-inner, .sample-inner, .pricing-inner` 한 줄로 이미
+     메웠지만 영문은 빠진 채였고, 그 섹션만 위아래 여백 0 으로 나가 있었습니다.
+     이번에 바로 위에 흐름도가 붙으면서 그 결손이 경계에서 눈에 보이게 되어 함께 답니다
+     (국문의 같은 자리 주석과 같은 사유입니다). 값은 다른 본문 섹션과 같습니다. */
+  .pricing-inner { padding-block: clamp(60px, 8vw, 96px); }
   /* max-width 를 24ch → 30ch 로 넓혔습니다. 24ch 에서는 「…시작한 후에 / 한 번.」으로
      끊겨 「전에 한 번 / 후에 한 번」의 대구가 깨지고 「한 번.」만 홀로 남았습니다.
      text-wrap 은 폭에 따라 다른 값이 맞아서 아래 미디어쿼리에서 갈라 줍니다 —
@@ -2124,11 +2143,91 @@
         </div>      </div>
     </section>
 
+    <!-- ===== 흐름도 (PRD v2.1 §5-19 · 신설 2026-08-24) =====
+         국문 index.html 과 짝입니다. 배경 밀림도 국문과 같습니다 — 이 섹션이 surface 로
+         들어오면서 하류(무료유료·로드맵·FAQ·마감CTA·사전등록폼·기관안내)가 한 칸씩
+         밀렸습니다. ⛔ 이 섹션만 지우지 마십시오.
+
+         ⚠️ 도입부는 §5-19 영문 원문입니다. 한 글자도 바꾸지 마십시오.
+         🔴 **SVG 안의 한국어는 이번에 번역하지 않았습니다** — §5-19 가 도입부와 alt 의
+            영문만 확정했고 도형 안 낱말(계약서·증권·품목·기한·요건·근거)의 영문 정본은
+            없습니다. 원본을 그대로 씁니다(「SVG 내용을 수정하지 마라」).
+            aria-label 은 영문 alt 원문이라 스크린리더는 영어로 읽습니다. -->
+    <section class="flowmap-sec sec-surface" aria-labelledby="flowmap-title">
+      <div class="container flowmap-inner">
+        <div class="body-w">
+          <h2 id="flowmap-title">Bring it together, and the actions become visible.</h2>
+          <p class="flowmap-lead">Register your contracts, insurance policies and item details, and we compare them against the policy terms and regulations, clause by clause, to lay out what needs handling and where each item comes from.</p>
+        </div>
+
+        <!-- 🔴 **figure 가 .body-w 밖입니다** 〔2026-08-24〕. 글줄은 860px 측정폭을 지켜야
+             읽히지만, 그림은 좁힐수록 도형 안 글자가 작아집니다. .body-w 안에 두면
+             1440px 화면에서도 SVG 가 860px 로 갇혀 낱말이 9.7px 까지 내려갑니다
+             (실측). 컨테이너 폭(최대 1200px)을 다 쓰면 12.4px 로 올라옵니다.
+             ⛔ 다시 .body-w 안으로 넣지 마십시오. -->
+          <figure class="flowmap-fig">
+        <svg role="img" aria-label="A flow diagram: export contracts, insurance policies and item details feed into TROPS, which compares them against policy terms and regulations clause by clause, and returns deadlines, requirements and sources." xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 480" width="1600" height="480" font-family="Pretendard, Noto Sans KR, Noto Sans CJK KR, sans-serif">
+          <rect width="1600" height="480" fill="#ffffff"/>
+
+          <!-- 왼쪽 아이콘 -->
+          <g stroke="#666a76" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M300 66h58l22 22v72h-80z"/>
+            <path d="M358 66v22h22"/>
+            <path d="M316 108h48M316 124h48M316 140h30"/>
+            <path d="M340 208l30 12v24c0 19-12 33-30 40-18-7-30-21-30-40v-24z"/>
+            <path d="M327 246l9 9 17-18"/>
+            <circle cx="340" cy="382" r="34"/>
+            <path d="M306 382h68M340 348c14 16 14 52 0 68M340 348c-14 16-14 52 0 68"/>
+          </g>
+          <g font-size="18" font-weight="600" fill="#666a76" text-anchor="middle">
+            <text x="340" y="188">계약서</text>
+            <text x="340" y="318">증권</text>
+            <text x="340" y="446">품목</text>
+          </g>
+
+          <!-- 수렴선 -->
+          <g stroke="#a8adba" stroke-width="2" fill="none">
+            <path d="M430 120 C 540 120, 560 240, 640 240"/>
+            <path d="M430 240 L 640 240"/>
+            <path d="M430 372 C 540 372, 560 240, 640 240"/>
+          </g>
+
+          <!-- 중앙 -->
+          <rect x="640" y="192" width="280" height="96" rx="10" fill="#e7ecf2" stroke="#101729" stroke-width="2"/>
+          <text x="780" y="252" font-size="34" font-weight="700" fill="#101729" text-anchor="middle" letter-spacing="3">TROPS</text>
+
+          <!-- 발산선 -->
+          <g stroke="#101729" stroke-width="2" fill="none" opacity="0.55">
+            <path d="M920 240 C 1000 240, 1020 120, 1130 120"/>
+            <path d="M920 240 L 1130 240"/>
+            <path d="M920 240 C 1000 240, 1020 372, 1130 372"/>
+          </g>
+
+          <!-- 오른쪽 아이콘 -->
+          <g stroke="#101729" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="1220" cy="120" r="34"/>
+            <path d="M1220 100v22l15 10"/>
+            <path d="M1186 214h68v60h-68z"/>
+            <path d="M1198 232l8 8 14-15M1198 256l8 8 14-15M1232 236h14M1232 260h14"/>
+            <path d="M1188 350h44l22 22v52h-66z"/>
+            <path d="M1232 350v22h22"/>
+            <path d="M1200 392h34M1200 408h22"/>
+          </g>
+          <g font-size="20" font-weight="700" fill="#101729" text-anchor="middle">
+            <text x="1220" y="198">기한</text>
+            <text x="1220" y="316">요건</text>
+            <text x="1220" y="460">근거</text>
+          </g>
+        </svg>
+        </figure>
+      </div>
+    </section>
+
     <!-- ===== 무료·유료 (PRD v2.1 §5-13 · 신설 2026-08-23 · B3-a) =====
          국문 index.html 과 짝입니다. 배경(--surface)과 그로 인한 하류 다섯 곳의 배경
          뒤집기도 국문과 같습니다 — 문구는 그대로이고 sec-surface 만 옮겼습니다.
          ⛔ 여기에 금액을 적지 마십시오 — 가격은 결제 단계에서만 보입니다. -->
-    <section class="pricing-sec sec-surface" id="pricing" aria-labelledby="pricing-title">
+    <section class="pricing-sec" id="pricing" aria-labelledby="pricing-title">
       <div class="container pricing-inner">
         <div class="body-w">
           <h2 id="pricing-title">Checking is free. Issuing a report is paid.</h2>
@@ -2170,7 +2269,7 @@
             않습니다(죽은 규칙이라 CSS 에서도 지웠습니다).
          ⛔ 금액·오픈월을 적지 마십시오 — test/roadmap-no-price.test.js 가 지킵니다. -->
     <!-- .sec-surface 〔2026-08-14〕 — 이웃이 둘 다 --bg 라 여기가 --surface 여야 교차합니다. -->
-    <section class="how" id="next" aria-label="Coming soon">
+    <section class="how sec-surface" id="next" aria-label="Coming soon">
       <div class="container how-inner">
         <!-- 🔄 **전면교체** 〔2026-08-23 · PRD v2.1 §5-14 · B3-a〕. 국문과 짝입니다.
              🔄 상태 배지(.rm-meta)와 기한관리 미리보기 훅·버튼을 뺐습니다 — §5-14 에
@@ -2202,7 +2301,7 @@
          🔴 「NDA가 뭔가요?」(구 qa-1, /check 링크 포함)는 새 세트에서 완전히 빠졌습니다.
          ⚠️ 기본값은 전부 접힘. 여러 개 동시 펼침 허용(하나만 열리는 방식 금지, C-3).
          ⚠️ 셰브론에 액센트를 쓰지 마십시오. -->
-    <section class="qna sec-surface" id="qna" aria-labelledby="qna-title">
+    <section class="qna" id="qna" aria-labelledby="qna-title">
       <div class="container qna-inner">
         <h2 id="qna-title">FAQ</h2>
         <!-- 🔄 **전면교체** 〔2026-08-23 · PRD v2.1 B2-7〕. 국문 index.html 과 짝입니다 —
@@ -2381,7 +2480,7 @@
          H2는 원래 확정본 §9 「상담 전에, 한 번 더 확인하세요.」였습니다. 「상담」이
          이 서비스를 유상 자문으로 오해하게 한다는 지적에 따라 「수출 전 자가 점검」
          포지셔닝(히어로 §2 eyebrow와 같은 프레이밍)으로 교체했습니다. -->
-    <section class="close-cta" aria-labelledby="close-cta-title">
+    <section class="close-cta sec-surface" aria-labelledby="close-cta-title">
       <div class="container narrow-c sec-center close-cta-inner">
         <!-- 2026-08-13 재구성 (흐름 md §1 시각층매핑 「마감 CTA」).
              주버튼([비교해 보기])을 뺐습니다 — 주 CTA 는 히어로와 07 「결」 두 번뿐이고,
@@ -2409,7 +2508,7 @@
     <!-- ===== Interest form =====
          랜딩 하단은 약한 버전입니다. 강한 버전("먼저 써보고 싶어요")은
          precheck 결과지 페이지 하단 몫이므로 여기에 끌어오지 마십시오. -->
-    <section class="interest sec-surface" id="interest">
+    <section class="interest" id="interest">
       <div class="container interest-inner">
         <!-- 보조 문구는 확정본 v3.1 §10 원문 그대로입니다. H2는 2026-08-13 재교체 —
              기존 「거래 절차 트래킹이 열리면 가장 먼저 알려드립니다.」(2026-08-11,
@@ -2507,7 +2606,7 @@
             클릭 추적으로 순서를 바꾸지 마십시오.
          ⚠️ 외부 링크를 걸지 않았습니다 — 링크를 걸면 액센트색이 5번 등장해
             「로고 금지」가 막으려던 제휴 오인이 같은 방식으로 생깁니다. -->
-    <section class="orgs-sec" id="orgs" aria-labelledby="orgs-title">
+    <section class="orgs-sec sec-surface" id="orgs" aria-labelledby="orgs-title">
       <div class="container orgs-inner">
         <div class="body-w">
           <!-- 🔄 PRD v2.1 §5-7 〔2026-08-23 · B2-6〕. 국문이 원문이고 영문은 그 뜻을

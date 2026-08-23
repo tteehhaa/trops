@@ -82,6 +82,15 @@ const LAYOUT = [
   { name: '결 CTA',        key: '<section class="act"',                    bg: 'bg' },
   { name: '안심문구',      key: '<section class="assure',                  bg: 'surface' },
   { name: '상품소개',      key: '<section class="cards-sec" id="service"', bg: 'bg' },
+  /* 🔄 **흐름도(§5-19)가 여기 새로 들어왔습니다** 〔2026-08-24〕. 상품 셋을 「따로」 보여
+     준 직후 「그래서 서로 어떻게 이어지는가」에 답하는 자리입니다(PRD §5-19 배치).
+     ⛔ **홀수 삽입이라 하류 8행의 bg 가 통째로 뒤집혔습니다.** 앞이 상품소개(bg)·뒤가
+        진단 범위(surface)였으므로 그 사이에 들어갈 배경이 수학적으로 없습니다 —
+        bg 면 앞과 연속, surface 면 뒤와 연속이고, 다크는 O9 가 막습니다. 그래서 흐름도를
+        surface 로 두고 아래 여덟 행을 한 칸씩 밀었습니다. 문구는 하나도 바뀌지 않았고
+        마크업에서도 sec-surface 클래스만 옮겼습니다.
+        흐름도를 지우려면 아래 여덟 행도 함께 되돌리십시오. */
+  { name: '흐름도',        key: '<section class="flowmap-sec',             bg: 'surface' },
   /* 🔄 **무료·유료(§5-13)가 여기 새로 들어왔습니다** 〔2026-08-23 · B3-a〕. 이 페이지는
      bg↔surface 완전 교차라 섹션 하나를 끼우면 하류가 통째로 뒤집힙니다 — 아래 다섯 행의
      bg 가 한 칸씩 밀린 것이 그 결과입니다. 문구는 하나도 바뀌지 않았고 sec-surface 만
@@ -90,14 +99,14 @@ const LAYOUT = [
      B3-a 는 하나(무료·유료)를 끼워 하류 다섯 행을 통째로 뒤집어야 했지만, 이번에는
      **둘**입니다 — 짝수라서 아래 무료·유료부터 푸터까지 bg 가 **한 칸도 밀리지 않습니다**.
      ⛔ 둘 중 하나만 지우지 마십시오. 홀수가 되면 다시 하류 전체를 뒤집어야 합니다. */
-  { name: '진단 가능 범위', key: '<section class="scope-sec',                bg: 'surface' },
-  { name: '샘플',          key: '<section class="sample-sec',              bg: 'bg' },
-  { name: '무료·유료',     key: '<section class="pricing-sec',             bg: 'surface' },
-  { name: '로드맵',        key: 'id="next"',                               bg: 'bg' },
-  { name: 'FAQ',           key: '<section class="qna',                     bg: 'surface' },
-  { name: '마감CTA',       key: '<section class="close-cta',               bg: 'bg' },
-  { name: '사전등록폼',    key: '<section class="interest',                bg: 'surface' },
-  { name: '기관안내',      key: '<section class="orgs-sec',                bg: 'bg' },
+  { name: '진단 가능 범위', key: '<section class="scope-sec',                bg: 'bg' },
+  { name: '샘플',          key: '<section class="sample-sec',              bg: 'surface' },
+  { name: '무료·유료',     key: '<section class="pricing-sec',             bg: 'bg' },
+  { name: '로드맵',        key: 'id="next"',                               bg: 'surface' },
+  { name: 'FAQ',           key: '<section class="qna',                     bg: 'bg' },
+  { name: '마감CTA',       key: '<section class="close-cta',               bg: 'surface' },
+  { name: '사전등록폼',    key: '<section class="interest',                bg: 'bg' },
+  { name: '기관안내',      key: '<section class="orgs-sec',                bg: 'surface' },
   { name: '푸터',          key: '<footer class="footer">',                 bg: 'dark' },
 ];
 
