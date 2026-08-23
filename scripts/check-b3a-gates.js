@@ -264,16 +264,21 @@ const B3B_GUARD = [
  * 🔴 이 자리를 지금 지키는 것은 `scripts/check-b3b-gates.js` G2·G8 과
  *    `test/landing-b3b.test.js` 입니다. 세 자리의 **현재 문구**는 그쪽이 붙듭니다.
  */
-const B3B_DONE_AT = '061da9f';   // B3-a 배포 커밋. 이 판까지가 「불가침」이 유효한 구간입니다.
+/* 🔴 **양끝을 과거 커밋으로 고정합니다.** 한쪽을 `BASE`(기본 HEAD)로 두면 HEAD 가 앞으로
+   갈 때마다 비교 대상이 함께 움직여, 그 뒤 배치가 이 자리를 정당하게 고칠 때마다 빨갛게
+   뜹니다. 이 게이트가 확인하는 것은 **B3-a 배치 한 번**이므로 구간도 그 한 번입니다:
+     `061da9f~1` (B3-a 직전) → `061da9f` (B3-a 배포). */
+const B3A_BEFORE = '061da9f~1';
+const B3A_AFTER = '061da9f';
 
 function gate6() {
-  console.log('\nG6. B3-b 영역 불가침 — B3-a 구간 한정 (base: ' + BASE + ')');
+  console.log('\nG6. B3-b 영역 불가침 — B3-a 배치 구간 고정(' + B3A_BEFORE + ' → ' + B3A_AFTER + ')');
   let before, after;
-  try { before = execFileSync('git', ['show', BASE + ':index.html'], { cwd: ROOT, encoding: 'utf8' }); }
-  catch (e) { fail('index.html 의 ' + BASE + ' 판을 읽지 못했습니다'); return; }
-  try { after = execFileSync('git', ['show', B3B_DONE_AT + ':index.html'], { cwd: ROOT, encoding: 'utf8' }); }
-  catch (e) {
-    console.log('  · ' + B3B_DONE_AT + ' 판을 읽지 못해 건너뜁니다(얕은 클론일 수 있습니다)');
+  try {
+    before = execFileSync('git', ['show', B3A_BEFORE + ':index.html'], { cwd: ROOT, encoding: 'utf8' });
+    after = execFileSync('git', ['show', B3A_AFTER + ':index.html'], { cwd: ROOT, encoding: 'utf8' });
+  } catch (e) {
+    console.log('  · 그 두 판을 읽지 못해 건너뜁니다(얕은 클론일 수 있습니다)');
     return;
   }
   for (const [startMark, endMark, label] of B3B_GUARD) {
@@ -288,8 +293,8 @@ function gate6() {
       console.log('  · ' + label + ': B3-b 로 문면이 교체되어 경계가 없습니다(정상)');
       continue;
     }
-    if (x === y) pass(label + ': B3-a 구간에서 바이트 동일');
-    else fail('🔴 ' + label + ' 이 B3-a 구간에서 바뀌었습니다');
+    if (x === y) pass(label + ': B3-a 배치가 건드리지 않았습니다');
+    else fail('🔴 B3-a 배치가 ' + label + ' 을 건드렸습니다');
   }
 }
 

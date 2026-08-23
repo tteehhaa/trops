@@ -240,18 +240,21 @@ const B3_GUARD = [
  *    그대로 두면 다음 배치마다 뜻 없는 빨강이 뜨고, 뜻 없는 빨강은 곧 안 보게 됩니다.
  * ⛔ 지우지 않습니다 — 「B2 가 그 자리를 안 건드렸다」는 확인 수단이 사라집니다.
  */
-const B3_DONE_AT = '061da9f';   // B3-a 배포 커밋. B2~B3-a 구간이 이 게이트의 유효 범위입니다.
+/* 🔴 **양끝을 과거 커밋으로 고정합니다** — 사유는 `check-b3a-gates.js` G6 의 같은 자리
+   주석과 같습니다(한쪽을 HEAD 로 두면 뒤 배치마다 뜻 없이 빨개집니다).
+   이 게이트가 확인하는 것은 **B2 배치 한 번**입니다:
+     `ad1a4e1~1` (B2 직전) → `ad1a4e1` (B2 배포). */
+const B2_BEFORE = 'ad1a4e1~1';
+const B2_AFTER = 'ad1a4e1';
 
 function gate6() {
-  console.log('\nG6. B3 영역 불가침 — B2~B3-a 구간 한정 (base: ' + BASE + ')');
+  console.log('\nG6. B3 영역 불가침 — B2 배치 구간 고정(' + B2_BEFORE + ' → ' + B2_AFTER + ')');
   let before, after;
   try {
-    before = execFileSync('git', ['show', BASE + ':index.html'], { cwd: ROOT, encoding: 'utf8' });
-  } catch (e) { fail('index.html 의 ' + BASE + ' 판을 읽지 못했습니다'); return; }
-  try {
-    after = execFileSync('git', ['show', B3_DONE_AT + ':index.html'], { cwd: ROOT, encoding: 'utf8' });
+    before = execFileSync('git', ['show', B2_BEFORE + ':index.html'], { cwd: ROOT, encoding: 'utf8' });
+    after = execFileSync('git', ['show', B2_AFTER + ':index.html'], { cwd: ROOT, encoding: 'utf8' });
   } catch (e) {
-    console.log('  · ' + B3_DONE_AT + ' 판을 읽지 못해 건너뜁니다(얕은 클론일 수 있습니다)');
+    console.log('  · 그 두 판을 읽지 못해 건너뜁니다(얕은 클론일 수 있습니다)');
     return;
   }
 
@@ -269,8 +272,8 @@ function gate6() {
       console.log('  · ' + label + ': B3-b 로 문면이 교체되어 경계가 없습니다(정상)');
       continue;
     }
-    if (x === y) pass(label + ': B2~B3-a 구간에서 바이트 동일');
-    else fail('🔴 ' + label + ' 이 B2~B3-a 구간에서 바뀌었습니다');
+    if (x === y) pass(label + ': B2 배치가 건드리지 않았습니다');
+    else fail('🔴 B2 배치가 ' + label + ' 을 건드렸습니다');
   }
 }
 

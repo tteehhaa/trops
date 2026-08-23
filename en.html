@@ -918,7 +918,7 @@
         `scripts/frame-shot.py` 로 c03-result.jpg 실측 치수의 창틀을 입혔습니다.
         네 번째 캡처를 넣을 때도 그 도구를 쓰십시오 — 손으로 맞추면 또 갈라집니다.
      ⚠️ 폭 상한을 올리지 마십시오. 올리는 순간 ①이 무너져 다시 정식 화면처럼 보입니다.
-     ⚠️ 그림자는 이 페이지에서 드문 표현입니다(다른 곳은 .basis-shot — 같은 액자입니다).
+     ⚠️ 그림자는 이 페이지에서 드문 표현입니다(다른 곳은 근거 스택의 .basis-doc — 같은 액자입니다).
         여기서 쓰는 이유는 장식이 아니라 **「떠 있는 참고물」이라는 신호**입니다 —
         진하게 올리지 마십시오. */
   .feat-shot {
@@ -1100,20 +1100,68 @@
       2026-08-14 에 단일 컷으로 되돌아가며 죽었고, 남은 `.shot` 도 이 섹션이 밝은
       배경으로 옮겨오면서 쓰이지 않습니다 — 쓰지 않는 클래스를 남겨 두지 않는 것이 이
       파일의 규칙입니다. en.html 은 아직 옛 콜라주를 쓰므로 그쪽은 그대로입니다.) */
-  .basis-shot {
+  /* ── 근거 스택 — 공식 근거 3장을 겹쳐 놓은 «하나의» 오브젝트 ────────────────
+     🔄 **단일 OGL 컷 → 3장 스택** 〔2026-08-24 · 대표 지시〕. 한 장만 크게 보이던
+        때는 이 서비스가 **영국 문서 중심**으로 읽혔습니다. 실제로 확인하는 것은 왼쪽
+        `.basis-src` 의 세 축(규정 근거 · 관세 근거 · 문서 기준)이고, 오른쪽 그림이
+        그 셋과 하나씩 짝을 이뤄야 「여러 정부 공식 근거를 본다」가 즉시 읽힙니다.
+        ⚠️ 그래서 **순서가 왼쪽 세 축과 대응합니다** — 앞장 eCFR(규정 근거) ·
+           중간 HTS(관세 근거) · 뒷장 OGL(문서 기준). 순서를 바꾸지 마십시오.
+
+     🔴 **카드 3장을 나란히 놓지 않습니다.** 나란히 놓으면 「기능 3개」로 읽히고,
+        겹쳐 놓아야 「근거 묶음」으로 읽힙니다. 겹침은 80~90% 이고, 뒷장은 기관명과
+        제목이 있는 **상단부만** 나옵니다(그것이 뒷장이 해야 하는 일의 전부입니다).
+
+     ⛔ 장식을 넣지 마십시오 — 테이프·핀·종이 질감·폴라로이드. 이것은 사진이 아니라
+        **근거 묶음(Evidence stack)** 입니다. 회전은 1도 안쪽이고, 그보다 크면
+        장난스러워집니다(이 페이지의 다른 어디에도 기울어진 요소가 없습니다).
+     ⚠️ 앞장의 그림자만 종전 단일 컷(`.basis-shot`)의 값을 그대로 씁니다 —
+        뒤로 갈수록 옅어지는 것이 깊이 표현의 전부입니다. */
+  .basis-stack {
+    position: relative;
     margin: 0;
     width: 100%;
     max-width: 560px;
-    padding: 10px;
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    background: var(--bg);
-    box-shadow: 0 10px 28px rgba(15, 23, 42, .10);
+    /* 🔴 **높이를 비율로 고정합니다** — 자식이 전부 absolute 라 부모가 높이를 얻지
+       못합니다. 값은 「앞장 높이 + 뒷장 둘이 위로 나온 만큼」입니다.
+       ⚠️ 아래 top·width 를 고치면 이 비율도 함께 고쳐야 합니다. 안 고치면 앞장
+          아래가 잘리거나(비율이 작을 때) 아래에 빈 여백이 남습니다(클 때). */
+    aspect-ratio: 14 / 11;
   }
-  .basis-shot img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 4px; }
-  /* 이미지가 <a> 로 감싸이면서(원문 링크) 추가 — <a> 는 기본 inline 이라 자식이
-     block 이어도 baseline 만큼의 여백이 아래 남습니다. */
-  .basis-shot a { display: block; }
+  /* 액자는 셋이 같습니다 — 종전 단일 컷과 같은 결(얇은 테두리 + 작은 라운드). */
+  .basis-doc {
+    position: absolute;
+    display: block;
+    padding: 8px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--bg);
+  }
+  .basis-doc img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 3px; }
+  /* 뒤 → 앞. 앞으로 올수록 크고 그림자가 짙습니다.
+     ⚠️ `left` 가 갈리는 것이 「어느 쪽으로 삐져나오는가」입니다 — 뒷장 OGL 은 왼쪽,
+        중간 HTS 는 오른쪽입니다. 둘을 같은 쪽으로 몰면 한 장이 완전히 가려집니다. */
+  .basis-doc-back  { z-index: 1; left: 0;   top: 0;   width: 80%; transform: rotate(-1.1deg);  box-shadow: 0 2px 8px rgba(15, 23, 42, .05); }
+  .basis-doc-mid   { z-index: 2; left: 17%; top: 11%; width: 80%; transform: rotate(1deg);     box-shadow: 0 5px 16px rgba(15, 23, 42, .07); }
+  .basis-doc-front { z-index: 3; left: 5%;  top: 22%; width: 88%; transform: rotate(-0.35deg); box-shadow: 0 10px 28px rgba(15, 23, 42, .10); }
+
+  /* 🔴 **좁은 화면에서는 옆으로 벌리지 않고 위아래로만 겹칩니다** 〔2026-08-24〕.
+     데스크톱 값(좌우 오프셋 + 폭 80/88%)을 그대로 쓰면 상자가 좁아진 만큼 카드도 같이
+     좁아져서, 기관명·제목이 **읽을 수 없는 크기**가 됩니다(대표 지시: 「각 문서 제목이나
+     기관명이 최소한 식별 가능한 수준을 유지」).
+     그래서 좁은 화면에서는 좌우 오프셋을 거의 걷고 카드를 상자 폭까지 키웁니다 —
+     겹침(80% 안팎)은 그대로이고, 스택은 **위에서 내려다본 종이 더미**처럼 보입니다.
+     ⚠️ 폭이 커지면 카드 높이도 커지므로 상자 비율을 함께 바꿉니다(14/11 → 10/9).
+        한쪽만 고치면 앞장 아래가 잘립니다. */
+  @media (max-width: 768px) {
+    /* ⚠️ 12/11 은 「앞장이 상자 안에 들어가는」 최소 비율에서 조금 더 준 값입니다 —
+       회전(0.35도)이 만드는 바운딩 박스 몇 px 까지 넣은 것입니다. 10/9 로 줄이면
+       앞장 아래가 4px 넘칩니다(실측). */
+    .basis-stack { aspect-ratio: 12 / 11; }
+    .basis-doc-back  { left: 0;  top: 0;   width: 92%; }
+    .basis-doc-mid   { left: 8%; top: 12%; width: 92%; }
+    .basis-doc-front { left: 0;  top: 24%; width: 100%; }
+  }
   .basis-cap { margin: 0; padding: 8px 2px 2px; font-size: 12.5px; line-height: 1.6; color: var(--muted); }
 
   /* ---------- 06 결: 사전점검 시작하기 (흐름 md §1 시각층매핑 「결」) ----------
@@ -1390,7 +1438,7 @@
       align-items: center;
     }
     .basis-list { grid-column: 1; grid-row: 1; }
-    .basis-shot { grid-column: 2; grid-row: 1; }
+    .basis-stack { grid-column: 2; grid-row: 1; }
     .basis-cap { grid-column: 2; grid-row: 2; }
   }
 
@@ -1755,9 +1803,30 @@
               </div>
             </dl>
           </div>
-          <figure class="basis-shot">
-            <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank" rel="noopener noreferrer">
-              <img src="/img/ogl-licence.png" alt="Open Government Licence v3.0 source page at The National Archives" width="1558" height="860" loading="lazy">
+          <!-- 🔄 **단일 OGL 컷 → 근거 3장 스택** 〔2026-08-24 · 대표 지시 · 국문 index.html 과 같은 배치〕.
+               🔴 **왜 바꿨는가** — OGL 한 장만 크게 걸려 있으니 「영국 문서를 다루는 서비스」로
+                  읽혔습니다. 왼쪽 `.basis-src` 는 이미 세 축(규정 근거 · 관세 근거 · 문서 기준)을
+                  말하고 있었는데 그림이 그 중 하나만 받치고 있었던 것입니다. 이제 **세 축과
+                  세 장이 하나씩 짝**입니다: 앞 eCFR · 중간 HTS · 뒤 OGL.
+                  ⛔ DOM 순서(뒤→앞)를 바꾸지 마십시오.
+
+               🔴 **바뀐 것은 그림뿐입니다** — 이 배치에 새 문구가 없습니다. `alt` 는 화면 문구가
+                  아니라 보조기술이 읽는 **기능 텍스트**라 영문 페이지에서는 영문으로 적습니다
+                  (이 페이지의 다른 이미지와 같은 규칙입니다). PRD §5 영문 확정본 부재와
+                  무관한 자리입니다.
+               🔴 OGL 파일은 종전 것을 그대로 씁니다(`/img/ogl-licence.png`). 새로 추가된 것은
+                  `assets/img/basis-ecfr.png` · `basis-hts.png` 두 장뿐이고, 둘 다 원본 캡처에서
+                  **자르기만** 했습니다(합성 0).
+               ⚠️ 그림 안에 라벨을 넣지 않습니다 — 무엇의 근거인지는 왼쪽 텍스트가 말합니다. -->
+          <figure class="basis-stack">
+            <a class="basis-doc basis-doc-back" href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank" rel="noopener noreferrer">
+              <img src="/img/ogl-licence.png" alt="UK Open Government Licence v3.0 source page at The National Archives" width="1558" height="860" loading="lazy">
+            </a>
+            <a class="basis-doc basis-doc-mid" href="https://hts.usitc.gov/" target="_blank" rel="noopener noreferrer">
+              <img src="/assets/img/basis-hts.png" alt="U.S. International Trade Commission tariff source: Harmonized Tariff Schedule, 2026 HTS Revision 16" width="1300" height="666" loading="lazy">
+            </a>
+            <a class="basis-doc basis-doc-front" href="https://www.ecfr.gov/current/title-49/section-571.500" target="_blank" rel="noopener noreferrer">
+              <img src="/assets/img/basis-ecfr.png" alt="U.S. federal regulation source: Code of Federal Regulations Title 49, S 571.500 Standard No. 500; Low-speed vehicles" width="1400" height="921" loading="lazy">
             </a>
           </figure>
           <p class="basis-last">Items without a verification date are not shown on screen.</p>
