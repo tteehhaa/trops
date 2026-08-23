@@ -56,18 +56,25 @@ test('국문 로드맵 두 행에 가격 표기 없이 진행 상태 배지가 �
   const metas = (KO.match(/<p class="rm-meta">([^<]*)<\/p>/g) || [])
     .map((s) => s.replace(/<[^>]*>/g, '').trim());
 
-  assert.strictEqual(metas.length, 2, '로드맵 행이 ' + metas.length + '개입니다');
-  assert.deepStrictEqual(metas, ['현재 일부 동작 및 추가 개발 중', '준비 중'],
-    '로드맵 표기가 바뀌었습니다: ' + JSON.stringify(metas));
+  /* 🔄 **상태 배지가 사라졌습니다** 〔2026-08-23 · B3-a · PRD §5-14〕. 두 행이 「지금
+     무엇인가」가 아니라 **「무엇을 넓혀가는가」**를 말하게 되면서, 「준비 중/개발 중」은
+     제목이 이미 하는 말의 반복이 됐습니다. 이 파일이 지키는 것은 **가격이 없다**이고
+     그것은 아래 검사가 그대로 집니다. */
+  assert.strictEqual(metas.length, 0,
+    '로드맵에 상태 배지가 남아 있습니다: ' + JSON.stringify(metas));
+  const rows = (KO.match(/<p class="rm-name">/g) || []).length;
+  assert.strictEqual(rows, 2, '로드맵 행이 ' + rows + '개입니다');
 });
 
 test('영문 로드맵 두 행이 같은 뜻으로 맞춰져 있다', () => {
   const metas = (EN.match(/<p class="rm-meta">([^<]*)<\/p>/g) || [])
     .map((s) => s.replace(/<[^>]*>/g, '').trim());
 
-  assert.strictEqual(metas.length, 2, '영문 로드맵 행이 ' + metas.length + '개입니다');
-  assert.deepStrictEqual(metas, ['Partly working today, more in development', 'Coming soon'],
-    '영문 로드맵 표기가 국문과 갈렸습니다: ' + JSON.stringify(metas));
+  /* 🔄 국문과 같은 이유로 배지가 사라졌습니다 〔2026-08-23 · B3-a〕. */
+  assert.strictEqual(metas.length, 0,
+    '영문 로드맵에 상태 배지가 남아 있습니다: ' + JSON.stringify(metas));
+  const enRows = (EN.match(/<p class="rm-name">/g) || []).length;
+  assert.strictEqual(enRows, 2, '영문 로드맵 행이 ' + enRows + '개입니다');
   /* 「Pricing to follow」는 가격 언급 자체를 걷은 지금 자리가 없습니다 —
      되살리면 영문에만 가격 이야기가 남습니다. */
   assert.ok(EN.indexOf('Pricing to follow') === -1, '옛 가격 언급이 남아 있습니다');
@@ -95,13 +102,19 @@ test('리드 문장이 「가격을 적어둔다」고 말하지 않는다 — �
    * 리드와 .rm-meta 는 한 묶음입니다. 종전 리드는 「오픈 시점과 가격을 함께 적어둡니다」
    * 였고, 표기를 「미정」으로 바꾼 뒤에도 리드가 남으면 **리드가 거짓말이 됩니다.**
    */
+  /* 🔄 **리드가 사라졌습니다** 〔2026-08-23 · B3-a · §5-14〕. h2 가 그 역할을 흡수했습니다.
+     이 검사가 막으려던 것(리드가 화면이 하지 않는 약속을 하는 것)은 리드가 없으면
+     성립하지 않습니다 — 다만 **되살아날 때를 대비해** 조건부로 남겨 둡니다. */
   const lead = (KO.match(/<p class="rm-lead">([^<]*)<\/p>/) || [])[1] || '';
-  assert.ok(lead.length > 0, '국문 리드를 찾지 못했습니다');
   assert.ok(!/가격/.test(lead), '리드가 아직 가격 표기를 약속합니다: ' + lead);
+  const h2 = (KO.match(/<h2 class="rm-h2">([^<]*)<\/h2>/) || [])[1] || '';
+  assert.ok(!/가격/.test(h2), '로드맵 제목이 가격 표기를 약속합니다: ' + h2);
 
+  /* 🔄 국문과 같은 이유로 영문 리드도 사라졌습니다 — 조건부로 남겨 둡니다. */
   const enLead = (EN.match(/<p class="rm-lead">([^<]*)<\/p>/) || [])[1] || '';
-  assert.ok(enLead.length > 0, '영문 리드를 찾지 못했습니다');
   assert.ok(!/price/i.test(enLead), '영문 리드가 아직 가격 표기를 약속합니다: ' + enLead);
+  const enH2 = (EN.match(/<h2 class="rm-h2">([^<]*)<\/h2>/) || [])[1] || '';
+  assert.ok(!/price/i.test(enH2), '영문 로드맵 제목이 가격 표기를 약속합니다: ' + enH2);
 });
 
 test('🔴 폐기된 정가(290,000)가 어느 페이지에도 없다', () => {

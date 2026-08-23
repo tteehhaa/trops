@@ -249,7 +249,7 @@ B는 홉이 하나 늘지만, **fail-open 원칙(§9) 덕에 지연이 사용자
 
 🔴 **저장 위치 = `trops_a`.** 대조 실행 기록·검수 기록이 이미 그쪽 DB에 쌓이므로 저장소 존재가 확실하고, 운영자 화면도 그쪽(`app.trops.kr/admin/`)에 두기로 했기 때문입니다. main_web에 DB가 있는지 확인할 필요 자체가 없어집니다.
 
-**`intake_prestep_sessions`**
+**`precheck_prestep_session`**
 
 | 필드 | 형식 | 필수 |
 |---|---|---|
@@ -436,7 +436,7 @@ B는 홉이 하나 늘지만, **fail-open 원칙(§9) 덕에 지연이 사용자
 경로명 근거 4:
 
 1. 기존 `admin/nda-runs`와 **같은 꼴** — kebab-case + 복수 명사, 2단어
-2. 테이블 `intake_prestep_sessions`·API `/api/prestep`과 **어휘 일치** → 코드에서 `prestep` 한 단어로 추적됨
+2. 테이블 `precheck_prestep_session`·API `/api/prestep`과 **어휘 일치** → 코드에서 `prestep` 한 단어로 추적됨
 3. `intake_` 접두는 뺌 — URL에서 **접수(intake)와 사전 확인이 혼동**되고, 나중에 `/admin/`에 접수 관련 화면이 생기면 충돌
 4. 고객 노출이 0인 운영자 URL이라 「진단」 금지 등 **명칭 규칙 적용 대상이 아님** — 코드 식별자가 이미 `prestep`으로 굳었으므로 URL도 그대로
 
@@ -480,7 +480,7 @@ B는 홉이 하나 늘지만, **fail-open 원칙(§9) 덕에 지연이 사용자
 
 | # | 작업 | 레포·파일 | 규모 |
 |---|---|---|---|
-| 1 | `intake_prestep_sessions` 테이블 생성 | **trops_a** | 30분 |
+| 1 | `precheck_prestep_session` 테이블 생성 | **trops_a** | 30분 |
 | 2 | 수신 엔드포인트 — upsert·검증·멱등 | **trops_a** | 2시간 |
 | 3 | `api/prestep.js` — trops_a로 전달하는 프록시 | main_web 신규 | 1시간 |
 | 4 | `check.html` 골격 + CSS 복사 + 신규 4클래스 | main_web 신규 | 2시간 |
@@ -503,6 +503,16 @@ B는 홉이 하나 늘지만, **fail-open 원칙(§9) 덕에 지연이 사용자
 | 14 | **D11 `deal_type` 검수 필드** — 13과 **같이** 처리 | 1시간 |
 
 🔑 **13과 14를 묶는 이유**: 둘 다 `trops_a` 관리자 영역 작업이라, 따로 하면 같은 레포를 두 번 건드립니다. D11은 어차피 연기 결정이 나 있고 소급 입력이 가능하므로(30일 삭제 대상은 원본만) 시점이 맞습니다.
+
+### 1단계 후속 — 측정 인프라 (감사 G-2·G-3·G-4 후속, 완료)
+
+관리자 화면(13) 없이도 §10 계측 쿼리 8개를 즉시 뽑을 수 있도록, 1단계 배포 이후 추가로 만든 항목. 배포 시점엔 작업 목록에 없었으나 완료돼 사후 등재한다.
+
+| # | 작업 | 레포·파일 | 상태 |
+|---|---|---|---|
+| 15 | 측정 쿼리 8종 + 로드맵 신호(⑨) — `_precheckMetrics()` | **main_web** 신규(`api/_precheck-metrics.js`) | ✅ 완료 |
+| 16 | CLI 실행 스크립트 — `npm run metrics:precheck`(`--json`·`--sql`) | **main_web** 신규(`scripts/precheck-metrics.js`) | ✅ 완료 |
+| 17 | 측정 로직 테스트 | **main_web** 신규(`test/precheck-metrics.test.js`) | ✅ 완료 |
 
 ### 완료 판정 (DoD)
 

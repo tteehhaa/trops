@@ -76,7 +76,8 @@ test('마감 CTA 에는 [문의하기] 버튼 하나만 있다', () => {
 });
 
 test('#interest 폼에는 KOTRA 문구가 없다', () => {
-  const start = M.indexOf('<section class="interest"');
+  // 🔄 배경 교차 연쇄로 클래스가 늘었습니다 〔2026-08-23 · B3-a〕 — 접두만 봅니다.
+  const start = M.indexOf('<section class="interest');
   assert.ok(start !== -1, '#interest 섹션을 찾지 못했습니다');
   const interest = M.slice(start, M.indexOf('</section>', start));
   assert.ok(interest.indexOf('KOTRA') === -1,
@@ -177,7 +178,9 @@ test('🔴 기한관리 예시가 제품 정책과 같다 — 손으로 흉내 �
   const timeline = M.slice(M.indexOf('id="feat-timeline"'));
   const card = timeline.slice(0, timeline.indexOf('</section>'));
 
-  assert.ok(/<img[^>]*src="\/img\/timeline-map\.jpg"/.test(card),
+  /* 🔄 경로 고정 〔2026-08-23 · B3-a 작업 6〕 — assets/img/ 아래 지정 파일명입니다.
+     같은 파일명으로 덮어쓰면 코드 수정 없이 교체됩니다. */
+  assert.ok(/<img[^>]*src="\/assets\/img\/policy-deadlines\.jpg"/.test(card),
     '기한관리 카드에 실제 화면 캡처가 없습니다 — 이 자리는 제품 화면을 미리 보여주는 자리입니다');
 
   const cssCode = CSS.replace(/\/\*[\s\S]*?\*\//g, '');
@@ -368,9 +371,11 @@ test('같은 곳으로 가는 버튼은 같은 말을 쓴다 — /precheck 는 �
   /* 🔄 4 → 3 〔2026-08-23 · B2〕. 탭② 가 종전 2번 상품에서 「수출 계약관리」로 바뀌면서
      목적지가 app.trops.kr 로 갔습니다 — /precheck 로 가는 자리는 탭1 · HOW 하단 ·
      05 근거 셋입니다. */
-  assert.ok(toPrecheck.length >= 3,
+  /* 🔄 3 → 2 〔2026-08-23 · B3-a〕. §5-12 에는 CTA 가 없어 05 근거의 버튼이 빠졌습니다.
+     남는 자리는 탭1 과 HOW 하단 둘입니다. */
+  assert.ok(toPrecheck.length >= 2,
     '/precheck 로 가는 「비교해 보기」 버튼이 ' + toPrecheck.length + '개입니다 — ' +
-    '탭1 · HOW 하단 · 05 근거 세 자리가 있어야 합니다');
+    '탭1 · HOW 하단 두 자리가 있어야 합니다');
 
   for (const a of toPrecheck) {
     const label = a.replace(/<[^>]*>/g, '').trim();
@@ -414,7 +419,7 @@ test('탭② 수출 계약관리 — 전용 진입로를 갖는다, 사전점검
 test('사전점검 카드 — 설명과 예시화면이 그대로다', () => {
   const block = card('feat-precheck');
   assert.match(block, /class="feat-desc"/, '설명이 없습니다');
-  assert.match(block, /<img[^>]*src="\/img\//, '예시화면이 없습니다');
+  assert.match(block, /<img[^>]*src="\/assets\/img\/precheck-report\.jpg"/, '예시화면이 없습니다');
 });
 
 test('세 탭이 같은 인터랙션이다 — 누르면 같은 자리에서 내용만 바뀐다', () => {
@@ -489,7 +494,8 @@ test('FAQ 아코디언 짝이 맞고 id 가 겹치지 않는다', () => {
     'qa- id 가 중복됩니다 — 한 버튼이 두 패널을 엽니다');
   // 🔄 10 → 12 〔2026-08-18 · "왜 써야 하는가" FAQ 2문항 추가〕. id 는 다시 매기지
   //    않아 1~10·11·12 순서가 아니라 11·12가 1 앞에 옵니다 — 그 자체가 정상입니다.
-  assert.strictEqual(controls.length, 12, 'FAQ 문항 수가 12개가 아닙니다: ' + controls.length);
+  // 🔄 12 → 15 〔2026-08-23 · B3-a 작업 5〕 「결과물의 성격」 3문항 추가.
+  assert.strictEqual(controls.length, 15, 'FAQ 문항 수가 15개가 아닙니다: ' + controls.length);
 });
 
 test('「상담 신청」 문항을 되살리지 않았다', () => {

@@ -1253,6 +1253,21 @@
   .orgs { margin: 28px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px; }
   .orgs li { font-size: 16.5px; line-height: 1.76; color: var(--ink-64); }
   /* 🔄 신설 〔2026-08-23 · B2-6〕 — §5-7 이 제목과 다음 문장을 나눴습니다. */
+  /* ══ B3-a 신설 〔2026-08-23〕 — 국문 index.html 과 같은 규칙입니다. ═══════ */
+  .basis-src { margin: 20px 0 0; display: flex; flex-direction: column; gap: 18px; }
+  .basis-src > div { display: grid; gap: 2px 16px; }
+  .basis-src dt { font-size: 13.5px; font-weight: 700; letter-spacing: -0.01em; color: var(--ink); }
+  .basis-src dd { margin: 0; font-size: 14.5px; line-height: 1.75; color: var(--ink-64); }
+  .basis-note { display: block; margin-top: 4px; font-size: 12.5px; line-height: 1.7; color: var(--muted); }
+  /* 🔴 근거 섹션의 맺음. ⛔ 이 뒤에 다른 본문을 붙이지 마십시오. */
+  .basis-last { margin: 24px 0 0; font-size: 14.5px; line-height: 1.75; color: var(--ink-70); }
+  .pricing-cols { margin: 24px 0 0; display: grid; gap: 28px; }
+  .pricing-head { margin: 0 0 10px; font-size: 15px; font-weight: 700; letter-spacing: -0.01em; color: var(--ink); }
+  .pricing-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 15px; line-height: 1.75; color: var(--ink-64); }
+  .pricing-note { color: var(--muted); font-size: 13.5px; }
+  .act-body { margin: 18px 0 0; font-size: 16px; line-height: 1.76; color: var(--ink-64); }
+  .act-legal { margin: 18px 0 0; font-size: 12.5px; line-height: 1.7; color: var(--muted); }
+
   .orgs-lead { margin: 10px 0 0; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); }
   .orgs-note { margin: 28px 0 0; font-size: 12.5px; line-height: 1.7; color: var(--muted); }
 
@@ -1334,6 +1349,9 @@
        세로 이동이 더 줄고(탭의 요지), 캡처가 본문 옆 「참고 그림」 자리에 앉습니다.
        ⚠️ 캡처를 왼쪽으로 옮기지 마십시오 — 읽는 순서가 그림부터가 되면 상태줄·요약이
           그림의 캡션처럼 읽힙니다. */
+    .pricing-cols { grid-template-columns: 1fr 1fr; gap: 48px; }
+    .basis-src > div { grid-template-columns: 88px minmax(0, 1fr); }
+
     .feat-panel-pad {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 560px);
@@ -1521,13 +1539,16 @@
             새 문구에도 그대로 적용됩니다. -->
     <section class="stories-sec sec-surface" aria-label="What we hear">
       <div class="container stories-inner">
+        <!-- 🔄 **전면교체** 〔2026-08-23 · PRD v2.1 §5-15 · B3-a〕. 국문 index.html 과 짝입니다 —
+             원문은 §5-15 이고 영문은 그 뜻을 옮긴 것입니다(PRD 는 국문만 확정). -->
         <div class="stories">
-          <p class="h3 story-ask">If this is your first time,<br>there will be things<br>you don’t know yet.</p>
+          <p class="h3 story-ask">With exporting, the real work starts<br>after the contract is signed.</p>
           <div class="story-common">
-            <p class="story-body">When you’re new to exporting, a lot of things feel unfamiliar.</p>
-            <p class="story-body">Did you fully understand the terms in the document you received? Is there anything else worth checking about the buyer you’re dealing with? Are you missing a deadline without realizing it? It’s hard to know all of this up front.</p>
+            <p class="story-body">A contract carries payment dates, Incoterms and delivery deadlines, and trade insurance carries deadlines you have to meet, such as notifying a late payment or a shipment.</p>
+            <p class="story-body">The problem is that this sits scattered across contract PDFs, insurance policies, your ERP, spreadsheets and email, so it’s hard for one person to hold it all in their head.</p>
+            <p class="story-body">Instead of copying dates into a calendar by hand or relying on notes, you can keep it together in one place, deal by deal.</p>
           </div>
-          <p class="h3 story-ask">What matters isn’t knowing<br>everything ahead of time.<br>It’s knowing what to check right now.</p>
+          <p class="h3 story-ask">See today’s work and the deadlines ahead<br>on one screen.</p>
         </div>
       </div>
     </section>
@@ -1713,20 +1734,34 @@
                 제목이 바깥에 있으면 본문 텍스트만 내려가 제목-본문 간격이 벌어지고
                 이미지와도 어긋나 보였습니다. id 는 그대로 유지 — aria-labelledby=
                 "basis-title" 참조는 id 위치가 아니라 값만 봅니다. -->
+        <!-- 🔄 **전면교체** 〔2026-08-23 · PRD v2.1 §5-12 · B3-a〕. 국문과 짝입니다.
+             🔴 마지막 줄은 이 섹션의 **맺음**입니다 — 뒤에 다른 본문을 붙이지 마십시오.
+             ⚠️ .basis-cap 과 CTA 를 뺐습니다 — §5-12 에 없습니다. OGL <figure> 는 남깁니다. -->
         <div class="basis-body">
           <div class="basis-list">
-            <h2 id="basis-title">We show you the standard we compared against</h2>
-            <p>We use a public standard form for your document type as the comparison baseline.</p>
-            <p>We show which form we used, its source, and the date we confirmed it.</p>
+            <h2 id="basis-title">Every check we show carries its source rule and the date we verified it</h2>
+            <dl class="basis-src">
+              <div>
+                <dt>Regulation</dt>
+                <dd>49 CFR 571.500 (US FMVSS 500)<br>Verified 2026-08-23</dd>
+              </div>
+              <div>
+                <dt>Tariff</dt>
+                <dd>US HTS MFN + Section 301 tariff rates<br>Verified 2026-08-23<br><span class="basis-note">※ Tariff rates and relief conditions can change with local trade policy.</span></dd>
+              </div>
+              <div>
+                <dt>Document</dt>
+                <dd>UK Intellectual Property Office standard public template · Open Government Licence v3.0<br>© Crown copyright · Verified 2026-08-10<br><span class="basis-note">※ This template assumes English law.<br>For US deals, confirm governing law and jurisdiction separately.</span></dd>
+              </div>
+            </dl>
           </div>
           <figure class="basis-shot">
             <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank" rel="noopener noreferrer">
               <img src="/img/ogl-licence.png" alt="Open Government Licence v3.0 source page at The National Archives" width="1558" height="860" loading="lazy">
             </a>
           </figure>
-          <p class="basis-cap"><strong>Current NDA comparison standard</strong><br>UK Intellectual Property Office public template · Open Government Licence v3.0<br>© Crown copyright · Confirmed 2026-08-10</p>
+          <p class="basis-last">Items without a verification date are not shown on screen.</p>
         </div>
-        <div class="cta-row"><span class="cta-row-note">If you have a document, check it now.</span><a class="btn btn-secondary" href="/en-precheck">Compare now</a></div>
       </div>
     </section>
 
@@ -1755,13 +1790,16 @@
             히어로 주 CTA(「30초 만에 알아보기」→/check)와 라벨·목적지가 완전히
             같습니다(직전까지 있던 "같은 라벨, 다른 목적지" 불일치가 해소됐습니다). -->
     <section class="act" aria-labelledby="act-title">
+      <!-- 🔄 **전면교체** 〔2026-08-23 · PRD v2.1 §5-16 · B3-a〕. 국문과 짝입니다.
+           ⚠️ 주버튼은 페이지에서 2회입니다(히어로와 여기). 아래 문단에 btn 을 더하지 마십시오. -->
       <div class="container narrow-c sec-center act-inner">
-        <h2 id="act-title">First time exporting? Check now.</h2>
+        <h2 id="act-title">Start with the export deal you’re working on right now.</h2>
         <div class="act-row">
-          <a class="btn btn-primary btn-full" href="/en-check">Check in 30 seconds</a>
+          <a class="btn btn-primary btn-full" href="https://app.trops.kr/account/password" target="_self">Start free</a>
         </div>
-        <!-- 🔄 종전 「로그인 불필요」 문구 → 가입 유도 카피 (핸드오프 3b · 히어로 note 와 같은 문장) -->
-        <p class="act-note">Sign up with no credit card · Results saved free</p>
+        <p class="act-note">No credit card needed to get started.</p>
+        <p class="act-body">Just bringing your contract terms and key dates together in one place makes what you need to handle far clearer.</p>
+        <p class="act-legal">※ TROPS is B2B software supporting export operations. It does not provide legal advice under the Attorney-at-Law Act, nor tax or customs appraisal services on your behalf.</p>
       </div>
     </section>
 
@@ -1927,8 +1965,8 @@
                 <div><a class="btn btn-secondary" href="/en-precheck">Compare now</a></div>
               </div>
               <figure class="feat-shot">
-                <img src="/img/c03-result.jpg" alt="Document review result: the reference form and the other party’s document side by side, with the check status marked item by item" width="1383" height="904" loading="lazy">
-                <figcaption class="feat-cap"><strong>Document review result</strong><br>We show your document and the standard form side by side.<br>Illustrative example. Not an actual customer document.</figcaption>
+                <img src="/assets/img/precheck-report.jpg" alt="Export pre-check result screen: the regulations and preparations to check, organised by item and destination country" width="1600" height="1000" loading="lazy">
+                <figcaption class="feat-cap">We organise the regulations and preparations you need to check, based on your item and destination country.<br>* An example screen, shown to illustrate.</figcaption>
               </figure>
             </div>
           </div>
@@ -1946,16 +1984,19 @@
           <!-- ===== 02 Export contract management 패널 =====
                ⚠️ 목적지는 PRD §6-1 이 정한 `app.trops.kr/procedures/new` 입니다. -->
           <div class="feat-panel" id="feat-contract-panel" role="tabpanel" aria-labelledby="feat-contract" tabindex="0" hidden>
-            <!-- .is-solo — 예시 화면이 아직 없어 2열 그리드의 오른쪽이 빕니다(국문과 같음). -->
-            <div class="feat-panel-pad is-solo">
+            <div class="feat-panel-pad">
               <div class="feat-body">
                 <span class="feat-avail">Free to use</span>
                 <p class="feat-sum">Keeping contracts in a shared drive isn’t enough.</p>
                 <p class="feat-desc">We bring each buyer’s contract terms, payment terms, Incoterms and key fulfilment dates together in one place. After signing, you can track what still needs attention through delivery and payment, deal by deal.</p>
                 <div><a class="btn btn-secondary" href="https://app.trops.kr/procedures/new" target="_self">Register an export contract</a></div>
               </div>
-              <!-- 🔴 TODO 〔B2 이월〕 — /procedures 캡처가 없습니다. 국문 index.html 의
-                   같은 자리 주석 참조. 다른 화면을 빌려다 붙이지 마십시오. -->
+              <!-- 🔄 플레이스홀더로 자리와 비율(1600×1000)을 확정했습니다 〔2026-08-23 · B3-a〕.
+                   실제 캡처가 생기면 **같은 파일명으로 덮어쓰기만** 하면 됩니다(국문과 같음). -->
+              <figure class="feat-shot">
+                <img src="/assets/img/contract-list.jpg" alt="Placeholder for the export contract list screen, to be replaced with the real capture" width="1600" height="1000" loading="lazy">
+                <figcaption class="feat-cap">You can manage each buyer’s contract terms, payment schedule and fulfilment status in one place.<br>* An example screen, shown to illustrate.</figcaption>
+              </figure>
             </div>
           </div>
 
@@ -1978,13 +2019,44 @@
                    reference date to be fixed」와 문자 그대로 대응합니다(국문과 같음).
                    ⚠️ 건수 0/0/0 은 로그아웃 상태의 사실입니다. 지어 넣지 마십시오. -->
               <figure class="feat-shot">
-                <img src="/img/timeline-map.jpg" alt="Policy deadline dashboard: a world map with registered contracts marked over their destination countries, and three count cards splitting overdue, imminent and everything else" width="1480" height="983" loading="lazy">
+                <img src="/assets/img/policy-deadlines.jpg" alt="Policy deadline dashboard: a world map with registered contracts marked over their destination countries, and three count cards splitting overdue, imminent and everything else" width="1600" height="1000" loading="lazy">
                 <figcaption class="feat-cap">We lay out the notification deadlines for the policies you register, together with the clause each one comes from.<br>* An example screen, shown to illustrate.</figcaption>
               </figure>
             </div>
           </div>
 
         </div>      </div>
+    </section>
+
+    <!-- ===== 무료·유료 (PRD v2.1 §5-13 · 신설 2026-08-23 · B3-a) =====
+         국문 index.html 과 짝입니다. 배경(--surface)과 그로 인한 하류 다섯 곳의 배경
+         뒤집기도 국문과 같습니다 — 문구는 그대로이고 sec-surface 만 옮겼습니다.
+         ⛔ 여기에 금액을 적지 마십시오 — 가격은 결제 단계에서만 보입니다. -->
+    <section class="pricing-sec sec-surface" id="pricing" aria-labelledby="pricing-title">
+      <div class="container pricing-inner">
+        <div class="body-w">
+          <h2 id="pricing-title">Checking is free. Issuing a report is paid.</h2>
+          <div class="pricing-cols">
+            <div class="pricing-col">
+              <p class="pricing-head">Free to use</p>
+              <ul class="pricing-list">
+                <li>· The full export pre-check result screen</li>
+                <li>· Registering export contracts and tracking their deadlines</li>
+                <li>· Registering receivables and insurance policies, and tracking notification deadlines</li>
+                <li>· Downloading the deadline list as a spreadsheet</li>
+                <li>· FX trend and trade news briefings</li>
+              </ul>
+            </div>
+            <div class="pricing-col">
+              <p class="pricing-head">What you pay for</p>
+              <ul class="pricing-list">
+                <li>· Issuing the pre-check report (PDF), its share link, and re-issues</li>
+                <li>· The full set of per-item actions with expected time and cost<br><span class="pricing-note">(your first one is free to view)</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- ===== 예정 항목 =====
@@ -2002,34 +2074,25 @@
             않습니다(죽은 규칙이라 CSS 에서도 지웠습니다).
          ⛔ 금액·오픈월을 적지 마십시오 — test/roadmap-no-price.test.js 가 지킵니다. -->
     <!-- .sec-surface 〔2026-08-14〕 — 이웃이 둘 다 --bg 라 여기가 --surface 여야 교차합니다. -->
-    <section class="how sec-surface" id="next" aria-label="Coming soon">
+    <section class="how" id="next" aria-label="Coming soon">
       <div class="container how-inner">
+        <!-- 🔄 **전면교체** 〔2026-08-23 · PRD v2.1 §5-14 · B3-a〕. 국문과 짝입니다.
+             🔄 상태 배지(.rm-meta)와 기한관리 미리보기 훅·버튼을 뺐습니다 — §5-14 에
+                없습니다. data-timeline-open 이 페이지에서 사라졌고, JS 는
+                `if (!openers.length) return` 로 이미 막혀 있어 안전합니다. -->
         <p class="kicker">WHAT'S NEXT</p>
-        <h2 class="rm-h2">Coming soon</h2>
-        <p class="rm-lead">We’re expanding what’s available, step by step.</p>
+        <h2 class="rm-h2">Connecting the whole export workflow, more tightly</h2>
 
         <div class="rm">
           <div class="rm-row">
-            <p class="rm-name"><span class="rm-num">01</span>Export pre-check</p>
-            <p class="rm-desc">Starting with NDAs for now. We’ll add more document types to compare over time.</p>
-            <p class="rm-meta">Partly working today, more in development</p>
+            <p class="rm-name"><span class="rm-num">01</span>More items and countries covered by the export pre-check</p>
+            <p class="rm-desc">Starting with North America (the US), we’re widening coverage to the destination countries and item groups with the most demand in practice.</p>
           </div>
           <div class="rm-row">
-            <p class="rm-name"><span class="rm-num">02</span>Deadline tracking</p>
-            <p class="rm-desc">Starting with logging key dates from your contract. We’ll expand to cover customs and payment collection by deal.</p>
-            <p class="rm-meta">Coming soon</p>
+            <p class="rm-name"><span class="rm-num">02</span>Deeper links to export receivables and trade insurance</p>
+            <p class="rm-desc">Beyond laying out notification deadlines, we’ll add deadline alerts, buyer credit limit checks and overdue receivable tracking, step by step.</p>
           </div>
         </div>
-
-        <!-- 기한관리 미리보기 훅 (흐름 md §1 시각층매핑 「로드맵 + 기한관리 미리보기 훅을
-             텍스트링크로 배치」). 질문으로 던지는 이유: 기한관리쪽 훅은 「내가 뭘 놓치고
-             있는지도 모른다」는 통제감 상실이고, 기능설명형 문구는 이 지점에서 훅이 되지
-             않습니다. 문구를 설명형으로 되돌리지 마십시오.
-             ⚠️ 위계는 텍스트링크입니다(흐름 md §2 CTA 표). 버튼으로 올리지 마십시오.
-             클릭하면 04 상품소개의 기한관리 카드(#feat-timeline)가 펼쳐지고 그 자리로
-             스크롤합니다 — 페이지 이동이 아닙니다. 패널은 그 한 곳뿐입니다. -->
-        <p class="rm-hook">Do you know how many deadlines are hiding in a single contract?</p>
-        <div><button class="btn btn-text" type="button" data-timeline-open aria-controls="feat-timeline-panel">Preview deadline tracking</button></div>
       </div>
     </section>
 
@@ -2043,7 +2106,7 @@
          🔴 「NDA가 뭔가요?」(구 qa-1, /check 링크 포함)는 새 세트에서 완전히 빠졌습니다.
          ⚠️ 기본값은 전부 접힘. 여러 개 동시 펼침 허용(하나만 열리는 방식 금지, C-3).
          ⚠️ 셰브론에 액센트를 쓰지 마십시오. -->
-    <section class="qna" id="qna" aria-labelledby="qna-title">
+    <section class="qna sec-surface" id="qna" aria-labelledby="qna-title">
       <div class="container qna-inner">
         <h2 id="qna-title">FAQ</h2>
         <!-- 🔄 **전면교체** 〔2026-08-23 · PRD v2.1 B2-7〕. 국문 index.html 과 짝입니다 —
@@ -2173,6 +2236,41 @@
             </div>
           </div>
 
+          <!-- 🔴 **신설 〔2026-08-23 · B3-a 작업 5〕 — 「결과물의 성격」.**
+               ⚠️ 이 3문항에는 PRD 원본이 없습니다(국문 index.html 의 같은 주석 참조).
+                  새 주장을 만들지 않았고, 세 답변이 각각 §5-13 · §5-16 · §5-12 에서
+                  나옵니다. ⛔ 승인 전까지 새 약속을 더하지 마십시오. -->
+          <div class="qgroup">
+            <p class="eyebrow-quiet">▸ What you get</p>
+            <div class="qitem" data-open="0">
+              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-13">
+                <span>What form does the pre-check report come in?</span>
+                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+              </button>
+              <div class="qans" id="qa-13">
+                <p>The result screen is free to view in full. If you ask us to issue the report, you receive it as a PDF with a share link, and you can re-issue it whenever you need to.</p>
+              </div>
+            </div>
+            <div class="qitem" data-open="0">
+              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-14">
+                <span>Does this carry any legal force?</span>
+                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+              </button>
+              <div class="qans" id="qa-14">
+                <p>TROPS is B2B software supporting export operations. It does not provide legal advice under the Attorney-at-Law Act, nor tax or customs appraisal services on your behalf. What we lay out is reference material for your internal review and your discussions with buyers.</p>
+              </div>
+            </div>
+            <div class="qitem" data-open="0">
+              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-15">
+                <span>What are the results based on?</span>
+                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+              </button>
+              <div class="qans" id="qa-15">
+                <p>Every check we show carries its source rule and the date we verified it. Items without a verification date are not shown on screen.</p>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
@@ -2188,7 +2286,7 @@
          H2는 원래 확정본 §9 「상담 전에, 한 번 더 확인하세요.」였습니다. 「상담」이
          이 서비스를 유상 자문으로 오해하게 한다는 지적에 따라 「수출 전 자가 점검」
          포지셔닝(히어로 §2 eyebrow와 같은 프레이밍)으로 교체했습니다. -->
-    <section class="close-cta sec-surface" aria-labelledby="close-cta-title">
+    <section class="close-cta" aria-labelledby="close-cta-title">
       <div class="container narrow-c sec-center close-cta-inner">
         <!-- 2026-08-13 재구성 (흐름 md §1 시각층매핑 「마감 CTA」).
              주버튼([비교해 보기])을 뺐습니다 — 주 CTA 는 히어로와 07 「결」 두 번뿐이고,
@@ -2216,7 +2314,7 @@
     <!-- ===== Interest form =====
          랜딩 하단은 약한 버전입니다. 강한 버전("먼저 써보고 싶어요")은
          precheck 결과지 페이지 하단 몫이므로 여기에 끌어오지 마십시오. -->
-    <section class="interest" id="interest">
+    <section class="interest sec-surface" id="interest">
       <div class="container interest-inner">
         <!-- 보조 문구는 확정본 v3.1 §10 원문 그대로입니다. H2는 2026-08-13 재교체 —
              기존 「거래 절차 트래킹이 열리면 가장 먼저 알려드립니다.」(2026-08-11,
@@ -2314,7 +2412,7 @@
             클릭 추적으로 순서를 바꾸지 마십시오.
          ⚠️ 외부 링크를 걸지 않았습니다 — 링크를 걸면 액센트색이 5번 등장해
             「로고 금지」가 막으려던 제휴 오인이 같은 방식으로 생깁니다. -->
-    <section class="orgs-sec sec-surface" id="orgs" aria-labelledby="orgs-title">
+    <section class="orgs-sec" id="orgs" aria-labelledby="orgs-title">
       <div class="container orgs-inner">
         <div class="body-w">
           <!-- 🔄 PRD v2.1 §5-7 〔2026-08-23 · B2-6〕. 국문이 원문이고 영문은 그 뜻을

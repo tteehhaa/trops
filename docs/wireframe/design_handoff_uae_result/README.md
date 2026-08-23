@@ -6,7 +6,7 @@ trops.kr에 추가할 새 페이지 `/uae` 의 **조회 결과 화면**입니다
 **로그인 없이 접근**하며, 화면의 목적은 두 가지입니다.
 
 1. 한-UAE CEPA 부속서의 양허 내용을 **근거와 함께** 보여준다 (판정하지 않는다).
-2. 확인이 필요한 항목을 드러내고 **유료 진단서(99,000원)** 로 전환시킨다.
+2. 확인이 필요한 항목을 드러내고 **유료 사전 점검 리포트(99,000원)** 로 전환시킨다.
 
 제품 톤의 핵심: *확신을 주는 디자인이 아니라, 근거와 출처가 분명해 보이는 디자인.*
 숫자를 자랑하듯 크게 쓰지 말고, 각 값 아래 조문 근거가 함께 읽히게 합니다.
@@ -49,7 +49,7 @@ trops.kr에 추가할 새 페이지 `/uae` 의 **조회 결과 화면**입니다
 
 ### Purpose
 사용자는 여기서 (1) 내 품목의 세율이 어떻게 되는지 확인하고, (2) 확인되지 않은 것이
-무엇인지 알고, (3) 진단서를 신청합니다.
+무엇인지 알고, (3) 사전 점검 리포트를 신청합니다.
 
 ### Layout — 전체 골격 (위에서 아래)
 `.uae-page` (컨테이너 쿼리 기준점) 안에:
@@ -73,7 +73,7 @@ main.uae-main
 
 **내비게이션 (`.nav` 상속)**
 랜딩과 동일하지만 **오른쪽 버튼을 `.btn-primary` → `.btn-secondary` 로 낮춥니다.**
-이 화면에서 primary는 "진단서 신청" 하나여야 합니다.
+이 화면에서 primary는 "사전 점검 리포트 신청" 하나여야 합니다.
 
 **1. 조회한 품목 헤더 `.uae-head`** (padding-block 26px 32px, 하단 1px `--line`)
 - `.uae-head-kicker` — "아랍에미리트 · 한-UAE CEPA" / 12.5px, 700, letter-spacing .14em, `--muted`
@@ -132,12 +132,12 @@ main.uae-main
 > 제33류의 기준(인정가치포함비율 40%)을 다른 류에 복사하지 마십시오. 예를 들어 부속서 3-가의
 > 제2류는 "완전생산기준 · 선택기준 해당없음"입니다.
 
-**5. 확인 항목 `.uae-check`** — 진단서 전환 지점
+**5. 확인 항목 `.uae-check`** — 리포트 전환 지점
 - `.uae-check-count` — "확인이 필요한 항목이 6개 있습니다" / 24px / 700 / -0.025em
 - `.uae-check-sub` — "원산지증명서 · 소급발급 기한 등 협정상 확인 대상입니다." / 16.5px `--ink-64`
 - `.uae-check-list` — grid 2열(모바일 1열), gap 9px 28px, max-width 760px.
   각 항목 `.uae-check-item` = `20px | 1fr` grid, `.uae-check-num` 은 01–06 / 12.5px `--muted`
-- `.uae-check-cta` — `.btn.btn-primary` "진단서 신청 · 99,000원" +
+- `.uae-check-cta` — `.btn.btn-primary` "사전 점검 리포트 신청 · 99,000원" +
   `.uae-check-cta-note` "품목별 원문 확인 후, 확인 항목별 근거와 함께 문서로 발급합니다."
 - **이 버튼이 화면에서 유일한 primary 액션입니다.**
 
@@ -165,7 +165,7 @@ main.uae-main
 - 애니메이션·트랜지션 없음. 상속된 `.btn`의 `background-color/border-color .14s ease` hover만 유지.
 - 링크 hover: `.uae-back` `--ink-62` → `--ink`.
 - 포커스: 상속된 `:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }`.
-- 진단서 CTA → 결제/신청 플로우 (`/uae/diagnosis?hs=<hs8>`). 이 문서 범위 밖입니다.
+- 리포트 CTA → 결제/신청 플로우 (`/uae/diagnosis?hs=<hs8>`). 이 문서 범위 밖입니다.
 - 로딩/에러 상태는 이 화면에 없습니다 (결과는 서버 렌더 또는 조회 직후 렌더 가정).
   HS 미존재 시의 "결과 없음" 화면은 아직 디자인되지 않았습니다 — 필요하면 요청해 주십시오.
 - **반응형**: 미디어쿼리 대신 `.uae-page { container-type: inline-size }` +

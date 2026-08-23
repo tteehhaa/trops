@@ -35,7 +35,7 @@ Plan: `docs/01-plan/features/price-300k-naming-map-s9.plan.md`
 
 trops_a `tests/payment/precheck-paid-gate.test.ts:169` 가
 `PRECHECK_PRICE.launchKrw === VERIFY_TIERS.standard.krw` 를 단정한다. §8-4 가 경고한
-**삼중 사용**(앞단 런칭가 · 뒷단 Standard · UAE 진단서)이 「같은 숫자」였기 때문이다.
+**삼중 사용**(앞단 런칭가 · 뒷단 Standard · UAE 사전 점검 리포트)이 「같은 숫자」였기 때문이다.
 
 앞단만 ₩300,000 으로 움직이므로 **그 충돌이 해소된다.** 단언을 지우지 않고 **뒤집는다** —
 「같다」가 아니라 「**갈라졌다**」를 단정한다. 지우면 다음에 누가 다시 붙여도 아무도 모른다.

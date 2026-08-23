@@ -1258,6 +1258,29 @@
   .orgs-note { margin: 28px 0 0; font-size: 12.5px; line-height: 1.7; color: var(--muted); }
   /* 🔄 신설 〔2026-08-23 · B2-6〕 — §5-7 이 제목을 「…필요하신 경우」로 끊고 다음 줄을
      별도 문장으로 두었습니다. h2 에 붙이면 제목이 두 문장이 됩니다. */
+  /* ══ B3-a 신설 〔2026-08-23〕 ═══════════════════════════════════════════
+     근거(§5-12) · 무료·유료(§5-13) · 중간 CTA(§5-16) 가 쓰는 규칙입니다. */
+
+  /* 근거 3축. dt 를 왼쪽에 고정해 「무엇의 근거인지」가 훑어보기로 읽히게 합니다. */
+  .basis-src { margin: 20px 0 0; display: flex; flex-direction: column; gap: 18px; }
+  .basis-src > div { display: grid; gap: 2px 16px; }
+  .basis-src dt { font-size: 13.5px; font-weight: 700; letter-spacing: -0.01em; color: var(--ink); }
+  .basis-src dd { margin: 0; font-size: 14.5px; line-height: 1.75; color: var(--ink-64); }
+  .basis-note { display: block; margin-top: 4px; font-size: 12.5px; line-height: 1.7; color: var(--muted); }
+  /* 🔴 근거 섹션의 **맺음**. 위 3축과 떨어뜨려 선언으로 읽히게 합니다.
+     ⛔ 이 뒤에 다른 본문을 붙이지 마십시오(check-b3a-gates.js G2). */
+  .basis-last { margin: 24px 0 0; font-size: 14.5px; line-height: 1.75; color: var(--ink-70); }
+
+  /* 무료·유료 두 칸. 좁은 폭에서는 세로로 쌓입니다. */
+  .pricing-cols { margin: 24px 0 0; display: grid; gap: 28px; }
+  .pricing-head { margin: 0 0 10px; font-size: 15px; font-weight: 700; letter-spacing: -0.01em; color: var(--ink); }
+  .pricing-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 15px; line-height: 1.75; color: var(--ink-64); }
+  .pricing-note { color: var(--muted); font-size: 13.5px; }
+
+  /* 중간 CTA 의 보조 문단 2개(§5-16). .act-note 아래에 옵니다. */
+  .act-body { margin: 18px 0 0; font-size: 16px; line-height: 1.76; color: var(--ink-64); }
+  .act-legal { margin: 18px 0 0; font-size: 12.5px; line-height: 1.7; color: var(--muted); }
+
   .orgs-lead { margin: 10px 0 0; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); }
 
   /* 신설 섹션 헤딩의 줄바꿈 — 769px 이상에서만 balance 를 씁니다.
@@ -1338,6 +1361,11 @@
        세로 이동이 더 줄고(탭의 요지), 캡처가 본문 옆 「참고 그림」 자리에 앉습니다.
        ⚠️ 캡처를 왼쪽으로 옮기지 마십시오 — 읽는 순서가 그림부터가 되면 상태줄·요약이
           그림의 캡션처럼 읽힙니다. */
+    /* 무료·유료 두 칸 — 이 폭부터 나란히 놓습니다(위 .pricing-cols 참조). */
+    .pricing-cols { grid-template-columns: 1fr 1fr; gap: 48px; }
+    /* 근거 3축 — dt 를 왼쪽 열로 빼 훑어보기가 됩니다. */
+    .basis-src > div { grid-template-columns: 88px minmax(0, 1fr); }
+
     .feat-panel-pad {
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 560px);
@@ -1539,13 +1567,18 @@
             새 문구에도 그대로 적용됩니다. -->
     <section class="stories-sec sec-surface" aria-label="있었던 이야기">
       <div class="container stories-inner">
+        <!-- 🔄 **전면교체** 〔2026-08-23 · PRD v2.1 §5-15 · B3-a〕. 종전 서사는 「처음이라
+             모른다」는 초심자 프레임이었고, 상품 3종이 계약·채권·보험 실무로 확정되면서
+             파는 것과 어긋났습니다. §5-15 는 **서명 이후의 실무**를 말합니다.
+             ⚠️ 원문 그대로입니다. 한 글자도 바꾸지 마십시오. -->
         <div class="stories">
-          <p class="h3 story-ask">처음이라면,<br>무엇을 놓치고 있는지 알기 어렵습니다.</p>
+          <p class="h3 story-ask">수출은 계약서에 서명한 뒤부터<br>챙겨야 할 실무가 본격적으로 시작됩니다.</p>
           <div class="story-common">
-            <p class="story-body">해외 거래를 처음 시작하면 익숙하지 않은 것이 많습니다.</p>
-            <p class="story-body">받은 서류의 문구를 제대로 이해했는지, 거래하려는 바이어에 대해 더 확인할 것은 없는지, 챙겨야 할 기한을 놓치고 있지는 않은지 처음부터 모두 알기는 어렵습니다.</p>
+            <p class="story-body">계약서에는 결제일, 인코텀즈, 납품 기한이 있고 무역보험에는 결제 지연 통지, 선적 통지처럼 지켜야 하는 기한이 있습니다.</p>
+            <p class="story-body">문제는 이 정보들이 계약서 PDF, 보험 증권, ERP, 엑셀 파일과 이메일에 각각 흩어져 있어 담당자가 일일이 기억하기 어렵다는 점입니다.</p>
+            <p class="story-body">캘린더에 수기로 옮겨 적거나 메모에 의존하는 대신 거래 건별로 한곳에 모아 관리하실 수 있습니다.</p>
           </div>
-          <p class="h3 story-ask">모든 것을 미리 알 필요는 없습니다.<br>놓치기 쉬운 것부터 확인하면 됩니다.</p>
+          <p class="h3 story-ask">오늘 처리하실 실무와 다가오는 기한을<br>한 화면에서 확인하실 수 있습니다.</p>
         </div>
       </div>
     </section>
@@ -1731,19 +1764,39 @@
                 제목이 바깥에 있으면 본문 텍스트만 내려가 제목-본문 간격이 벌어지고
                 이미지와도 어긋나 보였습니다. id 는 그대로 유지 — aria-labelledby=
                 "basis-title" 참조는 id 위치가 아니라 값만 봅니다. -->
+        <!-- 🔄 **전면교체** 〔2026-08-23 · PRD v2.1 §5-12 · B3-a〕. 종전에는 NDA 비교
+             기준(영국 OGL) **하나만** 말했습니다. 점검이 규정·관세까지 넓어지면서 근거도
+             세 축이 됐고, 각 축마다 **확인 기준일**을 함께 답니다.
+             🔴 마지막 줄(「확인 기준일이 없는 항목은 …」)은 이 섹션의 **맺음**입니다.
+                뒤에 다른 본문을 붙이지 마십시오 — 붙이는 순간 그 선언이 단서로 읽힙니다.
+                scripts/check-b3a-gates.js G2 가 「마지막인지」까지 봅니다.
+             ⚠️ 원문 그대로입니다. 한 글자도 바꾸지 마십시오.
+             ⚠️ .basis-cap 은 뺐습니다 — §5-12 의 「문서 기준」이 같은 내용을 이미 말합니다.
+                OGL <figure> 는 남깁니다(그 근거를 화면으로 받칩니다). -->
         <div class="basis-body">
           <div class="basis-list">
-            <h2 id="basis-title">비교에 쓴 기준도 함께 보여드립니다</h2>
-            <p>문서 종류에 맞는 공개된 표준 서식을 비교 기준으로 사용합니다.</p>
-            <p>어떤 서식을 기준으로 비교했는지, 출처와 확인 시점도 함께 표시합니다.</p>
+            <h2 id="basis-title">모든 점검 정보에는 근거 규정과 확인 기준일을 함께 표기합니다</h2>
+            <dl class="basis-src">
+              <div>
+                <dt>규정 근거</dt>
+                <dd>49 CFR 571.500 (미국 FMVSS 500)<br>기준일 2026-08-23</dd>
+              </div>
+              <div>
+                <dt>관세 근거</dt>
+                <dd>미국 HTS MFN + 통상법 301조 관세율<br>기준일 2026-08-23<br><span class="basis-note">※ 관세율과 감면 요건은 현지 통상 정책에 따라 변경될 수 있습니다.</span></dd>
+              </div>
+              <div>
+                <dt>문서 기준</dt>
+                <dd>영국 지식재산청(UK IPO) 표준 공개 서식 · Open Government Licence v3.0<br>© Crown copyright · 기준일 2026-08-10<br><span class="basis-note">※ 영국법을 전제로 한 서식입니다.<br>미국 거래는 준거법과 관할을 별도로 확인하셔야 합니다.</span></dd>
+              </div>
+            </dl>
           </div>
           <figure class="basis-shot">
             <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank" rel="noopener noreferrer">
               <img src="/img/ogl-licence.png" alt="Open Government Licence v3.0 원문 페이지 — The National Archives" width="1558" height="860" loading="lazy">
             </a>
           </figure>
-          <p class="basis-cap"><strong>현재 NDA 비교 기준</strong><br>영국 지식재산청 공개 서식 · Open Government Licence v3.0<br>© Crown copyright · 확인일 2026-08-10</p>
-          <div class="cta-row"><a class="btn btn-secondary" href="/precheck">비교해 보기</a></div>
+          <p class="basis-last">확인 기준일이 없는 항목은 화면에 표시하지 않습니다.</p>
         </div>
       </div>
     </section>
@@ -1773,13 +1826,19 @@
             히어로 주 CTA(「30초 만에 알아보기」→/check)와 라벨·목적지가 완전히
             같습니다(직전까지 있던 "같은 라벨, 다른 목적지" 불일치가 해소됐습니다). -->
     <section class="act" aria-labelledby="act-title">
+      <!-- 🔄 **전면교체** 〔2026-08-23 · PRD v2.1 §5-16 · B3-a〕.
+           ⚠️ 원문 그대로입니다. 한 글자도 바꾸지 마십시오.
+           ⚠️ 주버튼은 페이지에서 **2회**입니다(히어로와 여기). 아래 문단들에 btn 을
+              더 붙이지 마십시오.
+           ⚠️ 목적지는 PRD §6-1 이 「무료로 시작하기」에 지정한 앱 가입 화면입니다. -->
       <div class="container narrow-c sec-center act-inner">
-        <h2 id="act-title">해외 거래에서 무엇을 먼저 확인해야 할지 알아보세요.</h2>
+        <h2 id="act-title">지금 검토 중이신 수출 건부터 등록해 보세요.</h2>
         <div class="act-row">
-          <a class="btn btn-primary btn-full" href="/check">30초 만에 알아보기</a>
+          <a class="btn btn-primary btn-full" href="https://app.trops.kr/account/password" target="_self">무료로 시작하기</a>
         </div>
-        <!-- 🔄 「로그인 없이 바로」→ 가입 유도 카피 (핸드오프 3b · 히어로 note 와 같은 문장) -->
-        <p class="act-note">신용카드 없이 가입 · 진단 결과 저장 무료</p>
+        <p class="act-note">신용카드 등록 없이 바로 시작하실 수 있습니다.</p>
+        <p class="act-body">계약 조건과 주요 일정을 한곳에 모으시는 것만으로도 챙기셔야 할 일이 훨씬 분명해집니다.</p>
+        <p class="act-legal">※ TROPS는 수출 실무 관리를 지원하는 B2B 소프트웨어이며, 변호사법상 법률 자문이나 세무·관세 감정 대행을 제공하지 않습니다.</p>
       </div>
     </section>
 
@@ -1953,9 +2012,16 @@
                         같은 곳으로 가는데 다른 말을 쓰면 다른 곳으로 읽힙니다. -->
                 <div><a class="btn btn-secondary" href="/precheck">비교해 보기</a></div>
               </div>
+              <!-- 🔄 **그림·캡션만 교체** 〔2026-08-23 · B3-a 작업 6〕. 이 탭의 **문구**는
+                   B3-b 영역이라 손대지 않았습니다(게이트 G6 가 그 부분을 못질합니다).
+                   🔴 경로가 `assets/img/` 로 고정됐습니다 — **같은 파일명·같은 비율(1600×1000)로
+                      덮어쓰면 코드 수정 없이 교체**됩니다. 그것이 이 배치의 목적입니다.
+                      ⛔ 비율을 바꾸는 교체를 하지 마십시오(G4 가 셋의 비율이 같은지 봅니다).
+                   ⚠️ 원본 img/c03-result.jpg 는 지우지 않았습니다 — 되돌릴 자리입니다.
+                   ⚠️ 캡션은 PRD §5-17 원문입니다. 한 글자도 바꾸지 마십시오. -->
               <figure class="feat-shot">
-                <img src="/img/c03-result.jpg" alt="문언 확인 결과지 — 참조 서식과 상대방 문서의 조항을 나란히 놓고 항목별 확인 상태를 표시합니다" width="1383" height="904" loading="lazy">
-                <figcaption class="feat-cap"><strong>문언 확인 결과지</strong><br>올린 문서와 표준 서식을 나란히 놓고 비교한 결과를 보여드립니다.<br>가상의 서류로 만든 예시 화면입니다. 실제 고객 문서가 아닙니다.</figcaption>
+                <img src="/assets/img/precheck-report.jpg" alt="점검 결과 화면 — 품목과 수출국을 기준으로 확인이 필요한 규제와 준비 사항을 정리해 보여줍니다" width="1600" height="1000" loading="lazy">
+                <figcaption class="feat-cap">품목과 수출국을 기준으로 확인이 필요한 규제와 준비 사항을 정리해 보여드립니다.<br>* 이해를 돕기 위한 예시 화면입니다.</figcaption>
               </figure>
             </div>
           </div>
@@ -1987,9 +2053,7 @@
                ⚠️ 목적지는 PRD §6-1 이 정한 `app.trops.kr/procedures/new`(등록 화면 직행)
                   입니다. 목록(`/procedures`)으로 바꾸지 마십시오 — 라벨이 「등록하기」입니다. -->
           <div class="feat-panel" id="feat-contract-panel" role="tabpanel" aria-labelledby="feat-contract" tabindex="0" hidden>
-            <!-- .is-solo — 예시 화면이 아직 없어 2열 그리드의 오른쪽이 빕니다. 이 클래스가
-                 없으면 본문이 절반 폭에 갇혀 읽기 어려워집니다(아래 TODO 참조). -->
-            <div class="feat-panel-pad is-solo">
+            <div class="feat-panel-pad">
               <div class="feat-body">
                 <span class="feat-avail">무료로 이용하실 수 있습니다</span>
                 <p class="feat-sum">계약서를 드라이브에 보관하는 것만으로는 부족합니다.</p>
@@ -1998,21 +2062,18 @@
                      (시각사양 2 「페이지당 최대 2회」 — 히어로와 06 결, 둘뿐입니다). -->
                 <div><a class="btn btn-secondary" href="https://app.trops.kr/procedures/new" target="_self">수출 계약 등록하기</a></div>
               </div>
-              <!-- 🔴 TODO 〔B2 이월 · 2026-08-23〕 — **예시 화면 캡처가 없습니다.**
-                   PRD §5-17 이 이 상품의 캡션을 확정했지만("바이어별 계약 조건과 결제 일정,
-                   이행 상태를 한곳에서 관리하실 수 있습니다"), 그 화면
-                   (`app.trops.kr/procedures`)의 캡처가 이 저장소에 없습니다.
-                   ⛔ 다른 화면(예: timeline-map.jpg 홈 대시보드)을 빌려다 붙이지 마십시오 —
-                      캡션이 말하는 화면과 다른 그림을 싣는 것은 이 저장소가 s11 에서 없앤
-                      「제품 상태를 손으로 흉내 내기」와 같은 것입니다.
-                   ✅ 할 일: /procedures 목록 화면을 데모 계약으로 찍어 img/contract-list.jpg
-                      로 넣고, 아래 figure 주석을 풀면서 .is-solo 를 떼십시오.
-
+              <!-- 🔄 **플레이스홀더로 자리를 세웠습니다** 〔2026-08-23 · B3-a 작업 6〕.
+                   `/procedures` 실제 캡처는 아직 없습니다 — 그래서 내용은 「예시 화면 준비 중」
+                   회색판이고, **자리와 비율(1600×1000)만 확정**해 둡니다.
+                   ✅ 캡처가 생기면 **같은 파일명으로 덮어쓰기만** 하면 됩니다. 마크업·CSS 를
+                      고칠 필요가 없습니다(alt 만 실제 화면에 맞게 다듬으십시오).
+                   ⛔ 다른 화면(예: 홈 대시보드)을 빌려다 붙이지 마십시오 — 캡션이 말하는
+                      화면과 다른 그림을 싣는 것은 이 저장소가 s11 에서 없앤 것입니다.
+                   ⚠️ 캡션은 PRD §5-17 원문입니다. -->
               <figure class="feat-shot">
-                <img src="/img/contract-list.jpg" alt="수출 계약 목록 — 바이어별 계약 조건과 결제 일정, 이행 상태를 한 화면에 정리합니다" width="1480" height="983" loading="lazy">
+                <img src="/assets/img/contract-list.jpg" alt="수출 계약 목록 예시 화면 자리 — 실제 캡처로 교체 예정입니다" width="1600" height="1000" loading="lazy">
                 <figcaption class="feat-cap">바이어별 계약 조건과 결제 일정, 이행 상태를 한곳에서 관리하실 수 있습니다.<br>* 이해를 돕기 위한 예시 화면입니다.</figcaption>
               </figure>
-              -->
             </div>
           </div>
 
@@ -2049,13 +2110,52 @@
                       실제 화면입니다. 보기 좋으라고 숫자를 지어 넣지 마십시오.
                    ⚠️ 캡션은 PRD §5-17 원문입니다. 한 글자도 바꾸지 마십시오. -->
               <figure class="feat-shot">
-                <img src="/img/timeline-map.jpg" alt="증권 통지 기한 대시보드 — 등록된 계약이 목적국 위에 점으로 표시된 세계지도와, 기한이 지난 것·임박한 것·그 밖으로 나눈 건수 카드 3장" width="1480" height="983" loading="lazy">
+                <img src="/assets/img/policy-deadlines.jpg" alt="증권 통지 기한 대시보드 — 등록된 계약이 목적국 위에 점으로 표시된 세계지도와, 기한이 지난 것·임박한 것·그 밖으로 나눈 건수 카드 3장" width="1600" height="1000" loading="lazy">
                 <figcaption class="feat-cap">등록하신 증권의 통지 기한을 약관 조문과 함께 정리해 보여드립니다.<br>* 이해를 돕기 위한 예시 화면입니다.</figcaption>
               </figure>
             </div>
           </div>
 
         </div>      </div>
+    </section>
+
+    <!-- ===== 무료·유료 (PRD v2.1 §5-13 · 신설 2026-08-23 · B3-a) =====
+         🔴 **자리가 여기인 이유**: 바로 위 상품소개가 3종을 보여주고 나면 다음 질문은
+            「그래서 얼마인가」입니다. 그 답을 FAQ 안쪽까지 찾아 들어가게 두지 않습니다.
+         🔴 **배경이 --surface 이고, 그 때문에 아래 다섯 섹션의 배경이 뒤집혔습니다**
+            〔2026-08-23〕. 이 페이지는 bg↔surface 완전 교차라(test/landing-order-s9.test.js
+            O7 「연속 배경 0」) 섹션 하나를 끼우면 하류가 통째로 뒤집힙니다 — 로드맵·FAQ·
+            마감CTA·사전등록폼·기관안내에서 sec-surface 를 옮겼습니다. **문구는 그대로**입니다.
+            ⛔ 이 섹션만 지우지 마십시오. 지우려면 그 다섯 곳의 배경도 함께 되돌려야 합니다.
+         ⚠️ 문구는 §5-13 원문입니다. 한 글자도 바꾸지 마십시오.
+         ⛔ 여기에 금액을 적지 마십시오 — 가격은 결제 단계에서만 보입니다
+            (test/price-exposure.test.js 「금액이 결제 영역 안에만 있다」). 이 섹션은
+            **무엇이 무료이고 무엇이 유료인가**만 말합니다. -->
+    <section class="pricing-sec sec-surface" id="pricing" aria-labelledby="pricing-title">
+      <div class="container pricing-inner">
+        <div class="body-w">
+          <h2 id="pricing-title">확인은 무료, 발급은 유료입니다.</h2>
+          <div class="pricing-cols">
+            <div class="pricing-col">
+              <p class="pricing-head">무료로 이용하실 수 있는 것</p>
+              <ul class="pricing-list">
+                <li>· 수출 사전점검 결과 화면 전체</li>
+                <li>· 수출 계약 등록과 기한 관리</li>
+                <li>· 수출채권·보험 증권 등록과 통지 기한 관리</li>
+                <li>· 기한 목록 엑셀 내려받기</li>
+                <li>· 환율 동향과 무역 뉴스 브리핑</li>
+              </ul>
+            </div>
+            <div class="pricing-col">
+              <p class="pricing-head">결제가 필요한 것</p>
+              <ul class="pricing-list">
+                <li>· 사전 점검 리포트 발급(PDF)과 공유 링크, 재발급</li>
+                <li>· 항목별 조치 방법과 예상 기간·비용 전체<br><span class="pricing-note">(첫 한 건은 무료로 확인하실 수 있습니다)</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- ===== 예정 항목 =====
@@ -2072,35 +2172,31 @@
             아니라 그 문항의 맺음말이 원래 자리였습니다. .rm-note 클래스는 이제 쓰지
             않습니다(죽은 규칙이라 CSS 에서도 지웠습니다).
          ⛔ 금액·오픈월을 적지 마십시오 — test/roadmap-no-price.test.js 가 지킵니다. -->
-    <!-- .sec-surface 〔2026-08-14〕 — 이웃이 둘 다 --bg 라 여기가 --surface 여야 교차합니다. -->
-    <section class="how sec-surface" id="next" aria-label="준비 중인 것">
+    <!-- 🔄 sec-surface 를 뗐습니다 〔2026-08-23 · B3-a〕 — 바로 위에 무료·유료(surface)가
+         새로 들어오면서 이 섹션부터 아래 다섯 곳의 배경이 한 칸씩 밀렸습니다. 배경만
+         바뀌었고 문구는 그대로입니다. 정본은 test/landing-order-s9.test.js 의 LAYOUT 표. -->
+    <section class="how" id="next" aria-label="준비 중인 것">
       <div class="container how-inner">
+        <!-- 🔄 **전면교체** 〔2026-08-23 · PRD v2.1 §5-14 · B3-a〕. 종전 두 행은 옛
+             상품명(「수출 사전점검」·「기한 관리」)의 확장분을 말했고, B2 로 상품이
+             바뀌면서 가리키는 대상이 없어졌습니다.
+             ⚠️ 원문 그대로입니다. 한 글자도 바꾸지 마십시오.
+             ⛔ 금액·오픈월을 적지 마십시오 — test/roadmap-no-price.test.js 가 지킵니다.
+             🔄 상태 배지(.rm-meta)를 뺐습니다 — §5-14 에 없습니다. 「준비 중/개발 중」은
+                이 행들이 **앞으로 할 일**이라는 것을 제목이 이미 말하므로 중복입니다. -->
         <p class="kicker">WHAT'S NEXT</p>
-        <h2 class="rm-h2">앞으로 확인 범위를 넓혀갑니다</h2>
-        <p class="rm-lead">지금 제공하는 기능의 범위를 차례로 넓혀가고 있습니다.</p>
+        <h2 class="rm-h2">수출 업무 전 과정을 더 촘촘하게 연결해 나갑니다</h2>
 
         <div class="rm">
           <div class="rm-row">
-            <p class="rm-name"><span class="rm-num">01</span>수출 사전점검</p>
-            <p class="rm-desc">현재는 NDA부터 시작합니다. 앞으로 비교할 수 있는 서식 종류를 늘려갈 예정입니다.</p>
-            <p class="rm-meta">현재 일부 동작 및 추가 개발 중</p>
+            <p class="rm-name"><span class="rm-num">01</span>수출 사전점검 지원 품목 및 국가 확대</p>
+            <p class="rm-desc">북미(미국) 시장을 시작으로, 실무 수요가 많은 주요 수출국과 품목군으로 점검 범위를 넓혀갑니다.</p>
           </div>
           <div class="rm-row">
-            <p class="rm-name"><span class="rm-num">02</span>기한 관리</p>
-            <p class="rm-desc">계약서의 주요 기한부터 시작해, 통관·대금회수 과정에서 필요한 절차와 증빙을 제때 챙길 수 있도록 범위를 넓혀갈 예정입니다.</p>
-            <p class="rm-meta">준비 중</p>
+            <p class="rm-name"><span class="rm-num">02</span>수출 채권·무역보험 연계 기능 고도화</p>
+            <p class="rm-desc">통지 기한 정리를 넘어, 기한 알림 발송과 바이어 신용한도 확인, 연체채권 추적 등 수출보험 실무를 단계적으로 지원합니다.</p>
           </div>
         </div>
-
-        <!-- 기한관리 미리보기 훅 (흐름 md §1 시각층매핑 「로드맵 + 기한관리 미리보기 훅을
-             텍스트링크로 배치」). 질문으로 던지는 이유: 기한관리쪽 훅은 「내가 뭘 놓치고
-             있는지도 모른다」는 통제감 상실이고, 기능설명형 문구는 이 지점에서 훅이 되지
-             않습니다. 문구를 설명형으로 되돌리지 마십시오.
-             ⚠️ 위계는 텍스트링크입니다(흐름 md §2 CTA 표). 버튼으로 올리지 마십시오.
-             클릭하면 04 상품소개의 기한관리 카드(#feat-timeline)가 펼쳐지고 그 자리로
-             스크롤합니다 — 페이지 이동이 아닙니다. 패널은 그 한 곳뿐입니다. -->
-        <p class="rm-hook">놓친 기한 하나가 대금회수에 문제가 되지 않도록.</p>
-        <div><button class="btn btn-text" type="button" data-timeline-open aria-controls="feat-timeline-panel">기한관리 미리보기</button></div>
       </div>
     </section>
 
@@ -2114,7 +2210,7 @@
          🔴 「NDA가 뭔가요?」(구 qa-1, /check 링크 포함)는 새 세트에서 완전히 빠졌습니다.
          ⚠️ 기본값은 전부 접힘. 여러 개 동시 펼침 허용(하나만 열리는 방식 금지, C-3).
          ⚠️ 셰브론에 액센트를 쓰지 마십시오. -->
-    <section class="qna" id="qna" aria-labelledby="qna-title">
+    <section class="qna sec-surface" id="qna" aria-labelledby="qna-title">
       <div class="container qna-inner">
         <h2 id="qna-title">자주 묻는 질문</h2>
         <!-- 🔄 **전면교체** 〔2026-08-23 · PRD v2.1 B2-7〕. 종전 4그룹 11문항은 사전점검
@@ -2246,6 +2342,45 @@
             </div>
           </div>
 
+          <!-- 🔴 **신설 〔2026-08-23 · B3-a 작업 5〕 — 「결과물의 성격」.**
+               ⚠️ **이 3문항에는 PRD 원본이 없습니다.** 저장소 전체를 찾아도 확정본이
+                  없어 직접 작성했고, **새 주장을 만들지 않았습니다** — 세 답변이 각각
+                  이미 확정된 문구에서만 나옵니다:
+                    · 무엇을 받는가   → §5-13 무료·유료 목록
+                    · 법적 효력       → §5-16 법적 고지 **문장 그대로**
+                    · 무엇을 근거로   → §5-12 **문장 그대로**
+                  ⛔ 승인 전까지 여기에 새 약속(기한·정확도·보장)을 더하지 마십시오. -->
+          <div class="qgroup">
+            <p class="eyebrow-quiet">▸ 결과물의 성격</p>
+            <div class="qitem" data-open="0">
+              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-13">
+                <span>사전 점검 리포트는 어떤 형태로 받게 되나요?</span>
+                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+              </button>
+              <div class="qans" id="qa-13">
+                <p>점검 결과 화면은 무료로 전체를 확인하실 수 있습니다. 발급을 신청하시면 PDF와 공유 링크로 받으시고, 필요하실 때 재발급하실 수 있습니다.</p>
+              </div>
+            </div>
+            <div class="qitem" data-open="0">
+              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-14">
+                <span>이 자료에 법적 효력이 있나요?</span>
+                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+              </button>
+              <div class="qans" id="qa-14">
+                <p>TROPS는 수출 실무 관리를 지원하는 B2B 소프트웨어이며, 변호사법상 법률 자문이나 세무·관세 감정 대행을 제공하지 않습니다. 정리해 드리는 내용은 사내 검토와 바이어 협의에 활용하시는 참고 자료입니다.</p>
+              </div>
+            </div>
+            <div class="qitem" data-open="0">
+              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-15">
+                <span>표시된 내용은 무엇을 근거로 하나요?</span>
+                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+              </button>
+              <div class="qans" id="qa-15">
+                <p>모든 점검 정보에는 근거 규정과 확인 기준일을 함께 표기합니다. 확인 기준일이 없는 항목은 화면에 표시하지 않습니다.</p>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
@@ -2261,7 +2396,7 @@
          H2는 원래 확정본 §9 「상담 전에, 한 번 더 확인하세요.」였습니다. 「상담」이
          이 서비스를 유상 자문으로 오해하게 한다는 지적에 따라 「수출 전 자가 점검」
          포지셔닝(히어로 §2 eyebrow와 같은 프레이밍)으로 교체했습니다. -->
-    <section class="close-cta sec-surface" aria-labelledby="close-cta-title">
+    <section class="close-cta" aria-labelledby="close-cta-title">
       <div class="container narrow-c sec-center close-cta-inner">
         <!-- 2026-08-13 재구성 (흐름 md §1 시각층매핑 「마감 CTA」).
              주버튼([비교해 보기])을 뺐습니다 — 주 CTA 는 히어로와 07 「결」 두 번뿐이고,
@@ -2289,7 +2424,7 @@
     <!-- ===== Interest form =====
          랜딩 하단은 약한 버전입니다. 강한 버전("먼저 써보고 싶어요")은
          precheck 결과지 페이지 하단 몫이므로 여기에 끌어오지 마십시오. -->
-    <section class="interest" id="interest">
+    <section class="interest sec-surface" id="interest">
       <div class="container interest-inner">
         <!-- 보조 문구는 확정본 v3.1 §10 원문 그대로입니다. H2는 2026-08-13 재교체 —
              기존 「거래 절차 트래킹이 열리면 가장 먼저 알려드립니다.」(2026-08-11,
@@ -2392,7 +2527,7 @@
             클릭 추적으로 순서를 바꾸지 마십시오.
          ⚠️ 외부 링크를 걸지 않았습니다 — 링크를 걸면 액센트색이 5번 등장해
             「로고 금지」가 막으려던 제휴 오인이 같은 방식으로 생깁니다. -->
-    <section class="orgs-sec sec-surface" id="orgs" aria-labelledby="orgs-title">
+    <section class="orgs-sec" id="orgs" aria-labelledby="orgs-title">
       <div class="container orgs-inner">
         <div class="body-w">
           <!-- 문구는 PRD v2.1 §5-7 원문입니다 〔2026-08-23 · B2-6〕. 한 글자도 바꾸지

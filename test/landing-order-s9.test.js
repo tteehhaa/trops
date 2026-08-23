@@ -70,11 +70,16 @@ const LAYOUT = [
   { name: '결 CTA',        key: '<section class="act"',                    bg: 'bg' },
   { name: '안심문구',      key: '<section class="assure',                  bg: 'surface' },
   { name: '상품소개',      key: '<section class="cards-sec" id="service"', bg: 'bg' },
-  { name: '로드맵',        key: 'id="next"',                               bg: 'surface' },
-  { name: 'FAQ',           key: '<section class="qna"',                    bg: 'bg' },
-  { name: '마감CTA',       key: '<section class="close-cta',               bg: 'surface' },
-  { name: '사전등록폼',    key: '<section class="interest"',               bg: 'bg' },
-  { name: '기관안내',      key: '<section class="orgs-sec',                bg: 'surface' },
+  /* 🔄 **무료·유료(§5-13)가 여기 새로 들어왔습니다** 〔2026-08-23 · B3-a〕. 이 페이지는
+     bg↔surface 완전 교차라 섹션 하나를 끼우면 하류가 통째로 뒤집힙니다 — 아래 다섯 행의
+     bg 가 한 칸씩 밀린 것이 그 결과입니다. 문구는 하나도 바뀌지 않았고 sec-surface 만
+     옮겼습니다. ⛔ 무료·유료만 지우지 마십시오. 지우려면 다섯 행도 함께 되돌려야 합니다. */
+  { name: '무료·유료',     key: '<section class="pricing-sec',             bg: 'surface' },
+  { name: '로드맵',        key: 'id="next"',                               bg: 'bg' },
+  { name: 'FAQ',           key: '<section class="qna',                     bg: 'surface' },
+  { name: '마감CTA',       key: '<section class="close-cta',               bg: 'bg' },
+  { name: '사전등록폼',    key: '<section class="interest',                bg: 'surface' },
+  { name: '기관안내',      key: '<section class="orgs-sec',                bg: 'bg' },
   { name: '푸터',          key: '<footer class="footer">',                 bg: 'dark' },
 ];
 
@@ -487,15 +492,21 @@ test('O8-b 섹션을 옮겨도 밖에서 들어오는 앵커가 살아 있다', 
 test('재배치로 콘텐츠가 사라지지 않았다 — 각 블록이 한 번씩 있다', () => {
   const MUST = [
     ['히어로 헤드라인', '놓치면 안 되는 것부터 확인하세요.'],
-    ['스토리 여는 문장', '처음이라면,'],
-    ['스토리 닫는 문장', '놓치기 쉬운 것부터 확인하면 됩니다.'],
+    // 🔄 §5-15 로 교체 〔2026-08-23 · B3-a〕.
+    ['스토리 여는 문장', '수출은 계약서에 서명한 뒤부터'],
+    ['스토리 닫는 문장', '오늘 처리하실 실무와 다가오는 기한을'],
     ['경고 인용', '위조서류로 접근하는 수출사기가 계속 발생하고 있어'],
     ['경고 출처', '한국무역보험공사'],
-    ['근거 h2', '비교에 쓴 기준도 함께 보여드립니다'],
+    // 🔄 §5-12 로 교체 〔2026-08-23 · B3-a〕. 마지막 줄은 사용자 지정 필수 문장입니다.
+    ['근거 h2', '모든 점검 정보에는 근거 규정과 확인 기준일을 함께 표기합니다'],
+    ['근거 맺음', '확인 기준일이 없는 항목은 화면에 표시하지 않습니다.'],
+    ['무료·유료 h2', '확인은 무료, 발급은 유료입니다.'],
+    ['WHAT\'S NEXT h2', '수출 업무 전 과정을 더 촘촘하게 연결해 나갑니다'],
     ['비교 기준(영국 OGL)', 'Open Government Licence v3.0'],
     ['상품소개 h2', '거래 전부터 거래 후까지, 놓치기 쉬운 것을 확인합니다.'],
     ['조작 안내', '거래 단계에 따라 확인할 수 있습니다'],
-    ['결 h2', '해외 거래에서 무엇을 먼저 확인해야 할지 알아보세요.'],
+    // 🔄 §5-16 로 교체 〔2026-08-23 · B3-a〕.
+    ['중간 CTA h2', '지금 검토 중이신 수출 건부터 등록해 보세요.'],
     ['안심 선언', '지금 놓치기 쉬운 것이 무엇인지, 30초 만에 확인해보세요.'],
     ['법적 고지', '법률 자문 서비스가 아닙니다'],
     ['HOW h2', '지금은 서명 전에 달라진 조건부터'],
@@ -526,12 +537,16 @@ test('인터랙션이 그대로다 — 탭 3개·FAQ·트리거·스크롤 등�
   assert.strictEqual((M.match(/<button class="tab"/g) || []).length, 3, '상품 탭이 3개가 아닙니다');
   assert.strictEqual((M.match(/class="feat-panel"/g) || []).length, 3, '상품 패널이 3개가 아닙니다');
   // 🔄 14 → 10 〔2026-08-16 · A3 §4〕. 사유는 index.html QnA 섹션 머리주석 참조.
-  assert.strictEqual((M.match(/aria-controls="qa-\d+"/g) || []).length, 12, 'FAQ 문항이 12개가 아닙니다');
+  assert.strictEqual((M.match(/aria-controls="qa-\d+"/g) || []).length, 15, 'FAQ 문항이 15개가 아닙니다');
   // 🔄 3 → 2 → 1 〔2026-08-16 · v-next 전면교체 + 대표 수정안 3차〕. 히어로 CTA 3→2 로
   //    히어로 트리거가, 이어서 마감 CTA 의 [기한관리 미리보기] 버튼 삭제로 그 트리거도
   //    빠졌습니다. 로드맵 한 곳만 남습니다.
-  assert.strictEqual((B.match(/data-timeline-open/g) || []).length, 1,
-    '기한관리 원격 트리거가 1곳(로드맵)이 아닙니다');
+  /* 🔄 1 → 0 〔2026-08-23 · B3-a〕. §5-14 에는 미리보기 훅·버튼이 없어 로드맵의 마지막
+     트리거가 빠졌습니다. 패널은 탭으로 그대로 열리고, JS 는
+     `if (!openers.length) return` 로 이미 막혀 있어 안전합니다.
+     ⛔ 트리거를 되살리려면 §5-14 부터 고쳐야 합니다. */
+  assert.strictEqual((B.match(/data-timeline-open/g) || []).length, 0,
+    '기한관리 원격 트리거가 남아 있습니다 — §5-14 에는 없습니다');
   // 클래스 문자열 전체가 아니라 「stat-line 에 reveal 이 붙어 있는가」를 봅니다 —
   // 사유는 test/landing-flow-s9.test.js 의 같은 검사에 적어 두었습니다 (2026-08-14).
   assert.ok(/class="[^"]*\bstat-line\b[^"]*\breveal\b[^"]*"/.test(M),

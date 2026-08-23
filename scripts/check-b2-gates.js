@@ -213,12 +213,16 @@ function gate5() {
 const B3_GUARD = [
   ['index.html', '<section class="container hero">', '<section class="stories-sec', '히어로'],
   ['index.html', '<section class="how" id="how">', '<section class="basis', 'HOW IT WORKS'],
-  ['index.html', '<section class="basis', '<section class="act"', '근거 섹션'],
   /*
-   * 탭① 은 **패널 자신의 닫힘**까지만 봅니다. 다음 패널의 시작을 끝으로 잡으면 그 사이에
-   * 들어간 주석(B2 가 남긴 TODO 블록)까지 슬라이스에 들어와 오탐이 납니다.
+   * 🔄 **근거 섹션 가드를 뗐습니다** 〔2026-08-23 · B3-a〕. B2 시점에는 B3 영역이었지만
+   *    B3-a 가 §5-12 로 정당하게 교체했습니다. 그 내용은 이제
+   *    scripts/check-b3a-gates.js G2 가 지킵니다(마지막 줄이 마지막인지까지 봅니다).
+   * 🔄 **탭① 가드를 「문구」로 좁혔습니다** 〔2026-08-23 · B3-a〕. B3-a 작업 6이 그
+   *    <figure> 를 assets/img/ 로 바꾸라고 명시적으로 지정했습니다. 문구(상태줄~실행버튼)는
+   *    여전히 불가침입니다.
+   * ⛔ 조용히 지우지 않았습니다 — 왜 빠졌는지가 여기 남아 있어야 다음 사람이 압니다.
    */
-  ['index.html', 'id="feat-precheck-panel"', '</figure>\n            </div>\n          </div>', '상품 탭 ①'],
+  ['index.html', '<span class="feat-avail">지금 쓸 수 있습니다</span>', '>비교해 보기</a>', '상품 탭 ① 문구'],
   ['index.html', '<button class="tab" type="button" role="tab" id="feat-precheck"', '</button>', '상품 탭 ① 버튼'],
 ];
 

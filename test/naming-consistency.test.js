@@ -114,8 +114,11 @@ test('바이어확인 카드에 「준비 중」이 없다 — 라우트가 이�
   // 🔄 2026-08-23 〔B2〕 탭② id 교체(feat-buyer → feat-contract).
   const start = M.index.indexOf('<div class="feat-panel" id="feat-contract-panel"');
   const block = M.index.slice(start, M.index.indexOf('<div class="feat-panel" id=', start + 10));
+  /* 🔄 2026-08-23 〔B3-a〕 이 탭에 플레이스홀더 <img> 가 들어왔습니다. **이미지 안의**
+     「예시 화면 준비 중」은 그림이지 문면이 아니지만, alt 로 새어 나오면 화면 문구가
+     됩니다 — alt 를 「교체 예정」으로 적은 이유입니다. 규칙은 그대로 유지합니다. */
   assert.ok(!/준비\s*중/.test(block),
-    '「준비 중」이 남아 있습니다 — 같은 카드가 「바로 확인하실 수 있습니다」라고도 말합니다');
+    '「준비 중」이 남아 있습니다 — 상태를 두 번 말하지 않습니다(alt 도 화면 문구입니다)');
 });
 
 test('기한관리 「지금은 무료」가 배지에서 빠지고 본문에 남았다', () => {
@@ -324,9 +327,11 @@ test('기한관리 패널은 페이지에 하나뿐이다 — 트리거만 늘�
    *    안의 주석에 인용된 [data-timeline-open] 이 그대로 섞여 들어옵니다 — 그러면
    *    트리거를 지워도 이 검사가 통과합니다(실제로 그런 상태였습니다).
    */
+  /* 🔄 1 → 0 〔2026-08-23 · B3-a〕. §5-14 에 미리보기 훅·버튼이 없어 마지막 트리거가
+     빠졌습니다. 패널은 탭으로 열리고, JS 는 `if (!openers.length) return` 로 막혀 있습니다. */
   const triggers = (B.index.match(/data-timeline-open/g) || []).length;
-  assert.strictEqual(triggers, 1,
-    '트리거가 ' + triggers + '개입니다 — 로드맵 한 곳이어야 합니다(히어로·마감 CTA는 삭제)');
+  assert.strictEqual(triggers, 0,
+    '트리거가 ' + triggers + '개입니다 — §5-14 에는 미리보기 트리거가 없습니다');
 });
 
 /*
@@ -385,13 +390,16 @@ test('로드맵 두 행이 기존 상품명을 재사용한다', () => {
   const names = (block.match(/<p class="rm-name">[\s\S]*?<\/p>/g) || [])
     .map((s) => s.replace(/<[^>]*>/g, '').replace(/^\d+/, '').trim());
 
-  assert.deepStrictEqual(names, ['수출 사전점검', '기한 관리'],
-    '로드맵 두 행의 이름이 상품명 정본과 다릅니다: ' + JSON.stringify(names));
+  /* 🔄 §5-14 로 교체 〔2026-08-23 · B3-a〕. 두 행은 이제 **상품명 재사용이 아니라
+     확장 과제의 이름**입니다 — 「무엇을 넓히는가」를 그대로 적습니다. */
+  assert.deepStrictEqual(names, ['수출 사전점검 지원 품목 및 국가 확대', '수출 채권·무역보험 연계 기능 고도화'],
+    '로드맵 두 행의 이름이 §5-14 와 다릅니다: ' + JSON.stringify(names));
 
-  const metas = (block.match(/<p class="rm-meta">([^<]*)<\/p>/g) || [])
-    .map((s) => s.replace(/<[^>]*>/g, '').trim());
-  assert.deepStrictEqual(metas, ['현재 일부 동작 및 추가 개발 중', '준비 중'],
-    '로드맵 배지가 예상 문구와 다릅니다: ' + JSON.stringify(metas));
+  /* 🔄 배지가 사라졌습니다 〔2026-08-23 · B3-a · §5-14〕 — 사유는
+     test/roadmap-no-price.test.js 의 같은 자리 주석에 있습니다. */
+  const metas = (block.match(/<p class="rm-meta">([^<]*)<\/p>/g) || []);
+  assert.strictEqual(metas.length, 0,
+    '로드맵에 상태 배지가 남아 있습니다: ' + JSON.stringify(metas));
   assert.ok(!/가격|₩|원\b|미정/.test(block), '로드맵에 가격 관련 표기가 남아 있습니다');
   assert.ok(!/class="rm-note"/.test(block),
     '.rm-note 가 로드맵에 남아 있습니다 — FAQ 「법률 자문인가요?」로 옮겨간 문구입니다');
@@ -610,7 +618,11 @@ const EN_PAIRS = [
  *                             여기서 맞출 것이 없어졌습니다.
  */
 const STRUCT_DELTA = {
-  'en.html': [2, 4],
+  /* 🔄 [2, 4] → [1, 2] 〔2026-08-23 · B3-a〕. 종전 +2/+4 는 히어로 리드 <p> 하나와
+     **05 근거 CTA 앞의 <span class="cta-row-note">** 였습니다. §5-12 에는 CTA 가 없어
+     그 줄이 국·영문 모두에서 빠졌고, 영문에만 있던 그 <span> 도 함께 사라졌습니다.
+     남는 차이는 히어로 리드 <p> 하나뿐입니다. */
+  'en.html': [1, 2],
   'en-check.html': [0, 0],
   'en-precheck.html': [-2, -4],
   'en-refund.html': [0, 0],
@@ -749,8 +761,12 @@ test('en.html 상품 탭 3개가 국문 3상품과 1:1 로 대응한다', () => 
 
 test('en.html 기한관리가 그 자리에서 열린다 — 페이지 이동이 아니다', () => {
   const m = M.en;
-  assert.ok(/<button[^>]*data-timeline-open[^>]*aria-controls="feat-timeline-panel"/.test(m),
-    '기한관리 패널을 여는 트리거가 없습니다');
+  /* 🔄 트리거 단언을 뺐습니다 〔2026-08-23 · B3-a〕 — §5-14 에 미리보기 훅·버튼이
+     없어 국·영문 모두에서 빠졌습니다. 지킬 것은 **패널이 하나뿐**이라는 것입니다. */
+  /* ⚠️ **버튼만 셉니다.** M 은 HTML 주석만 걷으므로 <script>·<style> 안에 인용된
+     [data-timeline-open] 이 그대로 섞여 들어옵니다(JS 핸들러가 그 선택자를 씁니다). */
+  assert.strictEqual((m.match(/<button[^>]*data-timeline-open/g) || []).length, 0,
+    'en.html 에 미리보기 트리거가 남아 있습니다 — §5-14 에는 없습니다');
   assert.strictEqual((m.match(/id="feat-timeline-panel"/g) || []).length, 1,
     '기한관리 패널은 페이지에 하나뿐이어야 합니다');
   assert.ok(!/href="#interest"[^>]*>\s*Get notified\s*</.test(m),
@@ -778,8 +794,8 @@ test('en.html 로드맵 두 행이 기존 상품명을 재사용한다 — 국�
   const block = next.slice(0, next.indexOf('</section>'));
   const names = (block.match(/<p class="rm-name">[\s\S]*?<\/p>/g) || [])
     .map((s) => s.replace(/<[^>]*>/g, '').replace(/^\d+/, '').trim());
-  assert.deepStrictEqual(names, ['Export pre-check', 'Deadline tracking'],
-    '로드맵 두 행이 상품명 재사용이 아닙니다: ' + JSON.stringify(names));
+  assert.deepStrictEqual(names, ['More items and countries covered by the export pre-check', 'Deeper links to export receivables and trade insurance'],
+    '로드맵 두 행이 §5-14 와 다릅니다: ' + JSON.stringify(names));
   /* 금액·오픈월 금지는 국문과 같습니다(test/roadmap-no-price.test.js 와 같은 취지). */
   assert.ok(!/₩|\$|\d+\s*월/.test(block), '로드맵에 금액·오픈월이 들어왔습니다');
 });
@@ -853,8 +869,13 @@ test('영문 경로가 끝까지 영문이다 — 국문 페이지로 새지 않
   /* 히어로·결 CTA 둘 다 사전 확인을 지납니다 — 국문(/check)과 같은 배선입니다. */
   const heroCta = /<a id="hero-cta"[^>]*href="\/en-check"/.test(M.en);
   assert.ok(heroCta, 'en.html 히어로 CTA 가 /en-check 로 가지 않습니다');
-  assert.ok(/<a class="btn btn-primary btn-full" href="\/en-check">/.test(section(M.en, 'act')),
-    'en.html 결 CTA 가 /en-check 로 가지 않습니다');
+  /* 🔄 §5-16 으로 교체 〔2026-08-23 · B3-a〕 — 중간 CTA 의 목적지가 사전 확인(/en-check)에서
+     **앱 가입**으로 바뀌었습니다(PRD §6-1 「무료로 시작하기」 매핑). 히어로는 그대로 /en-check
+     이므로 「영문 경로가 끝까지 영문」이라는 이 검사의 취지는 히어로가 계속 집니다.
+     ⚠️ app.trops.kr 은 한국어 전용입니다 — 그 사실은 19b3cf3 결정이고, 랜딩이 안내 한 줄로
+        알립니다(lang-notice). 여기서 국문 **랜딩 페이지**로 새는 것만 막습니다. */
+  assert.ok(/<a class="btn btn-primary btn-full" href="https:\/\/app\.trops\.kr\/account\/password"/.test(section(M.en, 'act')),
+    'en.html 중간 CTA 가 PRD §6-1 이 정한 앱 가입 화면으로 가지 않습니다');
 });
 
 /*
