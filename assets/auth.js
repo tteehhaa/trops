@@ -441,6 +441,32 @@ function clearError(root) {
   }
 }
 
+/**
+ * 데모 계정인지 앱에 물어보고, 맞으면 갈 곳을 돌려받습니다.
+ *
+ * 🔴 판정·쿠키·목적지는 전부 앱이 합니다. 이 함수가 아는 것은 **「가라」 또는 「모른다」** 뿐입니다.
+ * ⚠️ 프리뷰(`*.vercel.app`)에서는 CORS 오리진 목록 밖이라 항상 `null` 입니다 — 의도된 결과이며,
+ *    그 환경의 확인은 앱의 `/login` 으로 합니다.
+ *
+ * @returns {Promise<string|null>} 앱 오리진 기준 경로(예: `/demo`) 또는 null
+ */
+async function tryDemoLogin(loginId, password) {
+  try {
+    const res = await fetch(APP_ORIGIN + '/api/demo/login', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ loginId: loginId, password: password }),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data && typeof data.to === 'string' ? data.to : null;
+  } catch (err) {
+    // 네트워크·CORS 실패 — 「데모가 아니다」와 같게 취급하고 일반 인증으로 내려갑니다.
+    return null;
+  }
+}
+
 async function submitLogin(root, emailInput, passwordInput) {
   const submit = root.querySelector('.ta-submit');
   if (Date.now() < lockedUntil) {
@@ -455,6 +481,37 @@ async function submitLogin(root, emailInput, passwordInput) {
   clearError(root);
   submit.disabled = true;
   try {
+    /*
+     * ── 데모 계정 분기 (창업자 지시 2026-08-24) ───────────────────────────
+     *
+     * 🔴 **여기서 «판정»하지 않습니다.** 이 저장소는 데모 인증을 할 수 없습니다 —
+     *    비밀번호는 bcrypt(해시는 앱 서버만 읽습니다), 세션은 HMAC 서명 쿠키
+     *    (비밀값은 브라우저에 내려올 수 없습니다), 5회 잠금은 DB 카운터입니다.
+     *    그래서 **앱의 문 하나를 부르고 결과만 받습니다** — 분기 규칙은 전부 저쪽
+     *    (`trops_a` `lib/demo/login-attempt.ts`)에 있고, 이 저장소에는 복제본이 0입니다.
+     *    조사 정본: `trops_a` `docs/prd/demo/IMPACT_MAP.md` 부록 A.
+     *
+     * 🔴 **데모 먼저 시도합니다** — 앱의 `/login` 과 «같은 순서»입니다. 두 입구가 순서까지
+     *    같아야 같은 아이디가 어느 문으로 들어와도 같은 곳에 도착합니다.
+     *
+     * 🔴 **`to` 가 없으면 아래 기존 인증이 그대로 이어집니다.** 데모 계정이 아니든,
+     *    데모 계정인데 비밀번호가 틀렸든 응답은 똑같이 `{to:null}` 입니다 —
+     *    그래서 사용자는 여느 실패와 **같은 문장**을 받고, 데모 계정임이 드러나지 않습니다.
+     *    ⛔ 이 블록 때문에 일반 계정의 동작이 달라지는 곳은 없습니다.
+     *
+     * ⚠️ **전체 페이지 이동입니다.** 데모 셸(사이드바·상단 바)은 앱의 루트 레이아웃이
+     *    쿠키를 읽어 그립니다 — SPA 이동으로는 그 레이아웃이 다시 그려지지 않습니다.
+     * ⚠️ `credentials: 'include'` 가 필수입니다 — 앱이 내려주는 세션 쿠키를 저장해야 합니다.
+     *    trops.kr 과 app.trops.kr 은 **same-site** 라 이 쿠키는 정상 저장됩니다(서드파티 차단은
+     *    cross-site 에 걸립니다). 같은 전제 위에서 Supabase 세션도 이미 공유되고 있습니다.
+     * ⚠️ 실패는 **삼키고** 일반 인증으로 내려갑니다 — 데모 문이 죽었다고 로그인이 막히면 안 됩니다.
+     */
+    const demo = await tryDemoLogin(email, passwordInput.value);
+    if (demo) {
+      window.location.assign(APP_ORIGIN + demo);
+      return;
+    }
+
     const result = await supabase().auth.signInWithPassword({
       email: email,
       password: passwordInput.value,
