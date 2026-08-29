@@ -1,2930 +1,365 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TROPS · First time exporting? Here’s where to start.</title>
-<!-- 검색·공유 문구 규칙: description = 헤드라인 + 리드, og:description = 리드.
-     이 관례는 유지합니다 — 네 줄이 서로 다른 말을 하면 검색 결과와 공유 카드에서
-     다른 서비스처럼 보입니다.
-
-     🔴 이 네 줄에 「NDA」를 다시 넣지 마십시오 (2026-08-13 · 사용자 흐름 md §1).
-        확장성 논리가 아닙니다. 현장 피드백에 따르면 타이틀·메타에 「NDA」가 보이는
-        순간 「기밀서류를 대놓고 요구하는 곳」이라는 방어기제가 작동해 자료제출
-        자체가 막힙니다. 「NDA」는 접수 화면 안에서, 이미 신뢰관계가 형성된 뒤에만
-        등장합니다. 상위 카테고리명은 「수출 사전점검」입니다.
-
-     이전 판은 세 페이지(index · nda · precheck)가 같은 문장을 공유했지만, 히어로가
-     확정본 §2(「첫 수출이라 무엇부터 봐야 할지 모르겠다면.」)로 교체된 뒤 index 만
-     그 톤을 따라 분기했습니다 — 아래 <h1> 과 같은 말을 하는 상태가 정상입니다.
-     nda · precheck 를 여기에 맞추는 것은 별도 배치입니다. -->
-<meta name="description" content="First time exporting? Upload the document your buyer sent you. We compare it against a public standard form, item by item, and mark exactly where it differs. We also tell you what’s left to check.">
-<meta property="og:title" content="TROPS · First time exporting? Here’s where to start.">
-<meta property="og:description" content="Upload the document your buyer sent you. We compare it against a public standard form and mark where it differs.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TROPS · A one-minute check of the export steps your product needs</title>
+<meta name="description" content="From buyer verification and contracts to payment terms, trade insurance, customs and shipping, TROPS walks the required steps in order and lays out what to check now and what comes next.">
+<link rel="canonical" href="https://trops.kr/en.html">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://trops.kr/en">
-<!-- hreflang 은 양쪽이 서로를 가리켜야 검색엔진이 인정합니다 — 한쪽만 있으면 무시됩니다.
-     index.html <head> 에도 같은 3줄이 있습니다. 한쪽만 고치지 마십시오. -->
-<link rel="alternate" hreflang="ko" href="https://trops.kr/">
-<link rel="alternate" hreflang="en" href="https://trops.kr/en">
-<link rel="alternate" hreflang="x-default" href="https://trops.kr/">
+<meta property="og:site_name" content="TROPS">
+<meta property="og:url" content="https://trops.kr/en.html">
+<meta property="og:title" content="TROPS · A one-minute check of the export steps your product needs">
+<meta property="og:description" content="Buyer verification, contracts, payment terms, trade insurance, customs and shipping — checked in order.">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
-<!-- 헤더 로그인 영역 + 로그인 모달 (핸드오프 3a·3c·3d-A · 2026-08-20).
-     값의 정본은 trops_a dd-now/console_handoff/HANDOFF.md 입니다.
-     ⚠️ EN 로그인 카피는 핸드오프 §7 미확정 항목 — assets/auth.js 의 en 사전이
-        직역 가안입니다. 확정되면 그 사전만 바꿉니다. -->
-<link rel="stylesheet" href="/assets/auth.css">
 <style>
-  :root {
+:root{
     --ink:          #0F172A;
     --ink-70:       rgba(15, 23, 42, .7);
     --ink-64:       rgba(15, 23, 42, .64);
     --ink-62:       rgba(15, 23, 42, .62);
-    /* 액센트 — 클릭 가능한 요소에만 (정본 §3-1 · §6)
-       #0F172A(먹색)에서 교체. 판정색(초록·빨강·노랑·주황·보라)은 쓰지 않습니다. */
     --accent:       #1D4ED8;
     --accent-press: #1E40AF;
     --accent-soft:  #EFF6FF;
     --muted:        #94A3B8;
     --line:         #E2E8F0;
-    /* 🔴 **#F1F5F9 → #E6ECF3** 〔2026-08-14 · landing-flow-restructure-s9〕.
-       이 줄에는 원래 「#F8FAFC는 --bg와 명도차 1.5%라 섹션 교차가 안 잡혀 3%로 내림」이
-       적혀 있었습니다. 한 번 더 같은 진단이 나왔습니다 — **3%도 안 잡힙니다.**
-
-       명도차(ΔL*, --bg #FFFFFF 대비):
-         #F8FAFC  1.82   ← 옛옛값. 이 주석이 이미 기각한 값
-         #F1F5F9  3.65   ← 옛값. 여전히 교차가 안 느껴짐
-         #E6ECF3  6.86   ← 지금 값
-         #E2E8F0  8.24   ← slate-200. 시각사양서의 「얼룩」 경고 구간
-
-       ⚠️ 시각사양서 원문 취지(너무 진하면 얼룩져 보인다)는 그대로 지킵니다 —
-          slate-200 **직전**에서 멈춘 것이 그 취지입니다. 여기서 더 내리지 마십시오.
-       ⚠️ 되올리지도 마십시오. 3.65 로 돌아가면 페이지에서 섹션 경계가 다시 사라집니다. */
     --surface:      #E6ECF3;
-    /* --surface 위에 놓이는 구획선 전용 〔2026-08-14 신설〕.
-       --line(#E2E8F0)은 --bg 위에서 ΔL* 8.24 인데 새 --surface(#E6ECF3) 위에서는
-       **1.38** 이라 사실상 사라집니다. 이 값은 --surface 위에서 8.29 로, --line 이
-       --bg 위에서 갖는 무게와 거의 같습니다 — 두 배경에서 선이 같은 굵기로 읽힙니다.
-       ⚠️ 직접 쓰지 마십시오. .sec-surface 가 --line 을 이 값으로 갈아 끼우므로
-          하위 규칙은 var(--line) 하나만 쓰면 됩니다(아래 .sec-surface 주석 참조). */
     --line-on-surface: #CBD5E1;
     --surface-dark: #0F172A;
     --bg:           #FFFFFF;
-    /* 경고 전용. 액센트로 쓰지 않고, 이 랜딩에서는 폼 오류 메시지에만 씁니다 */
     --warning:      #DC2626;
-    /* 다크 배경(--surface-dark) 위 잉크 — 이름은 정본 v3 §3-1 등재명을 씁니다.
-       쓰는 곳은 --surface-dark 를 배경으로 쓰는 두 섹션뿐입니다 — 03 경고 · 푸터.
-       ⚠️ 밝은 배경 위에 쓰지 마십시오. 흰 글자가 흰 배경에 얹힙니다.
-
-       🔴 값이 정본 §3-1 과 다릅니다. 의도한 것이고, 맞추면 접근성이 깨집니다.
-
-       정본 §3-1 등재값        여기 값                #0F172A 위 대비
-       primary   .72          #FFFFFF                17.85:1  (정본값은 9.60:1)
-       secondary .50          rgba(255,255,255,.72)    9.60:1  (정본값은 5.23:1)
-       tertiary  .28          rgba(255,255,255,.50)    5.23:1  (정본값은 2.50:1 ✗)
-
-       정본은 "값 자체는 변경 없음, 명명만 정식화" 라고 적었지만 실제로는 한 단계씩
-       밀렸습니다. 와이어프레임이 쓰던 4단계(#FFF / .72 / .50 / 선 .28)에서 #FFFFFF 가
-       빠지고, 선 알파(.28)가 잉크 3단계로 올라왔습니다. 그대로 따르면:
-         · tertiary(.28)로 찍히는 본문 7역할이 2.50:1 로 WCAG AA(4.5:1) 미달 —
-           신뢰 출처줄 · 플레이스홀더 라벨 · 푸터 연락처·KAIST표기·사업자값·면책문구
-         · 신뢰 §6 H2 가 #FFFFFF 에서 .72 로 내려가, 와이어프레임 C 블록이 명시한
-           "H2 40/700/−0.030em/#FFFFFF" 와 어긋남
-       그래서 이름만 정본을 따르고 값은 대비를 지키는 쪽으로 뒀습니다.
-       정본 §3-1 을 고칠 때 잉크 4단계로 늘리고 .28 은 선 전용으로 되돌리십시오. */
-    --d-ink-primary:   #FFFFFF;                    /* 헤딩 · 강조 */
-    --d-ink-secondary: rgba(255, 255, 255, .72);   /* 본문 */
-    --d-ink-tertiary:  rgba(255, 255, 255, .50);   /* 보조·캡션 */
-    /* 다크 배경 위 선. --line(#E2E8F0)은 다크에서 안 보이므로 흰색 헤어라인을 씁니다
-       (정본 C-5). 텍스트로 쓰면 2.50:1 이라 AA 미달입니다 — 선에만 쓰십시오. */
+    --d-ink-primary:   #FFFFFF;
+    --d-ink-secondary: rgba(255, 255, 255, .72);
+    --d-ink-tertiary:  rgba(255, 255, 255, .50);
     --d-line:          rgba(255, 255, 255, .28);
-  }
-
-  *, *::before, *::after { box-sizing: border-box; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--ink);
-    font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-    font-size: 16.5px;
-    line-height: 1.76;
-    word-break: keep-all;
-    text-wrap: pretty;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-  }
-
-  a { color: var(--accent); text-decoration: none; }
-  a:hover { color: var(--accent-press); }
-
-  ::selection { background: rgba(15, 23, 42, .14); }
-
-  :focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
-
-  /* 좌우 상한 64px → 48px (정본 §4-2 · 시각사양 4-2 「모바일 24 · 데스크톱 48」).
-     Anaconda 의 80px 은 컨테이너가 없을 때의 값이고, 1200 컨테이너에는 48이 맞습니다.
-     여섯 페이지(index · en · precheck · nda · uae · refund)가 같은 값을 씁니다 —
-     한 곳만 고치면 페이지를 오갈 때 좌우 여백이 튑니다. */
-  .container { max-width: 1200px; margin: 0 auto; padding-inline: clamp(24px, 5vw, 48px); }
-
-  /* ---------- 배경 교차 (2026-08-14 · landing-flow-restructure-s9) ----------
-     페이지는 --bg 와 --surface 를 번갈아 깝니다. **--surface 를 쓰는 섹션은 반드시 이
-     클래스로만 씁니다** — `background: var(--surface)` 를 규칙에 직접 적지 마십시오.
-
-     왜 클래스 하나로 모으는가: --surface 를 진하게(#E6ECF3) 내린 대가로 그 위의
-     구획선(--line #E2E8F0)이 사라집니다(ΔL* 1.38). 그래서 이 클래스가 --line 자체를
-     한 단계 진한 값으로 **갈아 끼웁니다.** 커스텀 프로퍼티라 하위 규칙 전체
-     (border-top·rm-row·qitem…)가 손대지 않아도 따라옵니다. 규칙마다 손으로
-     --line-on-surface 를 적는 방식이면 새 규칙이 추가될 때마다 빠집니다.
-
-     현재 이 클래스를 쓰는 섹션(배치표 순): 경험담 · 안심문구 · 로드맵 · 마감CTA · 기관안내.
-     ⚠️ 교차표는 docs/02-design/features/landing-flow-restructure-s9.design.md §1 이
-        정본입니다. 섹션을 넣고 뺄 때 그 표와 test/landing-order-s9.test.js 를 함께
-        고치십시오 — 한쪽만 고치면 이웃 두 섹션이 같은 색으로 붙습니다. */
-  .sec-surface { background: var(--surface); --line: var(--line-on-surface); }
-
-  /* ---------- H3 계층 (시각사양 3-1 · 정본 타입스케일) ----------
-     28 / 600 / 1.35 / −0.025em. 시각사양 3-4 가 「H1·H2만 스케일하고 나머지는 고정」
-     이라 clamp 를 쓰지 않습니다.
-     쓰는 곳(2026-08-14 기준): 경험담의 마무리 질문(.story-ask)과 「모르시는 게 당연합니다.」
-     두 곳입니다. 신뢰 인용문(.stat-line)도 쓰고 있었으나 헤드라인 스케일로 올라가면서
-     빠졌습니다 — 사유는 .stat-line 주석에 있습니다.
-     (옛 주석은 「쓰는 요소가 없다」고 적혀 있었는데 실측과 달랐습니다. 미결 L-3 「H3를
-      쓸 자리」는 위 두 곳으로 사실상 닫혔습니다.)
-        로드맵 헤딩(.how h2.rm-h2)이 값은 가장 가깝지만 굵기 700 · clamp 22→28 이라
-        이 계층과 다릅니다 — 맞출지는 별도 결정입니다. 임의로 합치지 마십시오. */
-  h3, .h3 {
-    margin: 0;
-    font-size: 28px;
-    line-height: 1.35;
-    letter-spacing: -0.025em;
-    font-weight: 600;
-  }
-
-  /* ---------- Skip link ---------- */
-  .skip {
-    position: absolute;
-    left: 16px;
-    top: 16px;
-    transform: translateY(-160%);
-    background: var(--ink);
-    color: #FFFFFF;
-    padding: 10px 16px;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 600;
-    z-index: 100;
-    transition: transform .15s ease;
-  }
-  .skip:focus { transform: translateY(0); color: #FFFFFF; }
-
-  /* ---------- Nav ---------- */
-  .nav {
-    position: sticky;
-    top: 0;
-    z-index: 20;
-    background: var(--bg);
-    border-bottom: 1px solid var(--line);
-  }
-  .nav-inner { height: 64px; display: flex; align-items: center; gap: 40px; }
-  /* 앵커 이동 시 sticky .nav(64px)에 목표 지점이 가리지 않도록.
-     #qna·#orgs 는 신설 섹션의 앵커 도착지입니다 (정본 §2-3). */
-  #how, #next, #interest, #service, #qna, #orgs { scroll-margin-top: 84px; }
-  .wordmark {
-    font-size: 19px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: var(--ink);
-  }
-  .nav-links { display: flex; gap: 28px; }
-  .nav-links a {
-    font-size: 14.5px;
-    font-weight: 500;
-    color: var(--ink-62);
-    transition: color .14s ease;
-  }
-  .nav-links a:hover { color: var(--ink); }
-  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
-
-  /* ---------- Buttons ---------- */
-  /* V7 — 고정 height(46px)를 버리고 세로 패딩 12px로 전환.
-     12+15.5+12 = 39.5px라 패딩만으로는 터치 타깃 44px에 못 미치므로
-     min-height로 44px를 따로 보장합니다. (정본 C-1의 "12px로 44px 확보"는 산술이 안 맞습니다) */
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 44px;
-    padding: 12px 22px;
-    border-radius: 6px;
-    border: 1px solid transparent;
-    font: inherit;
-    font-size: 15.5px;
-    font-weight: 600;
-    line-height: 1;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background-color .14s ease, border-color .14s ease, color .14s ease;
-  }
-  /* V3 — 버튼 3종 (정본 C-1). 주는 히어로·마감 CTA, 보조는 주 옆,
-     텍스트는 카드·섹션 내 이동. 풀사이즈는 좌우 32px로 한 단계 위. */
-  .btn-full { padding-inline: 32px; }
-  .btn-primary { background: var(--accent); color: #FFFFFF; }
-  .btn-primary:hover { background: var(--accent-press); color: #FFFFFF; }
-  .btn-secondary {
-    background: transparent;
-    border-color: var(--line);
-    color: var(--ink);
-  }
-  .btn-secondary:hover { border-color: var(--muted); color: var(--ink); }
-  .btn-text {
-    background: transparent;
-    border-color: transparent;
-    padding-inline: 0;
-    color: var(--accent);
-  }
-  .btn-text:hover { color: var(--accent-press); }
-  /* nav 우측: 앱은 아직 메인 CTA가 아니므로 버튼이 아닌 저채도 텍스트 링크로 둔다
-     🔴 **이 규칙은 헤더 우측 전체가 씁니다** 〔2026-08-21〕 — [EN]·[한국어] 뿐 아니라
-        로그인 영역의 [로그인]·[나의 대시보드]·[로그아웃]도 이 클래스를 입습니다
-        (assets/auth.js 가 `class="nav-quiet ta-link"` 로 붙이고, auth.css 는 색·크기
-        사본을 일부러 갖지 않습니다). 그래서 한 줄의 회색이 하나로 유지됩니다.
-     ⛔ **지우거나 이름을 바꾸지 마십시오** — 로그인 영역의 링크 3개가 색·크기를 잃고
-        브라우저 기본 파란 링크로 돌아갑니다. check.html 이 2026-08-19 에 「쓰는 자리가
-        없어졌다」며 이 규칙을 걷었던 전례가 있습니다(2026-08-21 에 되살렸습니다).
-        naming-consistency 검사가 이 짝을 지킵니다. */
-  .nav-quiet { font-size: 14px; font-weight: 500; color: var(--muted); }
-  .nav-quiet:hover { color: var(--ink-64); }
-
-  /* ---------- 접수 완료 배너 (2026-08-14 · 흐름 md §3) ----------
-     /precheck 에서 서류를 보낸 직후 이 페이지로 되돌아온 사람에게만 보입니다
-     (`?intake=ok`). 사유와 배선은 아래 마크업·JS 의 🔴 주석에 있습니다.
-
-     ⚠️ 배너지 히어로가 아닙니다 — 액센트 배경 한 겹과 본문급 글자까지입니다.
-        크게 만들면 랜딩 첫 화면을 접수 완료 화면이 덮어, 「둘러보게 한다」는
-        애초의 목적이 뒤집힙니다.
-     ⚠️ 기본값은 `hidden` 입니다. JS 만 엽니다 — 그냥 들어온 방문자에게 「접수
-        되었습니다」가 보이면 그 자체로 거짓말입니다. */
-  .intake-return { background: var(--accent-soft); border-bottom: 1px solid var(--line); }
-  .intake-return-inner { padding-block: 14px; display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; }
-  .intake-return p { margin: 0; font-size: 14.5px; line-height: 1.65; color: var(--ink); }
-  .intake-return .intake-return-sub { color: var(--ink-64); font-size: 13.5px; }
-  .intake-return a { color: var(--accent); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
-
-  /* ---------- Hero ---------- */
-  /* 상하 108/104 → 96 (정본 §4-2 · 시각사양 4-2). 신설 6섹션은 처음부터
-     clamp(60px, 8vw, 96px) 였는데 히어로·HOW·사전등록만 V7 이전 값으로 남아
-     한 페이지 안에서 섹션 리듬이 96·104·108·112 로 갈려 있었습니다. */
-  .hero { padding-block: clamp(60px, 8vw, 96px); }
-  .eyebrow {
-    margin: 0 0 20px;
-    font-size: 13.5px;
-    font-weight: 600;
-    letter-spacing: .02em;
-    color: var(--accent);
-  }
-  /* V2 클램프 + V4 행간 1.18 → 1.30 (정본 §3-2: H1 36 → 56 / 1.30 / −0.035em) */
-  .hero h1 {
-    margin: 0;
-    font-size: clamp(2.25rem, 4.5vw, 3.5rem);
-    line-height: 1.30;
-    letter-spacing: -0.035em;
-    font-weight: 700;
-    max-width: 21ch;
-  }
-  .hero-lead {
-    margin: 26px 0 0;
-    font-size: 17.5px;
-    line-height: 1.72;
-    font-weight: 500;
-    color: var(--ink);
-    /* 38ch → 40ch. 확정본 §2 리드는 3행으로 끊어져 있는데, 2행
-       「공개된 서식과 하나씩 비교해서 다른 부분을 표시해 드립니다.」가 413px 이라
-       38ch(410px)에서 3px 모자라 4행으로 접혔습니다. 40ch = 432px.
-       ch 는 「0」 자 폭 기준이라 한글 실측과 어긋납니다 — 리드 문구가 바뀌면
-       2행 폭을 다시 재십시오. */
-    max-width: 40ch;
-  }
-
-  /* 🔴 히어로 미니 신호(.hero-signal · A3 §3 신설분)는 v-next 전면교체(2026-08-16)로
-     삭제했습니다 — 히어로 CTA 3→2 축소와 함께 승인된 변화입니다. */
-
-  .cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 30px; }
-  /* 마이크로카피 — --muted는 --bg 위 2.56:1로 WCAG AA(4.5:1) 미달이라 --ink-62(5.03:1)로 교체.
-     --muted 토큰 값 자체는 그대로 둡니다. */
-  .cta-row-note { font-size: 13.5px; color: var(--ink-62); }
-  /* 히어로 마이크로카피 — 마감 CTA(.close-cta-note)와 같은 12.5px/--ink-62.
-     .cta-row-note(13.5px, 버튼과 같은 행)와 달리 버튼 행 아래 독립 줄입니다. */
-  .hero-note { margin: 14px 0 0; font-size: 12.5px; line-height: 1.7; color: var(--ink-62); }
-
-  /* ---------- How it works ---------- */
-  .how { border-top: 1px solid var(--line); }
-  /* 🔄 **#how 와 #next 의 배경이 서로 뒤바뀌었습니다** 〔2026-08-14 · 재배치〕.
-     종전에는 #how 가 --surface, #next(로드맵)가 --bg 였습니다. 재배치로 두 섹션의
-     이웃이 바뀌면서 그 배정이 교차를 깨게 됐습니다:
-       그때 순서 … 안심문구(--surface) → HOW → 로드맵 → FAQ(--bg) …
-     HOW 를 --surface 로 두면 안심문구와 붙고, 로드맵을 --bg 로 두면 FAQ 와 붙습니다.
-     그래서 HOW 는 --bg(규칙 없음), 로드맵은 .sec-surface 로 갑니다.
-
-     🔄 **두 섹션이 서로 떨어졌습니다** 〔2026-08-16 · A3 §2〕. 이제 이웃이 이렇습니다:
-       … 경고(--surface-dark) → HOW → 근거(--surface) …
-       … 안심문구(--surface) → 상품소개(--bg) → 로드맵 → FAQ(--bg) …
-     양쪽 다 위 배정(HOW=--bg · 로드맵=--surface)이 그대로 맞아떨어집니다 — 이번
-     재배치에서 배경 규칙을 한 줄도 고치지 않은 이유입니다.
-     ⚠️ .how 클래스는 두 섹션이 함께 쓰므로 배경은 반드시 id 나 클래스로 따로 겁니다.
-        .how 자체에 background 를 주지 마십시오 — 두 섹션이 같은 색이 됩니다.
-     둘의 배경은 마크업이 집니다 — 로드맵 <section> 에만 .sec-surface 가 붙어 있습니다. */
-  .how-inner { padding-block: clamp(60px, 8vw, 96px); }
-
-  /* ---------- 02 경험담 좌우비교 + 「모르시는 게 당연합니다」 (흐름 md §1 「랜딩 심리설계」) ----------
-     🔄 **독립 <section> 으로 승격했습니다** 〔2026-08-14 · 재배치〕.
-        이 자리에는 「독립 섹션이 아니라 #how 안의 여는 블록입니다 … 섹션으로 승격하지
-        마십시오」라는 금지가 적혀 있었습니다. **그 금지의 사유가 재배치로 소멸했습니다.**
-          옛 사유: 04 카드(--bg)와 #how(--surface) 사이에 끼는 자리라, 어느 배경을 골라도
-                   한쪽 이웃과 같은 색이 되어 교차가 끊긴다.
-          새 자리: 히어로(--bg)와 신뢰증명(--surface-dark) 사이. --surface 를 고르면
-                   bg → surface → dark 로 3단 교차가 **오히려 완성됩니다.**
-        흐름 md §1 도 원래 「이 앞 또는 안에 배치」로 둘 다 허용했고, 그때는 안쪽이
-        유일한 선택지였을 뿐입니다.
-     ⚠️ 다시 #how 안으로 밀어 넣지 마십시오 — 그러면 승(경험담)과 전(신뢰증명) 사이에
-        HOW 방법론이 끼어 감정선이 다시 늘어집니다(이번 재배치가 푼 문제 P3).
-
-     인터뷰 기법을 셀프서브 랜딩으로 옮긴 것입니다(흐름 md §1 「인터뷰 진행 원칙」):
-     직접 「당신 계약도 위험하다」고 말하지 않고, 사례를 먼저 놓고 질문 하나로 끝냅니다.
-     스스로 확인하고 싶어지는 것이 목표이고, 우리가 먼저 판정을 선언하지 않는 것이 원칙입니다.
-     ⚠️ 평가어(위험·불리·문제·잘못)를 넣지 마십시오. 조항이 무엇이라 적혀 있었고 그 뜻이
-        무엇인지까지만 씁니다. 금지 동사 5(자문·판단·검토·평가·진단)도 같이 금지입니다. */
-  .stories-sec { border-top: 1px solid var(--line); }
-  .stories-inner { padding-block: clamp(60px, 8vw, 96px); }
-  /* 🔄 아래쪽 구분선(border-bottom)과 그 여백을 걷었습니다 〔2026-08-14〕. #how 안에서
-     HOW 설명과 이어질 때는 둘을 가르는 선이 필요했지만, 이제 섹션 자체가 끝나고
-     다음이 다크 섹션이라 선을 그으면 섹션 끝에 뜻 없는 줄 하나가 남습니다. */
-  .stories {
-    display: flex;
-    flex-direction: column;
-    gap: 36px;
-    max-width: 880px;
-  }
-  /* 🔴 .story-cmp · .story-side · .story-side.is-case · .story-quote · .story-note 는
-     v-next 전면교체(2026-08-16)로 좌우비교 카드 구조가 걷히면서 삭제했습니다. */
-  .story-body { margin: 0; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); }
-  /* 마무리 질문. 크기는 전역 .h3(28/600/1.35/−0.025em)을 마크업에서 그대로 물려받고
-     여기서는 여백만 잡습니다 — 신규 타이포 값을 만들지 않습니다(시각사양 3-1). */
-  .story-ask { max-width: 26ch; color: var(--ink); }
-  .story-common { display: flex; flex-direction: column; gap: 14px; max-width: 62ch; }
-
-  .kicker {
-    margin: 0 0 18px;
-    font-size: 12.5px;
-    font-weight: 700;
-    letter-spacing: .14em;
-    color: var(--muted);
-  }
-  /* V2 — H2 28 → 40 / 1.28 / −0.030em (정본 §3-2) */
-  .how h2 {
-    margin: 0;
-    font-size: clamp(1.75rem, 3vw, 2.5rem);
-    line-height: 1.28;
-    letter-spacing: -0.030em;
-    font-weight: 700;
-    max-width: 24ch;
-  }
-  /* ---------- NDA 확인 흐름 (3단계 · 세율조회는 3단계의 보조 항목) ---------- */
-  .flow { margin-top: clamp(36px, 4.5vw, 56px); max-width: 880px; }
-  .flow-row {
-    display: grid;
-    grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
-    gap: 8px clamp(24px, 4vw, 64px);
-    padding: 30px 0;
-    border-bottom: 1px solid var(--line);
-    align-items: baseline;
-  }
-  .flow-row:first-of-type { border-top: 1px solid var(--line); }
-  .flow-name {
-    margin: 0;
-    display: flex;
-    gap: 14px;
-    font-size: 20px;
-    line-height: 1.45;
-    letter-spacing: -0.02em;
-    font-weight: 700;
-  }
-  .flow-num { font-size: 13px; font-weight: 600; color: var(--muted); line-height: 1.95; }
-  .flow-desc { margin: 0; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); max-width: 46ch; }
-
-  /* ---------- Roadmap (예정 항목) ---------- */
-  /* 2026-08-13: 아래 두 규칙의 전제가 바뀌어 되돌렸습니다.
-     둘 다 「위가 03 경고(--surface-dark)」를 근거로 경계선과 상단 여백을 줄인 것이었는데,
-     결·안심문구·HOW 가 신뢰와 로드맵 사이에 들어오면서 위가 다크가 아니게 됐습니다.
-     그대로 두면 --bg(HOW) → --surface(로드맵) 경계에 선도 여백도 없어 두 섹션이
-     한 덩어리로 붙습니다.
-     ⚠️ 로드맵의 이웃을 다시 바꾸실 때 이 자리를 함께 보십시오
-        (2026-08-14 재배치에서 위 이웃이 .act → #how 로 한 번 더 바뀌었습니다).
-
-     지운 것 2개:
-       #next { border-top: 0 }          → .how 의 border-top(--line)을 그대로 씁니다
-       .how-inner-tight { 44/68 상단 }  → .how-inner 기준값(60/96)을 그대로 씁니다
-     둘 다 규칙을 되살리는 대신 지웠습니다. 남겨두면 기준값과 같은 값을 덮어쓰는
-     빈 껍데기가 되어, 다음 사람이 「왜 있는지」를 다시 추적해야 합니다. */
-  /* 로드맵 헤딩 = H3 계층. 위 h3/.h3 정의와 같은 값(28 / 600 / 1.35 / −0.025em)입니다.
-     선택자를 .how h2.rm-h2 로 올린 이유: 이 요소는 .how 섹션 안의 <h2 class="rm-h2">라
-     .how h2(0,1,1)가 .rm-h2(0,1,0)를 이깁니다. 그동안 로드맵 헤딩이 H3가 아니라
-     H2 크기로 렌더되고 있었습니다. 특정도를 (0,2,1)로 올려 H3 역할을 실제로 적용합니다.
-     굵기 700 → 600 · clamp(22→28) → 28 고정. 시각사양 3-4 가 「H1·H2만 스케일하고
-     나머지는 고정」이라 H3 는 clamp 를 쓰지 않습니다.
-     ⚠️ 태그는 <h2> 그대로입니다 — 시각 계층만 H3 에 맞춘 것이고 문서 개요상의
-        위계를 바꾼 것이 아닙니다. h3/.h3 값을 고치면 여기도 같이 고치십시오. */
-  .how h2.rm-h2 {
-    margin: 0;
-    font-size: 28px;
-    line-height: 1.35;
-    letter-spacing: -0.025em;
-    font-weight: 600;
-    max-width: 26ch;
-  }
-  .rm-lead { margin: 16px 0 0; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); max-width: 42ch; }
-  /* 기한관리 미리보기 훅 (흐름 md §1 시각층매핑 「로드맵 + 기한관리 미리보기 훅」).
-     기능설명이 아니라 질문으로 던집니다 — 기한관리쪽 훅은 「내가 뭘 놓치고 있는지도 모른다」는
-     통제감 상실이고, 「알림 받기」류 기능설명형 문구는 이 지점에서 훅이 되지 않습니다(흐름 md §1).
-     ⚠️ 설명형으로 되돌리지 마십시오. */
-  .rm-hook { margin: clamp(28px, 4vw, 40px) 0 8px; font-size: 18px; font-weight: 600; line-height: 1.5; letter-spacing: -0.02em; color: var(--ink); max-width: 30ch; }
-  .rm { margin-top: clamp(28px, 4vw, 40px); max-width: 860px; }
-  .rm-row {
-    display: grid;
-    grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
-    gap: 6px clamp(24px, 4vw, 48px);
-    padding: 26px 4px;
-    border-bottom: 1px solid var(--line);
-    align-items: baseline;
-    color: inherit;
-    text-decoration: none;
-  }
-  .rm-row:first-child { border-top: 1px solid var(--line); }
-  .rm-name {
-    margin: 0;
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-    font-size: 18px;
-    font-weight: 600;
-    letter-spacing: -0.02em;  /* 카드 제목 역할 (정본 §3-2) */
-    line-height: 1.5;
-    color: var(--ink);
-  }
-  .rm-num { font-size: 13px; font-weight: 600; color: var(--muted); }
-  .rm-desc { margin: 0; font-size: 16.5px; line-height: 1.7; color: var(--ink-62); max-width: 44ch; }
-  /* 🔴 .rm-diff(구분 문구)는 v-next 전면교체(2026-08-16)로 로드맵 두 행이 기존
-     상품명을 재사용하면서 의미가 없어져 삭제했습니다. */
-  /* 「준비중」 라벨 — 마이크로카피와 같은 이유로 --ink-62. 회색조 유지, 경고색 금지 */
-  .rm-meta { margin: 2px 0 0; grid-column: 1; font-size: 13.5px; line-height: 1.6; color: var(--ink-62); }
-  /* 🔴 .rm-note 는 삭제했습니다 〔2026-08-16〕 — 로드맵 01 행에 잠깐 있던 보충 문구가
-     FAQ 「법률 자문인가요?」 답변으로 옮겨가면서 죽은 규칙이 됐습니다. */
-  a.rm-row:hover { background: var(--surface); }
-  a.rm-row:hover .rm-name { color: var(--ink); }
-
-  /* ---------- Emphasis band — 제거됨 (2026-08-11) ----------
-     .band/.band-inner/.band-sub 규칙을 지웠습니다. 그 섹션의 역할(「판단하지 않는다」)은
-     히어로 직하로 승격된 07 안심 문구(.assure)가 이어받았습니다 — 정본 §2 3번.
-     쓰이지 않는 채로 남겨두면 같은 선언이 한 페이지에 두 번 들어가는 길이 열립니다.
-     되살리려면 정본 §2 섹션 표부터 고쳐야 합니다. */
-
-  /* ---------- Interest form ---------- */
-  /* 🔄 배경을 --surface 에서 --bg 로 바꿨습니다 〔2026-08-14 · 재배치〕. 종전 사유는
-     「마감CTA(--bg)와 기관안내(--bg) 사이에 끼어 흰 배경 세 섹션이 붙는다」였는데,
-     재배치로 그 둘이 모두 --surface 가 되어 관계가 정확히 뒤집혔습니다:
-       마감CTA(--surface) → 사전등록폼(--bg) → 기관안내(--surface) */
-  .interest { border-top: 1px solid var(--line); }
-  .interest-inner { padding-block: clamp(60px, 8vw, 96px); }
-  .interest h2 {
-    margin: 0;
-    font-size: clamp(1.75rem, 3vw, 2.5rem);
-    line-height: 1.28;
-    letter-spacing: -0.030em;
-    font-weight: 700;
-    max-width: 24ch;
-  }
-  /* 🔴 .interest-sub 규칙은 2026-08-13 에 **여기서만** 제거했습니다.
-     그 문구(KOTRA 멘토 네트워크)가 09 마감 CTA 로 옮겨가면서 index.html 에는 쓰는 곳이
-     남지 않았습니다 — 근거는 마크업 쪽 .close-cta-kotra 주석에 있습니다.
-     ⚠️ en.html 은 자기 <style> 에 같은 규칙 사본과 마크업(.interest-sub)을 **그대로**
-        갖고 있습니다. 이번 배치는 국문 한정이라 그쪽은 손대지 않았습니다 — 영문을
-        맞출 때 CSS·마크업 두 곳을 함께 옮기십시오. */
-  /* 🔄 신설 〔2026-08-23 · B2-8〕 — §5-9 4단 구성(제목·버튼·안내·폼 리드). */
-  .interest-cta { margin: 20px 0 0; }
-  .interest-note { margin: 12px 0 0; font-size: 14px; line-height: 1.7; color: var(--muted); }
-  .interest-lead { margin: 28px 0 0; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); }
-  .interest-form {
-    max-width: 440px;
-    margin-top: 32px;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-  }
-  .form-row { display: flex; flex-direction: column; gap: 6px; }
-  .form-row label { font-size: 14px; font-weight: 600; }
-  /* 「*」 표시는 클릭 요소가 아니므로 액센트를 쓰지 않습니다 (정본 §6 · 규칙 2).
-     --accent가 먹색이던 때는 문제가 없었으나 #1D4ED8로 바뀌면서 분리했습니다. */
-  .form-row .req { color: var(--ink); }
-  .form-row .optional { color: var(--muted); font-weight: 400; }
-  .form-row input {
-    font: inherit;
-    font-size: 16px;
-    height: 46px;
-    padding: 0 14px;
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    background-color: var(--bg);
-    color: var(--ink);
-  }
-  /* 🔴 .form-purpose·.purpose-legend·.purpose-opt(목적 선택 라디오)는 대표
-     수정안(2026-08-16)으로 마크업이 걷히며 죽은 규칙이 되어 삭제했습니다. 그 자리는
-     .form-row(이메일 바로 아래 [문의하기] 입력창, 이름·이메일과 같은 규칙 재사용)가
-     이어받았습니다 — 새 CSS 규칙이 필요 없습니다. */
-  /* ---------- 동의 (§10 · 2026-08-11 신설) ----------
-     precheck.html 의 .consents 패턴을 그대로 가져왔습니다. 두 폼이 같은 모양이어야
-     이용자가 「같은 종류의 동의」로 읽습니다 — 한쪽만 고치지 마십시오.
-     ⚠️ 바탕은 --bg 입니다. 이 섹션이 --surface 라 같은 색을 쓰면 카드가 사라집니다
-        (precheck 는 반대로 흰 배경 위라 --bg 가 그대로 맞습니다). */
-  .consents { display: flex; flex-direction: column; gap: 12px; }
-  .consent {
-    display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 12px;
-    padding: 16px 18px;
-    border: 1px solid var(--line); border-radius: 8px;
-    background: var(--bg);
-  }
-  .consent input[type="checkbox"] { width: 18px; height: 18px; margin: 3px 0 0; accent-color: var(--accent); }
-  .consent-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; font-size: 14.5px; font-weight: 600; }
-  /* 「필수」는 금지어입니다(정본 §8 · C-6). 같은 뜻을 `*` 로만 표시합니다 —
-     precheck.html .consent-tag 과 같은 규칙이고, 뱃지는 클릭 대상이 아니라
-     .form-row .req 과 같은 --ink 를 씁니다(정본 §6 · 규칙 2). */
-  .consent-tag {
-    font-size: 11.5px; font-weight: 700; line-height: 1.5; letter-spacing: .02em;
-    padding: 2px 7px; border-radius: 4px; border: 1px solid rgba(15, 23, 42, .28); color: var(--ink);
-  }
-  .consent-tag-optional { border-color: var(--line); color: var(--muted); }
-  .consent-body { margin: 7px 0 0; font-size: 13.5px; line-height: 1.7; color: var(--ink-62); }
-  /* 방침 링크는 다크가 아닌 밝은 배경 위라 --accent 를 그대로 씁니다(푸터와 다름) */
-  .consent-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
-
-  .interest-submit { margin-top: 4px; }
-  .interest-msg { min-height: 22px; font-size: 14px; color: var(--ink-64); margin: 0; }
-  .interest-msg.is-error { color: var(--warning); }
-
-  /* ---------- Footer (정본 §2 13번 · --surface-dark) ----------
-     본문 섹션 중 다크는 03 경고뿐이고, 푸터가 두 번째이자 마지막입니다.
-     밝은 배경용 잉크(--ink-64 · --muted)는 여기서 전부 --d-ink-* 로 바뀝니다 —
-     #0F172A 위에 rgba(15,23,42,...) 를 얹으면 글자가 배경에 잠깁니다.
-
-     위 기관안내(--bg #FFFFFF)에서 곧바로 넘어오는 경계라 border-top 을 없앴습니다.
-     흰색 → #0F172A 는 그 자체로 가장 강한 경계이고, --line(#E2E8F0) 한 줄을
-     그 사이에 끼우면 밝은 쪽에만 붙은 선이 되어 경계가 두 번 그려집니다. */
-  .footer { background: var(--surface-dark); color: var(--d-ink-secondary); }
-  /* 상단 32px → 44px. 흰 배경에서 경계선 없이 바로 넘어오는 자리라, 예전(흰 배경 +
-     헤어라인)의 32px 로는 첫 줄이 색 경계에 붙어 보입니다. 하단은 그대로 둡니다 —
-     페이지 끝이라 아래로 더 벌릴 이유가 없습니다. */
-  .footer-inner { padding-block: 44px 28px; }
-  /* 확정본 §12 [태그] — 히어로 eyebrow 와 같은 문구로 페이지 처음과 끝을 묶습니다.
-     푸터의 다른 라벨류(.footer-biz dt · .footer-links)와 같은 --d-ink-secondary 를 쓰되,
-     자간·굵기는 eyebrow류(.eyebrow-quiet 12.5/700/+0.14em)에 맞췄습니다.
-     ⚠️ --accent 를 쓰지 마십시오 — #0F172A 위에서 2.3:1 로 대비가 무너집니다
-        (.footer-links 주석과 같은 이유). 히어로 eyebrow 만 액센트 예외입니다(정본 §3-2★). */
-  .footer-tag {
-    margin: 0 0 20px;
-    font-size: 12.5px;
-    font-weight: 700;
-    line-height: 1.5;
-    letter-spacing: .14em;
-    color: var(--d-ink-secondary);
-  }
-  .footer-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    align-items: center;
-    justify-content: space-between;
-  }
-  /* 워드마크는 푸터에서 유일한 강조 요소라 primary */
-  .footer-mark { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; color: var(--d-ink-primary); }
-  .footer-meta { font-size: 13.5px; color: var(--d-ink-tertiary); }
-  .footer-legal { margin: 18px 0 0; font-size: 12.5px; line-height: 1.7; color: var(--d-ink-tertiary); }
-  .footer-legal p { margin: 0; }
-  /* ---------- 사업자정보 (전 페이지 공통) ----------
-     6개 항목의 표기는 사업자등록증·통신판매업신고증 원문과 글자 그대로 일치해야 합니다.
-     "주식회사 테오네"를 "(주)테오네"로 줄여 쓰지 마십시오. */
-  .footer-links { margin: 18px 0 0; display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; }
-  /* 정책 링크는 클릭 요소지만 --accent(#1D4ED8)를 쓰지 않습니다 —
-     #0F172A 위에서 2.3:1 로 대비가 무너집니다. 다크에서는 밑줄로 클릭임을 알립니다. */
-  .footer-links a {
-    color: var(--d-ink-secondary);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-  .footer-links a:hover { color: var(--d-ink-primary); }
-  /* KAIST OverEdge 참여 표기 — 정책 링크와 사업자정보 사이, 회색 톤 */
-  .footer-credit { margin: 14px 0 0; font-size: 12.5px; line-height: 1.7; color: var(--d-ink-tertiary); }
-  .footer-biz { margin: 16px 0 0; display: grid; gap: 3px; font-size: 12.5px; line-height: 1.7; color: var(--d-ink-tertiary); }
-  .footer-biz > div { display: flex; flex-wrap: wrap; gap: 4px 10px; }
-  /* 항목명(dt)을 값(dd)보다 한 단계 밝게 둬서 6개 항목이 읽히는 순서를 잡아 줍니다 */
-  .footer-biz dt { flex: 0 0 auto; min-width: 116px; margin: 0; color: var(--d-ink-secondary); }
-  .footer-biz dd { margin: 0; }
-
-  /* ==========================================================================
-     정본 §2 12섹션 — 신설 6개 (안심문구 · 2층카드 · 신뢰 · QnA · 마감CTA · 기관안내)
-     문구는 확정본 v3.1 원문 그대로입니다. 한 글자도 바꾸지 마십시오 (정본 §0 · §8).
-     ========================================================================== */
-
-  /* 폭 3단 (정본 §3-3) — 1200(.container) / 860(본문) / 680(좁은 콘텐츠) */
-  .body-w   { max-width: 860px; }
-  .narrow-c { max-width: 680px; margin-inline: auto; }
-
-  /* ---------- 정렬 규칙 〔2026-08-14 · landing-emphasis-s10 신설〕 ----------
-     🔴 **이 페이지에서 가운데로 오는 것은 「선언·행동」 세 섹션뿐입니다.**
-          06 결 CTA(.act-inner) · 07 안심문구(.assure-inner) · 10 마감 CTA(.close-cta-inner)
-     나머지 아홉 개 본문 섹션(히어로·경험담·신뢰·상품소개·HOW·로드맵·FAQ·사전등록폼·
-     기관안내)은 전부 좌측입니다. 설명·근거·목록은 눈이 왼쪽 세로선을 따라 내려가야
-     읽히고, 선언과 요청은 그 흐름을 한 번 끊어야 「멈춰서 듣는 말」이 됩니다.
-
-     왜 클래스 하나로 모으는가: 종전에는 같은 4줄(flex·column·align-items·text-align)이
-     세 규칙에 각각 복사돼 있었습니다. 복사본은 규칙이 아니라 우연이라, 한 곳을 고치면
-     나머지 둘과 조용히 어긋납니다. 실제로 「중앙정렬이 결 CTA 하나뿐이라 튀어 보인다」는
-     진단이 한 번 나왔습니다 — 규칙이 세 곳에 흩어져 있어서 셋이 한 규칙이라는 것이
-     화면에서도 코드에서도 안 보였기 때문입니다.
-     ⚠️ 새 섹션을 가운데로 두려면 먼저 그 섹션이 「선언이거나 요청」인지 보십시오.
-        설명·근거·목록이면 좌측입니다.
-     ⚠️ text-align: center 를 섹션 규칙에 직접 적지 마십시오 —
-        test/landing-emphasis-s10.test.js 가 이 클래스 하나뿐인지 셉니다. */
-  .sec-center {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  /* 반복 노출되는 eyebrow류는 --ink-62 (정본 §3-2★).
-     --accent를 유지하는 것은 히어로 eyebrow 하나뿐입니다(.eyebrow).
-     기존 .kicker(--muted)는 이번 범위 밖이라 건드리지 않았습니다. */
-  .eyebrow-quiet {
-    margin: 0;
-    font-size: 12.5px;
-    font-weight: 700;
-    line-height: 1.5;
-    letter-spacing: .14em;
-    color: var(--ink-62);
-  }
-
-  /* ---------- 07 안심 문구 (문구 §3 · 정본 §2 3번) ----------
-     🔄 **독립 <section> 으로 되돌아왔습니다** 〔2026-08-14 · 재배치〕. 2026-08-13 에
-        #how 안 인라인 블록(.assure-inline)으로 내려갔던 것을, 결 CTA 바로 뒤 독립
-        섹션으로 올렸습니다. 그래서 상쇄 규칙 .assure-inline 은 제거했습니다.
-
-     왜 결 CTA 바로 뒤인가: 이 문구가 답하는 상대는 **CTA 를 보고 누르지 않은 사람**
-     입니다. 「결정은 언제나 대표님 것입니다 / ※ 법률 자문 서비스가 아닙니다」는 그
-     사람의 망설임에 정확히 대응합니다 — ask 직후의 risk reversal 자리입니다.
-     ⚠️ FAQ 쪽으로 내리지 마십시오. 하단 작은 글씨가 되면 「경쟁사는 이 말을 맨 아래
-        작은 글씨로 쓰는데 우리는 본문 크기로 한 번 제대로 말한다」는 정본 §2-2
-        우선순위 1번의 차별점이 사라집니다.
-     ⚠️ 상품소개 섹션 안으로 넣지도 마십시오 — 3카드의 리듬이 깨집니다.
-
-     배경(--surface)은 .sec-surface 가 집니다. 여기에 background 를 직접 적지 마십시오. */
-  .assure { border-top: 1px solid var(--line); }
-  /* 중앙정렬은 .sec-center 가 집니다(위 「정렬 규칙」 참조) — 여기는 여백만 잡습니다. */
-  .assure-inner { padding-block: clamp(60px, 8vw, 96px); gap: 28px; }
-  .assure h2 {
-    margin: 0;
-    font-size: clamp(1.75rem, 3vw, 2.5rem);
-    line-height: 1.28;
-    letter-spacing: -0.030em;
-    font-weight: 700;
-  }
-  /* 🔴 .assure-lines 는 v-next 전면교체(2026-08-16)로 본문 3줄이 걷히면서 삭제했습니다. */
-  .assure-note { margin: 0; font-size: 12.5px; line-height: 1.7; color: var(--muted); }
-  /* 🔄 상쇄 규칙 .assure-inline 을 **제거했습니다** 〔2026-08-14〕. 그 규칙은 안심 문구가
-     #how 안에 인라인으로 들어가 있던 동안(2026-08-13~14) 배경·구분선·여백이 이중으로
-     걸리는 것을 되돌리는 용도였습니다. 다시 독립 섹션이 됐으므로 상쇄할 대상이 없습니다.
-     ⚠️ en.html 은 아직 이 클래스를 쓰지 않습니다(그쪽은 처음부터 독립 섹션입니다) —
-        이 삭제는 국문 한정이고 en 과의 차이를 만들지 않습니다. */
-
-  /* ---------- 04 상품소개 통합 섹션 (구 「04 2층카드」 + 「05 WHAT WE CHECK」) ----------
-     🔴 **두 섹션을 하나로 합쳤습니다** 〔2026-08-14 · landing-flow-restructure-s9〕.
-
-     합치기 전에는 같은 상품을 두 섹션이 층위만 달리해 두 번 설명했습니다:
-       04 2층카드      — 「무엇을 파는가」  사전점검 · 기한관리 (2카드, 개요)
-       05 WHAT WE CHECK — 「무엇을 확인하나」 사전점검 · 바이어확인 · 기한관리 (3카드, 상세)
-     그 중복이 실재한다는 증거는 코드 자신에 있었습니다 — .cards-lead(「각각 무엇을
-     확인해 드리는지는 아래에서 하나씩 펼쳐…」)는 **두 섹션이 중복이 아님을 문장으로
-     변명하려고** 2026-08-13 에 신설된 줄이었습니다. 구조가 옳으면 변명이 필요 없습니다.
-
-     지금 구조: **탭 3개 + 패널 3개** 〔2026-08-14 · cards-tabs-s12 에서 아코디언을 대체〕.
-     한 상품 = 한 탭 = 한 번의 설명입니다. 이름표(생애주기·상품명)는 탭 라벨로, 내용
-     (상태줄·요약·설명·불릿·예시화면·실행버튼)은 패널로 갑니다.
-       탭 라벨(.tab)  — 생애주기(.feat-meta) · 상품명(.feat-title)
-       패널(.feat-panel) — 상태줄 · 요약 · 설명 · 불릿 · 캡처 · 실행버튼(세 상품 전부)
-
-     🔄 종전에는 「접힌 카드 = 옛 2층카드, 펼친 카드 = 옛 아코디언」이었습니다. 아코디언은
-     펼칠 때마다 줄이 재배치돼 스크롤 보정이 필요했고, 탭이 그것을 구조로 없앴습니다
-     (사유는 아래 .feats CSS 주석에 있습니다).
-     ⚠️ 여기(그리고 아래 마크업 주석)에 카드의 id 를 큰따옴표째로 인용하지 마십시오 —
-        test/landing-flow-s9.test.js 가 그 문자열의 **첫 등장**부터 잘라 검사하므로
-        주석이 그대로 오탐이 됩니다(2026-08-14 에 실제로 걸렸습니다).
-
-     ⛔ .cards / .card / .card-head / .card-title / .card-body / .card-bullets / .badge-soon
-        CSS 를 이 파일에 되살리지 마십시오. 마크업이 없어져 죽은 규칙이 됩니다.
-        (en.html 은 아직 그 규칙들을 씁니다 — 그쪽은 별도 <style> 이라 영향이 없습니다.)
-     ⛔ 두 섹션으로 다시 가르지 마십시오. 가르는 순간 P1 중복이 그대로 돌아옵니다. */
-  .cards-sec { border-top: 1px solid var(--line); }
-  .cards-inner { padding-block: clamp(60px, 8vw, 96px); }
-
-  /* 🔴 **`.pricing-inner` 의 세로 여백이 여기 없었습니다** 〔2026-08-24〕.
-     국문 index.html 은 B3-b 가 `.scope-inner, .sample-inner, .pricing-inner` 한 줄로 이미
-     메웠지만 영문은 빠진 채였고, 그 섹션만 위아래 여백 0 으로 나가 있었습니다.
-     값은 페이지의 다른 본문 섹션과 같은 값입니다. */
-  .pricing-inner { padding-block: clamp(60px, 8vw, 96px); }
-  /* max-width 를 24ch → 30ch 로 넓혔습니다. 24ch 에서는 「…시작한 후에 / 한 번.」으로
-     끊겨 「전에 한 번 / 후에 한 번」의 대구가 깨지고 「한 번.」만 홀로 남았습니다.
-     text-wrap 은 폭에 따라 다른 값이 맞아서 아래 미디어쿼리에서 갈라 줍니다 —
-     좁은 화면에서 balance 를 쓰면 「한 / 번,」으로 어절이 쪼개집니다. */
-  .cards-sec h2 {
-    margin: 0 0 clamp(28px, 3.5vw, 40px);
-    font-size: clamp(1.75rem, 3vw, 2.5rem);
-    line-height: 1.28;
-    letter-spacing: -0.030em;
-    font-weight: 700;
-    max-width: 30ch;
-  }
-  /* h2 아래 리드 한 줄. 🔄 역할이 바뀌었습니다 〔2026-08-14〕.
-     종전에는 04 에서 05 로 넘기는 다리(「…아래에서 하나씩 펼쳐 보실 수 있습니다」)였고,
-     두 섹션이 중복이 아니라는 것을 문장으로 변명하는 줄이었습니다. 섹션이 하나가 된
-     지금은 넘길 「아래」가 없으므로, **카드를 어떻게 보는지 알려주는 조작 안내**가
-     됩니다 — 옛 05 의 h2(「무엇을 확인해 드리는지, 하나씩 펼쳐보세요.」)가 하던 일을
-     이 줄이 받았습니다.
-     ⚠️ 여기에 <a href="#feats"> 를 되살리지 마십시오 — 자기 섹션 안으로 가는 링크가 됩니다.
-     h2 의 아래 여백(28~40px)은 곧바로 카드가 올 때의 값이라 리드가 끼면 너무 벌어집니다.
-     :has() 로 리드가 있을 때만 좁힙니다 — 미지원 브라우저에서는 간격만 넓어지고
-     내용은 그대로입니다(깨지지 않습니다). */
-  .cards-sec h2:has(+ .cards-lead) { margin-bottom: 14px; }
-  .cards-lead {
-    margin: 0 0 clamp(28px, 3.5vw, 40px);
-    max-width: 62ch;
-    font-size: 16.5px;
-    line-height: 1.76;
-    color: var(--ink-64);
-  }
-
-  /* ---------- 상품소개 탭 3개 (구 아코디언 카드 3열) ----------
-     배경은 --bg 입니다. 03 경고(--surface-dark)와 05 근거(--surface) 사이에 들어갑니다.
-     결과 같은 --bg 로 이어지는 것은 **의도**입니다 — md §1 이 「핵심기능 3분류 --bg /
-     결 --bg」로 지정했고, 사유도 적혀 있습니다: 「감정선이 신뢰증명 다음 곧바로 행동으로
-     이어지도록 무관한 기능섹션을 사이에 두지 않음」. 페이지에서 배경이 연속인 이웃은 이 한 쌍뿐입니다.
-
-     🔴 **아코디언 카드 3열 → 탭** 〔2026-08-14 · cards-tabs-s12〕.
-
-     아코디언은 **자리가 움직이는 구조**였습니다. 펼치면 카드가 전폭(`grid-column: 1 / -1`)이
-     되면서 줄이 재배치되고, 접으면 3열 줄로 되돌아가며 카드가 위로 올라갑니다. 그래서 s11 이
-     펼침·접힘마다 스크롤을 보정해야 했고(실측: 접은 직후 카드 머리 y=-238), **보정이
-     필요하다는 것 자체가 구조의 신호**였습니다. 패널 높이도 콘텐츠마다 달라 1440×900
-     가시율이 100 / 72.5 / 77% 로 갈렸습니다.
-
-     탭은 **패널 자리가 고정**입니다. 전환해도 탭 줄이 움직이지 않으므로 스크롤 보정이
-     아예 필요 없습니다 — 문제를 고친 것이 아니라 **발생하지 않게** 했습니다.
-
-     ⛔ 아코디언으로 되돌리지 마십시오. 되돌리면 위 재배치와 스크롤 보정이 함께 돌아옵니다.
-     ⛔ **동시 다중 펼침 정책은 폐기됐습니다** 〔2026-08-14〕. 「하나만 열리게 만들지
-        마십시오」는 아코디언 전제의 규칙이었고, 탭은 정의상 하나입니다. 08 FAQ 는 여전히
-        다중 펼침이며 그쪽은 건드리지 않았습니다 — 두 곳의 방식이 다른 것은 의도입니다.
-     ✅ **세 패널이 각각 실행버튼을 갖습니다** 〔2026-08-14 · tab-cta-parity-s14〕.
-        이 자리에는 「사전점검·바이어확인 패널에 실행버튼을 넣지 마십시오」가 있었고 사유는
-        「**바로 다음** 「결」 섹션의 주 CTA 와 중복」이었습니다. **재배치로 그 사유가
-        소멸했습니다** — 05 근거 섹션이 사이에 들어와 두 버튼이 한 화면에 함께 놓이지 않습니다.
-        ⚠️ 셋 다 btn-secondary 입니다. 하나라도 btn-primary 로 올리면 주버튼이 3회가 됩니다
-           (시각사양 2 — 주버튼은 히어로와 06 결, 둘뿐입니다).
-        ⚠️ 목적지는 상품이 정합니다: 사전점검·바이어확인 → /precheck(둘 다 「비교해 보기」),
-           기한관리 → app.trops.kr(별도 흐름이라 라벨도 다릅니다).
-        ⛔ 버튼을 다시 빼지 마십시오 — 세 상품이 각자의 문을 갖는 것이 지금 구조입니다.
-     ⚠️ 어느 탭에도 가격을 쓰지 마십시오. */
-  .feats { display: flex; flex-direction: column; gap: 0; }
-
-  /* ── 탭 줄 ────────────────────────────────────────────────────────────────
-     좁은 화면 기준값은 3등분입니다. 1024px 이상에서 아래 미디어쿼리가
-     `1fr 1fr [빈 거터] 1fr` 로 바꿉니다 — 그 트랙 구조가 생애주기 축을 그립니다. */
-  .tabs {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
-    border-bottom: 1px solid var(--line);
-  }
-  /* 탭 하나. 자식은 전부 <span> 입니다 — 인터랙티브 콘텐츠 안의 <p>·<div> 는
-     브라우저가 DOM 을 재구성해 버튼 밖으로 밀어냅니다(옛 .feat-btn 과 같은 규칙). */
-  /* 🔴 **이미 발송된 메일이 `#feat-timeline` 로 들어옵니다**(api/_notify.js
-     `buildTimelinePreviewLink` · test/waiting-room-mail.test.js 가 못질). 그 id 는 기한관리
-     **탭 버튼**에 있고, 탭은 항상 보이므로 앵커가 도착합니다.
-     ⛔ 그 id 를 패널로 옮기지 마십시오 — 선택되지 않은 패널은 [hidden] 이라 앵커가 도착할
-        대상이 없어지고, 링크가 조용히 페이지 맨 위로 떨어집니다.
-     🔴 **scroll-margin-top 은 `.tabs`(줄)가 아니라 `.tab`(버튼)에 있어야 합니다.** 이 속성은
-        **스크롤 목표가 된 요소 자신**에만 적용되고, 앵커 목표는 버튼입니다. 줄에만 걸었을
-        때 실측 도착 위치가 top=0 이었습니다 — 탭이 sticky nav(64px) 뒤에 깔립니다.
-     84px = sticky nav 64 + 여백 20. 페이지의 다른 앵커(#service 등)와 같은 값입니다. */
-  .tab {
-    scroll-margin-top: 84px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-    /* 아래 여백이 큰 이유: 선택 밑줄이 탭 줄의 1px 구획선 위에 겹쳐 앉습니다. */
-    padding: 14px 4px 16px;
-    margin-bottom: -1px;
-    background: transparent;
-    border: 0;
-    border-bottom: 2px solid transparent;
-    cursor: pointer;
-    text-align: left;
-    font: inherit;
-    color: inherit;
-  }
-  /* 🔴 선택 표시에 --accent 를 쓰지 않습니다. 액센트는 「눌러서 어디론가 가는 것」
-     (버튼·링크)의 색이고, 탭 선택은 **현재 위치 표시**입니다. 시각사양 1-3 의
-     판정색 금지와 같은 결의 절제입니다 — 페이지에서 파란 것은 CTA 뿐이어야 합니다. */
-  .tab[aria-selected="true"] { border-bottom-color: var(--ink); }
-  .tab[aria-selected="true"] .feat-title { color: var(--ink); }
-  .tab[aria-selected="false"] .feat-title { color: var(--ink-62); }
-  .tab[aria-selected="false"]:hover .feat-title { color: var(--ink); }
-  .tab[aria-selected="false"]:hover { border-bottom-color: var(--line); }
-
-  /* 생애주기 eyebrow — eyebrow 사양(12.5/700/+0.14em)을 그대로 씁니다.
-     🔴 **이 줄이 「거래 시작 후」 카드의 왼쪽 굵은 선을 대신합니다** 〔2026-08-14 · s12〕.
-        종전에는 접힌 카드에만 보이던 생애주기가 이제 탭 줄에서 **항상** 보입니다.
-        왼쪽 선을 지운 사유는 아래 .feats 주석이 아니라 여기 적어 둡니다 — 지우려는 사람이
-        먼저 보는 자리가 여기이기 때문입니다: 탭은 선택 상태를 스스로 표시하므로, 그 위에
-        굵은 선을 얹으면 s11 에서 걷어낸 혼동(「선택됨처럼 보인다」)이 그대로 되살아납니다.
-     ⚠️ 지우지 마십시오. 지우면 생애주기가 전 2 · 후 1 로 갈린다는 사실이 화면에서 사라집니다. */
-  .feat-meta { display: block; font-size: 12.5px; font-weight: 700; line-height: 1.5; letter-spacing: .14em; color: var(--ink-62); }
-  /* 상품명 정본이 들어가는 자리 — 값은 옛 카드 제목(22px)에서 한 단 내렸습니다.
-     탭 라벨은 세 개가 한 줄에 서므로 22px 이면 좁은 폭에서 매번 줄바꿈합니다. */
-  .feat-title { display: block; font-size: 19px; font-weight: 600; line-height: 1.4; letter-spacing: -0.02em; }
-
-  /* ── 패널 ─────────────────────────────────────────────────────────────────
-     ⚠️ [hidden] 로 감춥니다. 옛 아코디언의 0fr→1fr 슬라이드는 **높이가 변하는** 방식이라
-        탭에는 맞지 않습니다(탭의 요지가 자리 고정입니다). 대신 짧은 페이드로 전환을 알립니다.
-     ⚠️ visibility 가 아니라 [hidden] 인 이유: 감춘 패널의 링크·버튼이 Tab 으로 잡히면
-        보이지 않는 버튼에 포커스가 들어갑니다. [hidden] 은 그것을 함께 막습니다. */
-  .feat-panel { padding-top: 28px; animation: tab-in .18s ease both; }
-  .feat-panel[hidden] { display: none; }
-  @keyframes tab-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-  .feat-panel-pad { display: flex; flex-direction: column; gap: 24px; }
-  .feat-body { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
-  /* 상태줄 — 구 카드의 .card-title(「지금 쓸 수 있습니다」).
-     🔴 이 줄을 지우지 마십시오. 상태줄이 있는 상품과 없는 상품이 생기면 **없는 쪽은 아직
-        못 쓴다는 뜻**이 되어, 걷어낸 「준비 중」 배지가 암시로 되살아납니다.
-     ⚠️ 세 줄의 문면이 서로 다른 것은 상태가 실제로 다르기 때문입니다 — 사전점검은 바로
-        쓰고, 바이어확인은 사전점검 결과화면 안에서만 나오고, 기한관리는 미리보기까지가
-        무로그인입니다. 같게 맞추면 셋 중 둘이 거짓이 됩니다. */
-  .feat-avail {
-    flex: none;
-    display: inline-flex;
-    align-items: center;
-    padding: 5px 12px;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    background: var(--surface);
-    font-size: 12.5px;
-    font-weight: 600;
-    line-height: 1.5;
-    color: var(--ink-62);
-    white-space: nowrap;
-  }
-  /* 한 줄 요약 — 옛 카드 머리의 .feat-sum 입니다. 패널로 내려왔지만 층은 그대로입니다:
-     요약(무엇을 하는가) → .feat-desc(어디까지 · 무엇을 더).
-     ⚠️ 여기에 상세 설명을 쓰지 마십시오. 층이 무너지면 한 상품을 두 번 설명하게 됩니다. */
-  .feat-sum { margin: 0; max-width: 52ch; font-size: 17.5px; line-height: 1.7; color: var(--ink); }
-  .feat-desc { margin: 0; max-width: 52ch; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); }
-  .feat-hook { margin: 0; font-size: 18px; font-weight: 600; line-height: 1.5; letter-spacing: -0.02em; color: var(--ink); }
-  .feat-bullets { display: flex; flex-direction: column; gap: 2px; padding-top: 12px; border-top: 1px solid var(--line); align-self: stretch; }
-  .feat-bullets span { display: block; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); }
-  /* 바이어확인 패널의 연결 안내. 실행버튼 대신 이 한 줄로 사전점검에 잇습니다 —
-     죽은 클릭(누르면 아무 일도 없는 버튼)을 만들지 않으려는 결정입니다(흐름 md §1). */
-  .feat-note { margin: 0; padding-top: 14px; border-top: 1px solid var(--line); font-size: 16.5px; line-height: 1.76; color: var(--ink-64); align-self: stretch; }
-
-  /* ── 캡처 액자 ────────────────────────────────────────────────────────────
-     🔴 **캡처를 「정식 화면」이 아니라 「참고 이미지」로 보이게 합니다** 〔2026-08-14 · s12〕.
-        종전에는 전폭(최대 1104px)이라 실제 서비스 화면처럼 읽혔고, 이미지가 너무 커서
-        아래 캡션이 눈에 들어오지 않았습니다. 세 가지를 함께 씁니다:
-          ① **폭 상한 560px** — 본문 옆에 놓이는 크기라 「본문의 근거 그림」으로 읽힙니다.
-          ② **매트(mat) 액자** — 여백 + 얇은 테두리 + 부드러운 그림자.
-          ③ **캡션을 액자 안으로** — <figure>/<figcaption> 이라 한 덩어리로 읽힙니다.
-     ⛔ 브라우저 창 목업을 **CSS 로** 덧씌우지 마십시오. 세 캡처 전부 신호등 + 주소창이
-        **이미지 파일 안에** 구워져 있습니다 — 또 두르면 크롬이 두 겹이 됩니다.
-     🔄 **세 캡처의 창틀이 같아졌습니다** 〔2026-08-14 · basis-split-s13〕. 탭은 같은 자리에서
-        그림만 바꾸므로, 창틀이 나타났다 사라지면 상품이 셋이 아니라 **화면이 셋**으로
-        보입니다. timeline-map.jpg 는 패널만 잘라 찍혀 있어 창틀이 없었고, 이번에
-        `scripts/frame-shot.py` 로 c03-result.jpg 실측 치수의 창틀을 입혔습니다.
-        네 번째 캡처를 넣을 때도 그 도구를 쓰십시오 — 손으로 맞추면 또 갈라집니다.
-     ⚠️ 폭 상한을 올리지 마십시오. 올리는 순간 ①이 무너져 다시 정식 화면처럼 보입니다.
-     ⚠️ 그림자는 이 페이지에서 드문 표현입니다(다른 곳은 근거 스택의 .basis-doc — 같은 액자입니다).
-        여기서 쓰는 이유는 장식이 아니라 **「떠 있는 참고물」이라는 신호**입니다 —
-        진하게 올리지 마십시오. */
-  .feat-shot {
-    margin: 0;
-    width: 100%;
-    max-width: 560px;
-    padding: 10px;
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    background: var(--surface);
-    box-shadow: 0 10px 28px rgba(15, 23, 42, .10);
-  }
-  .feat-shot img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 4px; }
-  /* 캡션이 액자 안에 앉습니다 — margin 이 아니라 padding 으로 붙여 이미지와의 거리를
-     8px 로 좁게 유지합니다. 지금 문제(캡션이 안 눈에 띈다)의 직접적인 해소입니다. */
-  .feat-cap { margin: 0; padding: 8px 2px 2px; font-size: 12.5px; line-height: 1.6; color: var(--muted); }
-  /* ✅ **TODO-ASSET 해소 — 자리표시자(.feat-map)를 실제 캡처로 갈았습니다**
-     〔2026-08-14 · card-shot-reveal-s11〕.
-     `img/timeline-map.jpg` 는 app.trops.kr 홈(화면 4)을 그대로 찍은 것입니다
-     (로그아웃 상태). 그래서 랜딩이 그리던 예시와 제품 화면이 **같은 그림**이 됐습니다 —
-     이 자리가 지키려던 것이 바로 그것입니다.
-     🔄 **창틀을 입혔습니다** 〔2026-08-14 · basis-split-s13〕. 브라우저 창틀(신호등·주소창
-        `app.trops.kr`)이 붙어 다른 두 캡처와 같은 모양이 됐습니다. 창틀 없는 원본으로
-        되돌리지 마십시오 — 탭을 넘길 때 이 컷만 창틀이 사라집니다.
-     🔄 **담는 범위가 「지도 패널」에서 「홈 대시보드 전체」로 넓어졌습니다**
-        〔2026-08-14 · timeline-shot-dashboard-s15〕. 지도(`world-map-panel.tsx`) 아래
-        건수 카드 3장(기한 지남 / D-7 이내 / 그 밖)까지 들어갑니다. 지도는 「어디로
-        가는가」만 말하고, 이 상품이 파는 「기한이 지났는지·임박했는지」는 그 카드 3장이
-        말하기 때문입니다. 마크업 쪽 주석에 사유를 더 적어 두었습니다.
-
-     🔴 **제품 정책이 캡처 안에 이미 들어 있습니다.** 정본은 trops_a
-        `tests/guardrails/world-map-boundary.test.ts`(D2 · 2026-08-12):
-          ① 2개국만(FR·AE) ② 항로선·애니메이션 0 ③ 예시 점에 건수를 적지 않는다.
-        캡처는 그 화면 자체이므로 세 가지가 자동으로 지켜집니다. 종전에는 랜딩이 이 정책을
-        **손으로 흉내 내야** 했고(.feat-pin 목록), 그래서 제품이 바뀌면 조용히 갈라졌습니다.
-     ⛔ 이 <img> 를 다시 손으로 그린 지도·핀 목록으로 되돌리지 마십시오. 되돌리는 순간
-        ① 제품과 갈라질 통로가 다시 열리고 ② 실제 화면이 아닌 것이 실제 화면처럼 보입니다.
-     ⚠️ 캡처 안의 「이 지도는 예시이며 실제 계약이 아닙니다」 고지는 제품 화면이 스스로
-        싣는 문장입니다. 그 위에 랜딩의 .feat-cap 이 한 겹 더 밝힙니다 — 지우지 마십시오.
-     (걷어낸 규칙: .feat-map · .feat-map-note · .feat-pins · .feat-pin · .feat-pin::before.
-      쓰지 않는 클래스를 남겨 두지 않는 것이 이 파일의 규칙입니다 — 남겨 두면 다음 사람이
-      「이 자리에 무엇을 적으라는 뜻」으로 읽습니다.) */
-
-  /* ---------- 03 경고 — 무보 인용문 단독 (문구 §6 · 정본 C-5) ----------
-     🔴 **근거 블록이 이 섹션에서 나갔습니다** 〔2026-08-14 · basis-split-s13〕.
-        남는 것은 무보 인용문 한 문장과 출처뿐이고, 이 섹션의 성격은 이제 하나입니다 —
-        **경고**. 영국 OGL 출처 · 판단배제 원칙 · 근거 5종 · 캡처는 상품소개 **뒤**의
-        `.basis` 섹션으로 갔습니다(사유는 그쪽 주석).
-        가른 근거: 두 블록은 심박을 **반대 방향**으로 움직입니다 — 인용문은 올리고
-        근거는 내립니다. s10 이 그 어긋남을 헤어라인 + 큰 여백(.trust-detail)으로 한 번
-        덮었는데, **구획선으로 가려야 했다는 것 자체가 두 블록이 한 섹션에 있으면 안
-        된다는 신호**였습니다.
-     ⛔ 근거 블록을 여기로 되돌리지 마십시오. 되돌리는 순간 한 섹션 안에서 톤이 두 번
-        바뀌고, .trust-detail 구획선도 함께 돌아옵니다.
-     ⛔ h2 규칙을 여기에 다시 만들지 마십시오 — 이 섹션에는 제목이 없습니다(제목은
-        `.basis` 가 가져갔습니다). 섹션 이름은 <section> 의 aria-label 이 집니다.
-     페이지 유일한 다크 본문 섹션입니다(푸터와 둘뿐). 다른 섹션을 다크로 만들지 마십시오.
-     ✅ 미결 L-1(신뢰 섹션 숫자 확정)은 2026-08-13 에 닫혔습니다 — 「카운터·숫자 자리는
-        비워둔다」였던 규칙이 무보 인용 문장블록(.stat-line)으로 대체됐습니다. 아래 참조. */
-  /* 🔴 배경을 --surface-dark(#0F172A)에서 아주 살짝 밝혔습니다 〔2026-08-16 · 대표
-     피드백 「배경과 글씨 톤이 너무 강해서 눈 아프다」〕. 전역 토큰(--surface-dark)은
-     건드리지 않았습니다 — 푸터도 같은 토큰을 쓰고 있고, 이번 피드백은 이 섹션(무보
-     인용문, H1 스케일 굵은 흰 글자)에 한정됩니다. .stat-line 색도 같은 이유로 함께
-     낮췄습니다. 대비는 여전히 WCAG AAA 수준입니다 — 완화가 아니라 톤만 낮췄습니다. */
-  .trust { background: #141F36; }
-  .trust-inner { padding-block: clamp(60px, 8vw, 96px); }
-  /* ---------- 통계블록 — 미결 L-1 해소 (2026-08-13 · 흐름 md §1 「재무 리스크 프레임」) ----------
-     이 자리는 정본 C-5 가 「카운터·숫자 자리」로 비워둔 곳이었습니다. 넣을 숫자가 없었기
-     때문입니다. 리서치에서도 정확한 %로 추산된 피해통계는 확인되지 않았고, 대신 한국무역보험공사가
-     명시한 구조적 사실을 그대로 인용해 닫았습니다.
-
-     ⚠️ 숫자 카운트업 애니메이션을 넣지 마십시오. 확인 안 된 숫자를 크게 띄우는 것은
-        「무엇을 근거로 비교하는지 밝힙니다」라는 이 섹션의 목적과 정면으로 어긋납니다.
-        문장형 인용이 이 자리의 최종 형태입니다.
-     ⚠️ 출처 표기(— 한국무역보험공사)를 지우지 마십시오. 출처 없는 단정으로 남습니다.
-        문장이 커진 만큼 출처가 붙어 있어야 한다는 요구도 함께 커집니다.
-
-     🔄 **크기를 H3(28)에서 H1 스케일로 올렸습니다** 〔2026-08-14 · landing-emphasis-s10〕.
-        종전에는 「제일 중요한 한마디」가 섹션 제목(h2 40)보다 작았고, 그 아래 근거 3줄
-        (16.5)과도 한 단계 차이뿐이라 세 덩어리가 거의 같은 무게로 흘렀습니다.
-        값은 `.hero h1` 과 **같은 것을 그대로 씁니다** — 신규 타이포 값을 만들지 않는다는
-        원칙은 그대로이고(시각사양 3-1), H1 스케일이라 clamp 를 쓰는 것도 3-4 에 맞습니다.
-        폭 30ch → 20ch: 큰 글자에서 30ch 는 한 줄이 너무 길어져 「덩어리」가 되지 않습니다.
-     ⚠️ 여전히 **숫자가 아니라 문장**입니다. 위 ⚠️(확인 안 된 숫자를 크게 띄우지 않는다)는
-        그대로 삽니다 — 커진 것은 출처가 밝혀진 인용문 한 문장뿐입니다.
-     ⚠️ `class="h3"` 를 다시 붙이지 마십시오. 여기서 크기를 전부 덮어쓰므로 남겨 두면
-        다음 사람이 이 문장을 H3 계층으로 읽습니다. */
-  .stat-line {
-    margin: 0 0 14px;
-    max-width: 20ch;
-    font-size: clamp(2.25rem, 4.5vw, 3.5rem);
-    line-height: 1.30;
-    letter-spacing: -0.035em;
-    font-weight: 700;
-    /* 🔴 순백(--d-ink-primary #FFFFFF) 대신 살짝 톤다운 〔2026-08-16 · 대표 피드백〕.
-       위 .trust 배경 주석과 같은 조치입니다 — 대비는 여전히 넉넉합니다(AAA 이상). */
-    color: rgba(255, 255, 255, .9);
-  }
-  .stat-src { margin: 0; font-size: 12.5px; line-height: 1.7; color: var(--d-ink-tertiary); }
-  /* ---------- 05 근거 — 영국 OGL · 판단배제 · 근거 5종 · 캡처 ----------
-     🔴 **신설 섹션입니다** 〔2026-08-14 · basis-split-s13〕. 종전에는 03 신뢰(다크) 안의
-        `.trust-detail` 묶음이었고, 그 묶음은 **상품소개보다 앞**에 있었습니다.
-
-     왜 상품 **뒤**인가 — 「비교」가 가리킬 대상이 앞에 있어야 하기 때문입니다:
-        탭1 요약  「… 공개된 서식과 하나씩 **비교**해서 다른 부분을 표시해 드립니다.」
-        여기 h2   「무엇을 근거로 **비교**하는지 밝힙니다.」
-     같은 낱말이 주장과 근거로 이어집니다. 종전 순서에서는 읽는 사람이 「무슨 비교?」를
-     안은 채 근거 3줄과 캡처를 지나야 했습니다.
-     ⛔ 상품소개 앞으로 되돌리지 마십시오 — 그 결손이 그대로 돌아옵니다.
-     ⛔ 리드 문장을 새로 붙이지 마십시오. 앞 섹션의 마지막 문장이 이미 리드입니다.
-
-     배경은 --surface 이고 .sec-surface 가 집니다(여기에 background 를 직접 적지
-     마십시오). 이 값이라야 상품소개(--bg) → 여기(--surface) → 결(--bg) 로 교차합니다.
-     ⚠️ 이 섹션이 생기면서 「상품소개 → 결 CTA 는 배경을 잇는다」는 s9 의 유일한 연속
-        쌍이 소멸했습니다. 지금 페이지는 배경이 **완전 교차**입니다
-        (test/landing-order-s9.test.js O7 이 셉니다). */
-  .basis { border-top: 1px solid var(--line); }
-  .basis-inner { padding-block: clamp(60px, 8vw, 96px); }
-  /* 크기·굵기는 다른 섹션 h2 와 같은 값입니다(신규 타이포 값을 만들지 않습니다 —
-     시각사양 3-1). 색만 다크 전용(--d-ink-primary)에서 본문 잉크로 돌아왔습니다. */
-  .basis h2 {
-    margin: 0 0 clamp(28px, 3.5vw, 40px);
-    font-size: clamp(1.75rem, 3vw, 2.5rem);
-    line-height: 1.28;
-    letter-spacing: -0.030em;
-    font-weight: 700;
-    max-width: 30ch;
-  }
-
-  /* ---------- 스크롤 진입 등장 (2026-08-13 · 흐름 md §1 「다이나믹함」 1번) ----------
-     md 는 이 자리에 「숫자 0→목표값 카운트업」을 적었지만, 이 블록은 숫자가 아니라
-     문장입니다(위 ⚠️ 참조 — 확인 안 된 숫자를 크게 띄우지 않기로 한 결정). 그래서
-     같은 「스크롤 진입 시 등장」 요구를 **문장 페이드인 + 슬라이드업**으로 대체합니다.
-
-     🔴 **초기 숨김을 CSS 가 단독으로 하지 않습니다.** .reveal 만으로 opacity:0 을 걸면
-        JS 가 죽거나 IntersectionObserver 가 없는 브라우저에서 **이 문장이 영구히 보이지
-        않습니다** — 하필 페이지에서 가장 중요한 인용문 하나가 사라집니다. 그래서 숨김은
-        JS 가 .reveal-armed 를 <html> 에 붙인 뒤에만 적용됩니다(no-JS = 항상 보임).
-     ⚠️ 이 두 규칙을 하나로 합치지 마십시오. 합치는 순간 위 안전장치가 사라집니다.
-     ⚠️ 다른 섹션에 .reveal 을 남발하지 마십시오. 페이지 전체가 스크롤마다 움직이면
-        「차분하게 근거를 밝힌다」는 이 사이트의 태도와 어긋납니다 — 이 한 블록만입니다. */
-  .reveal-armed .reveal {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  .reveal-armed .reveal.is-in {
-    opacity: 1;
-    transform: none;
-    transition: opacity .42s ease-out, transform .42s ease-out;
-  }
-  /* 출처는 인용문보다 한 박자 늦게 옵니다 — 문장을 먼저 읽게 하려는 순서입니다. */
-  .reveal-armed .reveal.is-in.reveal-late { transition-delay: .14s; }
-  /* 좁은 화면 기준값은 세로 스택입니다 — 근거 3줄을 읽고 나서 그 화면을 봅니다.
-     1024px 이상에서 아래 미디어쿼리가 탭 패널(.feat-panel-pad)과 **같은 두 열**로
-     바꿉니다. 두 섹션이 이웃이라 열 구조가 다르면 페이지에 격자가 두 종류가 됩니다. */
-  .basis-body { display: flex; flex-direction: column; gap: clamp(28px, 3.5vw, 40px); }
-  .basis-list { display: flex; flex-direction: column; gap: 10px; }
-  /* 🔄 본문(16.5)에서 14.5 로 한 단계 내렸습니다 〔2026-08-14 · landing-emphasis-s10〕.
-     한마디(무보 인용문)와 근거의 무게가 같으면 위계가 안 보입니다.
-     ⚠️ 더 내리지 마십시오 — 12.5(캡션 단계)로 내리면 근거가 각주처럼 읽혀서, 「근거를
-        밝힌다」는 이 섹션의 목적이 약해집니다.
-     ⚠️ 이 3줄을 <details> 로 접지 마십시오. 「비교 항목은 저희가 만들지 않습니다」는 이
-        페이지의 차별점이라, 접으면 기본 화면에서 사라집니다. 작게까지가 전부입니다. */
-  .basis-list p { margin: 0; font-size: 14.5px; line-height: 1.75; color: var(--ink-64); }
-  .basis-list p strong { color: var(--ink); }
-  /* 근거 캡처의 액자 — 상품소개 탭의 `.feat-shot` 과 **같은 액자**입니다.
-     landing-emphasis-s10 E10-a 가 「캡처는 정식 화면이 아니라 **참고 이미지**로 보인다」를
-     못질하고 있고(폭 상한 · 매트 여백 · 테두리 · 그림자 · 액자 안 캡션), 근거 섹션의
-     캡처도 성격이 같으므로 같은 액자를 씁니다.
-     🔴 클래스를 따로 두는 이유는 **검사가 탭 캡션을 정확히 3개로 세기 때문**입니다
-        (E10-a). `.feat-cap` 을 여기에 쓰면 4개가 되어 그 계약이 깨집니다.
-     배경만 다릅니다 — `.feat-shot` 은 --bg 섹션 위라 --surface, 여기는 --surface 섹션
-     위라 --bg 입니다. 액자가 배경에 묻으면 「화면의 일부」로 읽힙니다.
-     ⛔ 폭 상한을 올리지 마십시오. 올리는 순간 다시 정식 서비스 화면처럼 보입니다.
-     ⛔ CSS 로 브라우저 창 목업을 덧씌우지 마십시오 — 캡처 파일 안에 이미 창틀(신호등·
-        주소창)이 구워져 있어 크롬이 두 겹이 됩니다. 창틀은 `scripts/frame-shot.py` 가
-        **이미지에** 그립니다.
-     (걷어낸 규칙: .shot · .shot-stack · .shot-second · .shot-caption. 겹침 콜라주는
-      2026-08-14 에 단일 컷으로 되돌아가며 죽었고, 남은 `.shot` 도 이 섹션이 밝은
-      배경으로 옮겨오면서 쓰이지 않습니다 — 쓰지 않는 클래스를 남겨 두지 않는 것이 이
-      파일의 규칙입니다. en.html 은 아직 옛 콜라주를 쓰므로 그쪽은 그대로입니다.) */
-  /* ── 근거 스택 — 공식 근거 3장을 겹쳐 놓은 «하나의» 오브젝트 ────────────────
-     🔄 **단일 OGL 컷 → 3장 스택** 〔2026-08-24 · 대표 지시〕. 한 장만 크게 보이던
-        때는 이 서비스가 **영국 문서 중심**으로 읽혔습니다. 실제로 확인하는 것은 왼쪽
-        `.basis-src` 의 세 축(규정 근거 · 관세 근거 · 문서 기준)이고, 오른쪽 그림이
-        그 셋과 하나씩 짝을 이뤄야 「여러 정부 공식 근거를 본다」가 즉시 읽힙니다.
-        ⚠️ 그래서 **순서가 왼쪽 세 축과 대응합니다** — 앞장 eCFR(규정 근거) ·
-           중간 HTS(관세 근거) · 뒷장 OGL(문서 기준). 순서를 바꾸지 마십시오.
-
-     🔴 **카드 3장을 나란히 놓지 않습니다.** 나란히 놓으면 「기능 3개」로 읽히고,
-        겹쳐 놓아야 「근거 묶음」으로 읽힙니다. 겹침은 80~90% 이고, 뒷장은 기관명과
-        제목이 있는 **상단부만** 나옵니다(그것이 뒷장이 해야 하는 일의 전부입니다).
-
-     ⛔ 장식을 넣지 마십시오 — 테이프·핀·종이 질감·폴라로이드. 이것은 사진이 아니라
-        **근거 묶음(Evidence stack)** 입니다. 회전은 1도 안쪽이고, 그보다 크면
-        장난스러워집니다(이 페이지의 다른 어디에도 기울어진 요소가 없습니다).
-     ⚠️ 앞장의 그림자만 종전 단일 컷(`.basis-shot`)의 값을 그대로 씁니다 —
-        뒤로 갈수록 옅어지는 것이 깊이 표현의 전부입니다. */
-  .basis-stack {
-    position: relative;
-    margin: 0;
-    width: 100%;
-    max-width: 560px;
-    /* 🔴 **높이를 비율로 고정합니다** — 자식이 전부 absolute 라 부모가 높이를 얻지
-       못합니다. 값은 「앞장 높이 + 뒷장 둘이 위로 나온 만큼」입니다.
-       ⚠️ 아래 top·width 를 고치면 이 비율도 함께 고쳐야 합니다. 안 고치면 앞장
-          아래가 잘리거나(비율이 작을 때) 아래에 빈 여백이 남습니다(클 때).
-       🔄 14/11 → 4/3 〔2026-08-24 2차〕. 앞장을 줄이면서 상자도 **낮아졌습니다**
-          (440 → 420px). 폭은 그대로라 왼쪽 텍스트 칸과 좌우 비율이 안 바뀝니다. */
-    aspect-ratio: 4 / 3;
-  }
-  /* 액자는 셋이 같습니다 — 종전 단일 컷과 같은 결(얇은 테두리 + 작은 라운드). */
-  .basis-doc {
-    position: absolute;
-    display: block;
-    padding: 8px;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    background: var(--bg);
-  }
-  .basis-doc img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 3px; }
-  /* 뒤 → 앞. 앞으로 올수록 그림자가 짙습니다.
-     ⚠️ `left` 가 갈리는 것이 「어느 쪽으로 삐져나오는가」입니다 — 뒷장 OGL 은 왼쪽,
-        중간 HTS 는 오른쪽입니다. 둘을 같은 쪽으로 몰면 한 장이 완전히 가려집니다.
-
-     🔄 **2차 조정** 〔2026-08-24 · 대표 지시「앞장이 너무 커서 뒤 두 장이 배경 장식처럼
-        보인다」〕. 세 값을 함께 움직였습니다:
-          앞장 폭   88% → 76%  (높이 334 → 286px · 약 14% 축소)
-          좌우 노출 OGL 왼쪽 29 → 45px · HTS 오른쪽 23 → 89px
-          상단 띠   OGL 49 → 55px · HTS 50 → 71px
-        🔴 **식별은 「상단 띠」가 합니다.** 두 뒷장 모두 기관명·제목이 이미지 맨 위에
-           있어서, 좌우로만 빼면 본문 옆구리만 보이고 정작 이름은 안 보입니다.
-           그래서 위로도 함께 벌렸습니다 — 좌우 노출은 「여기 다른 문서가 있다」를,
-           상단 띠는 「그게 무엇인가」를 말합니다. 둘 중 하나만 키우지 마십시오.
-        ⚠️ 겹침이 85%·82% → **78%·69%** 로 얕아졌습니다. 종전 80~90% 기준보다 얕은 것이
-           **의도**입니다(뒤 두 장이 배경으로 읽히지 않게 하는 것이 이번 조정의 목적).
-
-     🔄 **회전을 걷었습니다** 〔같은 지시 「위치와 겹침만으로 차분한 document stack」〕.
-        ⛔ rotate 를 다시 넣지 마십시오 — 이 페이지의 다른 어디에도 기울어진 요소가
-           없고, 이 블록은 사진이 아니라 근거 묶음입니다. 깊이는 **위치 · 겹침 ·
-           그림자 세기** 셋으로만 만듭니다. */
-  .basis-doc-back  { z-index: 1; left: 0;   top: 0;   width: 78%; box-shadow: 0 2px 8px rgba(15, 23, 42, .05); }
-  .basis-doc-mid   { z-index: 2; left: 21%; top: 13%; width: 78%; box-shadow: 0 5px 16px rgba(15, 23, 42, .07); }
-  .basis-doc-front { z-index: 3; left: 8%;  top: 30%; width: 76%; box-shadow: 0 10px 28px rgba(15, 23, 42, .10); }
-
-  /* 🔴 **좁은 화면에서는 옆으로 벌리지 않고 위아래로만 겹칩니다** 〔2026-08-24〕.
-     데스크톱 값(좌우 오프셋 + 폭 80/88%)을 그대로 쓰면 상자가 좁아진 만큼 카드도 같이
-     좁아져서, 기관명·제목이 **읽을 수 없는 크기**가 됩니다(대표 지시: 「각 문서 제목이나
-     기관명이 최소한 식별 가능한 수준을 유지」).
-     그래서 좁은 화면에서는 좌우 오프셋을 거의 걷고 카드를 상자 폭까지 키웁니다 —
-     겹침(80% 안팎)은 그대로이고, 스택은 **위에서 내려다본 종이 더미**처럼 보입니다.
-     ⚠️ 폭이 커지면 카드 높이도 커지므로 상자 비율을 함께 바꿉니다(14/11 → 10/9).
-        한쪽만 고치면 앞장 아래가 잘립니다. */
-  @media (max-width: 768px) {
-    /* ⚠️ 12/11 은 「앞장이 상자 안에 들어가는」 최소 비율에서 조금 더 준 값입니다 —
-       회전(0.35도)이 만드는 바운딩 박스 몇 px 까지 넣은 것입니다. 10/9 로 줄이면
-       앞장 아래가 4px 넘칩니다(실측). */
-    .basis-stack { aspect-ratio: 12 / 11; }
-    .basis-doc-back  { left: 0;  top: 0;   width: 92%; }
-    .basis-doc-mid   { left: 8%; top: 13%; width: 92%; }
-    .basis-doc-front { left: 6%; top: 30%; width: 88%; }
-  }
-  .basis-cap { margin: 0; padding: 8px 2px 2px; font-size: 12.5px; line-height: 1.6; color: var(--muted); }
-
-  /* ---------- 06 결: 사전점검 시작하기 (흐름 md §1 시각층매핑 「결」) ----------
-     감정선 기(히어로) - 승(경험담) - 전(경고 · 상품 · 근거) 다음의 행동 자리입니다.
-     전의 마지막 조각 바로 뒤에 행동이 와야 감정선이 끊기지 않으므로, 감정선과 무관한
-     기능섹션을 사이에 두지 마십시오.
-
-     🔄 **위쪽 이웃이 상품소개에서 05 근거(--surface)로 바뀌었습니다**
-        〔2026-08-14 · basis-split-s13〕. 배경(--bg)은 그대로입니다.
-        종전에는 상품소개와 같은 --bg 로 **이어 붙여** 「상품 → 행동」을 한 덩어리로 읽히게
-        했습니다(s9). 그 사이에 들어온 05 근거는 **기능섹션이 아니라 「전」의 마지막 조각**
-        이므로 md §1 의 원래 요구(감정선을 기능섹션으로 끊지 않는다)는 그대로 지켜지고,
-        배경만 교차하게 됩니다.
-        ⚠️ 페이지에서 배경이 연속인 이웃은 이제 **하나도 없습니다.** 새로 만들지 마십시오 —
-           test/landing-order-s9.test.js O7 이 이것을 셉니다.
-
-     ⚠️ **주버튼**(btn-primary)은 페이지에서 히어로와 여기 두 번뿐입니다
-        (시각사양 2 「페이지당 최대 2회」). 마감 CTA 에 주버튼을 다시 넣지 마십시오.
-        🔄 상품 탭 3개에도 2026-08-14 부터 실행버튼이 있지만 전부 **보조**(btn-secondary)라
-           이 규칙과 무관합니다. HOW 하단은 텍스트로 강등돼 있습니다.
-        ⚠️ 「비교해 보기」라는 **라벨**은 페이지에 여러 번 나옵니다(히어로 · 탭1 · 탭2 ·
-           HOW 하단 · 여기). 의도입니다 — 전부 /precheck 로 가고, 같은 곳으로 가는 문은
-           같은 말을 씁니다. 무게만 자리에 따라 다릅니다(주 > 보조 > 텍스트).
-     ⚠️ border-top 을 붙이지 마십시오. 위가 --surface 라 경계가 이미 있고, 선까지 그으면
-        경계가 두 겹이 됩니다(E8 이 이것을 봅니다). */
-  /* 중앙정렬은 .sec-center 가 집니다(위 「정렬 규칙」 참조).
-     🔄 **위쪽 여백만 기준값(60~96)보다 한 단계 키웠습니다** 〔2026-08-14 · landing-emphasis-s10〕.
-        키우기 전에는 좌측정렬 목록이 끝나자마자 가운데 블록이 시작돼, 정렬이 바뀐 것이
-        「의도」가 아니라 「튄 것」으로 읽혔습니다. 배경 교차가 생긴 지금도 여백은 그대로
-        둡니다 — 이 여백이 지고 있던 것은 배경 대비가 아니라 **정렬 전환의 완충**입니다.
-     ⚠️ 아래쪽은 기준값 그대로입니다 — 뒤따르는 안심문구와는 배경이 갈리므로 더 벌릴
-        이유가 없습니다. 위아래를 같이 키우면 페이지에 빈 구멍이 하나 생깁니다.
-     ⛔ 배경이나 border-top 을 붙이지 마십시오 — E8 검사에 걸립니다. */
-  .act-inner {
-    padding-block: clamp(88px, 11vw, 136px) clamp(60px, 8vw, 96px);
-    gap: 20px;
-  }
-  .act h2 {
-    margin: 0;
-    font-size: clamp(1.75rem, 3vw, 2.5rem);
-    line-height: 1.28;
-    letter-spacing: -0.030em;
-    font-weight: 700;
-  }
-  .act-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 12px; }
-  .act-note { margin: 0; font-size: 12.5px; line-height: 1.7; color: var(--ink-62); }
-
-  /* ---------- 08 QnA (문구 §8 · 정본 C-3) ----------
-     3묶음 14문항. 기본 전부 접힘. 여러 개 동시 펼침 허용 —
-     하나만 열리는 방식은 비교가 안 되므로 금지입니다. */
-  /* 🔄 배경을 --surface 에서 --bg 로 바꿨습니다 〔2026-08-14 · 재배치〕. 이웃이
-     로드맵(--surface) → FAQ → 마감CTA(--surface) 로 바뀌어, 여기가 --bg 여야 교차합니다. */
-  .qna { border-top: 1px solid var(--line); }
-  .qna-inner { padding-block: clamp(60px, 8vw, 96px); }
-  .qna h2 {
-    margin: 0 0 clamp(32px, 4vw, 48px);
-    font-size: clamp(1.75rem, 3vw, 2.5rem);
-    line-height: 1.28;
-    letter-spacing: -0.030em;
-    font-weight: 700;
-  }
-  .qgroups { display: flex; flex-direction: column; gap: clamp(32px, 4vw, 40px); }
-  .qgroup > .eyebrow-quiet { display: block; margin-bottom: 12px; }
-  .qitem { border-top: 1px solid var(--line); }
-  .qbtn {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 20px 0;
-    background: transparent;
-    border: 0;
-    cursor: pointer;
-    text-align: left;
-    font: inherit;
-    color: inherit;
-  }
-  .qbtn > span:first-child { font-size: 20px; font-weight: 600; line-height: 1.35; letter-spacing: -0.02em; }
-  /* 셰브론에 액센트를 쓰지 않습니다 (C-3) */
-  .qchev {
-    flex: none;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--muted);
-    transition: transform .14s ease;
-  }
-  .qitem[data-open="1"] .qchev { transform: rotate(180deg); }
-  .qans { padding: 0 0 24px; display: flex; flex-direction: column; gap: 6px; max-width: 720px; }
-  .qitem[data-open="0"] .qans { display: none; }
-  .qans p { margin: 0; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); }
-  .qans a { text-decoration: underline; text-underline-offset: 3px; }
-
-  /* ---------- 10 마감 CTA (문구 §9 · 정본 §2 10번) ----------
-     버튼 페어는 히어로와 동일합니다. 리드 문장을 추가하지 마십시오 —
-     안심 문구(03)와 톤이 겹칩니다. */
-  .close-cta { border-top: 1px solid var(--line); }
-  /* 중앙정렬은 .sec-center 가 집니다(위 「정렬 규칙」 참조) — 여기는 여백만 잡습니다. */
-  .close-cta-inner { padding-block: clamp(60px, 8vw, 96px); gap: 20px; }
-  .close-cta h2 {
-    margin: 0;
-    font-size: clamp(1.75rem, 3vw, 2.5rem);
-    line-height: 1.28;
-    letter-spacing: -0.030em;
-    font-weight: 700;
-  }
-  .close-cta-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 12px; }
-  /* 🔴 [문의하기] 버튼만 배경을 --bg(흰색)로 올립니다 〔2026-08-16 · 대표 피드백
-     「버튼 내부 화이트로」〕. 이 섹션(.close-cta)이 .sec-surface 라 --surface 배경
-     인데, .btn-secondary 기본값(background: transparent)을 그대로 두면 버튼이
-     배경에 묻혀 떠 보이지 않습니다 — .story-side 가 같은 이유로 --bg 를 쓰는 것과
-     같은 처리입니다. .btn-secondary 전역 규칙은 건드리지 않고 이 자리만 덮습니다. */
-  .close-cta-row .btn-secondary { background: var(--bg); }
-  /* 🔴 .close-cta-kotra 는 대표 수정안(2026-08-16 3차)으로 KOTRA 신뢰신호 문장을
-     삭제하면서 함께 걷었습니다. */
-  .close-cta-note { margin: 0; font-size: 12.5px; line-height: 1.7; color: var(--ink-62); }
-
-  /* ---------- 11 기관 안내 (문구 §11 · 정본 C-4) ----------
-     ⚠️ 로고 금지(제휴 오인). 텍스트만.
-     ⚠️ 순번·평점·「추천순」 금지 — 번호를 붙이면 순위로 읽힙니다.
-     ⚠️ 정렬은 기관 유형순으로 고정(공공기관→협회→중기부, 확정본 v3.1 §11).
-        클릭 추적으로 순서를 바꾸지 마십시오.
-     2열 그리드를 쓰지 않습니다 — 5개를 2열로 나누면 읽는 순서가 갈려 순위처럼 보입니다. */
-  .orgs-sec { border-top: 1px solid var(--line); }
-  /* 🔴 감춤 〔2026-08-24〕 — UA 기본값에 기대지 않고 못박습니다(.feat-panel[hidden] 과 같은 방식). */
-  .orgs-sec[hidden] { display: none; }
-  .orgs-inner { padding-block: clamp(60px, 8vw, 96px); }
-  .orgs-sec h2 {
-    margin: 0;
-    font-size: clamp(1.75rem, 3vw, 2.5rem);
-    line-height: 1.28;
-    letter-spacing: -0.030em;
-    font-weight: 700;
-    max-width: 24ch;
-  }
-  .orgs { margin: 28px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px; }
-  .orgs li { font-size: 16.5px; line-height: 1.76; color: var(--ink-64); }
-  /* 🔄 신설 〔2026-08-23 · B2-6〕 — §5-7 이 제목과 다음 문장을 나눴습니다. */
-  /* ══ B3-a 신설 〔2026-08-23〕 — 국문 index.html 과 같은 규칙입니다. ═══════ */
-  .basis-src { margin: 20px 0 0; display: flex; flex-direction: column; gap: 18px; }
-  .basis-src > div { display: grid; gap: 2px 16px; }
-  .basis-src dt { font-size: 13.5px; font-weight: 700; letter-spacing: -0.01em; color: var(--ink); }
-  .basis-src dd { margin: 0; font-size: 14.5px; line-height: 1.75; color: var(--ink-64); }
-  .basis-note { display: block; margin-top: 4px; font-size: 12.5px; line-height: 1.7; color: var(--muted); }
-  /* 🔴 **끊기면 안 되는 고유명사** 〔2026-08-24〕. body 에 `word-break: keep-all` 이 걸려
-     있어 한글 낱말은 이미 통째로 움직이지만, **라틴 문자 고유명사는 그 규칙 밖**이라
-     띄어쓰기마다 끊깁니다 — 「Open Government / Licence v3.0」처럼 이름 한가운데가
-     갈리면 한글 문장 안에서 그것이 하나의 이름이라는 것이 안 읽힙니다.
-     ⚠️ 글자는 한 자도 바뀌지 않습니다. 어디서 줄이 갈리는지만 정합니다.
-     ⛔ 긴 문장에 쓰지 마십시오 — 칸을 넘치면 그때는 가로 스크롤이 생깁니다.
-        이름 하나(20자 안팎)에만 씁니다. */
-  .nobr { white-space: nowrap; }
-  /* 🔴 근거 섹션의 맺음. ⛔ 이 뒤에 다른 본문을 붙이지 마십시오. */
-  .basis-last { margin: 24px 0 0; font-size: 14.5px; line-height: 1.75; color: var(--ink-70); }
-  .pricing-cols { margin: 24px 0 0; display: grid; gap: 28px; }
-  .pricing-head { margin: 0 0 10px; font-size: 15px; font-weight: 700; letter-spacing: -0.01em; color: var(--ink); }
-  .pricing-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 15px; line-height: 1.75; color: var(--ink-64); }
-  .pricing-note { color: var(--muted); font-size: 13.5px; }
-  .act-body { margin: 18px 0 0; font-size: 16px; line-height: 1.76; color: var(--ink-64); }
-  .act-legal { margin: 18px 0 0; font-size: 12.5px; line-height: 1.7; color: var(--muted); }
-
-  .orgs-lead { margin: 10px 0 0; font-size: 16.5px; line-height: 1.76; color: var(--ink-64); }
-  .orgs-note { margin: 28px 0 0; font-size: 12.5px; line-height: 1.7; color: var(--muted); }
-
-  /* 신설 섹션 헤딩의 줄바꿈 — 769px 이상에서만 balance 를 씁니다.
-     넓은 화면: balance 가 줄 길이를 고르게 잡아 「한 번.」 같은 고아 줄을 막습니다.
-     좁은 화면: balance 는 줄 길이를 맞추려고 「거래를 … 전에 한 / 번,」처럼 어절을
-       쪼갭니다. body 에 이미 걸린 text-wrap:pretty 가 쉼표 뒤에서 끊어 주므로
-       (「…전에 한 번, / 시작한 후에 한 번.」) 모바일은 상속값을 그대로 씁니다.
-     ⚠️ 문구는 손대지 않았습니다 — 줄바꿈만 지정합니다 (정본 §0 · §8). */
-  @media (min-width: 769px) {
-    .assure h2, .cards-sec h2, .basis h2,
-    .qna h2, .close-cta h2, .orgs-sec h2,
-    .act h2,
-    /* 신뢰 인용문은 <p> 지만 2026-08-14 부터 헤드라인 크기라 같은 처리를 받습니다 —
-       큰 글자에서 마지막 줄에 한 어절만 남으면 덩어리가 깨집니다. */
-    .trust .stat-line { text-wrap: balance; }
-  }
-
-  /* ---------- Responsive ---------- */
-  @media (max-width: 900px) {
-    .flow-row { grid-template-columns: 1fr; }
-  }
-  @media (max-width: 640px) {
-    .nav-links { display: none; }
-    .rm-row { grid-template-columns: 1fr; gap: 6px; padding: 22px 2px; }
-    .rm-meta { grid-column: auto; }
-    .cta-row { flex-direction: column; align-items: stretch; gap: 12px; }
-    .cta-row .btn { width: 100%; }
-  }
-
-  /* 정본 §5 레이아웃 전환 — 768px 미만 */
-  @media (max-width: 768px) {
-    /* 상품 탭: 라벨이 세로로 쌓이는 폭이라(위 768px 미만 .tabs 규칙) 상품명을 한 단 내려
-       탭 하나의 높이를 줄입니다.
-       ⚠️ 상태줄(.feat-avail)을 숨기지 마십시오 — 없는 상품이 생기면 「그 상품은 아직 못
-          쓴다」는 암시가 되살아납니다(.feat-avail 주석 참조). */
-    .feat-title { font-size: 17.5px; }
-    .feat-panel-pad .btn { width: 100%; }
-    /* QnA: 질문이 길어 셰브론과 같은 줄에서 눌리므로 위 정렬로 바꿉니다 */
-    .qbtn { align-items: flex-start; gap: 12px; padding: 16px 0; }
-    .qbtn > span:first-child { font-size: 18px; }
-    .qans { padding-bottom: 18px; }
-    .assure-inner { gap: 22px; }
-    .close-cta-row { flex-direction: column; align-items: stretch; width: 100%; }
-    .close-cta-row .btn { width: 100%; }
-    /* 결 섹션도 마감 CTA 와 같은 규칙 — 버튼이 화면폭을 채웁니다 */
-    .act-row { flex-direction: column; align-items: stretch; width: 100%; }
-    .act-row .btn { width: 100%; }
-    .stories { gap: 28px; }
-    /* 탭: 좁은 화면에서는 라벨이 3개 한 줄에 서기 벅차므로 세로로 쌓습니다.
-       ⚠️ 세로로 쌓아도 role=tablist 는 그대로입니다 — 배치가 바뀔 뿐 관계는 같습니다. */
-    .tabs { grid-template-columns: 1fr; gap: 0; }
-    .tab { padding: 14px 2px; border-bottom: 1px solid var(--line); margin-bottom: 0; }
-    .tab[aria-selected="true"] { border-bottom-width: 2px; }
-    .feat-panel { padding-top: 22px; }
-  }
-
-  /* ---------- 상품소개 탭 줄의 생애주기 축 〔2026-08-14 · cards-tabs-s12〕 ----------
-     1024px 인 이유: 1200 컨테이너·좌우 여백 48 기준으로 탭 하나가 **290px 이상**이어야
-     생애주기 eyebrow 와 19px 상품명이 각각 한 줄에 들어갑니다. 769px 에서 켜면 탭이
-     215px 라 「사전점검에 포함되어 있습니다」류가 줄바꿈하며 세 탭의 밑선이 어긋납니다.
-     ⚠️ 이 값을 769 나 900 으로 내리지 마십시오. 내리려면 탭 라벨부터 다시 재십시오. */
-  @media (min-width: 1024px) {
-    /* 1·2열 = 거래 시작 전(사전점검·바이어확인) · 3열 = **빈 거터** · 4열 = 거래 시작 후.
-       🔴 **이 트랙 구조가 옛 「기한관리 왼쪽 굵은 선」의 일을 대신합니다** — 탭 2 와 3
-          사이만 넓어져 「앞 2개 / 뒤 1개」가 눈에 들어옵니다. 카드에서 탭으로 옮겨오면서
-          유일하게 그대로 가져온 것이 이 구조입니다.
-       ⚠️ 빈 <div> 를 DOM 에 넣어 거터를 만들지 마십시오 — 읽어주는 도구에 뜻 없는 요소가
-          하나 잡히고, role=tablist 안에 tab 아닌 자식이 생겨 탭 관계가 깨집니다.
-          트랙은 화면에만 있고 문서에는 없습니다. */
-    .tabs {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) clamp(8px, 1.5vw, 24px) minmax(0, 1fr);
-      gap: 16px;
-    }
-    /* 기한관리 탭은 거터 건너 4열입니다(자동 배치면 거터 트랙에 들어갑니다). */
-    .tabs > [role="tab"]:last-child { grid-column: 4; }
-
-    /* 패널은 본문 왼쪽 · 캡처 오른쪽. 두 열로 나누면 패널이 **낮아져서** 전환할 때
-       세로 이동이 더 줄고(탭의 요지), 캡처가 본문 옆 「참고 그림」 자리에 앉습니다.
-       ⚠️ 캡처를 왼쪽으로 옮기지 마십시오 — 읽는 순서가 그림부터가 되면 상태줄·요약이
-          그림의 캡션처럼 읽힙니다. */
-    .pricing-cols { grid-template-columns: 1fr 1fr; gap: 48px; }
-    .basis-src > div { grid-template-columns: 88px minmax(0, 1fr); }
-
-    .feat-panel-pad {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 560px);
-      gap: 48px;
-      align-items: start;
-    }
-    /* 🔄 신설 〔2026-08-23 · B2〕 — 예시 화면이 없는 패널을 1열로 폅니다(국문과 같음). */
-    .feat-panel-pad.is-solo { grid-template-columns: minmax(0, 1fr); }
-    /* 근거 섹션도 **같은 두 열**입니다 〔2026-08-14 · basis-split-s13〕. 바로 위 이웃과
-       열 구조가 다르면 페이지에 격자가 두 종류로 보입니다. 값을 따로 두지 않는 이유도
-       같습니다 — 한쪽만 고치면 두 섹션이 조용히 어긋납니다.
-       🔄 align-items: start → center 〔2026-08-16 · 대표 피드백 「균형감」〕. 텍스트가
-       두 문장으로 줄면서 이미지보다 훨씬 짧아져, 위쪽 정렬이면 왼쪽 칸 아래가 빈
-       채로 남습니다. 세로 중앙 정렬로 두 칸의 무게중심을 맞춥니다.
-       🔴 **행을 둘로 나눴습니다** 〔2026-08-16 · 대표 재지적 「테이블이 나뉘어 보인다」〕.
-          align-items:center 하나만으로는 안 풀렸습니다 — 이 grid 에서 텍스트(.basis-list)
-          와 이미지(.basis-shot)를 **같은 행**에 두면, 그 행의 높이는 더 큰 쪽(이미지+
-          캡션)을 따라가고, 텍스트는 캡션까지 포함한 높이의 중앙에 맞춰집니다. 캡션
-          (~70px)만큼 중심이 아래로 밀려서, 사람 눈에는 이미지 자체의 중앙보다 텍스트가
-          낮게 보이고 — 위 여백은 크고 아래 여백은 작아 「두 칸이 서로 다른 표처럼
-          갈라져 보인다」는 인상을 줍니다.
-          그래서 캡션을 **별도 2행**으로 뺐습니다 — 1행 = 텍스트 | 이미지, 2행 = (빈칸) |
-          캡션. 이제 1행의 높이는 텍스트와 이미지만 비교해 정해지고(이미지가 더 크므로
-          이미지 높이가 곧 행 높이), 텍스트는 **이미지 높이에만** 맞춰 중앙 정렬됩니다.
-          이 배치를 쓰려면 캡션이 `.basis-shot`(grid 항목)의 자식이면 안 됩니다 — grid
-          정렬 속성은 **grid 의 직계 자식에만** 걸립니다. 그래서 아래 HTML 에서 캡션을
-          `<figure>` 밖으로 꺼내 `.basis-body` 의 3번째 직계 자식(`<p class="basis-cap">`)
-          으로 옮겼습니다(`<figcaption>` → `<p>`, `<figure>` 는 이제 이미지만 감쌉니다).
-       ⚠️ 모바일(1024px 미만, 위 flex 규칙)은 그대로입니다 — DOM 순서(텍스트→이미지→
-          캡션)가 그대로 세로로 쌓이므로 이 변경으로 바뀌는 것이 없습니다. */
-    .basis-body {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 560px);
-      grid-template-rows: auto auto;
-      column-gap: 48px;
-      align-items: center;
-    }
-    .basis-list { grid-column: 1; grid-row: 1; }
-    .basis-stack { grid-column: 2; grid-row: 1; }
-    .basis-cap { grid-column: 2; grid-row: 2; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    /* 셰브론 회전은 상태 표시라 없애지 않고, 애니메이션만 끕니다 */
-    .qchev { transition: none; }
-    /* 탭도 같은 원칙 — **전환 자체는 남기고 페이드만 끕니다.**
-       🔄 종전에는 `.feat-chev, .feat-panel { transition: none }` 이었습니다(아코디언
-          슬라이드). 탭에는 슬라이드가 없고 짧은 페이드(@keyframes tab-in)만 있으므로
-          끌 것이 transition 이 아니라 animation 입니다 〔2026-08-14 · cards-tabs-s12〕.
-       ⛔ display:none 으로 끄지 마십시오 — 선택된 패널까지 사라집니다. */
-    .feat-panel { animation: none; }
-    /* 2026-08-13 신규 애니메이션. 원칙은 위와 같습니다 — **내용은 남기고 움직임만 끕니다.**
-       ⚠️ display:none 으로 끄지 마십시오. 움직임을 원치 않는 사람에게 내용을 감추는 것은
-          접근성 설정을 콘텐츠 검열로 바꾸는 것입니다.
-       ✅ 핀 순차 등장(.feat-pin)의 예외가 여기 있었으나, 그 애니메이션 자체가 제품 정책에
-          맞춰 걷혔으므로(위 .feat-map 주석) 끌 것이 없어져 함께 지웠습니다. */
-    .reveal-armed .reveal { opacity: 1; transform: none; }
-    .reveal-armed .reveal.is-in { transition: none; }
-  }
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+    font-size:16.5px;
+    line-height:1.76;
+        text-wrap:pretty;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+}
+a{color:var(--accent);text-decoration:none}
+a:hover{color:var(--accent-press)}
+::selection{background:rgba(15,23,42,.14)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+p{margin:0}
+
+.container{max-width:1200px;margin:0 auto;padding-inline:clamp(24px,5vw,48px)}
+.body-w{max-width:860px}
+.sec-surface{background:var(--surface);--line:var(--line-on-surface)}
+section{padding-block:clamp(60px,8vw,96px);scroll-margin-top:64px}
+.hero{padding-block:clamp(72px,9vw,112px) clamp(52px,7vw,78px)}
+.report{padding-top:clamp(36px,4vw,52px)}
+
+h1,h2,h3{margin:0}
+h1{font-size:clamp(2.25rem,4.5vw,3.5rem);font-weight:700;line-height:1.30;letter-spacing:-.035em}
+h2{max-width:18em;font-size:clamp(1.75rem,3vw,2.5rem);font-weight:700;line-height:1.28;letter-spacing:-.030em}
+.h3{font-size:28px;font-weight:600;line-height:1.35;letter-spacing:-.025em}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:12px 22px;border-radius:6px;border:1px solid transparent;font:inherit;font-size:15.5px;font-weight:600;line-height:1;cursor:pointer;white-space:nowrap;transition:background-color .14s ease,border-color .14s ease,color .14s ease}
+.btn-full{padding-inline:32px}
+.btn-primary{background:var(--accent);color:#FFFFFF}
+.btn-primary:hover{background:var(--accent-press);color:#FFFFFF}
+.btn-secondary{background:transparent;border-color:var(--line);color:var(--ink)}
+.btn-secondary:hover{border-color:var(--muted);color:var(--ink)}
+.btn-light{background:#FFFFFF;color:var(--ink)}
+.btn-light:hover{background:#E8EEF3;color:var(--ink)}
+
+/* nav */
+.skip{position:absolute;left:-9999px;top:8px;padding:10px 16px;border-radius:6px;background:var(--ink);color:#fff;font-size:14px;z-index:10}
+.skip:focus{left:16px;color:#fff}
+.nav{border-bottom:1px solid var(--line)}
+.nav .container{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{display:inline-flex;align-items:center;gap:9px;font-size:18px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+.logo:hover{color:var(--ink)}
+.logo i{width:18px;height:18px;border-radius:5px;background:var(--accent);display:block}
+
+/* hero */
+.hero h1{max-width:15em}
+.hero-lead{margin-top:20px;max-width:38em;font-size:17.5px;font-weight:500;line-height:1.72;color:var(--ink-64)}
+.hero-lead b{font-weight:600;color:var(--ink)}
+.cta{margin-top:30px}
+.fine{margin-top:14px;font-size:14.5px;line-height:1.6;color:var(--ink-62)}
+
+/* stat */
+.stat-sec{padding-block:clamp(38px,5vw,60px)}
+.stat-quote{position:relative;margin:0;padding-left:clamp(34px,4.5vw,56px)}
+.stat-quote::before{content:"\201C";position:absolute;left:-2px;top:clamp(-14px,-1.4vw,-6px);font-size:clamp(64px,9vw,104px);line-height:1;color:var(--accent);opacity:.22}
+.stat-quote p{max-width:22em;font-size:clamp(20px,2.5vw,28px);font-weight:700;line-height:1.5;letter-spacing:-.03em}
+.stat-quote em{font-style:normal;color:var(--accent)}
+@media(max-width:768px){.hero-lead br,.stat-quote p br,.stat-src br,.report .sub br,.ext .item .d br,.ext h2 br{display:none}
+  .close-cta{flex-direction:column;align-items:flex-start;gap:20px}}
+.stat{display:flex;align-items:baseline;gap:18px;margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
+.stat-n{flex:none;font-size:clamp(36px,5vw,52px);font-weight:700;line-height:1;letter-spacing:-.04em;color:var(--accent)}
+.stat-t{font-size:16.5px;font-weight:600;line-height:1.5}
+.stat-src{margin-top:4px;max-width:34em;font-size:12.5px;line-height:1.55;color:var(--ink-62)}
+@media(max-width:640px){.stat{flex-direction:column;gap:8px}}
+
+/* steps */
+.steps{margin-top:32px}
+.st{display:grid;grid-template-columns:44px 1fr;gap:20px;padding:22px 0;border-top:1px solid var(--line)}
+.st:last-child{border-bottom:1px solid var(--line)}
+.st .n{font-size:13.5px;font-weight:700;letter-spacing:.02em;color:var(--muted);padding-top:6px}
+.st .t{font-size:19px;font-weight:600;line-height:1.45;letter-spacing:-.02em}
+.st .d{margin-top:7px;font-size:16px;line-height:1.7;color:var(--ink-64)}
+@media(max-width:640px){.st{grid-template-columns:1fr;gap:6px}.st .n{padding-top:0}}
+
+/* report */
+.report .sub{margin-top:16px;max-width:36em;font-size:17.5px;font-weight:500;line-height:1.7;color:var(--ink-64)}
+.shot{margin:32px 0 0;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);box-shadow:0 10px 28px rgba(15,23,42,.10)}
+.cap{margin-top:12px;font-size:12.5px;line-height:1.6;color:var(--ink-62)}
+
+/* mock */
+.mk{background:#fff;border-radius:6px;padding:22px 24px}
+.mk-head{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.mk-title{font-size:19px;font-weight:700;letter-spacing:-.025em;line-height:1.35}
+.mk-meta{margin-top:4px;font-size:13.5px;color:var(--ink-62)}
+.mk-date{flex:none;font-size:12.5px;color:var(--ink-62);white-space:nowrap}
+.mk-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px;align-items:stretch}
+.mk-box{border:1px solid var(--line);border-radius:8px;padding:18px 20px;display:flex;flex-direction:column}
+.mk-lab{font-size:13.5px;color:var(--ink-64)}
+.mk-amt{margin-top:6px;font-size:clamp(28px,3.6vw,34px);font-weight:700;letter-spacing:-.03em;line-height:1.15;color:var(--accent)}
+.mk-amt span{font-size:.5em;font-weight:600;color:var(--ink-64);margin-left:3px}
+.mk-3{display:flex;flex-wrap:wrap;gap:22px;margin-top:auto;padding-top:16px}
+.mk-3 span{display:block;font-size:12.5px;color:var(--ink-62)}
+.mk-3 b{display:block;margin-top:3px;font-size:14.5px;font-weight:600}
+.mk-h{font-size:16px;font-weight:700;letter-spacing:-.02em}
+.mk-boxhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.mk-go{flex:none;font-size:13px;font-weight:600;color:var(--accent)}
+.mk-todo{display:grid;grid-template-columns:22px 1fr;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
+.mk-todo:first-of-type{margin-top:10px}
+.mk-todo i{font-style:normal;display:flex;align-items:center;justify-content:center;width:22px;height:22px;margin-top:2px;border:1px solid var(--line);border-radius:999px;font-size:11.5px;font-weight:600;color:var(--ink-62)}
+.mk-todo b{display:block;font-size:14.5px;font-weight:600;line-height:1.5}
+.mk-todo span{display:block;margin-top:1px;font-size:12.5px;line-height:1.55;color:var(--ink-62)}
+.mk-stage{margin-top:16px;border:1px solid var(--line);border-radius:8px;padding:18px 20px}
+.mk-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px}
+.mk-step{padding-top:12px;border-top:2px solid var(--ink)}
+.mk-step.rest{border-top-color:var(--line)}
+.mk-step b{display:block;font-size:13.5px;font-weight:600}
+.mk-step span{display:inline-flex;align-items:center;margin-top:7px;padding:4px 10px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-size:12px;font-weight:600;line-height:1.5;color:var(--ink-62)}
+@media(max-width:768px){
+  .mk{padding:18px}
+  .mk-head{flex-direction:column;align-items:flex-start;gap:6px}
+  .mk-grid{grid-template-columns:1fr}
+  .mk-steps{grid-template-columns:repeat(2,1fr);gap:14px 10px}
+}
+
+/* who */
+.who-grid{display:grid;grid-template-columns:minmax(190px,1fr) 2fr;gap:44px;align-items:start}
+.who-list p{padding:15px 0;border-top:1px solid var(--line);font-size:16.5px;line-height:1.7;color:var(--ink-64)}
+.who-list p:last-child{border-bottom:1px solid var(--line)}
+.who-list b{font-weight:600;color:var(--ink)}
+@media(max-width:768px){.who-grid{grid-template-columns:1fr;gap:24px}}
+
+/* ext */
+.ext .item{margin-top:32px;padding-top:24px;border-top:1px solid var(--line)}
+.ext .item .t{max-width:28em;font-size:19.5px;font-weight:600;line-height:1.5;letter-spacing:-.02em}
+.ext .item .d{margin-top:10px;max-width:38em;font-size:16px;line-height:1.7;color:var(--ink-64)}
+
+/* notice + footer */
+.notice{background:var(--surface-dark);color:var(--d-ink-secondary);padding-block:clamp(48px,6vw,72px) clamp(40px,5vw,64px)}
+.close-cta{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;padding-bottom:clamp(34px,4vw,48px);margin-bottom:clamp(30px,4vw,44px);border-bottom:1px solid var(--d-line)}
+.cc-t{max-width:16em;font-size:clamp(22px,2.8vw,30px);font-weight:700;line-height:1.35;letter-spacing:-.03em;color:var(--d-ink-primary)}
+.notice p{max-width:60em;font-size:14px;line-height:1.8}
+.notice p + p{margin-top:14px;color:var(--d-ink-tertiary)}
+.footer{background:var(--surface-dark);color:var(--d-ink-tertiary);padding-block:0 clamp(40px,5vw,56px);font-size:14px}
+.footer .inner{padding-top:26px;border-top:1px solid var(--d-line)}
+.f1{display:flex;flex-wrap:wrap;gap:8px 24px;color:var(--d-ink-secondary)}
+.footer a{color:var(--d-ink-secondary);text-decoration:underline}
+.footer a:hover{color:var(--d-ink-primary)}
+.f2{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:12px}
+.copy{margin-top:16px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
-  <a href="#main" class="skip">Skip to content</a>
 
-  <!-- ===== Nav =====
-       메인 CTA는 랜딩 전체에서 [내 NDA 확인 받기](/precheck) 하나뿐입니다.
-       app.trops.kr 진입은 아직 메인 CTA 자리를 차지하지 않도록 저채도 텍스트 링크로만 둡니다. -->
-  <nav class="nav">
-    <div class="container nav-inner">
-      <a href="/en" class="wordmark" aria-label="TROPS home">TROPS</a>
-      <!-- 확정본 §1의 헤더 앵커 3종(서비스 · 이용 방법 · 자주 묻는 질문)으로 맞춘
-           헤더 개편입니다(2026-08-13) — /en 이 이미 이 구조(Service · How it works ·
-           FAQ, en.html #nav)이고, 국문만 「대조 방법 · 준비 중인 것 · 자주 묻는 질문 ·
-           문의」 4개짜리 옛 구조에 남아 있었습니다. #service·#how·#qna 는 이미
-           존재하는 섹션이라 새 앵커가 아니라 라벨만 맞춘 것입니다. -->
-      <div class="nav-links">
-        <a href="#service">Service</a>
-        <a href="#how">How it works</a>
-        <a href="#qna">FAQ</a>
-      </div>
-      <div class="nav-right">
-        <!-- 🔴 [트롭스 앱 미리보기](app.trops.kr) 링크는 대표 지시(2026-08-16)로
-             삭제했습니다. 기한관리 탭·로드맵의 [미리보기] 트리거·링크는 그대로입니다 —
-             이 nav 링크만 없앴습니다. -->
-        <!-- 언어 전환. en.html 에 「한국어」로 반대 방향이 있습니다 — 한쪽만 두면
-             그쪽 독자가 상대 페이지를 찾지 못합니다. 둘 다 nav-quiet(강등된
-             텍스트 링크)입니다. 버튼으로 올리지 마십시오. -->
-        <a class="nav-quiet" href="/" hreflang="ko" lang="ko">한국어</a>
-        <!-- 로그인 영역 (핸드오프 3a / 로그인 완료 시 3d-A). 내용은 assets/auth.js 가
-             세션 상태를 보고 채웁니다 — JS 가 없으면 비워 둡니다(조용한 폴백). -->
-        <div class="trops-auth" id="trops-auth" data-auth-lang="en"></div>
-      </div>
-    </div>
-  </nav>
+<a class="skip" href="#main">Skip to content</a>
 
-  <main id="main">
-    <!-- ===== 접수 완료 배너 (2026-08-14 · 흐름 md §3) =====
-         🔴 **/precheck 가 이 페이지로 사람을 보냅니다.** 종전에는 서류를 보내도 화면이
-            precheck 에 그대로 머물렀습니다(무상은 폼 아래 문장만 바뀌고, 유상은 접수
-            확인 표가 떴습니다). md §3 은 그 반대를 적어 뒀습니다 — 「제출 즉시 랜딩(홈)
-            화면으로 복귀 / 정적인 "접수완료" 화면에 머물지 않음 / 대기시간 동안 곧바로
-            기한관리 미리보기 등 랜딩 콘텐츠를 자유롭게 둘러볼 수 있게 함」.
+<nav class="nav">
+  <div class="container">
+    <a class="logo" href="/"><i></i>TROPS</a>
+  </div>
+</nav>
 
-         그래서 precheck 의 `returnToLanding()` 이 `/?intake=ok&r={token}` 으로 데려옵니다.
-         이 배너가 하는 일은 둘뿐입니다: ① 접수가 됐다는 사실을 잃지 않게 하고,
-         ② 접수 확인 표로 돌아가는 링크 하나를 남깁니다(메일의 매직링크와 같은 주소).
+<main id="main">
+<section class="hero">
+  <div class="container">
+    <h1>A one-minute check of the<br>export steps your product needs</h1>
+    <p class="hero-lead">From buyer verification and contracts to payment terms, trade insurance, customs and shipping, we walk <b>the required steps in order</b><br>and lay out what to check now and what comes next.</p>
+    <div class="cta"><a class="btn btn-primary btn-full" href="https://app.trops.kr/export-precheck/new">Run a one-minute check</a></div>
+    <p class="fine">You can start before the export contract is signed</p>
+  </div>
+</section>
 
-         ⛔ 여기에 접수 내용(파일 수·금액·진행상태)을 그리지 마십시오. 그것은
-            /precheck?r={token} 한 곳의 일이고, 두 곳에서 그리면 언젠가 서로 다른 것을
-            말합니다. 이 배너는 **문 하나**입니다.
-         ⚠️ `hidden` 으로 내려옵니다. JS 가 `?intake=ok` 를 본 경우에만 엽니다 —
-            검색으로 들어온 사람에게 「접수되었습니다」가 보이면 그대로 거짓말입니다. -->
-    <div class="intake-return" id="intake-return" hidden>
-      <div class="container intake-return-inner">
-        <p><strong id="intake-return-head">Your document has been submitted.</strong></p>
-        <p class="intake-return-sub" id="intake-return-sub">Feel free to look around while we get your results ready. We’ve sent you a confirmation email too.</p>
-        <p><a id="intake-return-link" href="/en-precheck">View submission</a></p>
+<section class="sec-surface stat-sec">
+  <div class="container">
+    <blockquote class="stat-quote">
+      <p>In exporting, what matters is not more information<br>but knowing the <em>“steps and sequence”</em> your product requires.</p>
+    </blockquote>
+    <div class="stat">
+      <p class="stat-n">77%</p>
+      <div>
+        <p class="stat-t">Share of document and customs enquiries that ask about “procedure”</p>
+        <p class="stat-src">Analysis of 500 advisory cases published by the Business Support Group, Ministry of SMEs and Startups<br>158 of 206 document and customs cases were questions about export procedure</p>
       </div>
     </div>
+  </div>
+</section>
 
-    <!-- ===== Hero =====
-         기준 우선순위(PRD-62 §3-3): 고객 보유 자사 서식이 1순위, 공개 라이선스로
-         배포되는 표준 서식은 자사 서식이 없을 때만 쓰는 2순위 대체 기준입니다.
-         이 순서를 뒤집어 쓰지 마십시오.
-         거래 8단계 타임라인 카드는 제거했습니다 — 실체 없는 단계를 미리 보여주면
-         "이미 완성된 서비스인가?"라는 오해를 키웁니다. 거래 운영 기능이 실제로
-         나올 때 다시 넣으십시오. -->
-    <section class="container hero">
-      <!-- 확정본 §2 는 「수출을 앞두고 / BEFORE YOU EXPORT」로 병기해 뒀지만, 국문판은
-           국문만 씁니다(2026-08-11 지시). 영문 태그는 /en 히어로가 단독으로 씁니다.
-           푸터 §12 태그(「수출을 앞두고」)와 이제 글자까지 같아져서, 페이지 처음과 끝이
-           같은 말로 묶입니다. 영문을 다시 붙이지 마십시오. -->
-      <p class="eyebrow">Before you trade abroad</p>
-      <!-- 히어로 6요소 전부 확정본 v3.1 §2 원문입니다. 한 글자도 바꾸지 마십시오 (정본 §0 · §8).
-           리드의 <br> 2개는 확정본이 끊어 둔 자리 그대로입니다 — 문구 변경이 아니라
-           마크업이라 정본 §2-3 이 명시적으로 허용합니다.
-           ⚠️ 이전 헤드라인·리드는 세 페이지(index · nda · precheck)가 공유하던 문장이었습니다.
-              여기만 §2 로 교체됐으므로 nda·precheck 와 더 이상 같지 않습니다 — 두 페이지를
-              여기에 맞추는 것은 별도 배치입니다. 임의로 되돌리지 마십시오. -->
-      <h1>New to exporting?<br>Not sure what to check first.</h1>
-      <!-- 🔴 2026-08-13: 리드 1행의 「NDA」→「서류」 한 낱말만 교체했습니다.
-           위 「한 글자도 바꾸지 마십시오」 가드에 대한 유일한 예외이고, 근거는 두 가지입니다:
-           ① 흐름 md §1 이 「NDA」 비노출 원칙의 적용 범위를 <title>·메타description·og:title 뿐
-              아니라 **헤드라인·서브헤드라인 전체**로 명시합니다. 이 리드가 서브헤드라인입니다.
-              이유도 확장성이 아니라 전환율입니다 — 「NDA」가 보이면 「기밀서류를 대놓고 요구하는
-              곳」이라는 방어기제가 작동해 자료제출 자체가 막힙니다.
-           ② 같은 배치에서 <head> 네 줄이 「바이어에게 받은 서류를」로 바뀌었습니다. 여기만
-              「NDA」로 두면 검색결과·공유카드와 화면 첫 문장이 서로 다른 말을 합니다.
-           나머지 두 행과 <br> 위치는 확정본 §2 원문 그대로입니다. 문장을 더 손대지 마십시오.
-           상위 카테고리명은 「수출 사전점검」이고, 「NDA」는 접수 화면 안에서만 씁니다. -->
-      <p class="hero-lead">From documents to buyer checks<br>to deadlines you might miss,<br>we help you confirm what matters, one step at a time.</p>
-      <p class="hero-lead">For now, you can start with document comparison.</p>
-      <!-- 🔴 히어로 미니 신호(3상품 앵커 링크)는 v-next 전면교체(2026-08-16)로 삭제했습니다.
-           사유·이력은 위 CSS .hero-signal 삭제 주석 참조. -->
-      <!-- 주 + 보조 2단 (v-next 전면교체 2026-08-16 · 히어로 CTA 3→2).
-           C-1 대로 주는 채움(btn-primary), 보조는 아웃라인(btn-secondary), 둘 다 풀사이즈
-           (btn-full 좌우 32px)입니다. 세 번째 텍스트링크([기한관리 미리보기])는 삭제했습니다.
-           ⚠️ 「상담」이라는 낱말을 쓰지 마십시오 — 유상 자문으로 오인돼 제거된 이력이 있습니다. -->
-      <div class="cta-row">
-        <a id="hero-cta" class="btn btn-primary btn-full" href="/en-check">Check in 30 seconds</a>
-        <a class="btn btn-secondary btn-full" href="#interest" data-purpose="inquiry" data-track="inquiry_cta">Contact us</a>
-      </div>
-      <!-- 마이크로카피는 버튼 옆이 아니라 아래 줄입니다 — 버튼이 둘로 늘면서 같은 행에
-           두면 모바일에서 세 덩어리가 세로로 쌓입니다. 마감 CTA(.close-cta-note)와 같은 배치. -->
-      <!-- 🔄 종전 「로그인 불필요」 문구 → 가입 유도 카피 (핸드오프 3b · 국문 index.html 과 같은 자리) -->
-      <p class="hero-note">Sign up with no credit card · Results saved free</p>
-    </section>
+<section>
+  <div class="container">
+    <h2>How the one-minute check works</h2>
 
-    <!-- 🔴 03 안심 문구가 **여기 없습니다** 〔2026-08-13 이동 · 2026-08-14 재이동〕.
-         히어로 직하 → #how 안 경험담 뒤 → **06 결 CTA 바로 뒤** 로 두 번 옮겼습니다.
-         이유: 흐름 md §1 의 감정선은 기(히어로) - 승(경험담) - 전(신뢰증명) - 결(행동)인데,
-         방어 문구가 그 넷 **사이** 어디에 있어도 감정선을 끊습니다. 결(행동) 다음이라야
-         「눌러 보시라」에 답하지 않은 사람의 망설임에 대응하는 말이 됩니다.
-         ⚠️ 이 자리에 같은 역할의 블록을 다시 만들지 마십시오. 페이지에 하나뿐입니다.
-         ⚠️ 「※ 법률 자문 서비스가 아닙니다」도 그 블록과 함께 내려갔습니다 — 페이지에서
-            사라진 것이 아닙니다. 지우지 마십시오. -->
-
-    <!-- ===== 02 스토리 (승) — 흐름 md §1 「랜딩 심리설계」 =====
-         🔄 v-next 전면교체(2026-08-16)로 좌우비교 카드(구 .story-cmp) 구조를 걷고
-            4문단짜리 단순 서사로 바꿨습니다. 감정선상 자리(기-히어로 다음, 승)와
-            역할(진단 선언 없이 스스로 확인하고 싶어지게 만드는 것)은 그대로입니다 —
-            문구만 대표 확정 새 원고로 교체했습니다.
-         ⚠️ 평가어(위험·불리·문제·잘못) 금지, 금지 동사(자문·판단·검토·평가·진단) 금지는
-            새 문구에도 그대로 적용됩니다. -->
-    <section class="stories-sec sec-surface" aria-label="What we hear">
-      <div class="container stories-inner">
-        <!-- 🔄 **전면교체** 〔2026-08-23 · PRD v2.1 §5-15 · B3-a〕. 국문 index.html 과 짝입니다 —
-             원문은 §5-15 이고 영문은 그 뜻을 옮긴 것입니다(PRD 는 국문만 확정). -->
-        <div class="stories">
-          <p class="h3 story-ask">With exporting, the real work starts<br>after the contract is signed.</p>
-          <div class="story-common">
-            <p class="story-body">A contract carries payment dates, Incoterms and delivery deadlines, and trade insurance carries deadlines you have to meet, such as notifying a late payment or a shipment.</p>
-            <p class="story-body">The problem is that this sits scattered across contract PDFs, insurance policies, your ERP, spreadsheets and email, so it’s hard for one person to hold it all in their head.</p>
-            <p class="story-body">Instead of copying dates into a calendar by hand or relying on notes, you can keep it together in one place, deal by deal.</p>
-          </div>
-          <p class="h3 story-ask">See today’s work and the deadlines ahead<br>on one screen.</p>
+    <div class="steps body-w">
+      <div class="st">
+        <div class="n">01</div>
+        <div>
+          <p class="t">Enter what you already know</p>
+          <p class="d">Product, destination, buyer, payment terms — whatever you have at hand. A signed contract is not required.</p>
         </div>
       </div>
-    </section>
-
-    <!-- ===== 03 경고 — 무보 인용문 단독 (전) · 문구 §6 · 정본 C-5 =====
-         🔴 **근거 블록이 이 섹션에서 나갔습니다** 〔2026-08-14 · basis-split-s13〕.
-            여기 남는 것은 무보 인용문 한 문장과 출처뿐이고, 성격은 하나입니다 — **경고**.
-            영국 OGL 출처 · 판단배제 원칙 · 근거 5종 · 캡처는 05 근거 섹션(.basis)으로
-            갔습니다. 🔄 그 섹션의 자리는 s13 당시 「상품소개 **뒤**」였고, 2026-08-16 의
-            A3 §2 재배치로 **상품소개 앞**(HOW 바로 뒤)이 됐습니다 — 상품소개가 안심문구
-            뒤로 내려갔기 때문입니다. 사유는 .basis 섹션 머리주석에 있습니다.
-
-            가른 근거: 두 블록은 심박을 **반대 방향**으로 움직입니다. 인용문은 올리고
-            (「우리 얘기일 수 있다」), 근거는 내립니다(「이 사람들은 함부로 판단하지 않는다」).
-            landing-emphasis-s10 이 그 어긋남을 헤어라인 + 큰 여백(.trust-detail)으로 한 번
-            덮었는데, **구획선으로 가려야 했다는 것 자체가 두 블록이 한 섹션에 있으면 안
-            된다는 신호**였습니다. 이번에 섹션으로 갈랐고, 구획선은 함께 사라졌습니다.
-         ⛔ 근거 블록을 여기로 되돌리지 마십시오 — 한 섹션 안에서 톤이 두 번 바뀝니다.
-         ⚠️ 상품소개 뒤로 이 섹션을 내리지 마십시오. 이 경고가 만드는 것은 「내 얘기일 수
-            있다」는 각성이고, 그 각성 없이 본 상품 탭은 그냥 기능 목록입니다.
-         ⚠️ 제목(h2)이 없는 섹션입니다 — 이름은 aria-label 이 집니다. 여기에 h2 를 새로
-            만들면 「무엇을 근거로 비교하는지 밝힙니다」가 페이지에 두 번 있게 됩니다.
-
-         전환에 가장 크게 작용하는 자리로 정본 §2-2가 우선순위 3번에 올려둔 섹션입니다.
-         페이지 유일한 다크 본문 섹션입니다(푸터와 둘뿐) — 다른 섹션을 다크로 만들지 마십시오.
-
-         ⚠️ 이 자리에 있던 강조 밴드(.band · 기준을 우리가 만들지 않는다는 선언)는
-            제거했습니다. 그 블록의 역할은 07 안심 문구가 이어받습니다. 둘을 같이 두면
-            「판단하지 않는다」 선언이 한 페이지에 두 번 나옵니다.
-         ✅ 미결 L-1 해소(2026-08-13): 비워뒀던 카운터·숫자 자리를 무보 인용 문장블록으로
-            닫았습니다. 숫자가 아니라 문장인 이유는 아래 .stat-line 주석에 있습니다. -->
-    <section class="trust" aria-label="Why check now">
-      <div class="container trust-inner">
-        <!-- 통계블록 — 정본 미결 L-1 해소 (2026-08-13 · 흐름 md §1 「재무 리스크 프레임」).
-             이 자리는 C-5 가 「카운터·숫자 자리」로 비워둔 곳이었습니다. 넣을 숫자가 없었기
-             때문이고, 리서치에서도 정확한 %로 추산된 피해통계는 확인되지 않았습니다.
-
-             🔄 v-next 전면교체(2026-08-16) — 인용문을 교체했습니다. 종전 문장(「거래처
-             한두 곳에 매출이 집중된 수출 초기 기업은, 대금 미회수 단 한 번으로 자금난에
-             빠질 수 있습니다」)은 대금회수 리스크였는데, 스토리·HOW 두 섹션이 새 원고로
-             바뀌며 앞뒤 흐름이 「서류·바이어를 다시 확인하자」(스토리) → 이 경고 →
-             「그럼 서류부터 비교합니다」(HOW)로 좁혀졌습니다. 대금회수보다 **서류·바이어
-             확인**과 직접 이어지는 인용이 필요해 바꿨습니다.
-             출처: 한국무역보험공사 공지 「수출 사기피해 사례 및 주의 안내」
-             (https://www.ksure.or.kr/rh-kr/bbs/i-412/detail.do?ntt_sn=584428) — 실재하는
-             바이어를 사칭해 위조서류로 접근하는 사기 수법과 「바이어 송부 서류의 진위
-             확인」 대책을 명시한 공지입니다. 원문 표현을 그대로 잘라 붙이지 않고 한 문장
-             으로 압축했습니다 — 숫자·정확도 주장은 넣지 않았습니다.
-
-             ⚠️ 숫자 카운트업 애니메이션을 넣지 마십시오. 확인 안 된 숫자를 크게 띄우는 것은
-                05 근거 섹션의 h2(「무엇을 근거로 비교하는지 밝힙니다」)와 정면으로 어긋납니다.
-                문장형 인용이 이 자리의 최종 형태입니다.
-             ⚠️ 출처 표기를 지우지 마십시오 — 출처 없는 단정으로 남습니다.
-             ⚠️ 이 섹션에 다른 블록을 더하지 마십시오. **한 문장만 있는 것이 설계**입니다
-                (test/landing-order-s9.test.js O2-b 가 그것을 셉니다). -->
-        <!-- .reveal — 스크롤 진입 시 페이드인+슬라이드업 (2026-08-13 · 흐름 md §1 「다이나믹함」 1번).
-             md 원문은 「숫자 카운트업」이지만 이 자리는 숫자가 아니라 문장이라(위 ⚠️) 같은
-             요구를 등장 애니메이션으로 대체했습니다. 근거는 .reveal CSS 주석에 있습니다.
-             ⚠️ 이 클래스만으로는 숨겨지지 않습니다 — <html> 에 .reveal-armed 가 붙어야
-                숨김이 켜지고, 그것을 붙이는 것은 JS 입니다. JS 가 죽으면 그냥 보입니다.
-             ⚠️ .reveal-late 는 출처를 한 박자 늦추는 것뿐입니다. 인용문에 붙이지 마십시오. -->
-        <!-- ⚠️ class 에서 h3 를 뗐습니다 — 이제 크기를 .stat-line 이 직접 집습니다(H1 스케일).
-             .reveal / .reveal-late 는 그대로입니다. -->
-        <p class="stat-line reveal">Scammers are<br>impersonating real-sounding<br>buyers with fake documents.<br>It’s worth double-checking<br>both what you received<br>and who you’re actually<br>dealing with.</p>
-        <p class="stat-src reveal reveal-late">Korea Trade Insurance Corporation (K-SURE)</p>
-      </div>
-    </section>
-
-    <!-- ===== 04 How it works (지금 파는 것: NDA 사전확인 v1) =====
-         🔴 **자리가 경고 바로 뒤로 올라왔습니다** 〔2026-08-16 · A3 §2 재배치〕.
-            이력: 2층카드↔아코디언 사이 → 결 CTA·안심문구 뒤(2026-08-14) → **여기**.
-
-            왜 올라왔는가: 같은 배치에서 04 상품소개(3탭 카드)가 안심문구 뒤로 내려갔고,
-            A3 §2 가 정한 최종 순서가 「스토리 → HOW → 근거 → 안심 → 3탭카드」입니다.
-            읽는 순서는 그대로 성립합니다 — 경고(「내 얘기일 수 있다」) 다음에 오는 질문은
-            「그래서 뭘 어떻게 하는 건가」이고, 이 섹션이 그 답(제출→비교→정리)입니다.
-            그 답을 들은 뒤라야 다음 섹션의 「무엇을 근거로 비교하는지」가 이어집니다.
-
-            ⚠️ 되돌리기 전에 배경 교차부터 확인하십시오. 지금 배정은
-               경고(dark) → HOW(--bg) → 근거(--surface) 로 맞물려 있고, 이 섹션을
-               다른 자리로 옮기면 아래 이웃까지 연쇄로 흔들립니다
-               (test/landing-order-s9.test.js O7 「연속 배경 0」).
-            ⚠️ 종전 주석이 여기 적어 두었던 「일단 눌러보시라(결) → 이렇게 진행됩니다」
-               순서는 소멸했습니다 — 결 CTA 는 이제 이 섹션 **뒤**입니다.
-
-         왜 상품소개에 흡수하지 않고 존치하는가(3가지):
-           ① #how 는 헤더 앵커 3종 중 하나입니다(「이용 방법」). 흡수하면 nav 가 죽거나
-              상품소개를 가리켜 「서비스」 앵커와 도착지가 같아집니다.
-           ② 상품소개는 「무엇을 확인해 주는가」, 여기는 「제출→비교→정리가 어떻게 도는가」로
-              **묻는 질문이 다릅니다.** 04↔05 의 중복(같은 질문, 다른 층위)과 성격이 다릅니다.
-           ③ 확정본 v3.1 §5 원문 가드가 걸린 섹션입니다. 흡수하면 카피를 줄여야 하고
-              그 순간 가드에 걸립니다.
-         ⚠️ 이 섹션 안에 경험담(.stories)이나 안심문구(.assure)를 다시 넣지 마십시오.
-            둘 다 2026-08-14 에 독립 섹션으로 나갔습니다. -->
-    <section class="how" id="how">
-      <div class="container how-inner">
-        <p class="kicker">HOW IT WORKS</p>
-        <!-- 🔄 v-next 전면교체(2026-08-16)로 h2·3단계 이름/설명을 새 원고로 교체했습니다.
-             03단계에서 #orgs 앵커 링크는 걷었습니다 — 새 문구가 "어디에 물어보시면" 구절을
-             쓰지 않습니다. 기관안내(#orgs) 섹션은 페이지 스크롤로 계속 도달 가능합니다. -->
-        <h2>For now, we start with document comparison.</h2>
-
-        <div class="flow">
-          <div class="flow-row">
-            <p class="flow-name"><span class="flow-num" aria-hidden="true">01</span><span>Upload</span></p>
-            <p class="flow-desc">Upload the trade document you want to check, as is.<br>Works for documents from your<br>buyer or your own company’s forms.</p>
-          </div>
-
-          <div class="flow-row">
-            <p class="flow-name"><span class="flow-num" aria-hidden="true">02</span><span>Compare</span></p>
-            <p class="flow-desc">We compare it against a public<br>standard form for that document type<br>and mark exactly where it differs.</p>
-          </div>
-
-          <div class="flow-row">
-            <p class="flow-name"><span class="flow-num" aria-hidden="true">03</span><span>Confirm</span></p>
-            <p class="flow-desc">See the source and confirmation date of the standard form<br>we used for comparison.</p>
-          </div>
-        </div>
-
-        <!-- 확정본 §5 에는 이 CTA 가 없습니다 — 섹션 하단에 남아 있던 요소인데,
-             §5 로 교체하면서 이 버튼만 「대조」로 남아 §2·§4·§9 (전부 「비교해
-             보기」)와 어긋났습니다. 같은 말로 맞췄습니다(2026-08-11 지시).
-             🔄 btn-text → btn-secondary 〔2026-08-16 · 대표 피드백〕. 2026-08-13 에
-             btn-primary 에서 btn-text(테두리 없는 텍스트링크)로 한 번 내렸는데, 화면을
-             스크롤하며 보면 이 자리와 05 근거 섹션 둘 다 텍스트만 있고 07 상품소개
-             탭1의 [비교해 보기]만 테두리 버튼이라 「3개 중 2개가 버튼처럼 안 보인다」는
-             지적을 받았습니다. btn-secondary 는 여전히 주버튼(btn-primary)이 아니므로
-             시각사양 2 「주버튼 페이지당 최대 2회(히어로·06 결)」는 그대로 지켜집니다 —
-             색·테두리는 .btn-secondary 규칙(투명 배경·var(--line) 테두리·var(--ink)
-             글자)을 그대로 따르므로 이 섹션 배경에 맞춰 새로 정의할 것이 없습니다.
-             ⚠️ btn-primary 나 btn-full 로 올리지 마십시오. 링크는 그대로입니다. -->
-        <div class="cta-row">
-          <a class="btn btn-secondary" href="/en-precheck">Compare now</a>
-          <span class="cta-row-note">Available now</span>
+      <div class="st">
+        <div class="n">02</div>
+        <div>
+          <p class="t">We check the export steps for your product and terms</p>
+          <p class="d">From buyer verification through contracts, payment, trade insurance, customs and shipping, in the order they arise.</p>
         </div>
       </div>
-    </section>
-
-    <!-- ===== 05 근거: 비교에 쓴 기준도 함께 보여드립니다 =====
-         🔄 v-next 전면교체(2026-08-16)로 h2·본문을 새 원고로 교체했습니다. 3번째 bullet
-            (근거 5종 나열)은 새 원고에 없어 삭제했습니다. 섹션 끝에 CTA([비교해 보기])를
-            추가했습니다 — 주버튼(btn-primary)이 아니므로 시각사양 2 「페이지당 최대
-            2회」 규칙은 그대로 지켜집니다.
-         🔄 btn-text → btn-secondary 〔같은 날 2차 · 대표 피드백〕. 이 섹션은
-            .sec-surface 라 배경이 --surface 지만, .sec-surface 가 --line 변수 자체를
-            --line-on-surface 로 갈아 끼우므로 .btn-secondary(border-color: var(--line))
-            를 그대로 써도 색이 저절로 이 배경에 맞습니다 — 새 규칙을 만들 필요가
-            없습니다.
-         🔄 이미지·캡션 재구성 〔같은 날 3차 · 대표 지시〕. 종전에는 "현재 NDA 비교 기준"
-            레이블이 .basis-list 세 번째 문단이었고, 이미지는 사전점검 결과지 컷
-            (c03-result-detail.jpg)이었습니다. 이제 그 레이블 텍스트를 **이미지 캡션**으로
-            옮기고, 이미지 자체를 **근거 원문(OGL 라이선스 페이지) 캡처**로 바꿨습니다 —
-            "근거를 밝힌다"는 이 섹션의 목적에, 상품 화면 대신 실제 근거 문서를 보여주는
-            쪽이 더 정확히 맞습니다. 이미지는 원문 페이지로 링크됩니다.
-            이미지(/img/ogl-licence.png)는 대표가 직접 캡처해 브라우저 크롬 없이
-            콘텐츠만 담아 올렸습니다.
-         🔄 **높이를 1206 → 860 으로 줄였습니다** 〔2026-08-16 · 대표 지시〕. "You are free
-            to:" 체크 3개까지만 남기고 "You must (where you do any of the above):" 이하를
-            잘라냈습니다 — 비교 기준을 밝히는 데 필요한 것은 "무엇이 허용되는가"까지이고,
-            그 아래 귀속 표시 의무 조항은 이 섹션의 논지에 필요하지 않습니다. 이 높이 축소가
-            `.basis-body` 의 `align-items: center`(위 미디어쿼리 참조)를 실제로 눈에 보이게
-            만듭니다 — 이미지가 1206px 로 길 때는 왼쪽 텍스트 2줄을 세로 중앙에 맞춰도
-            그 차이가 작아 보이지 않았습니다.
-            🔴 **이 높이 축소만으로는 부족했습니다** 〔같은 날 2차 · 대표 재지적〕 — 캡션이
-               `.basis-shot` 안에 있는 한, 중앙 정렬 기준이 "이미지"가 아니라 "이미지+
-               캡션"이라 여전히 어긋나 보였습니다. 진짜 원인과 수정은 `.basis-body` 미디어
-               쿼리 주석·아래 HTML 캡션 위치 참조.
-         ⚠️ 이 컷은 더 이상 탭1(수출 사전점검 패널)의 컷(c03-result.jpg)과 같은 종류가
-            아닙니다 — 「바꾸지 마십시오」 경고는 소멸했습니다. -->
-    <section class="basis sec-surface" aria-labelledby="basis-title">
-      <div class="container basis-inner">
-        <!-- 텍스트가 두 문장으로 짧아지면서 이미지와 윗쪽을 맞추면(align-items:start)
-             왼쪽 칸 아래가 비어 균형이 깨집니다. 데스크톱 2열에서 세로 중앙(center)으로
-             맞춰 균형을 잡습니다 — 아래 미디어쿼리 .basis-body 참조.
-             🔴 캡션(<p class="basis-cap">)이 <figure> **밖**에, .basis-body 의 3번째
-                직계 자식으로 나와 있습니다 — grid-row 정렬이 grid 의 직계 자식에만
-                걸리기 때문입니다(위 미디어쿼리 주석 참조). <figure> 안으로 도로 넣지
-                마십시오 — 넣는 순간 텍스트 중앙 정렬이 이미지가 아니라 다시
-                "이미지+캡션" 전체 높이 기준으로 돌아갑니다.
-             🔴 h2#basis-title 을 .basis-body 바깥(형제)이 아니라 .basis-list 안 첫
-                자식으로 둡니다 〔2026-08-16 · basis-split-s13 정렬 수정〕. align-items:
-                center 는 .basis-body 의 grid 직계 자식(.basis-list)에만 적용되므로,
-                제목이 바깥에 있으면 본문 텍스트만 내려가 제목-본문 간격이 벌어지고
-                이미지와도 어긋나 보였습니다. id 는 그대로 유지 — aria-labelledby=
-                "basis-title" 참조는 id 위치가 아니라 값만 봅니다. -->
-        <!-- 🔄 **전면교체** 〔2026-08-23 · PRD v2.1 §5-12 · B3-a〕. 국문과 짝입니다.
-             🔴 마지막 줄은 이 섹션의 **맺음**입니다 — 뒤에 다른 본문을 붙이지 마십시오.
-             ⚠️ .basis-cap 과 CTA 를 뺐습니다 — §5-12 에 없습니다. OGL <figure> 는 남깁니다. -->
-        <div class="basis-body">
-          <div class="basis-list">
-            <h2 id="basis-title">Every check we show carries its source rule and the date we verified it</h2>
-            <dl class="basis-src">
-              <div>
-                <dt>Regulation</dt>
-                <dd>49 CFR 571.500 (US FMVSS 500)<br>Verified 2026-08-23</dd>
-              </div>
-              <div>
-                <dt>Tariff</dt>
-                <dd>US HTS MFN + Section 301 tariff rates<br>Verified 2026-08-23<br><span class="basis-note">※ Tariff rates and relief conditions can change with local trade policy.</span></dd>
-              </div>
-              <div>
-                <dt>Document</dt>
-                <dd>UK Intellectual Property Office standard public template · <span class="nobr">Open Government Licence v3.0</span><br>© Crown copyright · Verified 2026-08-10<br><span class="basis-note">※ This template assumes English law.<br>For US deals, confirm governing law and jurisdiction separately.</span></dd>
-              </div>
-            </dl>
-          </div>
-          <!-- 🔄 **단일 OGL 컷 → 근거 3장 스택** 〔2026-08-24 · 대표 지시 · 국문 index.html 과 같은 배치〕.
-               🔴 **왜 바꿨는가** — OGL 한 장만 크게 걸려 있으니 「영국 문서를 다루는 서비스」로
-                  읽혔습니다. 왼쪽 `.basis-src` 는 이미 세 축(규정 근거 · 관세 근거 · 문서 기준)을
-                  말하고 있었는데 그림이 그 중 하나만 받치고 있었던 것입니다. 이제 **세 축과
-                  세 장이 하나씩 짝**입니다: 앞 eCFR · 중간 HTS · 뒤 OGL.
-                  ⛔ DOM 순서(뒤→앞)를 바꾸지 마십시오.
-
-               🔴 **바뀐 것은 그림뿐입니다** — 이 배치에 새 문구가 없습니다. `alt` 는 화면 문구가
-                  아니라 보조기술이 읽는 **기능 텍스트**라 영문 페이지에서는 영문으로 적습니다
-                  (이 페이지의 다른 이미지와 같은 규칙입니다). PRD §5 영문 확정본 부재와
-                  무관한 자리입니다.
-               🔴 OGL 파일은 종전 것을 그대로 씁니다(`/img/ogl-licence.png`). 새로 추가된 것은
-                  `assets/img/basis-ecfr.png` · `basis-hts.png` 두 장뿐이고, 둘 다 원본 캡처에서
-                  **자르기만** 했습니다(합성 0).
-               ⚠️ 그림 안에 라벨을 넣지 않습니다 — 무엇의 근거인지는 왼쪽 텍스트가 말합니다. -->
-          <figure class="basis-stack">
-            <a class="basis-doc basis-doc-back" href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank" rel="noopener noreferrer">
-              <img src="/img/ogl-licence.png" alt="UK Open Government Licence v3.0 source page at The National Archives" width="1558" height="860" loading="lazy">
-            </a>
-            <a class="basis-doc basis-doc-mid" href="https://hts.usitc.gov/" target="_blank" rel="noopener noreferrer">
-              <img src="/assets/img/basis-hts.png" alt="U.S. International Trade Commission tariff source: Harmonized Tariff Schedule, 2026 HTS Revision 16" width="1300" height="666" loading="lazy">
-            </a>
-            <a class="basis-doc basis-doc-front" href="https://www.ecfr.gov/current/title-49/section-571.500" target="_blank" rel="noopener noreferrer">
-              <img src="/assets/img/basis-ecfr.png" alt="U.S. federal regulation source: Code of Federal Regulations Title 49, S 571.500 Standard No. 500; Low-speed vehicles" width="1400" height="921" loading="lazy">
-            </a>
-          </figure>
-          <p class="basis-last">Items without a verification date are not shown on screen.</p>
+      <div class="st">
+        <div class="n">03</div>
+        <div>
+          <p class="t">We lay out what to prepare</p>
+          <p class="d">Documents to prepare, trade insurance points to review, government support programmes you may qualify for, and what to do next.</p>
         </div>
-      </div>
-    </section>
-
-    <!-- ===== 06 결: 사전점검 시작하기 (흐름 md §1 시각층매핑 「결」) =====
-         감정선 기(히어로) - 승(경험담) - 전(경고·HOW·근거) - 결(여기)의 마지막 자리입니다.
-         🔄 「전」의 구성이 바뀌었습니다 〔2026-08-16 · A3 §2〕 — 상품소개가 이 CTA **뒤**로
-            내려가고 HOW 가 올라왔습니다. 감정선 넷의 순서 자체는 그대로입니다.
-         🔄 **바로 위 이웃이 바뀌었고, 배경 연속도 끝났습니다** 〔2026-08-14 · basis-split-s13〕.
-            종전에는 상품소개(--bg)와 배경이 같아서 「감정선과 무관한 기능섹션 없이 곧바로
-            행동으로 이어지도록」이라는 md §1 의 요구를 배경 연속으로 표현했습니다.
-            지금 사이에 들어온 05 근거는 **기능섹션이 아니라 「전」의 마지막 조각**이므로
-            그 요구는 그대로 지켜지고, 배경은 페이지 전체가 완전 교차가 됐습니다.
-            ⚠️ 여기에 border-top 을 붙이지 마십시오 — 위가 --surface 라 이미 경계가 있고,
-               선까지 그으면 경계가 두 겹이 됩니다.
-            ⚠️ 배경이 연속인 이웃은 이제 페이지에 **하나도 없습니다**. 새로 만들지 마십시오
-               (test/landing-order-s9.test.js O7 이 셉니다).
-
-         ⚠️ 이 섹션의 주버튼과 히어로의 주버튼, 둘이 페이지 주 CTA 전부입니다
-            (시각사양 2 「페이지당 최대 2회」). 상품 탭 3개의 실행버튼은 전부 **보조**이고,
-            HOW 하단은 텍스트로 강등돼 있고, 마감 CTA 에는 주버튼이 없습니다.
-            이 균형을 깨지 마십시오 — 무게로 위계를 만드는 것이 이 페이지의 방식입니다.
-         ⚠️ 리드 문장을 붙이지 마십시오 — 바로 아래 07 안심 문구와 톤이 겹칩니다.
-         🔄 v-next 전면교체(2026-08-16) — h2·버튼 라벨을 새 원고로 교체했습니다.
-         🔄 대표 수정안(같은 날 2차) — h2 「첫 해외거래라면,」→「첫 해외 거래라면,」
-            (띄어쓰기 보정). 버튼 목적지를 /precheck → /check 로 바꿨습니다 — 이제
-            히어로 주 CTA(「30초 만에 알아보기」→/check)와 라벨·목적지가 완전히
-            같습니다(직전까지 있던 "같은 라벨, 다른 목적지" 불일치가 해소됐습니다). -->
-    <section class="act" aria-labelledby="act-title">
-      <!-- 🔄 **전면교체** 〔2026-08-23 · PRD v2.1 §5-16 · B3-a〕. 국문과 짝입니다.
-           ⚠️ 주버튼은 페이지에서 2회입니다(히어로와 여기). 아래 문단에 btn 을 더하지 마십시오. -->
-      <div class="container narrow-c sec-center act-inner">
-        <h2 id="act-title">Start with the export deal you’re working on right now.</h2>
-        <div class="act-row">
-          <a class="btn btn-primary btn-full" href="https://app.trops.kr/account/password" target="_self">Start free</a>
-        </div>
-        <p class="act-note">No credit card needed to get started.</p>
-        <p class="act-body">Just bringing your contract terms and key dates together in one place makes what you need to handle far clearer.</p>
-        <p class="act-legal">※ TROPS is B2B software supporting export operations. It does not provide legal advice under the Attorney-at-Law Act, nor tax or customs appraisal services on your behalf.</p>
-      </div>
-    </section>
-
-    <!-- ===== 07 안심 문구 =====
-         🔄 v-next 전면교체(2026-08-16)로 h2를 새 원고로 교체하고, 본문 3줄(.assure-lines)을
-            전부 걷었습니다 — 새 원고는 헤드라인과 안심 note 사이에 본문이 없습니다.
-            **법률자문 재프레이밍 삭제**: 3번째 줄이었던 "전문가를 찾으시기 전에, 무엇을
-            물어봐야 하는지는 정리해 드립니다."는 이 섹션과 FAQ(qa-12→qa-10) 두 곳에
-            같은 문장으로 있었고, 두 곳 모두 삭제했습니다.
-         ⚠️ .assure-note(「※ 법률 자문 서비스가 아닙니다」)는 위치와 무관하게 페이지 어딘가에
-            반드시 남아 있어야 합니다 — 지우지 마십시오. -->
-    <section class="assure sec-surface" aria-labelledby="assure-title">
-      <div class="container narrow-c sec-center assure-inner">
-        <h2 id="assure-title">Find out what to check first, before you look for anyone else.</h2>
-        <p class="assure-note">※ This is not a legal advisory service.</p>
-      </div>
-    </section>
-
-    <!-- ===== 07 상품소개 통합 섹션 (구 「04 2층카드」 ⊕ 「05 WHAT WE CHECK」) =====
-         🔴 **스토리 직후에서 안심문구 뒤로 내려왔습니다** 〔2026-08-16 · A3 §2 재배치〕.
-            A3 §2 최종 순서: … 안심문구 → **여기** → 로드맵 → QnA …
-            문구는 한 글자도 바꾸지 않았습니다 — **이동만** 했습니다(A3 §2 명시).
-
-            왜 내려갔는가: 이 페이지의 한 줄기 서사는 「왜 봐야 하는가(경고) → 어떻게
-            도는가(HOW) → 무엇을 근거로 하는가(근거) → 해보시라(결) → 결정은 대표님
-            것이다(안심)」이고, **무엇을 파는가**의 상세는 그 서사가 끝난 뒤 궁금해진
-            사람이 읽는 것입니다. 서사 한가운데 3탭 상세가 있으면 감정선이 카탈로그에서
-            끊깁니다.
-            ⚠️ 상품 이름이 페이지 앞쪽에서 완전히 사라지지 않도록 **히어로 미니 신호**를
-               같은 배치에서 신설했습니다(A3 §3) — 이 섹션의 세 탭으로 앵커가 걸려
-               있었습니다.
-               🔄 2026-08-23 〔B2 실측〕 — 그 히어로 앵커는 v-next 전면교체(2026-08-16)로
-                  이미 사라졌습니다(페이지에 `href="#feat-*"` 가 없습니다).
-               🔴 다만 `feat-timeline` 은 그대로 둡니다 — 나간 메일이 그 앵커로 들어옵니다.
-            ⚠️ 이 섹션을 다시 위로 올리려면 배경 교차부터 다시 계산하십시오 — 지금은
-               안심(--surface) → 여기(--bg) → 로드맵(--surface) 로 맞물려 있습니다
-               (test/landing-order-s9.test.js O7 「연속 배경 0」).
-
-         🔴 **두 섹션을 하나로 합쳤습니다** 〔2026-08-14 · landing-flow-restructure-s9〕.
-
-         합치기 전에는 같은 상품을 두 섹션이 층위만 달리해 두 번 설명했습니다:
-           04 2층카드       — 「무엇을 파는가」   사전점검 · 기한관리 (2카드, 개요, CTA 보유)
-           05 WHAT WE CHECK — 「무엇을 확인하나」 사전점검 · 바이어확인 · 기한관리 (3카드, 상세)
-         그 중복이 실재한다는 증거는 코드 자신에 있었습니다 — .cards-lead(「각각 무엇을
-         확인해 드리는지는 아래에서 하나씩 펼쳐…」)는 **두 섹션이 중복이 아님을 문장으로
-         변명하려고** 2026-08-13 에 신설된 줄이었습니다. 구조가 옳으면 변명이 필요 없습니다.
-
-         지금 구조: **탭 3개 + 패널 3개** 〔2026-08-14 · cards-tabs-s12 에서 아코디언 대체〕.
-         한 상품 = 한 탭 = 한 번의 설명입니다.
-           탭 라벨(.tab)      — 생애주기 · 상품명
-           패널(.feat-panel)  — 상태줄 · 요약 · 설명 · 불릿 · 예시화면 · 실행버튼(세 상품 전부)
-
-         🔄 아코디언에서 탭으로 바꾼 사유는 CSS 쪽 `.feats` 주석에 있습니다 — 요약하면
-            **펼침이 줄을 재배치해서 스크롤 보정이 필요했고, 탭은 자리가 고정이라 그 일이
-            아예 생기지 않습니다.**
-
-         ⛔ 두 섹션으로 다시 가르지 마십시오. 가르는 순간 중복이 그대로 돌아옵니다.
-         ⛔ 4번째 탭으로 HS코드·FTA 세율조회를 넣지 마십시오 — 층위 정리(흐름 md §4-1):
-            사전점검·바이어확인·기한관리는 각자 독립된 흐름과 화면을 가진 완결된 상품이고,
-            HS코드·세율조회는 그 안(사전점검 리포트)의 세부 콘텐츠 항목입니다.
-         ⛔ **동시 다중 펼침 정책은 폐기됐습니다** — 아코디언 전제의 규칙이었고 탭은 정의상
-            하나입니다. 08 FAQ 는 여전히 다중 펼침이며 그쪽은 건드리지 않았습니다.
-         ⚠️ 세 탭은 반드시 같은 인터랙션입니다 — 「누르면 항상 같은 자리에서 내용만 바뀐다」.
-            기준을 최소개발 상태인 바이어확인에 맞춘 결정입니다. 탭별로 즉시이동·무반응처럼
-            다른 반응을 두면, 어느 탭이 눌릴지 예측이 안 됩니다.
-         ✅ **세 패널이 각각 실행버튼을 갖습니다** 〔2026-08-14 · tab-cta-parity-s14〕.
-            종전 금지(「사전점검·바이어확인에 실행버튼 금지」)의 사유는 「**바로 다음** 「결」
-            섹션의 주 CTA 와 중복」이었고, 그 사이에 05 근거 섹션이 들어오면서 소멸했습니다.
-            🔄 2026-08-16 재배치로 결 CTA 는 아예 이 섹션 **앞**이 됐습니다 — 사이에
-               안심문구가 놓이고, 스크롤 방향도 반대라 두 버튼이 한 화면에 겹치지 않습니다.
-               소멸한 사유가 되살아나지 않았습니다.
-            셋 다 보조버튼(btn-secondary)이라 주버튼 2회 규칙은 그대로입니다.
-         ⚠️ 어느 탭에도 가격을 쓰지 마십시오.
-         기본값은 첫 탭 선택이고, JS 가 죽어도 상품 이름 3개와 첫 상품 설명이 그대로 보입니다. -->
-    <section class="cards-sec" id="service" aria-labelledby="cards-title">
-      <div class="container cards-inner">
-        <!-- 흐름 md §4-1 이 **이 h2 를 3분류 구조의 원문으로 지목**했으므로 통합 섹션의
-             제목은 이것입니다. 구 05 의 h2(「무엇을 확인해 드리는지, 하나씩 펼쳐보세요.」)는
-             아래 리드로 내려가 조작 안내를 맡습니다 — 문장이 사라진 것이 아닙니다. -->
-        <h2 id="cards-title">We’ve split things up for before and after your trade starts.</h2>
-        <!-- 🔄 이 줄의 역할이 바뀌었습니다 〔2026-08-14〕. 종전에는 04→05 로 넘기는
-             다리이자 「둘은 중복이 아니다」라는 변명이었습니다. 섹션이 하나가 된 지금은
-             구 05 의 h2 를 흡수해 **카드를 어떻게 보는지 알려주는 조작 안내**가 됩니다.
-             ⚠️ <a href="#feats"> 를 되살리지 마십시오 — 자기 섹션 안으로 가는 링크가 됩니다. -->
-        <!-- 🔄 「하나씩 펼쳐보세요」 → 「하나씩 눌러보세요」 〔2026-08-14 · cards-tabs-s12〕.
-             펼칠 것이 없어졌습니다 — 탭은 펼치는 것이 아니라 **바꾸는** 것입니다. 조작 안내가
-             화면과 다르면 안내가 아니라 오안내입니다.
-             ⚠️ 「펼쳐」로 되돌리지 마십시오. 되돌리려면 아코디언부터 되살려야 합니다. -->
-        <p class="cards-lead">We start with what you can use today. Tap through to see what each one checks.</p>
-
-        <!-- 앵커 id="feats" 는 여기 남깁니다. 옛 05 섹션의 id 였고 외부·과거 링크가 걸려
-             있을 수 있어, 없애면 죽은 링크가 됩니다. 도착지가 카드 목록 맨 위라 뜻도 맞습니다.
-             ⚠️ 주석을 「#」로 시작하지 마십시오 — html-minifier-terser 의 기본
-                ignoreCustomComments(/^\s*#/)에 걸려 그 주석만 배포본에 그대로 남습니다
-                (2026-08-14 에 실제로 빌드가 여기서 멈췄습니다). -->
-        <div class="feats" id="feats">
-
-          <!-- ===== 탭 줄 =====
-               ⚠️ role="tablist" 안의 자식은 **[role=tab] 뿐**이어야 합니다. 거터를 만들려고
-                  빈 <div> 를 넣지 마십시오 — 탭 관계가 깨집니다(거터는 CSS 트랙입니다).
-               ⚠️ 순서는 생애주기 순입니다: 거래 시작 전 · 전 · 후. 순서를 바꾸면 4열 규칙
-                  (`.tabs > [role="tab"]:last-child { grid-column: 4 }`)이 엉뚱한 탭을 따라갑니다.
-               ⚠️ 기본 선택은 첫 탭입니다. JS 가 죽어도 **상품 이름 3개와 첫 상품 설명**이
-                  그대로 보입니다(옛 아코디언은 이름 3개만 보였습니다 — 후퇴가 아닙니다). -->
-          <div class="tabs" role="tablist" aria-label="Three services">
-            <!-- 상품명 정본 〔2026-08-13 · 흐름 md §1〕. /precheck `<title>`·og:title·
-                 플랜명 · 결제창 주문명(api/_payment.js ORDER_NAME)이 **모두 이 문자열**입니다.
-                 한 곳만 고치지 마십시오. -->
-            <button class="tab" type="button" role="tab" id="feat-precheck" aria-controls="feat-precheck-panel" aria-selected="true" tabindex="0">
-              <span class="feat-meta">Before your trade starts</span>
-              <span class="feat-title">Export pre-check</span>
-            </button>
-            <button class="tab" type="button" role="tab" id="feat-contract" aria-controls="feat-contract-panel" aria-selected="false" tabindex="-1">
-              <!-- 🔄 종전 2번 상품 → 「Export contract management」 〔2026-08-23 · PRD v2.1 B2-2〕.
-                   국문 index.html 과 같은 자리·같은 처리입니다. 원문은 §5-2 이고, 영문은
-                   그 뜻을 옮긴 것입니다(PRD 는 국문만 확정했습니다). -->
-              <span class="feat-meta">At contract signing</span>
-              <span class="feat-title">Export contract management</span>
-            </button>
-            <button class="tab" type="button" role="tab" id="feat-timeline" aria-controls="feat-timeline-panel" aria-selected="false" tabindex="-1">
-              <!-- 🔄 「Deadline tracking」 → 「Export receivables & insurance」
-                   〔2026-08-23 · PRD v2.1 B2-3〕. 원문은 §5-3.
-                   ⛔ 이 패널에 「we'll notify you」류의 발송 약속을 쓰지 마십시오 —
-                      `L1_EMAIL_TOKEN` 미설정으로 메일이 나가지 않습니다(PRD P-3).
-                   🔴 id 는 `feat-timeline` 그대로 둡니다 — 나간 메일이 이 앵커로 들어옵니다
-                      (api/_notify.js `buildTimelinePreviewLink`). -->
-              <span class="feat-meta">During fulfilment and after</span>
-              <span class="feat-title">Export receivables &amp; insurance</span>
-            </button>
-          </div>
-
-          <!-- ===== 01 사전점검 패널 — 실행버튼 [비교해 보기] → /precheck =====
-               🔄 **예시화면이 c03-result.jpg 로 돌아왔습니다** 〔2026-08-14 · basis-split-s13〕.
-                  이 상품이 파는 것은 **대조 결과화면 그 자체**이므로, 상품 탭에는 그 화면이
-                  와야 합니다. 종전에 detail 컷을 빌려 쓰던 이유(바로 위 03 신뢰 섹션이
-                  c03-result.jpg 를 쓰고 있어 한 화면 거리에 같은 그림이 두 번 남)는
-                  **재배치로 사라졌습니다** — 그 캡처는 05 근거 섹션으로 내려갔고, 그쪽은
-                  이제 detail 컷(참조 서식 조항번호를 인용한 확인 질문)을 씁니다.
-               ⚠️ 두 컷을 서로 바꾸지 마십시오. 여기는 「무엇을 받는가」(대조 결과),
-                  05 근거는 「무엇을 근거로 비교하는가」(참조 서식을 인용한 질문)입니다. -->
-          <div class="feat-panel" id="feat-precheck-panel" role="tabpanel" aria-labelledby="feat-precheck" tabindex="0">
-            <div class="feat-panel-pad">
-              <div class="feat-body">
-                <span class="feat-avail">Available now</span>
-                <!-- 🔄 v-next 전면교체(2026-08-16)로 .feat-sum·.feat-desc 를 새 원고로 교체. -->
-                <p class="feat-sum">Before you sign, check the other terms first.</p>
-                <p class="feat-desc">We compare the NDA your buyer sent against a standard form and show you what’s different first. So you can catch an important term before signing, not after.</p>
-                <span class="feat-bullets">
-                  <!-- 🔄 종전 「로그인 불필요」 문구 → 가입 유도 카피 (핸드오프 3b · 2026-08-20) -->
-                  <span>· Sign up with no credit card · Results saved free</span>
-                </span>
-                <!-- ✅ **실행버튼이 생겼습니다** 〔2026-08-14 · tab-cta-parity-s14〕.
-                     여기에는 「사전점검·바이어확인 패널에 실행버튼을 넣지 마십시오」라는 금지가
-                     있었고, 사유는 「**바로 다음** 「결」 섹션의 주 CTA 와 중복」이었습니다.
-                     **재배치로 그 사유가 소멸했습니다** — s13 이 05 근거 섹션(527px)을 사이에
-                     넣었고, A3 §2(2026-08-16)는 결 CTA 를 이 섹션보다 **앞**으로 보냈습니다.
-                     두 버튼은 더 이상 한 화면에 함께 놓이지 않습니다.
-                     ⚠️ btn-secondary 입니다. btn-primary 로 올리면 주버튼이 3회가 됩니다
-                        (시각사양 2 「페이지당 최대 2회」 — 히어로와 06 결, 둘뿐입니다).
-                     ⚠️ 라벨은 **목적지가 정합니다**. /precheck 로 가는 것은 페이지에서 전부
-                        「비교해 보기」입니다(히어로 · 여기 · 바이어확인 탭 · HOW 하단 · 06 결).
-                        같은 곳으로 가는데 다른 말을 쓰면 다른 곳으로 읽힙니다. -->
-                <div><a class="btn btn-secondary" href="/en-precheck">Compare now</a></div>
-              </div>
-              <figure class="feat-shot">
-                <img src="/assets/img/precheck-report.jpg" alt="Export pre-check result screen: the regulations and preparations to check, organised by item and destination country" width="1600" height="1000" loading="lazy">
-                <figcaption class="feat-cap">We organise the regulations and preparations you need to check, based on your item and destination country.<br>* An example screen, shown to illustrate.</figcaption>
-              </figure>
-            </div>
-          </div>
-
-          <!-- 🔴 TODO 〔B2 이월 · 2026-08-23〕 — 종전 2번 상품(앱 실명칭 「기업검증」)의
-               산출물 캡처를 보관합니다. 국문 index.html 의 같은 주석과 짝입니다 —
-               되살릴 때의 규칙(실명 → 가상값)은 그쪽에 적혀 있습니다. 지우지 마십시오.
-
-          <figure class="feat-shot">
-            <img src="/img/buyer-doc.jpg" alt="Supplier information sheet: corporate existence and fraud-signal checks with their status, evidence and verification time, laid out as a document you can send to your counterparty" width="1644" height="1085" loading="lazy">
-            <figcaption class="feat-cap">An example document built from fictional company information. Not real customer data.</figcaption>
-          </figure>
-          -->
-
-          <!-- ===== 02 Export contract management 패널 =====
-               ⚠️ 목적지는 PRD §6-1 이 정한 `app.trops.kr/procedures/new` 입니다. -->
-          <div class="feat-panel" id="feat-contract-panel" role="tabpanel" aria-labelledby="feat-contract" tabindex="0" hidden>
-            <div class="feat-panel-pad">
-              <div class="feat-body">
-                <span class="feat-avail">Free to use</span>
-                <p class="feat-sum">Keeping contracts in a shared drive isn’t enough.</p>
-                <p class="feat-desc">We bring each buyer’s contract terms, payment terms, Incoterms and key fulfilment dates together in one place. After signing, you can track what still needs attention through delivery and payment, deal by deal.</p>
-                <div><a class="btn btn-secondary" href="https://app.trops.kr/procedures/new" target="_self">Register an export contract</a></div>
-              </div>
-              <!-- 🔄 플레이스홀더로 자리와 비율(1600×1000)을 확정했습니다 〔2026-08-23 · B3-a〕.
-                   실제 캡처가 생기면 **같은 파일명으로 덮어쓰기만** 하면 됩니다(국문과 같음). -->
-              <figure class="feat-shot">
-                <img src="/assets/img/contract-list.jpg" alt="Placeholder for the export contract list screen, to be replaced with the real capture" width="1600" height="1000" loading="lazy">
-                <figcaption class="feat-cap">You can manage each buyer’s contract terms, payment schedule and fulfilment status in one place.<br>* An example screen, shown to illustrate.</figcaption>
-              </figure>
-            </div>
-          </div>
-
-          <!-- ===== 03 Export receivables & insurance 패널 =====
-               ⛔ 발송 약속(「we'll notify you」) 금지 — PRD P-3.
-               ⚠️ 증권 목록은 `/policies`, 등록은 `/profile/insurance` 입니다(PRD §6-1). -->
-          <div class="feat-panel" id="feat-timeline-panel" role="tabpanel" aria-labelledby="feat-timeline" tabindex="0" hidden>
-            <div class="feat-panel-pad">
-              <div class="feat-body">
-                <span class="feat-avail">Free to use</span>
-                <p class="feat-sum">With trade insurance, meeting the notification and filing deadlines<br>matters more than signing up.</p>
-                <!-- 🔴 훅 문장은 그대로 둡니다 — 국문 index.html 의 같은 자리와 짝입니다
-                     (그쪽은 발송된 대기실 메일이 이 문장을 싣고 있습니다). 한쪽만 지우면
-                     test/naming-consistency.test.js STRUCT_DELTA 가 갈라집니다. -->
-                <p class="feat-hook">Do you know how many deadlines are hiding in a single contract?</p>
-                <p class="feat-desc">Register the insurance products you hold and the deadlines set by their terms are laid out as individual items. Each item carries the clause it comes from, and you can see overdue notifications separately from cases where the reference date still needs to be fixed. We support the main products from K-SURE and KODIT.</p>
-                <div><a class="btn btn-secondary" href="https://app.trops.kr/profile/insurance" target="_self">Register your policy</a></div>
-              </div>
-              <!-- ✅ 실제 화면 캡처 — 아래 건수 카드 3장이 위 .feat-desc 의 「overdue /
-                   reference date to be fixed」와 문자 그대로 대응합니다(국문과 같음).
-                   ⚠️ 건수 0/0/0 은 로그아웃 상태의 사실입니다. 지어 넣지 마십시오. -->
-              <figure class="feat-shot">
-                <img src="/assets/img/policy-deadlines.jpg" alt="Policy deadline dashboard: a world map with registered contracts marked over their destination countries, and three count cards splitting overdue, imminent and everything else" width="1600" height="1000" loading="lazy">
-                <figcaption class="feat-cap">We lay out the notification deadlines for the policies you register, together with the clause each one comes from.<br>* An example screen, shown to illustrate.</figcaption>
-              </figure>
-            </div>
-          </div>
-
-        </div>      </div>
-    </section>
-
-    <!-- ===== 무료·유료 (PRD v2.1 §5-13 · 신설 2026-08-23 · B3-a) =====
-         국문 index.html 과 짝입니다. 배경(--surface)과 그로 인한 하류 다섯 곳의 배경
-         뒤집기도 국문과 같습니다 — 문구는 그대로이고 sec-surface 만 옮겼습니다.
-         ⛔ 여기에 금액을 적지 마십시오 — 가격은 결제 단계에서만 보입니다. -->
-    <section class="pricing-sec sec-surface" id="pricing" aria-labelledby="pricing-title">
-      <div class="container pricing-inner">
-        <div class="body-w">
-          <h2 id="pricing-title">Checking is free. Issuing a report is paid.</h2>
-          <div class="pricing-cols">
-            <div class="pricing-col">
-              <p class="pricing-head">Free to use</p>
-              <ul class="pricing-list">
-                <li>· The full export pre-check result screen</li>
-                <li>· Registering export contracts and tracking their deadlines</li>
-                <li>· Registering receivables and insurance policies, and tracking notification deadlines</li>
-                <li>· Downloading the deadline list as a spreadsheet</li>
-                <li>· FX trend and trade news briefings</li>
-              </ul>
-            </div>
-            <div class="pricing-col">
-              <p class="pricing-head">What you pay for</p>
-              <ul class="pricing-list">
-                <li>· Issuing the pre-check report (PDF), its share link, and re-issues</li>
-                <li>· The full set of per-item actions with expected time and cost<br><span class="pricing-note">(your first one is free to view)</span></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== 예정 항목 =====
-         🔄 v-next 전면교체(2026-08-16)로 로드맵 두 행의 이름을 기존 3상품명 중 두 개
-            (「수출 사전점검」·「기한 관리」)로 재사용하도록 바꿨습니다 — **대표 확정
-            변화**입니다. 이 두 행은 새 상품이 아니라 **기존 상품의 확장분**(서식 종류
-            확대 / 통관·대금회수 범위 확대)을 가리키며, 상품소개 섹션의 「지금 쓸 수
-            있습니다」와 여기의 배지가 겉보기엔 모순처럼 보이지만, 가리키는 대상이
-            다릅니다(기본 기능은 지금 쓸 수 있고, 확장분만 개발 중) — 그대로 둡니다.
-         🔄 01행 배지를 「준비 중」→「현재 일부 동작 및 추가 개발 중」으로, 02행은
-            「준비 중」 그대로 두는 것으로 대표가 확정했습니다(2026-08-16 수정안).
-         🔄 01행에 잠깐 붙어 있던 보충 문구("더 확인할 내용이 있다면 TROPS의 결과물을…")는
-            같은 날 다음 확인에서 **FAQ 「법률 자문인가요?」 답변으로 옮겼습니다** — 로드맵이
-            아니라 그 문항의 맺음말이 원래 자리였습니다. .rm-note 클래스는 이제 쓰지
-            않습니다(죽은 규칙이라 CSS 에서도 지웠습니다).
-         ⛔ 금액·오픈월을 적지 마십시오 — test/roadmap-no-price.test.js 가 지킵니다. -->
-    <!-- .sec-surface 〔2026-08-14〕 — 이웃이 둘 다 --bg 라 여기가 --surface 여야 교차합니다. -->
-    <section class="how" id="next" aria-label="Coming soon">
-      <div class="container how-inner">
-        <!-- 🔄 **전면교체** 〔2026-08-23 · PRD v2.1 §5-14 · B3-a〕. 국문과 짝입니다.
-             🔄 상태 배지(.rm-meta)와 기한관리 미리보기 훅·버튼을 뺐습니다 — §5-14 에
-                없습니다. data-timeline-open 이 페이지에서 사라졌고, JS 는
-                `if (!openers.length) return` 로 이미 막혀 있어 안전합니다. -->
-        <p class="kicker">WHAT'S NEXT</p>
-        <h2 class="rm-h2">Connecting the whole export workflow, more tightly</h2>
-
-        <div class="rm">
-          <div class="rm-row">
-            <p class="rm-name"><span class="rm-num">01</span>More items and countries covered by the export pre-check</p>
-            <p class="rm-desc">Starting with North America (the US), we’re widening coverage to the destination countries and item groups with the most demand in practice.</p>
-          </div>
-          <div class="rm-row">
-            <p class="rm-name"><span class="rm-num">02</span>Deeper links to export receivables and trade insurance</p>
-            <p class="rm-desc">Beyond laying out notification deadlines, we’ll add deadline alerts, buyer credit limit checks and overdue receivable tracking, step by step.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== 09 QnA =====
-         🔴 v-next 전면교체(2026-08-16)로 FAQ를 4그룹 10문항으로 전면 재편했습니다.
-            id는 qa-1~10으로 재부여했습니다(기존 듬성듬성 번호 보존 규칙은 전면 재편
-            앞에서 의미가 없어져 폐기).
-         🔴 「법률 자문인가요?」(구 qa-12 → 새 qa-10)는 계속 유지합니다 — 법률자문
-            오인 리스크의 방어선 문항이라 삭제 대상이 아닙니다. 답변 말미의 재프레이밍
-            문장("전문가를 찾으시기 전에…")은 07 안심문구와 함께 삭제했습니다.
-         🔴 「NDA가 뭔가요?」(구 qa-1, /check 링크 포함)는 새 세트에서 완전히 빠졌습니다.
-         ⚠️ 기본값은 전부 접힘. 여러 개 동시 펼침 허용(하나만 열리는 방식 금지, C-3).
-         ⚠️ 셰브론에 액센트를 쓰지 마십시오. -->
-    <section class="qna sec-surface" id="qna" aria-labelledby="qna-title">
-      <div class="container qna-inner">
-        <h2 id="qna-title">FAQ</h2>
-        <!-- 🔄 **전면교체** 〔2026-08-23 · PRD v2.1 B2-7〕. 국문 index.html 과 짝입니다 —
-             원문은 §5-8 이고 영문은 그 뜻을 옮긴 것입니다. 종전 4그룹은 사전점검 하나만
-             설명해서, 상품이 3종이 된 지금 「이 회사가 무엇을 파는가」에 답하지 못했습니다.
-             ⚠️ 국문과 문항 수·순서를 맞춰 두십시오. 한쪽만 고치면 두 페이지가 다른 제품을
-                설명하게 됩니다. -->
-        <div class="body-w qgroups">
-
-          <div class="qgroup">
-            <p class="eyebrow-quiet">▸ Deciding to adopt</p>
-            <div class="qitem" data-open="0">
-              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-1">
-                <span>What changes in day-to-day work if we adopt TROPS?</span>
-                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-              </button>
-              <div class="qans" id="qa-1">
-                <p>Export trade information that was scattered across contract PDFs, insurance policies, your ERP, spreadsheets and personal calendars comes together on one screen. For each deal you see what needs action now alongside what is coming up, so you don’t have to rely on someone’s memory or handwritten notes.</p>
-              </div>
-            </div>
-            <div class="qitem" data-open="0">
-              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-2">
-                <span>What kind of company is this for?</span>
-                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-              </button>
-              <div class="qans" id="qa-2">
-                <p>It suits small and mid-sized exporters who track export contracts and receivable schedules in spreadsheets or calendars, or where someone has to keep on top of notification and filing deadlines themselves after taking out trade insurance. We built it with teams in mind that have no dedicated trade-admin staff, or where one person covers several jobs at once.</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="qgroup">
-            <p class="eyebrow-quiet">▸ Using it</p>
-            <div class="qitem" data-open="0">
-              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-3">
-                <span>Can I use this without a contract file?</span>
-                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-              </button>
-              <div class="qans" id="qa-3">
-                <p>Yes. Enter just your export item and destination country and you can use the pre-check straight away. When you register a deal you can also type in the key details yourself, such as buyer name, payment terms and due date.</p>
-              </div>
-            </div>
-            <div class="qitem" data-open="0">
-              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-4">
-                <span>Can I manage ordinary export deals that have no trade insurance?</span>
-                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-              </button>
-              <div class="qans" id="qa-4">
-                <p>Yes. You can use it purely for delivery schedules, Incoterms and invoice due dates on ordinary export contracts. If you take out trade insurance later, you can link the policy details and notification deadlines on top.</p>
-              </div>
-            </div>
-            <div class="qitem" data-open="0">
-              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-5">
-                <span>Which insurance products do you support?</span>
-                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-              </button>
-              <div class="qans" id="qa-5">
-                <p>We support K-SURE’s short-term export insurance blanket policies (per-shipment and aggregate notification), SME/Mid-cap Plus+, Direct SME Plus+ and Direct Post-Shipment, along with KODIT’s online accounts-receivable insurance. We keep adding to the list.</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="qgroup">
-            <p class="eyebrow-quiet">▸ Features and operations</p>
-            <div class="qitem" data-open="0">
-              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-6">
-                <span>What information can I manage, specifically?</span>
-                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-              </button>
-              <div class="qans" id="qa-6">
-                <p>Per-deal contract terms (Incoterms, payment terms), invoice due dates, buyer details, outstanding receivables, and trade insurance policy details with their notification and filing deadlines, all in one place.</p>
-              </div>
-            </div>
-            <div class="qitem" data-open="0">
-              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-7">
-                <span>We already run an ERP. Do we still need TROPS?</span>
-                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-              </button>
-              <div class="qans" id="qa-7">
-                <p>A typical ERP focuses on accounting and on sales and inventory data. TROPS focuses on the trade-practice side: meeting contract obligations, keeping to trade insurance notification deadlines, tracking receivable maturities by buyer. It covers the scheduling-driven admin that is easy to let slip.</p>
-              </div>
-            </div>
-            <div class="qitem" data-open="0">
-              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-8">
-                <span>How is this different from managing it in a spreadsheet?</span>
-                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-              </button>
-              <div class="qans" id="qa-8">
-                <p>If you have few deals and someone checks them daily, a spreadsheet works. But as you add counterparties and insurance conditions get more complex, missed entries and date mistakes become easy. TROPS turns the deadlines set by the policy terms into individual items and shows the clause each one comes from, so you can see what to attend to and why.</p>
-              </div>
-            </div>
-            <div class="qitem" data-open="0">
-              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-9">
-                <span>How do I check deadlines?</span>
-                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-              </button>
-              <div class="qans" id="qa-9">
-                <p>Based on the contracts and policies you register, the screen separates what is overdue, what still needs its reference date fixed, and what is coming up. You can download the deadline list as a spreadsheet.</p>
-              </div>
-            </div>
-            <div class="qitem" data-open="0">
-              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-10">
-                <span>Where is AI used?</span>
-                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-              </button>
-              <div class="qans" id="qa-10">
-                <p>It reads the contracts and policy documents you register and pulls out the clauses, payment dates and special conditions needed to manage them. You can always check what it produced against the original.</p>
-              </div>
-            </div>
-            <div class="qitem" data-open="0">
-              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-11">
-                <span>How are uploaded documents stored?</span>
-                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-              </button>
-              <div class="qans" id="qa-11">
-                <p>Original documents you register are deleted automatically after 30 days. If you ask us to delete one sooner, we do it right away.</p>
-              </div>
-            </div>
-            <div class="qitem" data-open="0">
-              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-12">
-                <span>How is buyer information inside a document handled?</span>
-                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-              </button>
-              <div class="qans" id="qa-12">
-                <p>Documents and company information you register are used only to provide the service and run the comparison. We don’t pass them to third parties or use them to train models.</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- 🔄 **확정본으로 교체** 〔2026-08-23 · PRD v2.1 §5-8 「결과물의 성격」〕.
-               국문이 원문이고 영문은 **같은 취지로 옮긴 것**입니다(사용자 지시).
-               ⛔ 세 답변 모두 「No.」로 시작합니다. 완곡하게 다듬지 마십시오. -->
-          <div class="qgroup">
-            <p class="eyebrow-quiet">▸ What you get</p>
-            <div class="qitem" data-open="0">
-              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-13">
-                <span>Is the pre-check report I receive a certificate?</span>
-                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-              </button>
-              <div class="qans" id="qa-13">
-                <p>No. It is a self-assessment document that organises the information your company submitted against publicly available regulations. It is not a certification, an approval, or an inspection result. The reference number is there so you can open the issued report again.</p>
-              </div>
-            </div>
-            <div class="qitem" data-open="0">
-              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-14">
-                <span>Does using TROPS guarantee a trade insurance payout?</span>
-                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-              </button>
-              <div class="qans" id="qa-14">
-                <p>No. TROPS is operational management software that organises and presents the notification deadlines and contract conditions set out in your trade insurance terms. Whether a claim is actually assessed and paid is decided by the relevant institution, such as K-SURE, under its own terms and review criteria.</p>
-              </div>
-            </div>
-            <div class="qitem" data-open="0">
-              <button class="qbtn" type="button" aria-expanded="false" aria-controls="qa-15">
-                <span>Does what TROPS organises replace legal advice?</span>
-                <span class="qchev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5L7 10L12 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-              </button>
-              <div class="qans" id="qa-15">
-                <p>No. TROPS is B2B software that organises your export contract, receivables and trade insurance schedules so you can manage them more efficiently. For judgements on legal disputes or on insurance assessment, you should confirm with a licensed customs broker, a lawyer, or the relevant public institution.</p>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== 10 마감 CTA (정본 §2 10번 → 2026-08-13 재확정) =====
-         🔄 주 CTA 는 페이지에서 **2회**입니다 — 히어로와 05 「결」 섹션(둘 다 btn-full).
-            이 주석에는 「3회 … 히어로 · 04 01카드 · 여기」라고 적혀 있었는데, 04 카드의
-            버튼은 2026-08-13 에 보조로 강등됐고 2026-08-14 재배치에서 아예 사라졌으며
-            (그 카드가 아코디언으로 흡수), 마감 CTA 의 주버튼도 2026-08-13 에 빠졌습니다.
-            주석만 옛 수를 들고 있었습니다.
-         ⚠️ 여기에 btn-primary 를 넣지 마십시오 — 주버튼이 3회가 됩니다(시각사양 2).
-         ⚠️ 리드 문장을 추가하지 마십시오. 안심 문구와 톤이 겹칩니다.
-         H2는 원래 확정본 §9 「상담 전에, 한 번 더 확인하세요.」였습니다. 「상담」이
-         이 서비스를 유상 자문으로 오해하게 한다는 지적에 따라 「수출 전 자가 점검」
-         포지셔닝(히어로 §2 eyebrow와 같은 프레이밍)으로 교체했습니다. -->
-    <section class="close-cta" aria-labelledby="close-cta-title">
-      <div class="container narrow-c sec-center close-cta-inner">
-        <!-- 2026-08-13 재구성 (흐름 md §1 시각층매핑 「마감 CTA」).
-             주버튼([비교해 보기])을 뺐습니다 — 주 CTA 는 히어로와 07 「결」 두 번뿐이고,
-             마감 CTA 는 마지막 리마인더 역할만 합니다(시각사양 2 「페이지당 최대 2회」).
-             ⚠️ 여기에 btn-primary 를 되살리지 마십시오. 되살리면 주버튼이 3회가 됩니다.
-
-             h2 도 함께 교체했습니다: 주버튼이 없어진 뒤 「점검하세요」만 남으면 실행 수단
-             없는 명령이 되기 때문입니다. 이전 판은 「수출 전에, 한 번 더 점검하세요.」였고,
-             그 전에는 확정본 §9 「상담 전에, 한 번 더 확인하세요.」였습니다 — 「상담」이
-             유상 자문으로 오해된다는 지적으로 한 번 교체된 이력이 있어 확정본 원문 가드
-             대상이 아닙니다.
-             ⚠️ 금지 동사 5(자문·판단·검토·평가·진단)를 h2 에 쓰지 마십시오. -->
-        <h2 id="close-cta-title">Any more questions? Feel free to ask.</h2>
-        <!-- 🔄 대표 수정안(2026-08-16 3차) — [기한관리 미리보기] 버튼과 KOTRA 신뢰신호
-             문장(.close-cta-kotra, "초기 서비스는 KOTRA 멘토 네트워크에 먼저 배정됩니다.")을
-             둘 다 삭제했습니다. [문의하기] 하나만 남습니다. data-timeline-open 트리거는
-             이제 로드맵 한 곳뿐입니다(위 CSS .rm-hook 버튼 참조). -->
-        <div class="close-cta-row">
-          <a class="btn btn-secondary btn-full" href="#interest" data-purpose="inquiry" data-track="inquiry_cta">Contact us</a>
-        </div>
-        <p class="close-cta-note">We reply by email, in the order we receive them.</p>
-      </div>
-    </section>
-
-    <!-- ===== Interest form =====
-         랜딩 하단은 약한 버전입니다. 강한 버전("먼저 써보고 싶어요")은
-         precheck 결과지 페이지 하단 몫이므로 여기에 끌어오지 마십시오. -->
-    <section class="interest sec-surface" id="interest">
-      <div class="container interest-inner">
-        <!-- 보조 문구는 확정본 v3.1 §10 원문 그대로입니다. H2는 2026-08-13 재교체 —
-             기존 「거래 절차 트래킹이 열리면 가장 먼저 알려드립니다.」(2026-08-11,
-             §10 원문)는 "알려드립니다"로 끝나 수동적으로 읽혔습니다. 사용자가 지금
-             행동하도록 "시작하세요"로 능동형을 씁니다.
-             영문 /en §10 은 옛 국문 문구를 옮긴 채 그대로 둡니다(이번 배치는 국문
-             한정) — We'll let you know the moment trade procedure tracking opens. -->
-        <!-- 2026-08-13: h2 를 두 목적 모두 받는 문장으로 바꿨습니다. 히어로·마감 CTA 의
-             [문의하기]가 이 섹션으로 들어오므로, 제목이 기한관리 알림만 말하면 문의하러
-             온 사람이 잘못 온 줄 압니다.
-             🔴 2026-08-13 정정: 여기 있던 .interest-sub(KOTRA 멘토 네트워크)를 09 마감 CTA 의
-                [문의하기] 버튼 아래로 **옮겼습니다**(.close-cta-kotra). 이전 판 주석은 "그 자리가
-                지금 여기입니다" 라고 적었지만 틀렸습니다 — 이 폼은 [기한관리 출시 알림 받기]도
-                함께 받으므로, 그 문구가 여기 있으면 **알림 신청의 신뢰신호로 읽힙니다.** 그것이
-                흐름 md §4 가 "트래킹 대기자 등록에 붙어있던 문구를 재배치" 라고 지적한 바로 그
-                상태였습니다. 신뢰신호는 폼이 아니라 **버튼 옆**에 있어야 합니다.
-             ⚠️ 여기에 KOTRA 문구를 되살리지 마십시오. 두 곳에 두면 같은 오독이 다시 생깁니다.
-                근거 주석은 09 마감 CTA 의 .close-cta-kotra 위에 있습니다. -->
-        <!-- 🔄 PRD v2.1 §5-9 대응 〔2026-08-23 · B2-8〕. 국문 index.html 과 짝입니다.
-             ⚠️ [Talk to us about rollout]은 btn-secondary 입니다 — 이 폼의 제출 버튼이
-                이미 btn-primary 라 여기까지 올리면 페이지 주버튼이 3회가 됩니다. -->
-        <h2>Need a company-wide rollout or a feature partnership?</h2>
-        <div class="interest-cta"><button class="btn btn-secondary" type="button" data-focus-inquiry>Talk to us about rollout</button></div>
-        <p class="interest-note">Leave us a note and we’ll review and reply in the order received.</p>
-        <p class="interest-lead">Be first to hear about TROPS feature updates and our full launch.</p>
-        <form class="interest-form" id="interest-form" novalidate>
-          <!-- 🔴 목적 선택 라디오(사전 등록/문의하기)는 대표 수정안(2026-08-16)으로
-               삭제했습니다 — 이메일 아래 [문의하기] 입력창 하나로 대체했습니다(아래).
-               ⚠️ 「상담」이라는 낱말을 쓰지 마십시오 — 유상 자문 오인 이력이 있어 명칭을
-                  「문의하기」로 확정했습니다(흐름 md §2 · §6-2). -->
-          <div class="form-row">
-            <label for="interest-name">Full name <span class="req" aria-hidden="true">*</span></label>
-            <input type="text" id="interest-name" name="name" autocomplete="name" required>
-          </div>
-          <div class="form-row">
-            <label for="interest-email">Work email <span class="req" aria-hidden="true">*</span></label>
-            <input type="email" id="interest-email" name="email" autocomplete="email" required>
-          </div>
-          <!-- 🔴 신설 〔2026-08-16 · 대표 수정안〕. 목적 라디오를 대체합니다 — 무엇을
-               보낼지 고르게 하는 대신, 물어볼 내용을 바로 적을 수 있는 칸 하나를 이메일
-               바로 아래에 둡니다. 비워도 제출됩니다(사전 등록만 하고 싶은 사람도 있으므로
-               필수 아님). .form-row input 을 그대로 써서 이름·이메일과 크기가 같습니다. -->
-          <div class="form-row">
-            <label for="interest-inquiry">Your message <span class="optional">(optional)</span></label>
-            <input type="text" id="interest-inquiry" name="inquiry" autocomplete="off">
-          </div>
-          <div class="form-row">
-            <label for="interest-company">Company name <span class="optional">(optional)</span></label>
-            <input type="text" id="interest-company" name="company" autocomplete="organization">
-          </div>
-
-          <!-- 동의 2종 (2026-08-11 신설).
-               ⚠️ 하나로 합치지 마십시오. 개인정보 수집·이용 동의와 광고성 정보 수신
-                  동의는 근거 법이 다릅니다. 묶으면 선택 동의를 필수에 끼워 파는
-                  형태가 됩니다.
-               ⚠️ 필수 동의를 기본 체크 상태로 두지 마십시오.
-               영문 en.html §10 이 같은 두 항목을 갖습니다. 한쪽만 고치지 마십시오. -->
-          <div class="consents">
-            <div class="consent">
-              <input type="checkbox" id="interest-consent-privacy" name="consentPrivacy" required>
-              <div>
-                <label class="consent-head" for="interest-consent-privacy">
-                  <span class="consent-tag" aria-hidden="true">*</span>
-                  <span>Consent to the collection and use of personal information</span>
-                </label>
-                <p class="consent-body">We collect your name, email and company name (optional) to confirm your enquiry and send you service information. What we collect is handled under the applicable law and our <a href="/en-privacy">Privacy Policy</a>.</p>
-              </div>
-            </div>
-
-            <div class="consent">
-              <input type="checkbox" id="interest-consent-marketing" name="consentMarketing">
-              <div>
-                <label class="consent-head" for="interest-consent-marketing">
-                  <span class="consent-tag consent-tag-optional">Optional</span>
-                  <span>Opt in to feature updates and the export-practice newsletter</span>
-                </label>
-                <p class="consent-body">We’ll send feature release news and export-practice resources. (Declining doesn’t limit your use of the core service.)</p>
-              </div>
-            </div>
-          </div>
-
-          <button type="submit" class="btn btn-primary interest-submit" data-track="interest_submit">Register your interest</button>
-          <p class="interest-msg" id="interest-msg" role="status" aria-live="polite"></p>
-        </form>
-      </div>
-    </section>
-
-    <!-- ===== 11 기관 안내 (문구 §11 · 정본 C-4) =====
-         정본 §2-3의 앵커 도착지입니다 — 08 QnA 「어디에 물어볼 수 있나요」에서 들어옵니다.
-         ⚠️ 로고를 넣지 마십시오. 제휴 관계로 오인됩니다. 텍스트만.
-         ⚠️ 순번·평점·「추천순」 표기 금지. 문구 원문의 「·」 불릿을 그대로 씁니다 —
-            번호를 붙이면 순위로 읽힙니다.
-         ⚠️ 순서는 확정본 v3.1 §11 / 정본 v3 C-4 기준 기관 유형순으로 고정입니다:
-            관세청·KOTRA·FTA활용지원센터(공공기관) → 한국무역협회(협회) → 중기부(정부부처).
-            클릭 추적으로 순서를 바꾸지 마십시오.
-         ⚠️ 외부 링크를 걸지 않았습니다 — 링크를 걸면 액센트색이 5번 등장해
-            「로고 금지」가 막으려던 제휴 오인이 같은 방식으로 생깁니다. -->
-    <!-- 🔴 **일단 감춰 뒀습니다** 〔2026-08-24 · 사용자 지시 「일단 안보이게」〕.
-         지우지 않고 [hidden] 로만 막았습니다 — 되돌릴 때 `hidden` 두 글자만 빼면 됩니다.
-         문구·목록은 PRD §5-7 원문 그대로 남아 있습니다.
-
-         ⚠️ 배경 교차는 그대로입니다. 이 섹션은 bg 였고 바로 위 사전등록폼이 surface,
-            아래 푸터가 dark 라 빠져도 같은 배경끼리 만나지 않습니다 — 하류를 뒤집을
-            필요가 없었습니다(test/landing-order-s9.test.js O7).
-         ⚠️ LAYOUT 검사는 마크업 존재로 세므로 감춰도 통과합니다. 아주 지우실 거라면
-            test/landing-order-s9.test.js 의 「기관안내」 행도 함께 빼야 합니다.
-         ⚠️ 이 섹션으로 오는 앵커·링크는 없습니다(실측 0건) — 감춰도 끊기는 링크 없음. -->
-    <section class="orgs-sec" id="orgs" aria-labelledby="orgs-title" hidden>
-      <div class="container orgs-inner">
-        <div class="body-w">
-          <!-- 🔄 PRD v2.1 §5-7 〔2026-08-23 · B2-6〕. 국문이 원문이고 영문은 그 뜻을
-               옮긴 것입니다. 괄호 안 설명이 새로 들어왔습니다 — 기관 이름만으로는
-               어디에 물어볼지 알 수 없었습니다. -->
-          <h2 id="orgs-title">If you need legal, customs or public-support advice</h2>
-          <p class="orgs-lead">You can consult specialists at the public agencies below.</p>
-          <ul class="orgs">
-            <li>· Korea Customs Service, Customs Valuation and Classification Institute (tariff classification and HS codes)</li>
-            <li>· KOTRA overseas trade offices (local market research and buyer information)</li>
-            <li>· FTA Support Center (certificates of origin and preferential tariffs)</li>
-            <li>· Korea International Trade Association, Trade SOS (trade practice, legal and trade-policy advice)</li>
-            <li>· Ministry of SMEs and Startups, Business Support Division (sector specialist advice for SMEs)</li>
-          </ul>
-          <p class="orgs-note">※ TROPS has no partnership with these agencies and receives no compensation of any kind for listing them.</p>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- ===== Footer ===== -->
-  <footer class="footer">
-    <div class="container footer-inner">
-      <!-- 🔄 PRD v2.1 §5-10 〔2026-08-23 · B2-8〕. -->
-      <p class="footer-tag">From export contracts to receivables and insurance, your export admin in one place</p>
-      <div class="footer-row">
-        <span class="footer-mark">TROPS</span>
-        <!-- 태그라인 통일 〔2026-08-13〕. index 는 「바이어 서류 사전 확인」, precheck 는
-             「수출 거래 운영」으로 서로 달라서, 같은 회사의 두 페이지가 각각 다른 회사를
-             소개하는 것처럼 읽혔습니다. 둘 다 이 문구로 맞춥니다.
-             🔴 2026-08-16 마무리 정리 3 — 3기능을 뭉뚱그린 「수출 거래 확인과 기한 관리」
-                (「확인」이 사전점검+바이어확인을 함께 가리켜, 상품소개(§5) 탭 이름과
-                1:1로 안 읽혔습니다)에서 세 상품명을 그대로 나열하는 쪽으로 바꿨습니다 —
-                「수출 사전점검 · 수출 계약관리 · 수출 채권관리」. 탭 라벨(.feat-title) 세 개와 문자 그대로 대응합니다.
-                🔄 2026-08-23 〔B2〕 상품 3종 확정 명칭으로 갱신했습니다(PRD v2.1 §6-2).
-             ⚠️ 아래 .footer-links 의 /precheck 링크 라벨은 그 페이지 <title> 과 맞춰야 하므로
-                「수출 사전점검」입니다(2026-08-13 상품명 통일 반영). 태그라인은 3기능을 아우르는
-                별개 역할이라 그 이름을 그대로 쓰지 않습니다.
-             ⚠️ 고칠 때 precheck.html · check.html 의 .footer-meta 도 함께 고치십시오.
-                한쪽만 고치면 다시 어긋납니다(test/naming-consistency.test.js 가 index·
-                precheck 를 막습니다 — check.html 은 코드주석 짝으로만 관리됩니다). -->
-        <span class="footer-meta">Export pre-check · Export contract management · Export receivables management · contact@theo-ne.com</span>
-      </div>
-      <nav class="footer-links" aria-label="Policies">
-        <a href="/en-precheck">Export pre-check</a>
-        <a href="/en-refund">Refund policy</a>
-        <a href="/en-privacy">Privacy policy</a>
-      </nav>
-
-      <p class="footer-credit">KAIST OverEdge · AI Agent solo founder support program, 2026</p>
-
-      <dl class="footer-biz" aria-label="Business information">
-        <div><dt>Company</dt><dd>{{biz.companyName}}</dd></div>
-        <div><dt>CEO</dt><dd>{{biz.ceo}}</dd></div>
-        <div><dt>Business Registration No.</dt><dd>{{biz.registrationNo}}</dd></div>
-        <!-- 값은 전부 site.config.json 이 원본입니다(2026-08-11 단일소스화).
-             통신판매업신고번호가 확정되면 그 파일의 biz.ko.ecommerceNo 만 고치십시오 —
-             국문 5개 페이지가 함께 따라옵니다. 여기를 직접 고치지 마십시오. -->
-        <div><dt>E-Commerce Registration No.</dt><dd>{{biz.ecommerceNo}}</dd></div>
-        <div><dt>Address</dt><dd>{{biz.address}}</dd></div>
-        <!-- 🔄 §5-10 이 라벨을 「고객센터」로 확정했습니다 〔B2-8〕. -->
-        <div><dt>Customer support</dt><dd>{{biz.phone}}</dd></div>
-      </dl>
-
-      <div class="footer-legal">
-        <!-- "판단이 필요한 사안은 파트너 전문가로 연결됩니다" 는 뺐습니다(2026-08-09 승인).
-             아직 연결해 드릴 파트너 망이 없는 상태에서 약속으로 읽히는 문장이었습니다. -->
-        <p>TROPS · {{biz.companyName}}</p>
-        <!-- 🔄 PRD v2.1 §5-10 원문 대응 〔2026-08-23 · B2-8〕. 보험 관련 면책이 새로
-             들어왔습니다 — 상품 ③(수출 채권·보험관리)이 생겼기 때문입니다. -->
-        <p>※ TROPS is B2B software that helps you organise and manage information and working schedules related to export contracts, receivables and trade insurance. It does not provide legal advice under the Attorney-at-Law Act, nor does it carry out insurance underwriting or claim decisions on anyone’s behalf.</p>
-        <p>© 2026 TROPS · {{biz.companyName}}. All rights reserved.</p>
       </div>
     </div>
-  </footer>
+  </div>
+</section>
 
-  <script>
-  /* ---------- 접수 완료 배너 (2026-08-14 · 흐름 md §3) ----------
-     /precheck 의 `returnToLanding()` 이 붙여 보내는 세 파라미터만 읽습니다:
-       · intake=ok   — 이것이 있을 때만 배너를 엽니다(유일한 조건).
-       · r={token}   — 접수 확인 표로 돌아가는 링크. 없으면 링크 줄을 지웁니다
-                       (`/precheck` 로만 보내면 빈 접수 폼이 열려 「내 접수는?」이 됩니다).
-       · mail=late   — 확인메일 발송이 늦은 건. 그 사실을 화면을 옮기며 잃지 않습니다.
+<section class="report">
+  <div class="container">
+    <h2>Your export pre-check result</h2>
+    <p class="sub">Once the check is done, you can see at a glance what needs verifying<br>and what needs preparing for this export.</p>
 
-     🔴 **읽은 뒤 주소를 지웁니다**(replaceState → '/'). 두 가지 이유입니다:
-        ① 토큰이 주소창에 남으면 그 상태로 복사·공유될 수 있습니다. 링크의 href 는
-           DOM 에 이미 들어갔으므로 지워도 동작에는 영향이 없습니다.
-        ② 새로고침이나 북마크로 「접수되었습니다」가 되살아나지 않습니다.
-     ⚠️ 별도 IIFE 입니다 — 아래 폼 스크립트는 맨 위에서 `if (!form) return` 으로
-        빠져나가므로 같은 함수에 넣으면 폼이 없는 화면에서 조용히 죽습니다.
-     ⚠️ 배너를 CSS·마크업에서 미리 열지 마십시오. 그냥 들어온 방문자에게 접수
-        완료를 알리는 것은 사실이 아닙니다. */
-  (function () {
-    var box = document.getElementById('intake-return');
-    if (!box) return;
+    <figure class="shot">
+      <div class="mk" aria-label="수출 사전점검 결과 예시 화면">
+        <div class="mk-head">
+          <div>
+            <p class="mk-title">Electric vehicles to the US · Shipment 1</p>
+            <p class="mk-meta">United States · Electric vehicles</p>
+          </div>
+          <p class="mk-date">Checked 2026-08-28</p>
+        </div>
 
-    var params = new URLSearchParams(window.location.search);
-    if (params.get('intake') !== 'ok') return;
+        <div class="mk-grid">
+          <div class="mk-box">
+            <p class="mk-lab">Amount due after shipment and delivery</p>
+            <p class="mk-amt">72,400 <span>USD</span></p>
+            <div class="mk-3">
+              <div><span>Contract amount</span><b>100,000 USD</b></div>
+              <div><span>Advance payment</span><b>27,600 USD</b></div>
+              <div><span>Expected receipt</span><b>2026-10-13</b></div>
+            </div>
+          </div>
 
-    var token = params.get('r');
-    var link = document.getElementById('intake-return-link');
-    if (token) {
-      link.href = '/en-precheck?r=' + encodeURIComponent(token);
-    } else if (link && link.parentNode) {
-      link.parentNode.remove();
-      link = null;
-    }
+          <div class="mk-box">
+            <div class="mk-boxhead">
+              <p class="mk-h">First things to do · 2</p>
+              <span class="mk-go">Go to check →</span>
+            </div>
+            <div class="mk-todo"><i>1</i><div><b>Confirm trade insurance</b><span>There is an amount due after shipment and delivery</span></div></div>
+            <div class="mk-todo"><i>2</i><div><b>Confirm HS classification</b><span>Current code 8703.10 · 1 candidate to review</span></div></div>
+          </div>
+        </div>
 
-    /* ⚠️ 링크가 있는지를 **먼저** 보고 문장을 고릅니다. 「아래 링크를 열어 두시면」이라고
-       써 놓고 그 링크가 없는 조합(mail=late 인데 r 이 없는 경우)이 실제로 만들어집니다 —
-       토큰 없이 이 주소를 손으로 열면 그렇게 됩니다. 없는 것을 가리키지 않습니다. */
-    if (params.get('mail') === 'late') {
-      var sub = document.getElementById('intake-return-sub');
-      if (sub) {
-        sub.textContent = link
-          ? 'Your submission was recorded normally. The confirmation email is running a little late, ' +
-            'so open the link below to see your submission right away.'
-          : 'Your submission was recorded normally. The confirmation email is running a little late. ' +
-            'Please check your inbox again shortly.';
-      }
-    }
+        <div class="mk-stage">
+          <p class="mk-h">Export pre-check</p>
+          <div class="mk-steps">
+            <div class="mk-step"><b>Buyer</b><span>6 of 8 checked</span></div>
+            <div class="mk-step"><b>Contract</b><span>4 of 5 present</span></div>
+            <div class="mk-step rest"><b>Payment</b><span>Needs review</span></div>
+            <div class="mk-step"><b>Customs</b><span>5 of 6 checked</span></div>
+            <div class="mk-step rest"><b>Shipping</b><span>Needs review</span></div>
+          </div>
+        </div>
 
-    box.hidden = false;
+      </div>
+    </figure>
+    <p class="cap">Example result screen · demo data</p>
+  </div>
+</section>
 
-    try {
-      window.history.replaceState(null, '', '/en');
-    } catch (e) { /* 주소만 못 지울 뿐이라 배너는 그대로 둡니다. */ }
-  })();
+<section class="sec-surface who">
+  <div class="container">
+    <div class="who-grid">
+      <h2>Who this is for</h2>
+      <div class="who-list">
+        <p>Companies <b>exporting for the first time</b>, or preparing for a new destination market</p>
+        <p>Companies with <b>no dedicated export staff or department</b></p>
+        <p>Companies losing time checking and tracking everything <b>by search, phone calls and spreadsheets</b></p>
+      </div>
+    </div>
+  </div>
+</section>
 
-  /* ---------- 스크롤 진입 등장 (2026-08-13 · 흐름 md §1 「다이나믹함」 1번) ----------
-     또 하나의 독립 IIFE 입니다(아래 두 IIFE 와 같은 이유 — 폼 스크립트는 맨 위에서
-     빠져나가므로 같은 함수에 넣으면 폼이 없는 화면에서 조용히 죽습니다).
+<section class="ext" id="contact">
+  <div class="container">
+    <h2>Keep managing the work<br>after the check</h2>
 
-     🔴 **순서가 안전장치입니다.**
-        ① IntersectionObserver 가 없으면 여기서 그냥 return 합니다 — .reveal-armed 를
-           붙이지 않으므로 CSS 의 숨김 규칙이 아예 켜지지 않고, 문장은 처음부터 보입니다.
-        ② 있으면 .reveal-armed 를 붙여 숨김을 켠 **직후에** 관찰을 시작합니다.
-     ⚠️ .reveal-armed 를 CSS 나 마크업으로 미리 붙이지 마십시오. 그 순간 이 안전장치가
-        무력화되고, 관찰이 실패한 브라우저에서 인용문 한 블록이 영구히 사라집니다.
-     ⚠️ 한 번 보이면 관찰을 끊습니다(unobserve) — 스크롤을 오르내릴 때마다 다시
-        사라지는 것은 읽는 사람을 방해합니다.
-     prefers-reduced-motion 은 CSS 가 처리합니다(움직임만 끄고 내용은 남깁니다) —
-     여기서 따로 분기하지 않습니다. 08 QnA·05 아코디언과 같은 방침입니다. */
-  (function () {
-    var targets = document.querySelectorAll('.reveal');
-    if (!targets.length) return;
-    if (typeof window.IntersectionObserver !== 'function') return;
+    <div class="item">
+      <p class="t">We organise the documents and information your export steps call for</p>
+      <p class="d">Prepare what a customs broker or forwarder will ask for in advance,<br>so you spend less time repeating explanations and chasing document requests.</p>
+    </div>
 
-    document.documentElement.classList.add('reveal-armed');
+    <div class="item">
+      <p class="t">You can also keep track of contracts, receivables and insurance schedules for existing exports</p>
+      <p class="d">Payment terms, outstanding amounts, due dates and trade insurance schedules<br>for contracts already in progress.</p>
+    </div>
 
-    var io = new IntersectionObserver(function (entries) {
-      for (var i = 0; i < entries.length; i += 1) {
-        if (!entries[i].isIntersecting) continue;
-        entries[i].target.classList.add('is-in');
-        io.unobserve(entries[i].target);
-      }
-      /* 화면 아래쪽 12% 가 들어오면 켭니다 — 요소가 화면에 완전히 들어온 뒤에 시작하면
-         이미 읽고 있는 문장이 움직입니다. */
-    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.01 });
+    <div class="cta"><a class="btn btn-secondary btn-full" href="mailto:contact@theo-ne.com?subject=TROPS%20enquiry">Ask about export management</a></div>
+  </div>
+</section>
+</main>
 
-    Array.prototype.forEach.call(targets, function (el) { io.observe(el); });
-  })();
+<div class="notice">
+  <div class="container">
+    <div class="close-cta">
+      <p class="cc-t">Check your export steps now</p>
+      <a class="btn btn-light btn-full" href="https://app.trops.kr/export-precheck/new">Run a one-minute check</a>
+    </div>
+    <p>TROPS is a service that helps small and medium-sized exporters organise the steps and tasks an export requires, and manage schedules relating to export contracts, receivables and trade insurance.</p>
+    <p>TROPS does not provide legal advice or legal review of contracts under the Attorney-at-Law Act or the Foreign Legal Consultant Act, and does not underwrite insurance or adjudicate insurance claims. Information on eligibility, coverage and premiums is provided for reference only; approval and specific terms are determined by the relevant institution under its policy terms and review criteria.</p>
+  </div>
+</div>
 
-  /* ---------- 08 QnA 아코디언 (정본 C-3) ----------
-     별도 IIFE 입니다. 아래 폼 스크립트는 맨 위에서 `if (!form) return` 으로 빠져나가므로
-     같은 함수 안에 넣으면 폼이 없는 화면에서 QnA 가 조용히 죽습니다.
+<footer class="footer">
+  <div class="container">
+    <div class="inner">
+      <div class="f1">
+        <span>Theo-ne Inc. · CEO Hana Beom · 625-81-04032</span>
+        <span>B269-11, 524 Bongeunsa-ro, Gangnam-gu, Seoul, Republic of Korea</span>
+        <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>
+      </div>
+      <div class="f2">
+        <a href="/privacy.html">Privacy policy</a>
+        <a href="/refund.html">Refund policy</a>
+        <a href="/">한국어</a>
+      </div>
+      <p class="copy">© 2026 TROPS. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
 
-     펼침 상태는 CSS(.qitem[data-open]) 가 그리고, JS 는 data-open 과
-     aria-expanded 두 값만 뒤집습니다. 마크업이 이미 전부 접힌 상태(data-open="0" ·
-     aria-expanded="false")로 서버에서 내려오므로, JS 가 실패해도 질문 목록은 그대로 보입니다. */
-  (function () {
-    var groups = document.querySelector('.qgroups');
-    if (!groups) return;
-
-    /* 위임으로 한 번만 겁니다 — 14개에 각각 걸지 않습니다.
-       동시 펼침 허용이므로 다른 항목을 닫는 코드를 넣지 마십시오 (C-3). */
-    groups.addEventListener('click', function (e) {
-      var btn = e.target.closest('.qbtn');
-      if (!btn) return;
-      var item = btn.parentNode;
-      var open = item.getAttribute('data-open') === '1' ? '0' : '1';
-      item.setAttribute('data-open', open);
-      btn.setAttribute('aria-expanded', open === '1' ? 'true' : 'false');
-    });
-  })();
-
-  /* ---------- 04 상품소개 탭 + 기한관리 미리보기 트리거 ----------
-     또 하나의 독립 IIFE 입니다. 아래 폼 스크립트는 맨 위에서 `if (!form) return` 으로
-     빠져나가므로, 같은 함수에 넣으면 폼이 없는 화면에서 탭이 조용히 죽습니다
-     (08 QnA IIFE 와 같은 이유).
-
-     🔴 **아코디언에서 탭으로 바뀌었습니다** 〔2026-08-14 · cards-tabs-s12〕.
-        종전 IIFE 는 `data-open` 을 뒤집고 **스크롤을 보정**했습니다(revealFeat). 탭은 패널
-        자리가 고정이라 보정할 것이 없습니다 — 그 함수는 사라졌고, 사라진 것이 이 변경의
-        요지입니다. ⛔ 탭 전환에 스크롤 코드를 다시 넣지 마십시오. 넣는 순간 「같은 영역에서
-        내용만 바뀐다」는 이 구조의 전제가 깨집니다.
-
-     ⚠️ 마크업이 **첫 탭 선택 + 나머지 [hidden]** 상태로 내려옵니다. JS 가 실패해도 상품
-        이름 3개와 첫 상품 설명이 그대로 보입니다. 여기서 하는 일은 상태를 옮기는 것뿐입니다.
-     ⚠️ 기한관리 패널(#feat-timeline-panel)은 페이지에 하나뿐이고 로드맵
-        **한 곳**의 [data-timeline-open] 이 이 하나를 엽니다(히어로·마감 CTA 트리거는
-        v-next 전면교체〔2026-08-16〕와 대표 수정안 3차로 삭제). 트리거를 늘리는 것은
-        자유지만 패널을 복제하지는 마십시오 — 지도 에셋이 여러 번 로드되고 상태가 갈립니다. */
-  (function () {
-    var root = document.querySelector('.feats');
-    if (!root) return;
-    var tabs = Array.prototype.slice.call(root.querySelectorAll('[role="tab"]'));
-    if (!tabs.length) return;
-
-    function panelOf(tab) {
-      return document.getElementById(tab.getAttribute('aria-controls'));
-    }
-
-    /* 탭 하나를 선택합니다. 나머지는 함께 닫힙니다 — 탭은 정의상 하나입니다.
-       ⚠️ roving tabindex 를 지우지 마십시오. 안 하면 Tab 키가 탭 3개를 차례로 밟습니다.
-          탭 줄은 **하나의 정거장**이어야 하고, 그 안 이동은 화살표가 맡습니다(WAI-ARIA). */
-    function select(tab, moveFocus) {
-      tabs.forEach(function (t) {
-        var on = t === tab;
-        t.setAttribute('aria-selected', on ? 'true' : 'false');
-        t.setAttribute('tabindex', on ? '0' : '-1');
-        var panel = panelOf(t);
-        if (!panel) return;
-        if (on) panel.removeAttribute('hidden');
-        else panel.setAttribute('hidden', '');
-      });
-      if (moveFocus) tab.focus();
-    }
-
-    /* 위임으로 한 번만 겁니다 — 탭 3개에 각각 걸지 않습니다. */
-    root.addEventListener('click', function (e) {
-      var tab = e.target.closest('[role="tab"]');
-      if (tab) select(tab, false);
-    });
-
-    /* 🔴 **주소의 #앵커로 들어온 사람에게 그 탭을 열어 줍니다** 〔2026-08-14 · cards-tabs-s12〕.
-       이미 발송된 결제확인 메일이 `https://www.trops.kr/#feat-timeline` 을 싣고 있습니다
-       (api/_notify.js `buildTimelinePreviewLink`). 그 id 는 기한관리 **탭 버튼**에 있으므로
-       브라우저는 탭 줄까지 데려다주지만, 열려 있는 것은 첫 탭입니다 — 기한관리를 보러 온
-       사람에게 사전점검을 보여주게 됩니다.
-       ⚠️ 이 블록을 지우지 마십시오. 지우면 링크는 살아 있는데 **엉뚱한 탭**이 열립니다.
-          그 실패는 화면이 깨지지 않아서 가장 늦게 발견됩니다.
-       ⚠️ 여기서 스크롤하지 않습니다 — 앵커 이동은 브라우저가 이미 했고, `.tabs` 의
-          `scroll-margin-top: 84px` 이 sticky nav 를 피해 줍니다. */
-    function selectFromHash() {
-      var id = (location.hash || '').slice(1);
-      if (!id) return;
-      var tab = document.getElementById(id);
-      if (tab && tabs.indexOf(tab) !== -1) select(tab, false);
-    }
-    selectFromHash();
-    window.addEventListener('hashchange', selectFromHash);
-
-    /* 키보드 조작 — WAI-ARIA Tabs 패턴. 마우스만으로 쓸 수 있는 것은 절반입니다. */
-    root.addEventListener('keydown', function (e) {
-      var tab = e.target.closest('[role="tab"]');
-      if (!tab) return;
-      var i = tabs.indexOf(tab);
-      var n = tabs.length;
-      var next = -1;
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = (i + 1) % n;
-      else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = (i - 1 + n) % n;
-      else if (e.key === 'Home') next = 0;
-      else if (e.key === 'End') next = n - 1;
-      if (next === -1) return;
-      e.preventDefault();
-      select(tabs[next], true);
-    });
-
-    /* 히어로 · 로드맵 · 마감 CTA 의 「기한관리 미리보기」(세 곳).
-       페이지 이동이 아니라 같은 페이지 안에서 그 탭을 열고 그 자리로 옮겨 주는 것이
-       전부입니다(흐름 md §2 「같은 페이지 내 인라인 확장」).
-
-       🔄 **도착지가 카드가 아니라 섹션입니다** 〔2026-08-14 · cards-tabs-s12〕. 탭은 패널
-          자리가 고정이므로 「어디로 옮길까」를 계산할 필요가 없습니다 — 섹션 맨 위로 보내면
-          탭 줄과 패널이 함께 보입니다. #service 는 이미 `scroll-margin-top: 84px` 를 갖고
-          있어(sticky nav 64 + 여백 20) 도착 높이가 페이지의 다른 앵커와 같습니다.
-       ⚠️ 부드러운 이동은 `html { scroll-behavior: smooth }` 가 담당합니다. behavior 를
-          직접 넘기지 마십시오 — 넘기는 순간 prefers-reduced-motion 에서 그 값을 auto 로
-          되돌리는 규칙을 건너뛰어, 움직임을 원치 않는 사람에게 애니메이션이 갑니다.
-       ⚠️ focus 에 preventScroll 을 넘기는 것을 지우지 마십시오. 브라우저 기본 포커스
-          스크롤이 위 scrollIntoView 가 정한 위치를 덮어씁니다. 읽어주는 도구를 위한 포커스
-          이동 자체는 필요하므로 focus() 를 없애지는 마십시오. */
-    var openers = document.querySelectorAll('[data-timeline-open]');
-    if (!openers.length) return;
-
-    Array.prototype.forEach.call(openers, function (el) {
-      el.addEventListener('click', function () {
-        var tab = document.getElementById('feat-timeline');
-        var section = document.getElementById('service');
-        if (!tab) return;
-        select(tab, false);
-        if (section) section.scrollIntoView({ block: 'start' });
-        tab.focus({ preventScroll: true });
-      });
-    });
-  })();
-  (function () {
-    var API_URL = '/api/leads';
-    var form = document.getElementById('interest-form');
-    var msg = document.getElementById('interest-msg');
-    if (!form) return;
-
-    var submitBtn = form.querySelector('button[type="submit"]');
-    var inquiryInput = document.getElementById('interest-inquiry');
-
-    /* ---------- [문의하기] 포커스 연동 (2026-08-16 · 대표 수정안) ----------
-       종전에는 목적 라디오(사전 등록/문의하기)를 골라서 제출버튼 라벨을 바꿨습니다.
-       라디오를 걷고 이메일 아래 [문의하기] 입력창 하나로 합치면서, 히어로·마감 CTA 의
-       [문의하기](data-purpose="inquiry")는 이제 그 칸에 포커스를 놓는 일만 합니다 —
-       눌러서 온 사람이 바로 타이핑을 시작할 수 있게.
-       ⚠️ preventDefault 를 넣지 마십시오 — 앵커 기본동작(#interest 로 스크롤)은 그대로
-          두고 포커스만 덧붙입니다. JS 가 죽어도 스크롤은 됩니다(fail-open).
-       ⚠️ setTimeout 은 앵커 스크롤이 끝나길 기다리는 용도입니다 — 스크롤 도중 포커스를
-          주면 브라우저가 다시 그 요소로 스크롤을 덧씌워 두 스크롤이 다툽니다. */
-    Array.prototype.forEach.call(document.querySelectorAll('[data-purpose="inquiry"]'), function (el) {
-      el.addEventListener('click', function () {
-        if (inquiryInput) setTimeout(function () { inquiryInput.focus(); }, 300);
-      });
-    });
-
-    /* ---------- 페이지 간 포커스 지정 (check.html·precheck.html → index.html) ----------
-       두 페이지의 [문의하기]는 다른 페이지에서 넘어오므로 클릭 이벤트로 잡을 수 없습니다
-       — 대신 도착 URL 에 `?focus=inquiry` 를 실어 보내고, 여기서 쿼리를 읽어 같은
-       포커스를 줍니다. */
-    if (new URLSearchParams(window.location.search).get('focus') === 'inquiry' && inquiryInput) {
-      inquiryInput.focus();
-    }
-
-    /* ---------- [Talk to us about rollout] (PRD §5-9 · 2026-08-23) ----------
-       같은 섹션 안의 문의 입력칸으로 포커스를 옮깁니다. 앵커는 스크롤만 하고 포커스를
-       주지 않아 죽은 클릭처럼 읽힙니다(국문 index.html 과 같은 처리). */
-    var focusInquiryBtn = document.querySelector('[data-focus-inquiry]');
-    if (focusInquiryBtn && inquiryInput) {
-      focusInquiryBtn.addEventListener('click', function () {
-        inquiryInput.focus();
-        inquiryInput.scrollIntoView({ block: 'center', behavior: 'smooth' });
-      });
-    }
-
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var name = document.getElementById('interest-name').value.trim();
-      var email = document.getElementById('interest-email').value.trim();
-      var company = document.getElementById('interest-company').value.trim();
-      var inquiry = inquiryInput ? inquiryInput.value.trim() : '';
-      var consentPrivacy = document.getElementById('interest-consent-privacy').checked;
-      var consentMarketing = document.getElementById('interest-consent-marketing').checked;
-
-      msg.classList.remove('is-error');
-
-      if (!name || !email) {
-        msg.textContent = 'Please enter your name and email.';
-        msg.classList.add('is-error');
-        return;
-      }
-
-      /* 여기서 멈추면 fetch 가 아예 나가지 않습니다.
-         서버(api/leads.js)도 같은 검사를 따로 합니다 — 이 검사를 지워도 서버가 막습니다.
-         반대로 서버 검사만 믿고 이걸 지우지도 마십시오. 동의 없이 요청이 나가는
-         순간이 생기고, 그 요청에는 이미 이름과 이메일이 실려 있습니다. */
-      if (!consentPrivacy) {
-        msg.textContent = 'Please consent to the collection and use of your personal information.';
-        msg.classList.add('is-error');
-        return;
-      }
-
-      submitBtn.disabled = true;
-      msg.textContent = 'Signing you up...';
-
-      fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: name, email: email, company: company, inquiry: inquiry,
-          consentPrivacy: consentPrivacy, consentMarketing: consentMarketing
-        })
-      })
-        .then(function (res) {
-          if (!res.ok) throw new Error('request failed');
-          return res.json();
-        })
-        .then(function () {
-          msg.textContent = 'You’re signed up. We’ll be in touch soon.';
-          form.reset();
-        })
-        .catch(function () {
-          msg.textContent = 'Sign-up failed. Please try again in a moment.';
-          msg.classList.add('is-error');
-        })
-        .finally(function () {
-          submitBtn.disabled = false;
-        });
-    });
-  })();
-  </script>
-  <script defer src="/assets/track.js"></script>
-  <script defer src="/assets/lang-switch.js"></script>
-  <!-- 헤더 로그인 영역 + 로그인 모달 (핸드오프 3a·3c·3d-A). module 이라 자동 defer 입니다. -->
-  <script type="module" src="/assets/auth.js"></script>
 </body>
 </html>
