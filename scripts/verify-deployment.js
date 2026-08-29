@@ -157,17 +157,17 @@ const LANG_PAIRS = [...source('middleware.js').matchAll(/\['(\/[^']*)',\s*'(\/en
   .map((m) => [m[1], m[2]]);
 
 const CHECKS = [
-  /* ── 현관 — 영어 우선 접속 〔2026-08-21 신설〕 ─────────────────────
-   * 🔴 **이것이 지금 이 사이트의 첫 화면을 정합니다.** middleware.js 가 `lang=ko` 쿠키가
-   *    없는 방문자를 국문 경로에서 `/en*` 로 307 돌려보냅니다. 그 리다이렉트가 조용히
-   *    사라지면(matcher 오타 · 미들웨어 미배포 · 런타임 변경) 국문이 첫 화면이 되는데,
-   *    **화면은 멀쩡해 보입니다** — 그래서 눈으로는 못 잡습니다.
-   * ⚠️ 이 검사만 쿠키를 안 보냅니다(`noCookie`). 나머지 검사는 쿠키를 보내야 국문
-   *    페이지에 닿습니다 — 위 `get()` 주석 참조.
+  /* ── 현관 — 국문 우선 접속 〔2026-08-30 · 대표 지시로 영어 우선(2026-08-21) 철회〕 ──
+   * 🔴 **이것이 지금 이 사이트의 첫 화면을 정합니다.** middleware.js 가 `lang=en` 쿠키가
+   *    없는 방문자에게는 국문 경로를 그대로 200 으로 내줍니다. 이게 조용히 뒤집히면
+   *    (matcher 오타 · 미들웨어 미배포 · 런타임 변경으로 다시 영문 리다이렉트가 살아나면)
+   *    첫 화면이 영문으로 바뀌는데, **화면은 멀쩡해 보입니다** — 그래서 눈으로는 못 잡습니다.
+   * ⚠️ 이 검사만 쿠키를 안 보냅니다(`noCookie`). 나머지 검사는 쿠키를 보내도 국문
+   *    페이지에 닿습니다(기본이 국문이므로) — 위 `get()` 주석 참조.
    */
   {
-    id: '영어우선',
-    label: '쿠키 없는 첫 방문이 영문 짝으로 307 된다 (middleware.js PAIRS 전부)',
+    id: '국문우선',
+    label: '쿠키 없는 첫 방문이 국문 그대로 200 으로 온다 (middleware.js PAIRS 전부)',
     page: null,
     noCookie: true,
     raw: LANG_PAIRS.map(([ko]) => ko),
@@ -175,6 +175,25 @@ const CHECKS = [
       if (LANG_PAIRS.length < 7) {
         return `middleware.js 에서 읽은 짝이 ${LANG_PAIRS.length}개입니다 — 표 파싱이 깨졌습니다`;
       }
+      if (res.status !== 200) {
+        return `${res.status} 로 답했습니다 (200 이어야 합니다 — 국문이 그대로 나와야 함, ${target})`;
+      }
+      return true;
+    },
+  },
+
+  /* ── 현관 — 영문 선택 시 리다이렉트 〔2026-08-30 신설〕 ─────────────────────
+   * 위 검사의 반대 방향이다 — `lang=en` 쿠키를 직접 고른 방문자는 여전히 영문 짝으로
+   * 넘어가야 한다. 이게 조용히 사라지면 언어 전환 자체가 죽는데(눌러도 국문에 머무름),
+   * 화면은 역시 멀쩡해 보인다.
+   */
+  {
+    id: '영문선택-리다이렉트',
+    label: '`lang=en` 쿠키를 보내면 영문 짝으로 307 된다 (middleware.js PAIRS 전부)',
+    page: null,
+    cookie: 'lang=en',
+    raw: LANG_PAIRS.map(([ko]) => ko),
+    check: (res, target) => {
       const expected = (LANG_PAIRS.find(([ko]) => ko === target) || [])[1];
       if (res.status !== 307) return `${res.status} 로 답했습니다 (307 이어야 합니다)`;
       if (!res.location.endsWith(expected)) {
@@ -558,18 +577,19 @@ const CHECKS = [
  * ────────────────────────────────────────────────────────────── */
 
 /*
- * 🔴 **`lang=ko` 쿠키를 보냅니다** 〔2026-08-21〕 — 없으면 국문 검사가 전부 못 돕니다.
+ * 🔴 **기본으로 `lang=ko` 쿠키를 보냅니다** 〔2026-08-21 신설 · 2026-08-30 배경 갱신〕.
  *
- * `middleware.js`(영어 우선 접속 · 2026-08-21)가 국문 경로를 **쿠키가 없으면** `/en*` 으로
- * 307 돌려보냅니다. 이 스크립트는 쿠키를 안 보냈으므로 `/`·`/nda`·`/precheck`·`/refund`·
- * `/uae`·`/privacy` 검사가 **전부 `HTTP 307` 로 실패**했습니다(실측 14건). 페이지가 깨진 게
- * 아니라 **검사가 페이지에 닿지 못한 것**이고, 그 상태로는 배포 확인이 아무것도 확인하지
- * 못합니다 — 「빨간불이 원래 저래요」가 되는 가장 나쁜 형태입니다.
+ * 2026-08-30 대표 지시로 middleware.js 의 기본이 국문으로 되돌아갔다 — 이제는 쿠키가
+ * 없어도 국문 경로가 그대로 200 으로 온다. 그래도 이 스크립트는 계속 `lang=ko` 를
+ * 명시적으로 보낸다: (a) 우연히 국문이 나오는 것과 「국문 쿠키를 골라도 국문」이 맞는
+ * 것을 구분해 두면 나중에 기본이 다시 바뀌어도 이 45개 검사는 영향을 안 받고, (b) 쿠키
+ * 자체가 사라지거나(파싱 오류) 무시되는 회귀는 이 값으로도 여전히 잡힌다.
  *
  * ⚠️ 영문 경로에는 영향이 없습니다 — middleware 의 matcher 는 국문 경로만 잡고, 반대 방향
  *    (`/en*` → 국문) 리다이렉트는 없습니다. 그래서 전 요청에 같은 쿠키를 붙입니다.
- * 🔴 **리다이렉트 자체는 아래 `영어우선` 검사가 따로 잽니다** — 쿠키로 우회한 동작을
- *    검사에서 지우지 않습니다(그 리다이렉트가 지금 이 사이트의 현관입니다).
+ * 🔴 **국문 우선/영문 선택 리다이렉트 자체는 아래 `국문우선`·`영문선택-리다이렉트` 검사가
+ *    따로 잽니다** — 쿠키로 우회한 동작을 이 검사들에서 지우지 않습니다(그 두 리다이렉트
+ *    분기가 지금 이 사이트의 현관입니다).
  */
 async function get(url, cookie = 'lang=ko') {
   const response = await fetch(url, {
@@ -608,13 +628,17 @@ async function main(argv) {
   let passed = 0;
 
   for (const item of CHECKS) {
-    /* `raw` 는 문자열 하나 또는 여러 개 — 200 을 전제하지 않는 검사(cron 비공개 · 영어 우선). */
+    /* `raw` 는 문자열 하나 또는 여러 개 — 200 을 전제하지 않는 검사(cron 비공개 · 국문우선 ·
+       영문선택-리다이렉트). */
     const targets = item.raw ? [].concat(item.raw) : (item.pages || [item.page]);
     const results = [];
 
     for (const target of targets) {
-      /* `noCookie` — 쿠키 없는 첫 방문을 재는 검사(영어 우선 리다이렉트)만 씁니다. */
-      const res = await fetchPage(base + target, item.noCookie ? null : 'lang=ko');
+      /* `noCookie` — 쿠키 없는 첫 방문을 재는 검사(국문우선)만 씁니다.
+         `item.cookie` — 특정 쿠키를 골라 보내는 검사(영문선택-리다이렉트)만 씁니다.
+         둘 다 없으면 기본값 `lang=ko` 를 보냅니다(위 `get()` 주석 참조). */
+      const cookie = item.cookie !== undefined ? item.cookie : (item.noCookie ? null : 'lang=ko');
+      const res = await fetchPage(base + target, cookie);
 
       if (item.raw) {
         results.push([target, item.check(res, target)]);
