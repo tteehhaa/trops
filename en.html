@@ -58,7 +58,7 @@ p{margin:0}
 .body-w{max-width:860px}
 .sec-surface{background:var(--surface);--line:var(--line-on-surface)}
 section{padding-block:clamp(60px,8vw,96px);scroll-margin-top:64px}
-.hero{padding-block:clamp(88px,10vw,128px) clamp(52px,7vw,78px)}
+.hero{padding-block:clamp(72px,9vw,112px) clamp(52px,7vw,78px)}
 .report{padding-top:clamp(36px,4vw,52px)}
 
 h1,h2,h3{margin:0}
@@ -93,17 +93,16 @@ h2{max-width:18em;font-size:clamp(1.75rem,3vw,2.5rem);font-weight:700;line-heigh
 
 /* stat */
 .stat-sec{padding-block:clamp(38px,5vw,60px)}
-.stat-quote{position:relative;margin:0;padding-left:clamp(34px,4.5vw,56px)}
-.stat-quote::before{content:"\201C";position:absolute;left:-2px;top:clamp(-14px,-1.4vw,-6px);font-size:clamp(64px,9vw,104px);line-height:1;color:var(--accent);opacity:.22}
+.stat-quote{position:relative;margin:24px 0 0;padding:26px 0 0 clamp(34px,4.5vw,56px);border-top:1px solid var(--line)}
+.stat-quote::before{content:"\201C";position:absolute;left:-2px;top:clamp(10px,1vw,18px);font-size:clamp(64px,9vw,104px);line-height:1;color:var(--accent);opacity:.22}
 .stat-quote p{max-width:22em;font-size:clamp(20px,2.5vw,28px);font-weight:700;line-height:1.5;letter-spacing:-.03em}
 .stat-quote em{font-style:normal;color:var(--accent)}
 @media(max-width:768px){.hero-lead br,.stat-quote p br,.stat-src br,.report .sub br,.ext .item .d br,.ext h2 br{display:none}
   .close-cta{flex-direction:column;align-items:flex-start;gap:20px}}
-.stat{display:flex;align-items:baseline;gap:18px;margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
-.stat-n{flex:none;font-size:clamp(36px,5vw,52px);font-weight:700;line-height:1;letter-spacing:-.04em;color:var(--accent)}
-.stat-t{font-size:16.5px;font-weight:600;line-height:1.5}
-.stat-src{margin-top:4px;max-width:34em;font-size:12.5px;line-height:1.55;color:var(--ink-62)}
-@media(max-width:640px){.stat{flex-direction:column;gap:8px}}
+.stat{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.stat-n{font-size:clamp(30px,4vw,38px);font-weight:700;line-height:1;letter-spacing:-.035em;color:var(--ink)}
+.stat-t{font-size:15.5px;font-weight:500;line-height:1.5;color:var(--ink-64)}
+.stat-src{margin-top:18px;max-width:44em;font-size:12.5px;line-height:1.6;color:var(--ink-62)}
 
 /* steps */
 .steps{margin-top:32px}
@@ -204,16 +203,14 @@ h2{max-width:18em;font-size:clamp(1.75rem,3vw,2.5rem);font-weight:700;line-heigh
 
 <section class="sec-surface stat-sec">
   <div class="container">
-    <blockquote class="stat-quote">
-      <p>In exporting, what matters is not more information<br>but knowing the <em>“steps and sequence”</em> your product requires.</p>
-    </blockquote>
     <div class="stat">
       <p class="stat-n">77%</p>
-      <div>
-        <p class="stat-t">Share of document and customs enquiries that ask about “procedure”</p>
-        <p class="stat-src">Analysis of 500 advisory cases published by the Business Support Group, Ministry of SMEs and Startups<br>158 of 206 document and customs cases were questions about export procedure</p>
-      </div>
+      <p class="stat-t">Share of document and customs enquiries that ask about “procedure”</p>
     </div>
+    <blockquote class="stat-quote">
+      <p>In exporting, what matters is not more information<br>but knowing the <em>“steps and sequence”</em> your product requires.</p>
+      <p class="stat-src">Analysis of 500 advisory cases published by the Business Support Group, Ministry of SMEs and Startups · 158 of 206 document and customs cases were questions about export procedure</p>
+    </blockquote>
   </div>
 </section>
 
