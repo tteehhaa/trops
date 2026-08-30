@@ -225,72 +225,7 @@ test('DB check 가 서버 목록과 같은 종류만 허용한다', () => {
   }
 });
 
-/*
- * 🔴 `value="other"`(그 외 서류)를 이 대조에서 제외합니다 〔2026-08-16 · 대표 지시〕.
- * disabled 도 아니고 서버 DOC_TYPES 에도 없는 **세 번째 부류**입니다 — 고를 수는
- * 있지만 제출 값이 아니라 [문의하기]로 돌리는 스위치입니다. 아래 두 번째 테스트가
- * 그 스위치가 실제로 제출을 막는지(JS 정적 확인)를 봅니다.
- */
-test('화면에서 고를 수 있는 종류가 서버 목록과 같다 (그 외 서류 제외)', () => {
-  const html = fs.readFileSync(path.join(ROOT, 'precheck.html'), 'utf8');
-  const select = html.match(/<select id="intake-doc-type"[\s\S]*?<\/select>/);
-  assert.ok(select, 'precheck.html 에 문서 종류 선택 상자가 없습니다');
-
-  const options = select[0].match(/<option[^>]*>/g) || [];
-  const enabled = options
-    .filter((o) => o.indexOf('disabled') === -1 && o.indexOf('value="other"') === -1)
-    .map((o) => (o.match(/value="([^"]*)"/) || [])[1]);
-
-  assert.deepStrictEqual(enabled, intake.DOC_TYPES,
-    '화면에서 고를 수 있는 종류(그 외 서류 제외)가 서버가 받는 종류와 다릅니다');
-  assert.ok(options.length > enabled.length + 1,
-    '준비중 옵션이 하나도 없습니다 — 흐름 md §5 는 확장 예정을 이 자리에서 보여 주라고 합니다');
-  assert.ok(select[0].indexOf('value="other"') !== -1,
-    '[그 외 서류] 옵션이 없습니다');
-  assert.ok(!/value="other"[^>]*disabled|disabled[^>]*value="other"/.test(select[0]),
-    '[그 외 서류]가 disabled 입니다 — 활성화(선택 가능)가 요구사항입니다');
-});
-
-test('[그 외 서류]를 고르면 제출을 막고 문의하기로 안내한다', () => {
-  const html = fs.readFileSync(path.join(ROOT, 'precheck.html'), 'utf8');
-  assert.ok(/id="doc-type-other"[^>]*hidden[^>]*>[\s\S]*?문의하기/.test(html) ||
-    /id="doc-type-other"[\s\S]{0,10}hidden[\s\S]*?문의하기/.test(html),
-    '[그 외 서류] 선택 시 보일 문의하기 안내(#doc-type-other)가 없습니다');
-  // 🔄 index.html 의 목적 라디오가 [문의하기] 입력창으로 바뀌면서(2026-08-16 대표
-  // 수정안 4차) 쿼리도 ?purpose=inquiry → ?focus=inquiry 로 맞춰 바뀌었습니다.
-  assert.ok(/focus=inquiry#interest/.test(html),
-    '문의하기 안내가 랜딩 §10 의 문의 칸 포커스(?focus=inquiry)로 연결되지 않습니다');
-
-  const script = html.slice(html.indexOf('<script>'));
-  assert.ok(/docType === 'other'/.test(script) || /docType==='other'/.test(script),
-    'onSubmit 에 docType===\'other\' 방어선이 없습니다 — 버튼 잠금이 어떤 이유로 풀려도 ' +
-    '서버가 400 으로 조용히 막는 대신, 여기서 사람이 알아볼 수 있는 안내로 막아야 합니다');
-  assert.ok(/isOther/.test(script),
-    '[그 외 서류] 선택 시 제출 버튼을 잠그는 처리가 없습니다');
-});
-
 /* ── ④ 로그인 필드가 들어오지 않았는가 ───────────────────────────────────── */
-
-test('🔴 접수 화면에 로그인·계정 필드가 없다 — 회원가입 불요는 설계원칙이다', () => {
-  const html = fs.readFileSync(path.join(ROOT, 'precheck.html'), 'utf8');
-  // 주석은 걷어냅니다 — 주석에 「로그인」이라는 낱말이 (원칙을 설명하려고) 나옵니다.
-  const markup = html.replace(/<!--[\s\S]*?-->/g, '');
-
-  assert.ok(!/type="password"/.test(markup), '비밀번호 입력칸이 생겼습니다');
-  for (const name of ['password', 'passwd', 'username', 'userId', 'signup', 'login']) {
-    assert.ok(
-      !new RegExp('name="' + name + '"', 'i').test(markup),
-      'name="' + name + '" 필드가 생겼습니다 — 접수는 무로그인을 유지합니다'
-    );
-  }
-
-  // 약속의 문면이 그대로 남아 있는지도 봅니다. 필드가 없는 것과
-  // 「필요 없습니다」라고 말해 두는 것은 다른 일입니다.
-  assert.ok(
-    markup.indexOf('로그인이나 회원가입은 필요 없습니다') !== -1,
-    '무로그인 약속 문면(.pay-note)이 사라졌습니다'
-  );
-});
 
 /* ── ⑤ 마이그레이션 순서에 의존하지 않는가 ───────────────────────────────── */
 
@@ -411,3 +346,18 @@ test('「그런 칸 없다」와 진짜 실패를 가린다', () => {
   assert.strictEqual(intake.isUnknownColumnError(500, missing), false, '서버 오류는 재시도 대상이 아닙니다');
   assert.strictEqual(intake.isUnknownColumnError(401, ''), false);
 });
+
+/*
+ * ══════════════════════════════════════════════════════════════════════════════
+ * ⚠️ **화면 축 3건을 걷었습니다** 〔2026-08-30 · 접수 화면 삭제 딸림〕
+ * ══════════════════════════════════════════════════════════════════════════════
+ * 🔴 **세 목록 대조가 «두 목록» 대조로 줄었습니다.** 이 파일이 지키던 것은
+ * 「화면 · 서버 · DB 세 목록이 갈리지 않는다」였는데, 화면(`precheck.html` 의
+ * `#intake-doc-type` select)이 사라져 지금은 **서버 ↔ DB** 만 봅니다(위 「DB check 가
+ * 서버 목록과 같은 종류만 허용한다」).
+ *
+ * ⚠️ **함께 잃은 것 — 「무로그인」 원칙을 지킬 표면이 0 이 됐습니다.** 「접수 화면에
+ * 로그인·계정 필드가 없다」는 설계원칙이고 그 원칙은 살아 있지만, **그것을 어길 수 있는
+ * 화면이 없어** 잴 대상이 없습니다. ⛔ 접수 화면을 다시 세우는 날 가장 먼저 되살리십시오
+ * (원본: `git show ca47218^:test/doc-type.test.js`).
+ */

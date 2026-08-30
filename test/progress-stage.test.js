@@ -97,90 +97,19 @@ test('돌려주는 값은 1·2·3·null 뿐이다 — 화면이 그 넷만 처�
 
 /* ── ③ 화면이 판단을 복제하지 않았는가 ───────────────────────────────────── */
 
-test('화면은 서버가 준 stage 만 그린다 — 단계 판단을 복제하지 않았다', () => {
-  const html = fs.readFileSync(path.join(ROOT, 'precheck.html'), 'utf8');
-  const markup = html.replace(/<!--[\s\S]*?-->/g, '');
-
-  const fn = markup.match(/function addProgress\(box, stage\)[\s\S]*?\n    }\n/);
-  assert.ok(fn, 'precheck.html 에 addProgress 가 없습니다');
-
-  // 단계 판단의 재료(status 값 · 대조 실행 여부)가 이 함수에 나타나면 판단이 두 곳으로 갈립니다.
-  for (const leaked of ['in_progress', 'delivered', 'awaiting_payment', 'outcome', 'nda_run']) {
-    assert.ok(fn[0].indexOf(leaked) === -1,
-      'addProgress 안에 "' + leaked + '" 가 있습니다 — 단계 판단이 서버·화면 두 곳으로 갈립니다');
-  }
-
-  assert.ok(markup.indexOf('addProgress(box, r.body.stage)') !== -1,
-    '화면이 서버의 stage 를 쓰지 않습니다');
-});
-
-test('3단계 라벨이 흐름 md 문구와 같다', () => {
-  const html = fs.readFileSync(path.join(ROOT, 'precheck.html'), 'utf8');
-  const line = html.match(/var PROGRESS_STEPS = \[([^\]]*)\]/);
-  assert.ok(line, 'PROGRESS_STEPS 를 찾지 못했습니다');
-  const labels = line[1].match(/'([^']+)'/g).map((s) => s.replace(/'/g, ''));
-  assert.deepStrictEqual(labels, ['접수됨', '검토중', '전달완료'],
-    '흐름 md §5-1 10번이 지정한 3단계 문구입니다');
-});
-
-test('완료 표시에 판정색(초록)·경고색을 쓰지 않는다', () => {
-  // 흐름 md §1 이 색 토큰 레벨에서 초록·주황을 배제한 이유와 같습니다 —
-  // 「판정하지 않는다」가 색상까지 적용됩니다.
-  const html = fs.readFileSync(path.join(ROOT, 'precheck.html'), 'utf8');
-  const css = html.match(/\.progress \{[\s\S]*?\.progress-step\.is-now \.progress-label[^}]*\}/);
-  assert.ok(css, '진행상태 CSS 블록을 찾지 못했습니다');
-  // 주석은 걷어냅니다 — 「경고색을 쓰지 마십시오」라고 적은 주석 자체가 걸립니다.
-  const rules = css[0].replace(/\/\*[\s\S]*?\*\//g, '');
-  assert.ok(!/green|--warning/i.test(rules), '진행상태에 초록·경고색이 들어갔습니다');
-});
-
-test('🔴 진행상태 클래스가 「이용 방법」 3단계와 충돌하지 않는다', () => {
-  /*
-   * 이 단정이 실제로 버그를 잡았습니다(2026-08-13).
-   * 처음 이 블록을 `.steps`/`.step` 으로 썼는데, 그 두 이름은 이 페이지 위쪽
-   * 「이용 방법」 섹션이 이미 쓰고 있습니다(`.step { display:grid; … }`).
-   * 나중에 선언된 `display:flex` 가 그쪽 그리드를 덮어써 레이아웃이 깨졌습니다.
-   * 증상이 접수확인 화면이 아니라 **관계없는 섹션**에서 나타나는 종류의 사고라
-   * 눈으로 보고 찾기 어렵습니다 — 그래서 테스트로 박아 둡니다.
-   */
-  const html = fs.readFileSync(path.join(ROOT, 'precheck.html'), 'utf8');
-  const markup = html.replace(/<!--[\s\S]*?-->/g, '');
-  const js = markup.match(/function addProgress[\s\S]*?\n    }\n/)[0];
-
-  /*
-   * className 대입만 봅니다. `aria-current` 의 값도 문자열 'step' 이지만 그것은
-   * ARIA 명세가 정한 값이라 클래스 충돌과 무관합니다 — 이 구분을 안 하면
-   * 정상 코드가 red 를 냅니다(실제로 처음 그렇게 걸렸습니다).
-   */
-  const assigned = (js.match(/className = '([^']*)'/g) || [])
-    .map((s) => s.replace(/^className = '|'$/g, ''))
-    .flatMap((s) => s.split(/\s+/))
-    // is-done / is-now 는 상태 클래스라 접두어 규칙 대상이 아닙니다.
-    .filter((c) => c && c.indexOf('is-') !== 0);
-
-  assert.ok(assigned.length > 0, 'addProgress 가 클래스를 붙이지 않습니다');
-  for (const cls of assigned) {
-    assert.ok(
-      cls === 'progress' || cls.indexOf('progress-') === 0,
-      'addProgress 가 "' + cls + '" 를 붙입니다 — 이 블록의 클래스는 progress/progress-* 만입니다. ' +
-      '.step/.steps 는 「이용 방법」 섹션이 이미 씁니다'
-    );
-  }
-
-  /*
-   * 🔄 **단정을 갈아 적었습니다** 〔2026-08-14 · precheck-slim-return-s9〕.
-   *
-   * 종전 단정: 「'이용 방법' 쪽 `.step { display: grid }` 규칙이 살아 있다」 —
-   * 근거는 「지워서 충돌을 없애는 것은 해결이 아니다」였습니다. 맞는 말이었지만,
-   * 그 섹션은 **충돌을 피하려고 지운 것이 아닙니다**: index.html 이 이미 하는 설명을
-   * 이 페이지가 한 번 더 하고 있어서 통째로 걷었습니다(랜딩 중복 제거 · 흐름 md §3).
-   * 즉 충돌 상대가 아예 없어졌고, 옛 단정은 「없어진 섹션을 되살려라」는 요구가 됩니다.
-   *
-   * 그래서 **접두어 규칙(위 루프)은 그대로 두고**, 여기서는 그 섹션이 실제로 없다는
-   * 사실만 못질합니다. 되살아나면 위 루프가 다시 충돌의 파수꾼이 됩니다.
-   * ⛔ 옛 단정으로 되돌리지 마십시오 — test/precheck-slim-return-s9.test.js
-   *    「HOW IT WORKS · WHAT YOU GET 두 섹션이 없다」와 정면으로 반대됩니다.
-   */
-  assert.ok(!/\.step \{\s*\n\s*display: grid;/.test(html),
-    '「이용 방법」 .step 규칙이 되살아났습니다 — 그 섹션은 랜딩 중복이라 걷어냈습니다');
-});
+/*
+ * ══════════════════════════════════════════════════════════════════════════════
+ * ⚠️ **화면 축 4건을 걷었습니다** 〔2026-08-30 · 접수 화면 삭제 딸림〕
+ * ══════════════════════════════════════════════════════════════════════════════
+ * 걷은 것: 「화면은 서버가 준 stage 만 그린다」 · 「3단계 라벨이 흐름 md 문구와 같다」 ·
+ * 「완료 표시에 판정색을 쓰지 않는다」 · 「진행상태 클래스가 이용 방법 3단계와 충돌하지
+ * 않는다」 — 넷 다 `precheck.html` 의 `addProgress`·`PROGRESS_STEPS`·`.progress` 를 쟀고,
+ * 그 페이지가 커밋 `ca47218` 에서 삭제됐습니다.
+ *
+ * 🔴 **그래서 잃은 보증을 적어 둡니다 — 되살릴 때 함께 되살리십시오.**
+ *   · **단계 판단이 서버 한 곳에만 있다**(화면이 복제하지 않는다). 위 1~8 은 서버 함수가
+ *     옳은지만 재고, 「화면이 그것을 다시 계산하지 않는가」는 **이제 아무도 재지 않습니다.**
+ *   · 3단계 라벨 원문 · 판정색 금지 · `.step`/`.steps` 클래스 충돌(실제 버그를 잡았던 단정).
+ * ⛔ 접수 화면을 다시 세우는 날 이 넷을 함께 세우십시오
+ *    (원본: `git show ca47218^:test/progress-stage.test.js`).
+ */

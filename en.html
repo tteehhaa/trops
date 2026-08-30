@@ -6,6 +6,14 @@
 <title>TROPS · A one-minute check of the export steps your product needs</title>
 <meta name="description" content="From buyer verification and contracts to payment terms, trade insurance, customs and shipping, TROPS walks the required steps in order and lays out what to check now and what comes next.">
 <link rel="canonical" href="https://trops.kr/en.html">
+<!-- 🔴 **hreflang 3줄을 되살렸습니다** 〔2026-08-30〕 — 2026-08-29 랜딩 전면교체가
+     이 세 줄을 걷어냈습니다(개편 «전» index/en 에 3줄씩 있었고 지금은 0 · 실측).
+     양쪽이 서로를 가리켜야 검색엔진이 인정합니다 — 한쪽만 있으면 무시됩니다.
+     index.html <head> 에도 같은 3줄이 있습니다. ⛔ 한쪽만 고치지 마십시오.
+     ⚠️ 영문 경로는 `/en/` 이 아니라 `/en` 입니다 — 형제 파일 구조입니다. -->
+<link rel="alternate" hreflang="ko" href="https://trops.kr/">
+<link rel="alternate" hreflang="en" href="https://trops.kr/en">
+<link rel="alternate" hreflang="x-default" href="https://trops.kr/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="TROPS">
 <meta property="og:url" content="https://trops.kr/en.html">
@@ -223,7 +231,10 @@ h2{max-width:18em;font-size:clamp(1.75rem,3vw,2.5rem);font-weight:700;line-heigh
         <div class="n">01</div>
         <div>
           <p class="t">Enter what you already know</p>
-          <p class="d">Product, destination, buyer, payment terms — whatever you have at hand. A signed contract is not required.</p>
+          <!-- ⚠️ em dash(—) 를 쓰지 않습니다 〔2026-08-17 대표 지시〕 — 국문에만 허용됩니다.
+                 문장 안 삽입은 마침표로 끊거나 쉼표로 잇습니다. 2026-08-29 교체가 이 자리에
+                 다시 들여왔고 검사가 죽어 있어 못 잡았습니다. -->
+          <p class="d">Product, destination, buyer, payment terms: whatever you have at hand. A signed contract is not required.</p>
         </div>
       </div>
       <div class="st">
@@ -355,9 +366,16 @@ h2{max-width:18em;font-size:clamp(1.75rem,3vw,2.5rem);font-weight:700;line-heigh
         <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>
       </div>
       <div class="f2">
-        <a href="/privacy.html">Privacy policy</a>
-        <a href="/refund.html">Refund policy</a>
-        <a href="/">한국어</a>
+        <!-- 🔴 **영문 페이지가 «국문» 정책 페이지로 가고 있었습니다** 〔2026-08-30 복구〕.
+             2026-08-29 교체가 `/privacy.html`·`/refund.html` 로 박아 두어, 영문 방문자가
+             푸터에서 국문 문서로 떨어졌습니다. `en-privacy`·`en-refund` 는 배포되고 있는데
+             **유입 링크가 0건**이었습니다(실측).
+             🔴 언어 전환 링크에는 `hreflang="ko"` 를 답니다 — 「이것은 이 페이지의 국문판」
+                이라는 선언이며, 검사가 **그 선언으로** 의도된 교차 링크를 가립니다
+                (⛔ 클래스로 가리면 그 클래스를 입은 아무 링크나 빠져나갑니다). -->
+        <a href="/en-privacy">Privacy policy</a>
+        <a href="/en-refund">Refund policy</a>
+        <a href="/" hreflang="ko" lang="ko">한국어</a>
       </div>
       <p class="copy">© 2026 TROPS. All rights reserved.</p>
     </div>

@@ -116,19 +116,6 @@ test('언어 사유 문면에 언어 이름도 「지원하지 않습니다」�
 
 /* ── 2. M-1 문장과 어긋나지 않는다 ─────────────────────────────────────────── */
 
-test('scan-only 문면이 업로드 시점 M-1 문장과 글자 그대로 같다', () => {
-  const html = fs.readFileSync(path.join(ROOT, 'precheck.html'), 'utf8');
-  const match = html.match(/<p id="textlayer-msg">([^<]*)<\/p>/);
-  assert.ok(match, 'precheck.html 에서 #textlayer-msg 를 찾지 못했습니다');
-
-  assert.strictEqual(
-    ROUTE.NOTICES['scan-only'],
-    match[1].trim(),
-    '업로드 안내와 확인 화면 안내가 갈라졌습니다 — 같은 사실을 두 문장으로 말하면 ' +
-    '이용자는 다른 일이 생긴 줄 압니다. 두 자리를 함께 고치십시오.'
-  );
-});
-
 test('사유 코드가 판정층 정본 2종과 같다', () => {
   // trops_a lib/rules/l1/preflight.ts 의 PreflightStop.
   // 늘어나면 NOTICES 와 함께 늘리십시오(늘리지 않아도 FALLBACK 으로 안전히 떨어집니다).
@@ -298,23 +285,15 @@ test('route=blocked 이면 사유 문면이 실린다 — route 코드 자체는
 
 /* ── 5. 화면 — 줄이 아니라 카드 · 등급 낱말 없음 ───────────────────────────── */
 
-test('확인 화면이 문면을 만들지 않고 서버 문장을 그대로 쓴다', () => {
-  const html = fs.readFileSync(path.join(ROOT, 'precheck.html'), 'utf8');
-  const start = html.indexOf('function addRouteNotice');
-  assert.ok(start !== -1, 'precheck.html 에 addRouteNotice 가 없습니다');
-  const body = html.slice(start, html.indexOf('function addRow', start));
-
-  // 사유 코드로 분기하면 문면 정본이 둘로 갈립니다.
-  for (const code of ['scan-only', 'unsupported-language']) {
-    assert.ok(body.indexOf(code) === -1, '화면이 사유 코드로 분기합니다: ' + code);
-  }
-  // 「처리 가능 여부: …」 같은 줄을 만들면 등급 축이 화면에 생깁니다.
-  assert.ok(body.indexOf('addRow(') === -1, '안내를 접수 항목 줄로 만들었습니다');
-
-  // 화면이 직접 쓰는 문장(따옴표 안)에 금지 낱말이 없는지. 주석은 배포본에서
-  // 떼어지므로(scripts/build-static.js) 문자열만 봅니다.
-  for (const literal of body.match(/'[^']*'/g) || []) {
-    assert.ok(literal.indexOf('등급') === -1 && literal.indexOf('부분') === -1,
-      '화면 문장에 「등급」·「부분」이 있습니다: ' + literal);
-  }
-});
+/*
+ * ══════════════════════════════════════════════════════════════════════════════
+ * ⚠️ **화면 축 2건을 걷었습니다** 〔2026-08-30 · 접수 화면 삭제 딸림〕
+ * ══════════════════════════════════════════════════════════════════════════════
+ * 🔴 **가장 아까운 것은 「글자 그대로 같다」 대조입니다.** `ROUTE.NOTICES['scan-only']` 는
+ * 원래 **업로드 안내(`#textlayer-msg`)를 그대로 옮긴 것**이고, 이 파일이 그 동일성을 쟀습니다
+ * (「같은 사실을 두 문장으로 말하면 이용자는 다른 일이 생긴 줄 안다」). 대조 상대가 사라져
+ * **이제 코드에서 그 사실을 확인할 수 없습니다** — 편측만 남았습니다.
+ * ⚠️ 문면 규칙(C2 · 「등급」·「부분」 금지 등)은 위에 그대로 살아 있습니다.
+ * ⛔ 접수 화면을 다시 세우는 날 두 문장을 다시 맞추고 이 대조를 되살리십시오
+ *    (원본: `git show ca47218^:test/intake-route.test.js`).
+ */

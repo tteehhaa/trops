@@ -37,23 +37,6 @@ const ROUTE = require('../api/_intake-route.js');
 
 /* ══ 1. 화면 → 서버 ═════════════════════════════════════════════════════════ */
 
-test('두 접수 폼이 같은 코드로 각자의 언어를 보낸다', () => {
-  const LINE = "locale: document.documentElement.lang === 'en' ? 'en' : 'ko',";
-  for (const f of ['precheck.html', 'en-precheck.html']) {
-    assert.ok(strip(read(f)).includes(LINE),
-      f + ' 이 접수 요청에 locale 을 싣지 않습니다');
-  }
-  /* 🔴 값을 **하드코딩하지 않았는지**가 핵심입니다. 한쪽에 'en' 을 박아 두면 그 파일은
-     맞지만, 다음에 문구만 옮기는 사람이 그 줄의 뜻을 모르고 복사합니다. */
-  for (const f of ['precheck.html', 'en-precheck.html']) {
-    assert.ok(!/locale:\s*'(ko|en)'/.test(strip(read(f))),
-      f + ' 이 locale 을 하드코딩했습니다 — <html lang> 에서 읽어야 두 파일이 같은 코드가 됩니다');
-  }
-  /* 두 페이지의 <html lang> 이 실제로 다른가 — 위 코드가 기대는 유일한 전제입니다. */
-  assert.match(read('precheck.html'), /<html lang="ko">/);
-  assert.match(read('en-precheck.html'), /<html lang="en">/);
-});
-
 /* ══ 2. 아는 값만 · 모르면 국문 ══════════════════════════════════════════════ */
 
 test('언어는 접수를 막지 않는다 — 모르는 값은 국문으로 떨어진다', () => {
@@ -78,21 +61,6 @@ test('서류 종류 표기가 언어를 따른다 — 화면이 코드값을 번
 });
 
 /* ══ 3. 문면 ═══════════════════════════════════════════════════════════════ */
-
-/*
- * 🔴 국문에 걸린 규칙이 영문에도 **그대로** 걸립니다.
- *    scan-only 문면은 업로드 시점에 이미 띄우는 문장과 글자 그대로 같아야 합니다 —
- *    같은 사실을 두 시점에 두 문장으로 말하면 이용자는 다른 일이 생긴 줄 압니다.
- *    (test/intake-route.test.js 가 국문 쌍에 같은 단정을 겁니다.)
- */
-test('영문 scan-only 문면이 영문 업로드 안내와 글자 그대로 같다', () => {
-  const html = strip(read('en-precheck.html'));
-  const shown = (html.match(/<p id="textlayer-msg">([^<]*)<\/p>/) || [])[1];
-  assert.ok(shown, 'en-precheck.html 에서 #textlayer-msg 를 찾지 못했습니다');
-  assert.strictEqual(ROUTE.NOTICES_EN['scan-only'], shown,
-    '업로드 안내와 접수 확인 문면이 다릅니다 — 같은 사실을 두 문장으로 말합니다\n' +
-    '  화면: ' + shown + '\n  문면: ' + ROUTE.NOTICES_EN['scan-only']);
-});
 
 test('영문 문면이 국문과 같은 사유를 덮는다', () => {
   assert.deepStrictEqual(
@@ -170,3 +138,18 @@ test('영문 고객 메일이 국문과 같은 고지를 담는다', () => {
      영문 메일 한가운데서 국문 페이지가 열립니다. */
   assert.ok(src.includes('/en-refund'), '영문 메일이 /en-refund 를 가리키지 않습니다');
 });
+
+/*
+ * ══════════════════════════════════════════════════════════════════════════════
+ * ⚠️ **화면 축 2건을 걷었습니다** 〔2026-08-30 · 접수 화면 삭제 딸림〕
+ * ══════════════════════════════════════════════════════════════════════════════
+ * 걷은 것: 「두 접수 폼이 같은 코드로 각자의 언어를 보낸다」 · 「영문 scan-only 문면이
+ * 영문 업로드 안내와 글자 그대로 같다」 — 둘 다 `precheck.html`·`en-precheck.html` 을 쟀고
+ * 두 페이지가 커밋 `ca47218` 에서 삭제됐습니다.
+ *
+ * 🔴 **잃은 보증** — 「폼에 **칸을 더하지 않고** `<html lang>` 을 같은 코드가 읽어 서로 다른
+ *    값을 보낸다」. 서버 축(`parseLocale`·`noticeFor`·컬럼 폴백)은 아래에 그대로 살아 있고,
+ *    **어떻게 그 값이 만들어지는가**만 아무도 재지 않습니다.
+ * ⛔ 접수 화면을 다시 세우는 날 함께 되살리십시오
+ *    (원본: `git show ca47218^:test/intake-locale.test.js`).
+ */
