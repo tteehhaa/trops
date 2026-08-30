@@ -30,7 +30,6 @@
 
   var PAIRS = [
     ['/', '/en'],
-    ['/check', '/en-check'],
     ['/refund', '/en-refund'],
     ['/privacy', '/en-privacy'],
   ];

@@ -277,10 +277,13 @@ const CHECKS = [
   {
     id: 'en-페이지',
     label: '영문 5개가 서고 영문으로 렌더된다',
-    pages: ['/en', '/en-check', '/en-precheck', '/en-refund', '/en-privacy'],
+    /* 🔄 `/en-check` 를 뺐습니다 〔2026-08-30 · 사전 확인 3문항 제거〕.
+       ⚠️ `/en-precheck` 는 **이 커밋 범위 밖**입니다 — 2026-08-30 6장 제거(ca47218) 때
+          여기서 빠지지 않아 이미 낡은 항목이고, `en-precheck.html` 이 없어
+          `npm run verify:prod` 가 지금도 이 자리에서 넘어집니다. 함께 정리하십시오. */
+    pages: ['/en', '/en-precheck', '/en-refund', '/en-privacy'],
     sourceOf: {
       '/en': 'en.html',
-      '/en-check': 'en-check.html',
       '/en-precheck': 'en-precheck.html',
       '/en-refund': 'en-refund.html',
       '/en-privacy': 'en-privacy.html',
@@ -315,7 +318,7 @@ const CHECKS = [
    */
   ...[
     ['/', '/en', 'index.html'],
-    ['/check', '/en-check', 'check.html'],
+    /* ⚠️ `/precheck` 쌍은 위와 같은 이유로 남아 있습니다 — 이 커밋 범위 밖입니다. */
     ['/precheck', '/en-precheck', 'precheck.html'],
     ['/refund', '/en-refund', 'refund.html'],
   ].map(([ko, en, koFile]) => ({

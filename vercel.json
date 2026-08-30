@@ -65,6 +65,16 @@
       "permanent": false
     },
     {
+      "source": "/check",
+      "destination": "https://app.trops.kr/export-precheck/new",
+      "permanent": false
+    },
+    {
+      "source": "/en-check",
+      "destination": "https://app.trops.kr/export-precheck/new",
+      "permanent": false
+    },
+    {
       "source": "/nda",
       "destination": "/",
       "permanent": false

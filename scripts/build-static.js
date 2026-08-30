@@ -57,20 +57,23 @@ const STATIC = {
    *    `vercel.json` 이 그 토큰을 **결과지**(`app.trops.kr/c/<token>`)로 넘긴다. 그냥 지우면
    *    그 메일의 링크가 전부 404 다.
    * ⚠️ 여기서 빼면 배포만 안 되고 파일은 남는 조용한 실패가 되므로 **파일도 함께 지웠다.**
+   *
+   * 🔄 **사전 확인 3문항도 내렸다** 〔2026-08-30 · 대표 지시〕 — `check.html` · `en-check.html`.
+   *    3문항을 거쳐 접수 폼으로 보내던 구조 자체가 없어졌다(2026-08-24 랜딩 CTA 가 앱
+   *    가입으로 바뀐 것이 의도된 폐기였다). 실측: 랜딩 인바운드 링크 0 · page_events 기준
+   *    2026-08-24 이후 조회 0건.
+   *    ⚠️ 두 장은 hreflang 짝이라 **함께** 내렸다. 한 장만 내리면 남은 쪽의 hreflang 이
+   *       없는 상대를 가리킨다(검색엔진은 상호 지목이 아니면 무시한다).
    */
   html: [
     { file: 'index.html', locale: 'ko' },
     { file: 'en.html', locale: 'en' },
-    // 사전 확인 3문항. cleanUrls 로 /check 에 붙습니다 〔2026-08-14 · doc/s10 1단계 작업 4〕.
-    { file: 'check.html', locale: 'ko' },
     { file: 'refund.html', locale: 'ko' },
     { file: 'privacy.html', locale: 'ko' },
     { file: 'en-privacy.html', locale: 'en' },
-    // 영문 4종 〔2026-08-16〕. en.html 의 형제 파일로 두고 cleanUrls 가 /en-check ·
-    // /en-precheck · /en-refund 에 붙입니다. 국문 짝은 각각 check · precheck · refund
-    // 이고, 네 쌍 모두 <head> 에 hreflang 3줄이 서로를 가리킵니다.
+    // 영문 〔2026-08-16〕. en.html 의 형제 파일로 두고 cleanUrls 가 /en-refund 에 붙입니다.
+    // 국문 짝은 refund 이고, 두 쌍 모두 <head> 에 hreflang 3줄이 서로를 가리킵니다.
     // ⚠️ 여기 빠뜨리면 파일은 있는데 배포만 안 되어 404 가 납니다 — 조용한 실패입니다.
-    { file: 'en-check.html', locale: 'en' },
     { file: 'en-refund.html', locale: 'en' },
     // 영문 2종 추가 〔2026-08-20〕. en-nda.html 은 nda.html 의, en-uae.html 은 uae.html 의
     // 형제 파일이고 cleanUrls 가 /en-nda · /en-uae 에 붙입니다. hreflang 3줄이 각각

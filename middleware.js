@@ -13,7 +13,6 @@
 
 const PAIRS = [
   ['/', '/en'],
-  ['/check', '/en-check'],
   ['/refund', '/en-refund'],
   ['/privacy', '/en-privacy'],
 ];
@@ -41,7 +40,13 @@ export default function middleware(request) {
   });
 }
 
+/*
+ * ⚠️ matcher 에 남은 `/precheck`·`/nda`·`/uae` 는 **PAIRS 에 없는 죽은 항목**이다
+ *    (2026-08-30 6장 제거 때 PAIRS 에서만 빠졌다). 지금은 무해하다 — 그 셋은
+ *    vercel.json 리다이렉트가 먼저 잡고, 여기까지 와도 enPath 가 없어 그대로 통과한다.
+ *    이번 커밋 범위 밖이라 손대지 않았다. 정리할 때 PAIRS 와 함께 보십시오.
+ */
 export const config = {
-  matcher: ['/', '/check', '/precheck', '/refund', '/nda', '/uae', '/privacy'],
+  matcher: ['/', '/precheck', '/refund', '/nda', '/uae', '/privacy'],
   runtime: 'edge',
 };
