@@ -17,7 +17,13 @@
     "refund:nda-outcome:apply": "node --env-file=.env.local scripts/refund-nda-outcome.js --apply",
     "remind:preview": "node --env-file=.env.local scripts/payment-reminder.js",
     "remind:apply": "node --env-file=.env.local scripts/payment-reminder.js --apply",
-    "deliver": "node --env-file=.env.local scripts/deliver.js"
+    "deliver": "node --env-file=.env.local scripts/deliver.js",
+    "erasure:find": "node --env-file=.env.local scripts/erasure.js --email",
+    "erasure:preview": "node --env-file=.env.local scripts/erasure.js",
+    "erasure:apply": "node --env-file=.env.local scripts/erasure.js --apply",
+    "metrics:precheck": "node --env-file=.env.local scripts/precheck-metrics.js",
+    "metrics:precheck:json": "node --env-file=.env.local scripts/precheck-metrics.js --json",
+    "metrics:precheck:sql": "node scripts/precheck-metrics.js --sql"
   },
   "dependencies": {
     "resend": "^4.0.1"
