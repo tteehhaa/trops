@@ -3,24 +3,43 @@
  *
  *   npm test        (node --test test/)
  *
- * ── 왜 있는가 ───────────────────────────────────────────────────────────────
- * 두 가지가 조용히 깨지는 자리라 못질합니다.
+ * ══════════════════════════════════════════════════════════════════════════════
+ * 🔄 **2026-08-30 — 이 파일이 «죽어 있었습니다**〔대표 지시로 되살림〕
+ * ══════════════════════════════════════════════════════════════════════════════
+ * 첫 줄이 `read('precheck.html')` 이었고 그 페이지가 2026-08-30 에 삭제되면서
+ * **모듈 로드가 ENOENT 로 죽었습니다.** 그래서 여기 있던 검사 여덟이 전부 「실패」로
+ * 뜬 것이 아니라 **아무것도 재지 않았습니다** — 그중 하나가 대표가 지목한
+ * 「FAQ·환불 페이지에 원화 금액 0건」입니다.
  *
- * ① **금액이 세 곳에 손으로 적혀 있습니다** — 서버(api/_payment.js PRICE) · 결제 요약
- *    (.pay-summary-value) · 제출 버튼(JS 문자열). 앞 사이클 보고서(naming-consistency-s9
- *    미결 ①)가 「md 는 ₩300,000 인데 코드는 ₩99,000」을 잡아낸 것이 정확히 이 형태입니다.
- *    한 곳만 고치면 **화면이 말한 값과 청구된 값이 갈립니다.**
+ * 🔴 **왜 스스로 낡았는가 — 페이지 이름을 손으로 적었기 때문입니다.**
+ *    `['nda.html','refund.html','en-refund.html']` 처럼 목록을 박아 두면 페이지가
+ *    사라지는 날 검사가 조용히(또는 요란하게) 무너집니다. 이제 **살아 있는 페이지 목록을
+ *    빌드 분류표(`scripts/build-static.js` `STATIC.html`)에서 읽습니다** — 그 표가
+ *    「무엇이 배포되는가」의 정본이고, 페이지가 늘거나 줄면 검사가 **자동으로 따라옵니다**.
+ *    ⛔ 목록을 다시 손으로 적지 마십시오(아래 「메타」 검사가 그것을 막습니다).
  *
- * ② **가격이 접수 전에 보이면 안 됩니다** 〔흐름 md §0-2 「비용 노출 없음」〕. 종전에는
- *    `.plans { display: none }` **한 줄**이 그것을 지탱했고, 그 한 줄을 지우는 것을 잡는
- *    검사가 없었습니다. 지금은 CSS + `hidden` 두 겹이고 이 파일이 둘 다 봅니다.
+ * ── 🔴 무엇을 지우고 무엇을 고쳤는가 ────────────────────────────────────────
+ * **고침(지금도 지켜야 하는 것)**
+ *   · 폐기 금액(₩99,000 · ₩300,000)이 화면에 없다 → 대상을 **살아 있는 전 페이지**로
+ *   · 🔴 원화 금액이 화면에 없다 → 종전 3장 한정에서 **살아 있는 전 페이지**로 **넓혔다**
+ *   · 종료된 무상 제공 문구가 저장소 어디에도 없다 → 그대로(페이지와 무관한 검사다)
+ *   · 서버 청구 금액 · payment-config 의 amount → 그대로(접수 32건의 환불 근거다)
+ *
+ * **지움(지킬 대상이 사라진 것)** — ⛔ 「검사가 불편해서」가 아니라 **그 화면이 없어서**다:
+ *   · 「결제 요약·제출 버튼·서버 금액이 같은 말을 한다」 — 금액을 손으로 적던 화면 두 자리가
+ *     함께 사라졌다. **금액을 든 자리가 서버 하나**라 갈릴 대상이 없다. ⚠️ 그 사실 자체는
+ *     아래 「원화 금액 0건」이 **더 강하게** 지킨다(어느 페이지에도 금액이 없어야 한다).
+ *   · 「부가세 포함 병기」·「플랜 컨테이너 두 겹」·「금액이 결제 영역 안에만」·
+ *     「결제 영역이 접힌 채로 내려온다」 — 전부 `precheck.html` 의 결제 폼 구조다.
+ *     그 폼이 없으므로 **접수 전 노출**이라는 위험 자체가 없다.
+ * 🔴 되살릴 조건: 이 저장소에 결제 폼이 다시 서면 그때 함께 되살린다.
+ *    (커밋 `ca47218` 「안 쓰는 6장을 내린다」의 `precheck.html` 이 그 원본이다)
  *
  * ⚠️ 이 검사는 **문자열 대조**입니다. 금액 정본은 trops_a
  *    `lib/payment/precheck-paid-gate.ts` `PRECHECK_PRICE.launchKrw` 이고, 그쪽과의
  *    드리프트는 test/precheck-charge-gate.test.js 「정가·런칭가가 정본과 같다」가 봅니다.
- *    여기서 보는 것은 **이 저장소 안에서 세 자리가 같은 말을 하는가**입니다.
  * ⛔ 기대값을 `require('../api/_payment.js').PRICE` 로 바꾸지 마십시오. 그러면 서버 값을
- *    고치는 순간 화면 검사도 함께 통과해 「고칠 곳이 더 있다」는 사실이 사라집니다.
+ *    고치는 순간 검사도 함께 통과해 「고칠 곳이 더 있다」는 사실이 사라집니다.
  */
 
 'use strict';
@@ -36,8 +55,12 @@ const read = (f) => fs.readFileSync(path.join(ROOT, f), 'utf8');
 /** 주석 없는 원문. 이 저장소는 주석에 옛 값을 인용하므로 그대로 두면 전부 오탐입니다. */
 const strip = (s) => s.replace(/<!--[\s\S]*?-->/g, '').replace(/\/\*[\s\S]*?\*\//g, '');
 
-const RAW = read('precheck.html');
-const SRC = strip(RAW);
+/**
+ * 🔴 **살아 있는 페이지 — 빌드 분류표에서 읽습니다**(사본 0).
+ * ⛔ 여기에 파일 이름을 적지 마십시오. 이 파일이 2026-08-30 에 죽은 원인이 그것입니다.
+ */
+const { STATIC } = require('../scripts/build-static.js');
+const LIVE_PAGES = STATIC.html.map((e) => e.file);
 
 /**
  * 흐름 md §4 가 확정한 1차 테스트가 — **VAT 포함 총액**〔2026-08-17 · 300,000 → 330,000〕.
@@ -48,149 +71,80 @@ const RETIRED_TEXT = '₩99,000';
 /** 폐기된 종전 판매가(VAT 미포함 시절) — 화면 어디에도 남아 있으면 안 된다. */
 const RETIRED_PRE_VAT_TEXT = '₩300,000';
 
+/* ══ 0. 메타 — 이 검사가 다시 낡지 않게 ══════════════════════════════════════ */
+
+test('🔴 대상 페이지를 빌드 분류표에서 읽는다 — 목록을 손으로 적지 않는다', () => {
+  assert.ok(LIVE_PAGES.length >= 6,
+    '살아 있는 페이지가 ' + LIVE_PAGES.length + '장뿐입니다 — 목록이 비면 아래 검사가 전부 무의미해집니다');
+  for (const f of LIVE_PAGES) {
+    assert.ok(fs.existsSync(path.join(ROOT, f)), '분류표에 있는데 파일이 없습니다: ' + f);
+  }
+  // ⛔ 삭제된 페이지가 목록에 되살아나면 즉시 red — 조용한 ENOENT 로 죽지 않는다.
+  for (const gone of ['precheck.html', 'nda.html', 'uae.html', 'check.html']) {
+    assert.ok(!LIVE_PAGES.includes(gone), '삭제된 페이지가 분류표에 있습니다: ' + gone);
+  }
+});
+
 /* ══ 1. 값 ═══════════════════════════════════════════════════════════════════ */
 
 test('서버가 가진 청구 금액이 ₩330,000(VAT 포함) 이다', () => {
+  /*
+   * ⚠️ 상품은 더는 팔지 않지만 이 값은 **남은 접수 32건의 환불 근거**입니다.
+   *    `scripts/refund.js` 가 이 금액으로 취소를 겁니다 — 지우지 마십시오.
+   */
   const payment = require('../api/_payment.js');
   assert.strictEqual(payment.PRICE, 330000,
     '실제 청구 금액이 ' + payment.PRICE + ' 입니다 — 2026-08-17 VAT 반영 결정은 ₩330,000 입니다');
 });
 
-test('결제 요약·제출 버튼·서버 금액이 같은 말을 한다', () => {
-  const summary = (SRC.match(/<span class="pay-summary-value">([^<]*)<\/span>/) || [])[1];
-  assert.strictEqual(summary, PRICE_TEXT, '결제 요약 금액이 ' + summary + ' 입니다');
-
-  const btn = (SRC.match(/submitBtn\.textContent = paid \? '([^']*)'/) || [])[1] || '';
-  assert.ok(btn.indexOf(PRICE_TEXT) !== -1,
-    '제출 버튼이 다른 금액을 말합니다: ' + btn);
-
-  // 세 자리가 같은가 — 서버 값을 사람이 읽는 형식으로 만들어 대조합니다.
-  const payment = require('../api/_payment.js');
-  const formatted = '₩' + payment.PRICE.toLocaleString('en-US');
-  assert.strictEqual(formatted, PRICE_TEXT,
-    '서버 금액(' + formatted + ')과 화면 표기(' + PRICE_TEXT + ')가 갈렸습니다');
+test('금액을 대조 가능한 상태로 서버가 내려준다 — 화면이 정본을 참조할 길을 남긴다', () => {
+  const cfg = read('api/payment-config.js');
+  assert.ok(/amount: PRICE/.test(cfg), 'payment-config 가 amount 를 내려주지 않습니다');
 });
 
-test('🔴 폐기된 ₩99,000 이 화면 문면에 남아 있지 않다', () => {
-  assert.ok(SRC.indexOf(RETIRED_TEXT) === -1,
-    '/precheck 에 폐기된 금액이 남아 있습니다 — 고친 자리가 일부뿐입니다');
-  for (const f of ['nda.html', 'refund.html', 'en-refund.html']) {
-    const s = strip(read(f));
-    assert.ok(!/99,000/.test(s),
-      f + ' 에 폐기된 금액(99,000)이 남아 있습니다 — FAQ·약관만 낡으면 물어본 값과 청구된 값이 갈립니다');
-  }
-});
-
-/**
- * 🔴 **신설 〔2026-08-17〕 — 폐기된 VAT 미포함 표기(₩300,000)가 어디에도 없다.**
- * 판매가가 VAT 포함 총액(₩330,000)으로 바뀌었으므로, 종전 표기가 precheck.html 뿐
- * 아니라 FAQ·환불 페이지에도 남아 있으면 「물어본 값」과 「청구된 값」이 다시 갈립니다.
- */
-test('🔴 폐기된 VAT 미포함 표기(₩300,000)가 화면 문면 어디에도 없다', () => {
-  for (const f of ['precheck.html', 'en-precheck.html', 'nda.html', 'refund.html', 'en-refund.html']) {
-    const s = strip(read(f));
-    assert.ok(s.indexOf(RETIRED_PRE_VAT_TEXT) === -1,
-      f + ' 에 VAT 미포함 시절 금액(₩300,000)이 남아 있습니다');
-  }
-});
-
-/**
- * 🔴 **신설 〔2026-08-17 · 창업자 지시〕 — 가격은 결제 단계 마지막에만 보인다.**
- * FAQ(nda.html)·환불 규정(refund.html·en-refund.html)은 결제 흐름 밖의 일반 공개
- * 페이지입니다. 여기에 정확한 금액이 있으면 접수를 시작하기도 전에, 혹은 결제와
- * 무관한 문서를 읽다가 가격을 마주칩니다 — precheck.html 자체의 노출 시점 규칙
- * (아래 「2. 노출 시점」)과 같은 원칙을 이 세 페이지에도 적용합니다.
+/* ══ 2. 노출 — 이제 «어느 페이지에도» 금액이 없다 ════════════════════════════
  *
- * ⚠️ 「원 단위 금액이 전혀 없다」를 봅니다(₩로 시작하는 숫자 전체) — 특정 값만 지우고
- *    다른 표기로 우회하는 것을 막습니다.
+ * 🔴 **종전보다 강한 규칙입니다.** 전에는 「결제 영역 안에서만 보인다」였고, 그 결제
+ *    영역(`precheck.html`)이 사라지면서 **금액이 있어도 되는 자리가 0** 이 됐습니다.
+ *    ⛔ 그래서 「FAQ·환불 3장」 한정을 풀고 살아 있는 전 페이지로 넓혔습니다.
  * ⚠️ **₩0 은 예외입니다** — 「무료」를 설명하는 표기(en-refund.html 의 「Free (₩0)」)이지
  *    가격 정보를 새지 않습니다. 0 이 아닌 금액만 봅니다.
  */
-test('🔴 FAQ·환불 페이지에 원화 금액이 전혀 없다 — 가격은 결제 단계에서만 보인다', () => {
+
+test('🔴 살아 있는 어느 페이지에도 원화 금액이 없다 — 파는 상품이 없다', () => {
   const AMOUNT_RE = /₩\s?(?!0\b)[\d,]+/;
-  for (const f of ['nda.html', 'refund.html', 'en-refund.html']) {
-    const s = strip(read(f));
-    const hit = AMOUNT_RE.exec(s);
-    assert.ok(!hit, f + ' 에 원화 금액이 남아 있습니다: ' + (hit && hit[0]));
-  }
-});
-
-test('부가세 포함이 금액과 한 묶음으로 병기돼 있다 — 2026-08-17 VAT 반영 표기', () => {
-  assert.ok(SRC.indexOf('부가세(VAT) 포함입니다.') !== -1, 'VAT 병기가 없습니다');
-
-  // 금액 **바로 아래**여야 합니다. 환불·SLA 문구 사이로 밀리면 별개 안내로 읽힙니다.
-  const at = SRC.indexOf('부가세(VAT) 포함입니다.');
-  const priceAt = SRC.indexOf('class="pay-summary-value"');
-  const refundAt = SRC.indexOf('class="pay-refund"');
-  assert.ok(priceAt !== -1 && refundAt !== -1, '기준 블록을 찾지 못했습니다');
-  assert.ok(at > priceAt && at < refundAt,
-    'VAT 병기가 금액과 환불 문구 사이에 없습니다 — 금액과 한 묶음으로 읽혀야 합니다');
-});
-
-/* ══ 2. 노출 시점 ════════════════════════════════════════════════════════════
- *
- * 흐름 md §0-2: 「결제는 AI 실행 전, 사전점검이라는 개별 상품에만 걸림 — **비용 노출 없음**」.
- *
- * 🔴 요청된 전체 재구조화(접수 → 대조 → 결과 티저 → 결제)는 이 저장소만으로 못 합니다 —
- *    대조 결과가 trops_a 에 있습니다. 그 설계·전제는
- *    docs/03-analysis/price-gate-teaser-restructure.md 가 듭니다. 여기서 지키는 것은
- *    **「선택 전에는 금액이 화면에 없다」** 한 가지입니다.
- */
-
-test('🔴 플랜 컨테이너가 두 겹으로 닫혀 있다 — CSS 와 속성', () => {
-  assert.match(RAW, /\.plans \{ display: none; \}/,
-    'CSS 겹이 사라졌습니다 — .plans { display: none } 이 없습니다');
-  assert.match(SRC, /<div class="plans" id="plans"[^>]*\shidden\b/,
-    '속성 겹이 사라졌습니다 — #plans 에 hidden 이 없습니다');
-});
-
-test('🔴 금액이 결제 영역 안에만 있다 — 접수 전에 마주치지 않는다', () => {
-  /*
-   * 금액 문자열이 **마크업**에 나오는 자리를 전수로 셉니다. 허용되는 곳은 두 곳뿐입니다:
-   *   ① 두 겹으로 닫힌 .plans 컨테이너 안 (화면에 없습니다)
-   *   ② #pay-area 안 (유료 경로를 고른 뒤에만 열립니다)
-   * 그 밖에 하나라도 있으면 접수를 시작하기 전에 금액을 보는 구조입니다.
-   *
-   * ⚠️ `<script>` 는 이 셈에서 뺍니다 — 그 안의 금액은 **유료 분기에서만** 버튼에 쓰이는
-   *    값이고(onPlanChange), 자리가 아니라 조건으로 통제됩니다. 그 값이 화면 금액과 같은지는
-   *    위 「결제 요약·제출 버튼·서버 금액이 같은 말을 한다」가 따로 봅니다.
-   */
-  const MARKUP = SRC.replace(/<script[\s\S]*?<\/script>/g, '');
-
-  const plansStart = MARKUP.indexOf('<div class="plans"');
-  // .plans 다음에 오는 첫 형제가 마감 알림(#closed-notice)이라 그것을 닫는 자리로 씁니다.
-  const plansEnd = MARKUP.indexOf('id="closed-notice"');
-  const payStart = MARKUP.indexOf('<div class="pay-area"');
-  const payEnd = MARKUP.indexOf('id="intake-submit"');
-  assert.ok(plansStart !== -1 && plansEnd > plansStart && payStart !== -1 && payEnd > payStart,
-    '기준 블록을 찾지 못했습니다 — 마크업 순서가 바뀌었으면 이 좌표를 다시 잡으십시오');
-
-  const inAllowed = (i) =>
-    (i > plansStart && i < plansEnd) || (i > payStart && i < payEnd);
-
   const offenders = [];
-  let at = MARKUP.indexOf(PRICE_TEXT);
-  while (at !== -1) {
-    if (!inAllowed(at)) offenders.push(at);
-    at = MARKUP.indexOf(PRICE_TEXT, at + 1);
+  for (const f of LIVE_PAGES) {
+    const hit = AMOUNT_RE.exec(strip(read(f)));
+    if (hit) offenders.push(f + ': ' + hit[0]);
   }
   assert.deepStrictEqual(offenders, [],
-    '금액이 결제 영역 밖 ' + offenders.length + '곳에 그려집니다(문자 위치 ' +
-    offenders.join(', ') + ') — 흐름 md §0-2 「비용 노출 없음」이 깨집니다');
+    '원화 금액이 화면에 남아 있습니다: ' + offenders.join(' · ') +
+    ' — 결제 폼이 없어진 뒤로 금액이 있어도 되는 자리는 0 입니다');
 });
 
-test('결제 영역이 접힌 채로 내려온다 — 유료 경로를 고른 뒤에만 열린다', () => {
-  assert.match(SRC, /<div class="pay-area" id="pay-area" hidden>/,
-    '#pay-area 가 hidden 으로 내려오지 않습니다 — 금액이 처음부터 보입니다');
-  assert.match(RAW, /payArea\.hidden = !paid;/,
-    '유료 선택 여부로 결제 영역을 여는 코드가 없습니다');
+test('🔴 폐기된 금액 표기(₩99,000 · ₩300,000)가 화면 어디에도 없다', () => {
+  const offenders = [];
+  for (const f of LIVE_PAGES) {
+    const s = strip(read(f));
+    for (const dead of [RETIRED_TEXT, RETIRED_PRE_VAT_TEXT, '99,000']) {
+      if (s.indexOf(dead) !== -1) offenders.push(f + ': ' + dead);
+    }
+  }
+  assert.deepStrictEqual(offenders, [],
+    '폐기된 금액이 남아 있습니다: ' + offenders.join(' · ') +
+    ' — 물어본 값과 청구된 값이 갈립니다');
 });
 
-test('금액을 대조 가능한 상태로 서버가 내려준다 — 화면이 정본을 참조할 길을 남긴다', () => {
-  // api/payment-config.js 가 amount 로 실제 청구액을 내려보냅니다. 지금 화면은 손으로 적은
-  // 문자열을 쓰지만(위젯 전 고지), 이 응답이 있어야 나중에 파생으로 바꿀 수 있습니다.
-  const cfg = read('api/payment-config.js');
-  assert.ok(/amount: PRICE/.test(cfg), 'payment-config 가 amount 를 내려주지 않습니다');
+test('[대조] 검출기가 실제로 문다 — 0건 통과 금지', () => {
+  /*
+   * 🔴 위 두 검사가 «아무 페이지도 안 읽어서» 통과하는 상태(2026-08-30 의 그것)를
+   *    막습니다. 같은 정규식에 실제 금액을 먹여 잡히는지 봅니다.
+   */
+  const AMOUNT_RE = /₩\s?(?!0\b)[\d,]+/;
+  assert.ok(AMOUNT_RE.test('결제 금액은 ' + PRICE_TEXT + ' 입니다'), '검출기가 금액을 놓칩니다');
+  assert.ok(AMOUNT_RE.test('종전가 ' + RETIRED_TEXT), '검출기가 폐기 금액을 놓칩니다');
+  assert.ok(!AMOUNT_RE.test('Free (₩0)'), '₩0 예외가 깨졌습니다');
 });
 
 /* ══ 3. 무상 제공 문구 ═══════════════════════════════════════════════════════

@@ -344,9 +344,15 @@ h2{max-width:18em;font-size:clamp(1.75rem,3vw,2.5rem);font-weight:700;line-heigh
 <footer class="footer">
   <div class="container">
     <div class="inner">
+      <!-- 🔴 **사업자정보는 site.config.json 이 원본입니다** 〔2026-08-30 복구〕.
+           2026-08-29 랜딩 전면교체가 이 자리에 값을 «손으로» 적어 넣어 단일소스가
+           끊겼고, 그사이 주소가 축약형으로 갈렸습니다(설정: 「서울특별시 … B층 269-11호
+           (삼성동)」 / 화면: 「서울 … B269-11」). test/site-config.test.js 가 그것을
+           막는 검사인데 같은 배치가 그 검사도 함께 red 로 두어 **아무도 몰랐습니다.**
+           ⛔ 여기에 값을 다시 적지 마십시오 — 토큰만 씁니다. -->
       <div class="f1">
-        <span>주식회사 테오네 · 대표 범하나 · 625-81-04032</span>
-        <span>서울 강남구 봉은사로 524, B269-11</span>
+        <span>{{biz.companyName}} · 대표 {{biz.ceo}} · {{biz.registrationNo}}</span>
+        <span>{{biz.address}}</span>
         <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>
       </div>
       <div class="f2">

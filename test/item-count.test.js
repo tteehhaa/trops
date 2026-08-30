@@ -8,6 +8,8 @@
  *
  * 왜 필요한가: 이 숫자가 5곳에 하드코딩돼 있었습니다 —
  *   nda.html 2곳(본문 · QnA) · uae.html 1곳(CTA 노트) · refund.html 2곳(01 적용대상 · 04 표)
+ *   〔2026-08-30〕 앞의 둘은 페이지가 삭제돼 사라졌고, 대신 **en-refund.html 2곳**이
+ *   표에 들어왔습니다(여태 세지 않던 자리입니다). 지금 자리 수는 **4** 입니다.
  *
  * 값의 정본은 이 저장소가 아니라 판정층 trops_a 이고, 거기서 파생됩니다:
  *   ICC_ITEM_IDS − V1_EXCLUDED_ITEM_IDS (2026-08-23 기준 17)
@@ -41,21 +43,64 @@ const CONFIG = path.join(ROOT, 'site.config.json');
  * 자리 수까지 적는 이유: 토큰 하나를 실수로 지워도 「값이 들어 있다」만 보는 검사는
  * 통과합니다. 5곳이 5곳으로 남아 있는지를 함께 셉니다.
  */
+/*
+ * 🔄 **2026-08-30 — 다섯 자리가 네 자리가 됐습니다**(대표 지시 · 낡은 기대 정리).
+ *    `nda.html`(2) · `uae.html`(1) 이 2026-08-30 에 삭제됐습니다. 그리고 그때
+ *    **`en-refund.html` 이 이 표에 아예 없던 것**이 드러났습니다 — 영문 환불 페이지의
+ *    토큰 자리는 여태 아무도 세지 않았습니다(`build-static` 이 `en.html` 을 빠뜨렸던 것과
+ *    같은 형태). 넣습니다.
+ *
+ * 🔴 **이 수는 «손으로» 유지합니다 — 파생으로 바꾸지 마십시오.**
+ *    자리 수를 파일에서 세어 오면 「토큰 하나를 실수로 지웠다」를 **구조적으로 못 잡습니다**
+ *    (재려는 대상에서 기대를 뽑는 순환이 됩니다). 이 표가 래칫인 것이 이 검사의 전부입니다.
+ *    ⚠️ 대신 아래 「메타」 검사가 **표와 배포 목록이 어긋나는 것**을 legible 하게 잡습니다 —
+ *       종전에는 그 어긋남이 ENOENT 로 나타났습니다.
+ */
 const PAGES = {
-  'nda.html': 2,
-  'uae.html': 1,
   'refund.html': 2,
+  'en-refund.html': 2,
 };
 
-/** 항목 수가 나오지 않아야 하는 페이지 — 여기 숫자가 생기면 새 하드코딩입니다. */
-const PAGES_WITHOUT = [
-  'index.html', 'en.html', 'precheck.html', 'privacy.html', 'en-privacy.html',
-];
+/**
+ * 항목 수가 나오지 않아야 하는 페이지 — 여기 숫자가 생기면 새 하드코딩입니다.
+ * 🔴 **파생입니다** — 배포되는 페이지 중 위 표에 없는 전부. 새 페이지가 생기면 자동으로
+ *    감시 대상이 됩니다(종전에는 손으로 적어서 `sample.html` 두 장이 빠져 있었습니다).
+ */
+const { STATIC } = require('../scripts/build-static.js');
+const LIVE_PAGES = STATIC.html.map((e) => e.file);
+/*
+ * 🔴 **예시 리포트는 이 검사의 대상이 아닙니다** 〔2026-08-30〕.
+ *    `sample.html`·`en-sample.html` 은 **가상 기업의 리포트**라 숫자가 사실이 아니고,
+ *    그것을 설정값과 맞추려 하면 예시가 예시가 아니게 됩니다. 화면이 스스로 「예시입니다」를
+ *    적고 있고 아래 메타 검사가 그 사실을 확인합니다.
+ * ⛔ 예외를 «이름»만으로 늘리지 마십시오 — 반드시 그 배너가 있는 페이지여야 합니다.
+ */
+const SAMPLE_PAGES = ['sample.html', 'en-sample.html'];
+const PAGES_WITHOUT = LIVE_PAGES.filter((f) => !(f in PAGES) && !SAMPLE_PAGES.includes(f));
 
 const TOKEN = '{{precheck.itemCount}}';
 
-/** 「N개 항목」 꼴. 숫자만 찾으면 CSS 의 18px 에 걸리므로 단위까지 묶어 봅니다. */
-const COUNT_PHRASE_RE = /(\d+)\s*개 항목/g;
+/**
+ * 「N개 항목」 꼴. 숫자만 찾으면 CSS 의 18px 에 걸리므로 단위까지 묶어 봅니다.
+ *
+ * 🔴 **로케일마다 «다른 말»입니다** 〔2026-08-30〕 — 영문 페이지는 「17 items」로 씁니다.
+ *    종전에는 국문 꼴 하나로만 재서, 표에 영문 페이지를 넣는 순간 「0곳」으로 나왔습니다.
+ *    ⛔ 그때 「영문은 빼자」로 접지 않았습니다 — 그러면 영문 환불 페이지의 항목 수가
+ *    계속 아무 검사도 받지 않습니다(그것이 이 배치가 발견한 결손입니다).
+ */
+const COUNT_PHRASE_BY_LOCALE = {
+  ko: () => /(\d+)\s*개 항목/g,
+  /*
+   * ⚠️ **`the` 를 요구합니다** — 그냥 `N items` 로 두면 예시 리포트의 「19 items · 7 to
+   *    handle first」(가상 기업의 **요건 수**이지 대조 항목 수가 아닙니다)가 걸립니다.
+   *    국문 꼴이 `개 항목` 으로 단위를 묶는 것과 같은 층의 좁히기입니다.
+   */
+  en: () => /\bthe\s+(\d+)\s+items\b/g,
+};
+const LOCALE_OF = Object.fromEntries(
+  require('../scripts/build-static.js').STATIC.html.map((e) => [e.file, e.locale])
+);
+const phraseRe = (page) => (COUNT_PHRASE_BY_LOCALE[LOCALE_OF[page]] || COUNT_PHRASE_BY_LOCALE.ko)();
 
 function build() {
   execFileSync('node', [path.join(ROOT, 'scripts', 'build-static.js')], {
@@ -87,9 +132,25 @@ function countTokens(text) {
   return text.split(TOKEN).length - 1;
 }
 
+test('🔴 [메타] 자리 표가 배포 목록과 어긋나지 않는다 — ENOENT 로 죽지 않는다', () => {
+  for (const page of Object.keys(PAGES)) {
+    assert.ok(LIVE_PAGES.includes(page),
+      page + ' 이 배포 목록에 없습니다 — 페이지가 삭제됐으면 위 PAGES 표에서 빼십시오');
+  }
+  assert.ok(PAGES_WITHOUT.length > 0, '감시 대상 페이지가 0장입니다 — 검사가 헛돕니다');
+
+  /* 🔴 예외가 «진짜 예시 페이지»인지 확인합니다 — 이름만으로 빠져나가지 못하게. */
+  for (const page of SAMPLE_PAGES) {
+    assert.ok(LIVE_PAGES.includes(page), '예외 목록에 없는 페이지가 있습니다: ' + page);
+    const src = fs.readFileSync(path.join(ROOT, page), 'utf8');
+    assert.ok(/예시입니다|example|illustrative/i.test(src),
+      page + ' 이 예시 페이지가 아닙니다 — 예외에서 빼십시오');
+  }
+});
+
 test('소스 HTML 에 항목 수가 하드코딩돼 있지 않다', () => {
   for (const page of Object.keys(PAGES).concat(PAGES_WITHOUT)) {
-    const found = strippedSource(page).match(COUNT_PHRASE_RE) || [];
+    const found = strippedSource(page).match(phraseRe(page)) || [];
     assert.deepEqual(
       found,
       [],
@@ -109,16 +170,16 @@ test('토큰이 페이지마다 자리 수만큼 있다', () => {
   }
 
   const total = Object.values(PAGES).reduce((a, b) => a + b, 0);
-  assert.equal(total, 5, '자리 수 합이 5가 아닙니다 — 목록을 다시 세십시오');
+  assert.equal(total, 4, '자리 수 합이 4가 아닙니다 — 목록을 다시 세십시오');
 });
 
-test('현재 설정값이 5곳 산출물에 그대로 들어간다', () => {
+test('현재 설정값이 4곳 산출물에 그대로 들어간다', () => {
   const count = readConfig().precheck.itemCount;
   build();
 
   for (const [page, expected] of Object.entries(PAGES)) {
     const html = fs.readFileSync(path.join(DIST, page), 'utf8');
-    const found = [...html.matchAll(COUNT_PHRASE_RE)].map((m) => m[1]);
+    const found = [...html.matchAll(phraseRe(page))].map((m) => m[1]);
 
     assert.equal(
       found.length,
@@ -142,7 +203,7 @@ test('현재 확정값(17)이 설정에 들어 있다 — 엔진 항목 수와 �
   );
 });
 
-test('항목 수를 한 곳에서 바꾸면 5곳이 전부 따라온다', () => {
+test('항목 수를 한 곳에서 바꾸면 4곳이 전부 따라온다', () => {
   // 이 테스트가 본론입니다 — v1 항목이 늘거나 줄는 날 실제로 일어날 일을 그대로 해 봅니다:
   // site.config.json 한 줄만 고치고 빌드.
   const original = fs.readFileSync(CONFIG, 'utf8');
@@ -157,7 +218,7 @@ test('항목 수를 한 곳에서 바꾸면 5곳이 전부 따라온다', () => 
 
     for (const [page, expected] of Object.entries(PAGES)) {
       const html = fs.readFileSync(path.join(DIST, page), 'utf8');
-      const found = [...html.matchAll(COUNT_PHRASE_RE)].map((m) => m[1]);
+      const found = [...html.matchAll(phraseRe(page))].map((m) => m[1]);
 
       assert.equal(found.length, expected, `${page}: 자리 수가 ${expected} 가 아닙니다`);
       for (const n of found) {

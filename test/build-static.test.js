@@ -25,26 +25,27 @@ const ROOT = path.resolve(__dirname, '..');
 const DIST = path.join(ROOT, 'dist');
 
 /**
- * 로케일은 scripts/build-static.js 의 STATIC.html 과 같아야 합니다 —
- * 사업자정보 토큰을 어느 묶음으로 채우는지가 여기 달렸습니다.
- * 2026-08-11 에 en.html · privacy.html · en-privacy.html 을 넣었습니다.
- * (en.html 은 그전까지 이 목록에서 빠져 있었습니다 — 영문 랜딩만 주석 검사를
- *  못 받고 있었다는 뜻이라 이번에 함께 넣습니다.)
+ * 🔴 **로케일 표를 손으로 적지 않습니다** 〔2026-08-30 복구〕.
+ *
+ * 종전 주석이 스스로 「scripts/build-static.js 의 STATIC.html 과 같아야 합니다」라고
+ * 적어 두고도 **표를 두 벌로** 갖고 있었습니다. 그래서 두 번 어긋났습니다 —
+ *   · 2026-08-11 이전: `en.html` 이 이 표에만 빠져 **영문 랜딩만 주석 검사를 못 받았다**
+ *   · 2026-08-30: 삭제된 세 장(`nda`·`precheck`·`uae`)과 `check` 가 이 표에 남아
+ *     **파일 일곱 개가 ENOENT 로 무너졌다**
+ * 「같아야 한다」를 사람이 지키는 대신 **한 곳에서 읽습니다.** ⛔ 표를 다시 만들지 마십시오.
  */
-const PAGE_LOCALES = {
-  'index.html': 'ko',
-  'en.html': 'en',
-  'nda.html': 'ko',
-  'precheck.html': 'ko',
-  // 2026-08-14 신설(사전 확인 3문항). STATIC.html 과 함께 넣습니다 —
-  // 한쪽만 넣으면 그 페이지만 주석 검사를 못 받습니다(en.html 이 그랬습니다).
-  'check.html': 'ko',
-  'refund.html': 'ko',
-  'uae.html': 'ko',
-  'privacy.html': 'ko',
-  'en-privacy.html': 'en',
-};
+const { STATIC } = require('../scripts/build-static.js');
+const PAGE_LOCALES = Object.fromEntries(STATIC.html.map((e) => [e.file, e.locale]));
 const PAGES = Object.keys(PAGE_LOCALES);
+
+/*
+ * 🔴 **대상 0장을 「통과」로 세지 않습니다** — 분류표가 비면 아래 검사가 전부 조용히
+ *    통과합니다. 이 파일이 2026-08-30 에 겪은 것은 그 반대(요란한 ENOENT)였지만,
+ *    파생으로 바꾼 지금은 «조용한 0» 쪽이 새 위험입니다.
+ */
+if (PAGES.length < 6) {
+  throw new Error('배포 페이지가 ' + PAGES.length + '장뿐입니다 — 검사가 헛돕니다');
+}
 
 function build() {
   execFileSync('node', [path.join(ROOT, 'scripts', 'build-static.js')], {

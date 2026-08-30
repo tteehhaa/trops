@@ -343,9 +343,15 @@ h2{max-width:18em;font-size:clamp(1.75rem,3vw,2.5rem);font-weight:700;line-heigh
 <footer class="footer">
   <div class="container">
     <div class="inner">
+      <!-- 🔴 **상호가 «이미 갈려 있었습니다**〔2026-08-30 복구〕. 이 자리에 손으로 적힌
+           「Theo-ne Inc.」 는 단일 출처(site.config.json `biz.en.companyName`)의
+           「THÉONÉ Co., Ltd.」 와 다른 이름입니다 — 등록된 영문 상호가 아닙니다.
+           단일소스 검사(test/site-config.test.js)가 정확히 이것을 막는 검사인데
+           2026-08-29 랜딩 교체가 그 검사를 red 로 둔 채 값을 박아 넣었습니다.
+           ⛔ 여기에 값을 다시 적지 마십시오 — 토큰만 씁니다. -->
       <div class="f1">
-        <span>Theo-ne Inc. · CEO Hana Beom · 625-81-04032</span>
-        <span>B269-11, 524 Bongeunsa-ro, Gangnam-gu, Seoul, Republic of Korea</span>
+        <span>{{biz.companyName}} · CEO {{biz.ceo}} · {{biz.registrationNo}}</span>
+        <span>{{biz.address}}</span>
         <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>
       </div>
       <div class="f2">
