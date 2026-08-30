@@ -50,15 +50,20 @@ const OUT = path.join(ROOT, 'dist');
  */
 const STATIC = {
   // en.html 은 cleanUrls 로 /en 에 붙습니다 (vercel.json).
+  /*
+   * 🔄 **여섯 장을 내렸다** 〔2026-08-30 · 대표 지시 「nda·uae·precheck 안 씀 · 영문 동일」〕.
+   *    `precheck.html` 은 **접수·결제 폼 자체**였다 — 그 흐름이 함께 내려간다.
+   * 🔴 **이미 나간 링크는 살렸다** — 접수 확인 메일이 `/precheck?r=<token>` 을 가리키므로
+   *    `vercel.json` 이 그 토큰을 **결과지**(`app.trops.kr/c/<token>`)로 넘긴다. 그냥 지우면
+   *    그 메일의 링크가 전부 404 다.
+   * ⚠️ 여기서 빼면 배포만 안 되고 파일은 남는 조용한 실패가 되므로 **파일도 함께 지웠다.**
+   */
   html: [
     { file: 'index.html', locale: 'ko' },
     { file: 'en.html', locale: 'en' },
-    { file: 'nda.html', locale: 'ko' },
-    { file: 'precheck.html', locale: 'ko' },
     // 사전 확인 3문항. cleanUrls 로 /check 에 붙습니다 〔2026-08-14 · doc/s10 1단계 작업 4〕.
     { file: 'check.html', locale: 'ko' },
     { file: 'refund.html', locale: 'ko' },
-    { file: 'uae.html', locale: 'ko' },
     { file: 'privacy.html', locale: 'ko' },
     { file: 'en-privacy.html', locale: 'en' },
     // 영문 4종 〔2026-08-16〕. en.html 의 형제 파일로 두고 cleanUrls 가 /en-check ·
@@ -66,13 +71,10 @@ const STATIC = {
     // 이고, 네 쌍 모두 <head> 에 hreflang 3줄이 서로를 가리킵니다.
     // ⚠️ 여기 빠뜨리면 파일은 있는데 배포만 안 되어 404 가 납니다 — 조용한 실패입니다.
     { file: 'en-check.html', locale: 'en' },
-    { file: 'en-precheck.html', locale: 'en' },
     { file: 'en-refund.html', locale: 'en' },
     // 영문 2종 추가 〔2026-08-20〕. en-nda.html 은 nda.html 의, en-uae.html 은 uae.html 의
     // 형제 파일이고 cleanUrls 가 /en-nda · /en-uae 에 붙입니다. hreflang 3줄이 각각
     // nda.html · uae.html 을 서로 가리킵니다.
-    { file: 'en-nda.html', locale: 'en' },
-    { file: 'en-uae.html', locale: 'en' },
     // 샘플 리포트 2종 〔2026-08-23 · PRD v2.1 §5-11 · B3-b〕. cleanUrls 가 /sample ·
     // /en-sample 에 붙습니다. 히어로 CTA2 와 샘플 섹션이 이 두 경로를 가리키므로
     // 여기서 빠지면 **랜딩 첫 화면의 버튼이 404** 가 됩니다(PRD §4 「B3-1은 B3-5 없이

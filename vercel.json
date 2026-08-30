@@ -18,9 +18,71 @@
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
       ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/precheck",
+      "has": [
+        {
+          "type": "query",
+          "key": "r",
+          "value": "(?<token>.*)"
+        }
+      ],
+      "destination": "https://app.trops.kr/c/:token",
+      "permanent": false
+    },
+    {
+      "source": "/en-precheck",
+      "has": [
+        {
+          "type": "query",
+          "key": "r",
+          "value": "(?<token>.*)"
+        }
+      ],
+      "destination": "https://app.trops.kr/c/:token",
+      "permanent": false
+    },
+    {
+      "source": "/precheck",
+      "destination": "https://app.trops.kr/export-precheck/new",
+      "permanent": false
+    },
+    {
+      "source": "/en-precheck",
+      "destination": "https://app.trops.kr/export-precheck/new",
+      "permanent": false
+    },
+    {
+      "source": "/nda",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/uae",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/en-nda",
+      "destination": "/en",
+      "permanent": false
+    },
+    {
+      "source": "/en-uae",
+      "destination": "/en",
+      "permanent": false
     }
   ]
 }

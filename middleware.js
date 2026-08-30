@@ -14,10 +14,7 @@
 const PAIRS = [
   ['/', '/en'],
   ['/check', '/en-check'],
-  ['/precheck', '/en-precheck'],
   ['/refund', '/en-refund'],
-  ['/nda', '/en-nda'],
-  ['/uae', '/en-uae'],
   ['/privacy', '/en-privacy'],
 ];
 
