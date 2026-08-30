@@ -88,15 +88,21 @@ const STATIC = {
     // 영문 2종 추가 〔2026-08-20〕. en-nda.html 은 nda.html 의, en-uae.html 은 uae.html 의
     // 형제 파일이고 cleanUrls 가 /en-nda · /en-uae 에 붙입니다. hreflang 3줄이 각각
     // nda.html · uae.html 을 서로 가리킵니다.
-    // 샘플 리포트 2종 〔2026-08-23 · PRD v2.1 §5-11 · B3-b〕. cleanUrls 가 /sample ·
-    // /en-sample 에 붙습니다. 히어로 CTA2 와 샘플 섹션이 이 두 경로를 가리키므로
-    // 여기서 빠지면 **랜딩 첫 화면의 버튼이 404** 가 됩니다(PRD §4 「B3-1은 B3-5 없이
-    // 배포 불가」). 파일 자체는 trops_a/doc/self12 에서 내용 무수정으로 옮겨 왔고,
-    // :root 의 --ink · --brand 두 값만 랜딩 브랜드 토큰에 맞췄습니다.
-    // ⚠️ 두 파일은 <meta name="robots" content="noindex"> 입니다 — 예시 문서라
-    //    검색 결과에 실제 발급 문서처럼 뜨면 안 됩니다. 지우지 마십시오.
-    { file: 'sample.html', locale: 'ko' },
-    { file: 'en-sample.html', locale: 'en' },
+    /*
+     * 🔴 **샘플 리포트 2종을 내렸습니다** 〔2026-08-31 · 대표 결정 D-5 「유입 없으면 삭제」〕.
+     *
+     * `sample.html` · `en-sample.html` 은 2026-08-23 에 서면서 **히어로 CTA2 와 샘플 섹션이
+     * 그 두 경로를 가리킨다**는 전제 위에 있었습니다(바로 위 종전 주석이 그렇게 적고
+     * 있었습니다). 2026-08-29 랜딩 전면교체가 그 두 진입원을 함께 걷어냈고, 그래서
+     * **배포는 되는데 랜딩에서 가는 길이 0건**인 상태로 남았습니다(실측 2026-08-31).
+     *
+     * ⚠️ **그 주석이 반대 방향으로 낡아 있었습니다** — 「여기서 빠지면 랜딩 첫 화면의 버튼이
+     *    404」라고 경고했지만 그 버튼은 이미 없었습니다. 분류표의 주석도 늙습니다.
+     * 🔴 **되살리려면 «링크부터»입니다** — 페이지만 다시 등재하면 같은 상태로 돌아갑니다.
+     *    원본: `git show 95664ef:sample.html` · `git show 95664ef:en-sample.html`.
+     * ⛔ 딸림으로 함께 내린 것: `test/landing-invariants.test.js` 의 샘플 3검사 ·
+     *    `test/item-count.test.js` · `test/i18n-parity.test.js` 의 예외 목록.
+     */
   ],
   // assets/ = track.js(2026-08-18 페이지 조회·클릭 익명 집계). 주석 제거 없이 통째 복사.
   dirs: ['data', 'img', 'assets'],

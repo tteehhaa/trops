@@ -66,19 +66,23 @@ function buildMagicLink(token) {
   return origin() + '/precheck?r=' + encodeURIComponent(token);
 }
 
-/**
- * 랜딩의 기한관리 카드 앵커 〔흐름 md §3 · §5-1 3번 · 2026-08-13〕.
+/*
+ * ⚠️ **`buildTimelinePreviewLink` 를 걷었습니다** 〔2026-08-31 · 대표 결정 D-1〕.
  *
- * `#feat-timeline` 은 index.html 05 「핵심기능 3분류」 아코디언의 기한관리 카드 id 입니다.
- * ⚠️ 앵커로 도착하면 카드는 **접힌 상태**입니다(펼침은 그 페이지 JS 의 [data-timeline-open]
- *    트리거 몫). 카드 제목과 셰브론이 보이므로 죽은 링크는 아니고, 한 번 더 눌러 펼치는
- *    형태입니다 — 메일에서 패널을 미리 펼칠 방법은 없습니다.
- * ⚠️ id 를 바꾸면 이 링크가 조용히 페이지 맨 위로 떨어집니다. index.html 의
- *    #feat-timeline 주석에 「id 를 바꾸지 마십시오」가 적혀 있는 이유 중 하나입니다.
+ * 그 함수는 `trops.kr/#feat-timeline` 을 만들었고, **2026-08-29 랜딩 전면교체가 그 앵커를
+ * 걷어냈습니다**(실측: `index.html` 에 `id="feat-timeline"` 0건 · `.feat-hook` 0건).
+ * 그래서 아래 대기공백 블록이 **오류 없이 페이지 맨 위로 떨어지는 링크**를 싣고 있었고,
+ * 그것은 이 파일의 옛 주석이 스스로 경고해 둔 바로 그 고장이었습니다.
+ *
+ * 🔴 **고친 것은 «링크»이고 블록이 아닙니다.** 남은 문단(기한 7일 전·1일 전 알림 ·
+ *    「지금은 무료」)은 **여전히 참**이고, 그 문구는 흐름 md §4 Give/Get 이 요구해 이 파일이
+ *    「어느 쪽에서도 빼지 마십시오」로 못 박아 둔 것입니다. 통째로 걷으면 그 요구가 깨집니다.
+ * 🔴 **남은 링크는 살아 있습니다** — 「계약 등록해보기」가 `app.trops.kr` 로 갑니다.
+ *    그 화면이 문단이 설명하는 기능(수출 계약관리)의 실제 자리입니다.
+ * ⛔ 랜딩에 앵커를 다시 만들어 되살리지 마십시오 — 그 섹션은 개편이 **의도적으로** 내린
+ *    것이고, 되살리면 이 링크 하나 때문에 랜딩 구조를 되돌리는 셈입니다.
+ * ⚠️ **이미 발송된 메일은 고칠 수 없습니다** — 그 링크는 그대로 남습니다.
  */
-function buildTimelinePreviewLink() {
-  return origin() + '/#feat-timeline';
-}
 
 /**
  * 대기 공백 동안의 제품 노출 블록 〔흐름 md §3 「결제확인 메일」 · §5-1 3번〕.
@@ -96,7 +100,10 @@ function buildTimelinePreviewLink() {
 function waitingRoomHtml(en) {
   /*
    * 영문 본문 〔2026-08-17〕. 국문과 **같은 것을 말합니다** — 두 문단의 약속
-   * (기한 7일 전·1일 전 알림 · 지금은 무료)이 랜딩 기한관리 탭의 문면과 같습니다.
+   * (기한 7일 전·1일 전 알림 · 지금은 무료).
+   * ⚠️ **「랜딩 기한관리 탭의 문면과 같다」는 더는 참이 아닙니다** 〔2026-08-31〕 —
+   *    2026-08-29 개편이 그 탭을 걷었습니다. 지금 이 문단이 설명하는 기능의 자리는
+   *    **앱**(app.trops.kr 수출 계약관리)이고 아래 링크가 그리로 갑니다.
    * ⚠️ 「지금은 무료」를 어느 쪽에서도 빼지 마십시오(흐름 md §4 Give/Get 요구).
    * ⚠️ 링크 목적지는 둘 다 같습니다 — app.trops.kr 은 아직 국문 화면뿐이라
    *    영문 방문자도 그리로 갑니다. 그쪽이 영문화되면 여기는 손댈 것이 없습니다.
@@ -109,9 +116,7 @@ function waitingRoomHtml(en) {
           Once your deal starts, we pull the deadlines in your contract, plus customs and FX steps,
           onto one screen and show you the days left. We email you 7 days and 1 day before each
           deadline, and it's free for now.</p>
-        <p><a href="${escapeHtml(buildTimelinePreviewLink())}">Preview deadline tracking</a>
-          &nbsp;&middot;&nbsp;
-          <a href="${escapeHtml(appOrigin() + '/')}">Register a contract</a></p>
+        <p><a href="${escapeHtml(appOrigin() + '/')}">Register a contract</a></p>
   `;
   }
   return `
@@ -120,9 +125,7 @@ function waitingRoomHtml(en) {
         <p>계약서 하나에 기한이 몇 개나 숨어있는지 아세요?
           거래가 시작되면 계약서에 적힌 기한과 통관·외환 절차를 한 화면에 모아
           남은 날짜로 보여드립니다. 기한 7일 전과 1일 전에 메일로 알려드리고, 지금은 무료입니다.</p>
-        <p><a href="${escapeHtml(buildTimelinePreviewLink())}">기한관리 미리보기</a>
-          &nbsp;·&nbsp;
-          <a href="${escapeHtml(appOrigin() + '/')}">계약 등록해보기</a></p>
+        <p><a href="${escapeHtml(appOrigin() + '/')}">계약 등록해보기</a></p>
   `;
 }
 
@@ -826,7 +829,6 @@ module.exports = {
   CONTACT_ADDRESS: CONTACT_ADDRESS,
   RETENTION_DAYS: RETENTION_DAYS,
   buildMagicLink: buildMagicLink,
-  buildTimelinePreviewLink: buildTimelinePreviewLink,
   waitingRoomHtml: waitingRoomHtml,
   sendIntakeMails: sendIntakeMails,
   sendPaymentReminderMail: sendPaymentReminderMail,

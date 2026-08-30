@@ -16,7 +16,7 @@
  *   ① 페이지 전역 «부재» 단정 — 문구가 되살아나는 것을 막는 축(대상이 없어도 유효)
  *   ② 마감 CTA — 개편 뒤에도 `.close-cta` 로 살아 있습니다(단 `<section>` → `<div>`)
  *   ③ 크기 위계 — 새 통계 인용 블록(`.stat-*`)이 같은 성격의 자리입니다
- *   ④ 샘플 2종 — 페이지가 실재하므로 그대로 잽니다
+ *   ④ (샘플 2종 — 2026-08-31 에 페이지와 함께 내렸습니다 · 아래 ④ 절)
  *   ⑤ 배경 토큰 — `--surface`·`--line-on-surface` 가 새 랜딩에도 있습니다
  *
  * ══════════════════════════════════════════════════════════════════════════════
@@ -134,39 +134,19 @@ test('🔴 통계 숫자가 그 설명보다 크다 — 「제일 중요한 한�
   assert.ok(n > t, '통계 숫자(' + n + 'px)가 설명(' + t + 'px)보다 크지 않습니다');
 });
 
-/* ══ ④ 샘플 2종 ═══════════════════════════════════════════════════════════ */
-
-const SAMPLES = ['sample.html', 'en-sample.html'];
-
-test('샘플 2종이 배포 목록에 있다 — 빠지면 404 가 배포에서만 난다', () => {
-  const STATIC = require('../scripts/build-static.js').STATIC.html;
-  for (const f of SAMPLES) {
-    assert.ok(STATIC.some((r) => r.file === f), f + ' 이 STATIC.html 에 없습니다');
-  }
-});
-
-test('샘플 2종의 :root 가 랜딩 브랜드 토큰과 같다', () => {
-  const css = read('index.html');
-  const ink = (css.match(/--ink:\s*(#[0-9A-Fa-f]{6})/) || [])[1];
-  const accent = (css.match(/--accent:\s*(#[0-9A-Fa-f]{6})/) || [])[1];
-  assert.ok(ink && accent, 'index.html 의 브랜드 토큰을 읽지 못했습니다');
-
-  for (const f of SAMPLES) {
-    const root = read(f).match(/:root\{[\s\S]*?\}/)[0];
-    const a = (root.match(/--ink:\s*(#[0-9A-Fa-f]{6})/) || [])[1];
-    const b = (root.match(/--brand:\s*(#[0-9A-Fa-f]{6})/) || [])[1];
-    assert.strictEqual((a || '').toLowerCase(), ink.toLowerCase(), f + ' 의 --ink 가 랜딩과 다릅니다');
-    assert.strictEqual((b || '').toLowerCase(), accent.toLowerCase(), f + ' 의 --brand 가 랜딩 액센트와 다릅니다');
-  }
-});
-
-test('샘플 2종은 사이트 헤더·푸터를 갖지 않는다 — 랜딩이 아니라 문서다', () => {
-  for (const f of SAMPLES) {
-    const t = read(f);
-    assert.ok(t.indexOf('class="footer-meta"') === -1, f + ' 에 사이트 푸터가 생겼습니다');
-    assert.ok(t.indexOf('<nav class="nav">') === -1, f + ' 에 사이트 헤더가 생겼습니다');
-  }
-});
+/* ══ ④ 샘플 2종 — **내렸습니다** ═════════════════════════════════════════
+ *
+ * 🔴 〔2026-08-31 · 대표 결정 D-5 「유입 없으면 삭제 처리」〕 `sample.html` ·
+ *    `en-sample.html` 이 **배포되는데 랜딩에서 가는 길이 0건**이었습니다. 두 진입원
+ *    (히어로 CTA2 · 샘플 섹션)을 2026-08-29 개편이 함께 걷어냈고, 페이지만 남아 있었습니다.
+ *    두 파일과 분류표 등재를 함께 내렸으므로 **여기서 잴 대상이 없습니다.**
+ *
+ * 걷은 검사 셋: 「배포 목록에 있다」 · 「`:root` 가 랜딩 브랜드 토큰과 같다」 ·
+ * 「사이트 헤더·푸터를 갖지 않는다」. 넷째(「랜딩에 /sample 링크가 있다」)는 결정 대기로
+ * `skip` 이었고 그 결정이 이것입니다.
+ * 🔴 **되살리려면 «링크부터»입니다** — 페이지만 되살리면 같은 상태로 돌아갑니다
+ *    (원본·사유는 `scripts/build-static.js` 의 그 자리 주석이 갖습니다).
+ */
 
 /* ══ ⑤ 배경 토큰 ══════════════════════════════════════════════════════════ */
 
@@ -176,18 +156,5 @@ test('표면 배경 토큰이 살아 있다 — 섹션 교차의 값이 흩어�
     for (const token of ['--surface', '--line-on-surface']) {
       assert.ok(css.includes(token + ':'), f + ' 에 ' + token + ' 가 없습니다');
     }
-  }
-});
-
-/* ══ ⑥ 결정 대기 ══════════════════════════════════════════════════════════ */
-
-const D5_PENDING =
-  '🔴 결정 대기(D-5) — sample.html·en-sample.html 이 «배포되는데 유입 링크가 0» 이다. ' +
-  '랜딩에 /sample 링크 0건(실측). 의도면 이 검사를 지우고, 아니면 링크를 되살린다. ' +
-  '⚠️ scripts/build-static.js 주석은 아직 「히어로 CTA2 가 이 경로를 가리킨다」로 낡아 있다.';
-
-test('랜딩에 /sample 로 가는 링크가 있다', { skip: D5_PENDING }, () => {
-  for (const f of LANDINGS) {
-    assert.ok(/href="\/sample"/.test(body(f)), f + ' 에 /sample 링크가 없습니다');
   }
 });

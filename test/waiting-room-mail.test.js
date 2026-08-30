@@ -32,42 +32,50 @@ const notify = require('../api/_notify.js');
 
 /* ── ① 링크가 실재하는 앵커를 가리키는가 ─────────────────────────────────── */
 
-const D1_PENDING =
-  '🔴 결정 대기(D-1) — 발송 메일이 죽은 앵커 `/#feat-timeline` 을 싣는다. ' +
-  '갈래 ⓐ 메일에서 대기공백 블록을 걷는다 ⓑ 랜딩에 도착지를 다시 만든다. ' +
-  '⛔ 검사를 지우지 않는다 — 결정이 서면 그에 맞춰 되살린다.';
+/*
+ * ══════════════════════════════════════════════════════════════════════════════
+ * 🔴 **(D-1) 닫혔습니다 — 죽은 링크를 걷었습니다** 〔2026-08-31 · 대표 결정 ⓐ〕
+ * ══════════════════════════════════════════════════════════════════════════════
+ * 종전 두 검사는 「메일 링크가 랜딩의 실재하는 앵커를 가리키는가」와 「훅 문장이 랜딩
+ * `.feat-hook` 과 같은가」를 쟀고, 2026-08-29 개편이 **그 앵커와 그 문단을 둘 다 걷어내면서**
+ * 잴 대상이 사라졌습니다(실측: `id="feat-timeline"` 0건 · `.feat-hook` 0건).
+ *
+ * 결정은 **ⓐ 메일에서 죽은 링크를 걷는다**였습니다. ⛔ 랜딩에 앵커를 다시 만들지 않습니다 —
+ * 그 섹션은 개편이 의도적으로 내린 것이고, 링크 하나 때문에 구조를 되돌릴 수 없습니다.
+ *
+ * 🔴 **그래서 검사를 «뒤집습니다»** — 「앵커가 있는가」가 아니라 **「랜딩 앵커로 가는 링크가
+ *    없는가」**를 잽니다. 지우면 다음 사람이 편의로 그 링크를 되살리고, 그때 아무도 모릅니다.
+ * ⚠️ 훅 문장 대조는 되살릴 수 없습니다 — 대조 상대가 사라졌습니다. 대신 **그 문단이 여전히
+ *    메일에 있는가**를 아래 「md 가 지정한 문구」·「무료를 단정하지 않는다」가 잽니다
+ *    (블록을 통째로 걷지 «않은» 것이 그 둘이 계속 도는 이유입니다).
+ */
 
-test('기한관리 링크가 랜딩의 실재하는 카드 id 를 가리킨다', { skip: D1_PENDING }, () => {
-  const link = notify.buildTimelinePreviewLink();
-  const hash = link.slice(link.indexOf('#') + 1);
-  assert.ok(hash && link.indexOf('#') !== -1, '링크에 앵커가 없습니다: ' + link);
-
-  const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-  assert.ok(
-    html.indexOf('id="' + hash + '"') !== -1,
-    'index.html 에 id="' + hash + '" 가 없습니다 — 이 링크는 페이지 맨 위로 떨어집니다'
-  );
+test('🔴 메일이 랜딩 앵커로 가는 링크를 싣지 않는다 — 죽은 링크는 되살아나기 쉽다', () => {
+  for (const html of [notify.waitingRoomHtml(), notify.waitingRoomHtml(true)]) {
+    assert.ok(html.indexOf('#feat-timeline') === -1,
+      '죽은 앵커가 메일에 돌아왔습니다 — 랜딩에 그 id 가 없습니다');
+    assert.ok(!/href="[^"]*trops\.kr\/#/.test(html),
+      '랜딩의 «다른» 앵커로 가는 링크가 생겼습니다 — 개편으로 사라질 수 있는 자리입니다');
+  }
 });
 
-test('링크는 사이트 주소를 쓴다 — 판정층(app) 호스트와 섞지 않는다', () => {
-  const link = notify.buildTimelinePreviewLink();
-  assert.ok(link.indexOf('https://') === 0, link);
-  assert.ok(link.indexOf('app.trops.kr') === -1,
-    '기한관리 미리보기는 랜딩(마케팅 사이트)의 아코디언입니다 — app 호스트가 아닙니다');
+test('🔴 링크 빌더 자체가 사라졌다 — 부르는 곳이 생기면 red 다', () => {
+  assert.strictEqual(typeof notify.buildTimelinePreviewLink, 'undefined',
+    'buildTimelinePreviewLink 가 되살아났습니다 — 그 함수는 죽은 앵커를 만듭니다');
+  const src = fs.readFileSync(path.join(ROOT, 'api', '_notify.js'), 'utf8')
+    .replace(/\/\*[\s\S]*?\*\//g, '');
+  assert.ok(src.indexOf('feat-timeline') === -1,
+    '실행되는 코드에 죽은 앵커가 남아 있습니다');
+});
+
+test('🔴 남은 링크는 «살아 있는» 자리로 간다 — 앱의 계약 등록', () => {
+  for (const html of [notify.waitingRoomHtml(), notify.waitingRoomHtml(true)]) {
+    assert.ok(/href="[^"]*app\.trops\.kr\/"/.test(html),
+      '대기공백 블록에 살아 있는 링크가 하나도 없습니다');
+  }
 });
 
 /* ── ② 랜딩과 같은 말을 하는가 ───────────────────────────────────────────── */
-
-test('훅 문장이 랜딩 .feat-hook 과 같다', { skip: D1_PENDING }, () => {
-  const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-  const hook = (html.match(/<p class="feat-hook">([^<]+)<\/p>/) || [])[1];
-  assert.ok(hook, 'index.html 에서 .feat-hook 문장을 찾지 못했습니다');
-
-  assert.ok(
-    notify.waitingRoomHtml().indexOf(hook.trim()) !== -1,
-    '메일의 훅 문장이 랜딩과 다릅니다 — 눌러 도착한 자리가 낯설어집니다.\n랜딩: ' + hook
-  );
-});
 
 test('md 가 지정한 문구가 들어 있다', () => {
   const html = notify.waitingRoomHtml();

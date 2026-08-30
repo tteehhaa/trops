@@ -69,14 +69,12 @@ const PAGES = {
 const { STATIC } = require('../scripts/build-static.js');
 const LIVE_PAGES = STATIC.html.map((e) => e.file);
 /*
- * 🔴 **예시 리포트는 이 검사의 대상이 아닙니다** 〔2026-08-30〕.
- *    `sample.html`·`en-sample.html` 은 **가상 기업의 리포트**라 숫자가 사실이 아니고,
- *    그것을 설정값과 맞추려 하면 예시가 예시가 아니게 됩니다. 화면이 스스로 「예시입니다」를
- *    적고 있고 아래 메타 검사가 그 사실을 확인합니다.
- * ⛔ 예외를 «이름»만으로 늘리지 마십시오 — 반드시 그 배너가 있는 페이지여야 합니다.
+ * ⚠️ **예시 리포트 예외가 사라졌습니다** 〔2026-08-31 · D-5〕 — `sample.html`·
+ *    `en-sample.html` 이 유입 링크 0건으로 내려가면서 뺄 대상이 없어졌습니다.
+ *    그 둘은 **가상 기업의 숫자**를 실어서 이 검사의 대상이 될 수 없었습니다 —
+ *    ⛔ 예시 페이지를 다시 세우면 그때 예외도 함께 되살리십시오(배너 확인과 함께).
  */
-const SAMPLE_PAGES = ['sample.html', 'en-sample.html'];
-const PAGES_WITHOUT = LIVE_PAGES.filter((f) => !(f in PAGES) && !SAMPLE_PAGES.includes(f));
+const PAGES_WITHOUT = LIVE_PAGES.filter((f) => !(f in PAGES));
 
 const TOKEN = '{{precheck.itemCount}}';
 
@@ -138,14 +136,6 @@ test('🔴 [메타] 자리 표가 배포 목록과 어긋나지 않는다 — EN
       page + ' 이 배포 목록에 없습니다 — 페이지가 삭제됐으면 위 PAGES 표에서 빼십시오');
   }
   assert.ok(PAGES_WITHOUT.length > 0, '감시 대상 페이지가 0장입니다 — 검사가 헛돕니다');
-
-  /* 🔴 예외가 «진짜 예시 페이지»인지 확인합니다 — 이름만으로 빠져나가지 못하게. */
-  for (const page of SAMPLE_PAGES) {
-    assert.ok(LIVE_PAGES.includes(page), '예외 목록에 없는 페이지가 있습니다: ' + page);
-    const src = fs.readFileSync(path.join(ROOT, page), 'utf8');
-    assert.ok(/예시입니다|example|illustrative/i.test(src),
-      page + ' 이 예시 페이지가 아닙니다 — 예외에서 빼십시오');
-  }
 });
 
 test('소스 HTML 에 항목 수가 하드코딩돼 있지 않다', () => {
