@@ -22,7 +22,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Refund Policy · TROPS</title>
-<meta name="description" content="Refund policy for the TROPS Export pre-check service. Cancel before your summary is delivered and we refund in full.">
+<!-- ⚠️ 국문 refund.html 의 같은 자리 주석을 보십시오 — 인계문서가 준 네 자리 밖의
+     다섯 번째 자리이고, 검색 결과에 그대로 찍힙니다. 부제와 같은 이름을 씁니다. -->
+<meta name="description" content="Refund policy for the TROPS Document pre-check service (submissions up to August 20, 2026). Cancel before your summary is delivered and we refund in full.">
 <link rel="canonical" href="https://trops.kr/en-refund">
 <!-- hreflang 은 양쪽이 서로를 가리켜야 검색엔진이 인정합니다 — 한쪽만 있으면 무시됩니다.
      refund.html <head> 에도 같은 3줄이 있습니다. 한쪽만 고치지 마십시오.
@@ -221,9 +223,17 @@
     <div class="container narrow head">
       <p class="eyebrow">For users</p>
       <h1>Refund Policy</h1>
+      <!-- 🔴 **이름이 충돌하고 있었습니다** 〔2026-08-30 · trops_a docs/06-ops/
+           refund-policy-copy-handoff.md (069a7272)〕. 국문판 같은 자리의 주석을 보십시오.
+           「Document pre-check」는 en-privacy.html §02 표가 쓰는 이름과 같습니다
+           (「Document pre-check intake (up to 20 Aug 2026)」) — 두 문서가 같은 말을 씁니다.
+           ⛔ 여기에 「Export pre-check」를 되돌리지 마십시오. 그 이름은 이제 app.trops.kr 의
+              무료 진단서의 것이고, 푸터 링크가 그 이름을 그쪽으로 씁니다.
+           ⚠️ provides → provided. **시제 하나가 이 문서 전체의 뜻을 바꿉니다.** -->
       <p class="head-meta">
-        Export pre-check service · Effective August 8, 2026<br>
-        Applies to paid services {{biz.companyName}} (&ldquo;the Company&rdquo;) provides at trops.kr.
+        Document pre-check service (submissions up to August 20, 2026) · Effective August 8, 2026<br>
+        Applies to paid services {{biz.companyName}} (&ldquo;the Company&rdquo;) provided at trops.kr.
+        The Company currently sells no paid service. This policy applies to paid submissions received up to August 20, 2026, and the refund and deletion rights attached to them remain in force.
       </p>
     </div>
 
@@ -252,10 +262,16 @@
                 말합니다 — 판매가가 바뀌어도 이 문장을 다시 고칠 필요가 없습니다.
 
              ⚠️ 이 주석에 그 값·수식어를 문자 그대로 적지 마십시오 — 확인이 원문을 세므로
-                주석이 오탐이 됩니다. 확인은 scripts/verify-deployment.js 「R1-비교표기」. -->
+                주석이 오탐이 됩니다. 확인은 scripts/verify-deployment.js 「R1-비교표기」.
+
+             🔴 2026-08-30: 「You can see the exact amount on the payment screen」을 뺐습니다.
+                국문판과 같은 사유입니다 — 가리키는 화면이 없습니다(접수·결제 폼이 내려갔고
+                toss SDK 를 부르는 페이지가 0개입니다).
+             ⚠️ 첫 문장(서비스 설명)은 그대로 둡니다 · ⛔ §01~§05 를 통째로 걷지 마십시오.
+                사유 전문은 국문 refund.html 의 같은 자리에 있습니다. -->
         <p class="lead">
           We review the {{precheck.itemCount}} items in the document your buyer sent, compare them against a standard, and deliver a same-day summary.
-          This policy applies to one-time paid submissions. You can see the exact amount on the payment screen.
+          This policy applies to one-time paid submissions. Intake and payment closed on August 20, 2026.
         </p>
         <p>
           Free (₩0) submissions don’t involve payment, so refunds don’t apply.
@@ -424,8 +440,13 @@
         <span class="footer-meta">Export pre-check · Export contract management · Export receivables management · contact@theo-ne.com</span>
       </div>
 
+      <!-- 🔴 라벨을 목적지에 맞췄습니다 〔2026-08-30 · 인계문서 ⓓ〕. 사유 전문은 국문
+           refund.html 의 같은 자리에 있습니다. 부제가 「Document pre-check」로 바뀌었으므로
+           이 라벨(「Export pre-check」= 무료 진단서)과 더 이상 겹치지 않습니다 — (free) 를
+           붙여 그 구분을 화면에서도 읽히게 했습니다.
+           ⛔ 라벨만 두고 목적지를 바꾸거나 그 반대로 하지 마십시오. -->
       <nav class="footer-links" aria-label="Policies">
-        <a href="https://app.trops.kr/export-precheck/new">Export pre-check</a>
+        <a href="https://app.trops.kr/export-precheck/new">Export pre-check (free)</a>
         <a href="/en-refund">Refund policy</a>
         <a href="/en-privacy">Privacy policy</a>
       </nav>
