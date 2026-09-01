@@ -78,6 +78,26 @@ const STATIC = {
   html: [
     { file: 'index.html', locale: 'ko' },
     { file: 'en.html', locale: 'en' },
+    /*
+     * 🔄 **`precheck.html` 이 «다른 페이지»로 되돌아왔습니다** 〔2026-09-01 · 대표 지시〕.
+     *
+     * ⚠️ 이름이 같을 뿐 2026-08-30 에 내린 그 페이지가 아닙니다. 그것은 **접수·결제 폼**
+     *    이었고(213KB · 글자층 감지 · 토스 결제), 이것은 **입력값만으로 점수를 내는 정적
+     *    한 장**입니다(19.5KB · 서버 호출 0 · 저장 0). 되살린 것이 아니라 새로 쓴 것입니다.
+     *    원본이 필요하면 `git show ca47218^:precheck.html` 입니다.
+     *
+     * 🔴 **`/tools/precheck` 이 아니라 `/precheck` 인 이유** — 하위 폴더는 `STATIC.dirs`
+     *    로 가야 하는데 dirs 는 «통째 복사»라 토큰 치환도, 주석 제거도, 아래 A~D 검증도
+     *    전부 건너뜁니다. 이 파일은 `{{biz.*}}` 를 쓰고 JS 주석에 내부 실측 메모를 답니다 —
+     *    그 둘이 그대로 나가는 경로를 고를 이유가 없습니다. 평면 파일로 두어 나머지
+     *    다섯 장과 같은 파이프라인을 태웁니다.
+     *
+     * ⚠️ 영문 짝이 «없습니다» 〔2026-09-01 · 대표 지시 「영문판 만들지 말 것」〕.
+     *    hreflang 을 넣지 마십시오 — `test/i18n-parity.test.js` ③ 은 짝이 서로를 가리킬
+     *    때만 인정하고, 한쪽만 선언하면 검색엔진이 무시합니다. 영문판을 세우는 날
+     *    `en-precheck.html` 을 만들고 두 장에 hreflang 3줄씩 함께 넣으십시오.
+     */
+    { file: 'precheck.html', locale: 'ko' },
     { file: 'refund.html', locale: 'ko' },
     { file: 'privacy.html', locale: 'ko' },
     { file: 'en-privacy.html', locale: 'en' },
