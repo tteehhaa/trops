@@ -219,15 +219,16 @@ test('readConfig 는 비밀 자리의 공개 키를 세운다', () => {
   }
 });
 
-test('api/lookup-log.js 는 앞단 쌍의 이름을 읽지 않는다', () => {
-  // grep 으로 잡히는 주석이 아니라 실제 소스에서 확인합니다.
-  const fs = require('node:fs');
-  const path = require('node:path');
-  const src = fs.readFileSync(path.join(__dirname, '..', 'api', 'lookup-log.js'), 'utf8');
-
-  assert.strictEqual(/process\.env\.INTAKE_/.test(src), false,
-    '/uae 로그가 앞단 프로젝트를 보면 로그가 조용히 엉뚱한 곳에 쌓입니다');
-});
+/*
+ * 🔴 **「api/lookup-log.js 는 앞단 쌍의 이름을 읽지 않는다」를 걷었습니다**
+ *    〔2026-09-01 · 대표 지시 — 죽은 표면 정리〕. 그 파일을 **삭제**했습니다.
+ *    원래 호출자 `/uae` 가 2026-08-30(ca47218)에 내려간 뒤로 부르는 화면이 0건이었고
+ *    배포에만 남아 있었습니다. 잴 대상이 없습니다.
+ * ⚠️ 반대 방향(`api/_supabase.js` 가 /uae 쌍을 읽지 않는다)은 **아래에 그대로 삽니다** —
+ *    두 프로젝트를 섞지 않는다는 규칙은 앞단이 남아 있는 한 유효합니다.
+ * 🔴 되살릴 조건: /uae 조회 로그를 다시 세우면 파일과 함께 되살리십시오
+ *    (원본: `git show fd0e53c:api/lookup-log.js`).
+ */
 
 test('api/_supabase.js 는 /uae 로그 쌍의 이름을 읽지 않는다', () => {
   const fs = require('node:fs');

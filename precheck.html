@@ -254,7 +254,7 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
   <div class="container">
     <div class="frow">
       <div class="fld"><label for="f3">어느 권역으로 보내십니까?</label><select id="f3">
-        <option value="20">북미 · 일본 · 서유럽</option><option value="16" selected>동아시아 · 동남아</option>
+        <option value="" selected>선택해 주십시오</option><option value="20">북미 · 일본 · 서유럽</option><option value="16">동아시아 · 동남아</option>
         <option value="11">중동 · 중남미 · 동유럽</option><option value="6">남아시아 · 아프리카</option>
         <option value="2">잘 모르겠습니다</option></select></div>
 
@@ -262,23 +262,23 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
         <p class="hint" id="h3b"></p></div>
 
       <div class="fld"><label for="f5">바이어와 몇 번째 거래입니까?</label><select id="f5">
-        <option value="15">다섯 번 이상, 연체 없음</option><option value="11">두세 번</option>
-        <option value="6" selected>이번이 두 번째</option><option value="2">이번이 처음</option></select></div>
+        <option value="" selected>선택해 주십시오</option><option value="15">다섯 번 이상, 연체 없음</option><option value="11">두세 번</option>
+        <option value="6">이번이 두 번째</option><option value="2">이번이 처음</option></select></div>
 
       <div class="fld"><label for="f1">대금은 어떻게 받기로 하셨습니까?</label><select id="f1">
-        <option value="30">전액 선지급</option><option value="25">신용장 (L/C)</option>
-        <option value="18" selected>일부 선지급 + 잔금</option>
+        <option value="" selected>선택해 주십시오</option><option value="30">전액 선지급</option><option value="25">신용장 (L/C)</option>
+        <option value="18">일부 선지급 + 잔금</option>
         <option value="12">D/P (지급인도)</option><option value="8">D/A (인수인도)</option>
         <option value="4">선적 후 외상 (O/A)</option></select></div>
 
       <div class="fld"><label for="f2">대금은 언제 받기로 하셨습니까?</label><select id="f2">
-        <option value="20">즉시 · 일람불</option><option value="16">30일 이내</option>
-        <option value="12" selected>60일 이내</option><option value="8">90일 이내</option>
+        <option value="" selected>선택해 주십시오</option><option value="20">즉시 · 일람불</option><option value="16">30일 이내</option>
+        <option value="12">60일 이내</option><option value="8">90일 이내</option>
         <option value="3">90일 초과</option></select></div>
 
       <div class="fld"><label for="f4">이 건은 무역보험에 가입하셨습니까?</label><select id="f4">
-        <option value="15">가입을 마쳤습니다</option><option value="9">신청해 두었습니다</option>
-        <option value="5" selected>알아보는 중입니다</option><option value="0">아직 하지 않았습니다</option></select>
+        <option value="" selected>선택해 주십시오</option><option value="15">가입을 마쳤습니다</option><option value="9">신청해 두었습니다</option>
+        <option value="5">알아보는 중입니다</option><option value="0">아직 하지 않았습니다</option></select>
         <p class="hint" id="h4"></p></div>
     </div>
   </div>
@@ -413,6 +413,43 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
     return hit;
   }
 
+  /**
+   * 다음 단계 카드 두 장.
+   *
+   * ⚠️ `insWorst` 가 참일 때만 유료가 앞·강조입니다. 미완성 상태에서는 호출부가
+   *    **항상 false** 를 넘기므로 무료가 앞입니다 — 아무것도 고르지 않은 사람에게
+   *    유료를 먼저 내밀지 않는다는 규칙이 여기 한 곳에 있습니다.
+   * ⛔ 두 갈래가 각자 마크업을 조립하게 만들지 마십시오(종전에 그랬고, 그래서 한쪽만
+   *    고치면 카드가 갈렸습니다).
+   */
+  function cards(url,nm,insWorst){
+    var carry=nm?('결제방식·결제기한과 목적 국가('+nm+')가 그대로 넘어갑니다. '):'목적 국가는 진단서에서 고르시면 됩니다. ';
+    var diagCard='<div class="path'+(insWorst?'':' lead')+'"><div class="pk">무료</div>'+
+      '<h3>수출 절차 진단서 이어서 작성하기</h3><p>'+carry+'남은 것은 바이어확인, 계약·문서, 통관, 운송 네 영역입니다.</p>'+
+      '<div class="go"><a class="btn '+(insWorst?'btn-secondary':'btn-primary')+'" href="'+url+'" data-track="precheck-diagnosis">이어서 작성하기</a></div></div>';
+    var packCard='<div class="path'+(insWorst?' lead':'')+'"><div class="pk">유료 · 수출바우처 결제 가능</div>'+
+      '<h3>무역보험 준비팩</h3><p>이 거래 한 건을 기준으로 이용 요건 점검, 신청서 형태로 정리한 거래 정보, 청구 시 요구되는 서류 목록, 사내 결재용 자료까지 갖춰 드립니다.</p>'+
+      '<div class="go"><a class="btn '+(insWorst?'btn-primary':'btn-secondary')+'" href="'+PACK+'" data-track="precheck-pack">무역보험 준비팩 요청</a></div></div>';
+    return insWorst ? packCard+diagCard : diagCard+packCard;
+  }
+
+  /*
+   * ══════════════════════════════════════════════════════════════════════
+   * 🔴 **첫 화면에서 점수를 만들지 않습니다** 〔2026-09-01 · 대표 지시〕
+   * ══════════════════════════════════════════════════════════════════════
+   * 종전에는 다섯 문항이 중간값으로 «미리 채워져» 있어서, 아무것도 누르지 않아도
+   * 57점이 떴습니다. 그 값이 남의 숫자인 것도 문제지만 더 큰 부작용이 있었습니다 —
+   * 미리 채운 값 중 무역보험이 가장 낮아(5/15 = 33%) `insWorst` 가 참이 되고,
+   * 그래서 **첫 화면이 «유료» 카드를 앞·강조로 내놓았습니다.**
+   * 「무료 · 1분 · 계정 없이 점수까지」를 보고 들어온 사람이 아무것도 하기 전에
+   * 유료 제안을 먼저 만나는 상태였습니다.
+   *
+   * 🔴 이제 다섯을 다 고르기 전에는 **점수도 등급도 최저 항목도 만들지 않습니다.**
+   *    최저 항목이 없으면 `insWorst` 도 없고, 카드는 늘 **무료가 앞**입니다.
+   * ⚠️ 전액 선지급이면 무역보험 칸이 잠기므로(고를 수 없음) 그 항목은 «고른 것»으로
+   *    셉니다 — 그러지 않으면 영원히 미완성이 됩니다.
+   * ⛔ 여기에 기본 선택값을 되돌리지 마십시오. 되돌리면 위 유도가 함께 돌아옵니다.
+   */
   function run(){
     var total=0,html='',worst=null,wr=2,q=[];
     var code=f3b.value,nm=code?countryName(code):null;
@@ -422,12 +459,28 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
     f4.disabled=prepaid;
     h4.textContent=prepaid?'전액 선지급 건이므로 이 항목은 만점으로 처리합니다.':'';
 
+    var complete=F.every(function(f){
+      if(prepaid&&f.key==='ins') return true;
+      return document.getElementById(f.id).value!=='';
+    });
+
     F.forEach(function(f){
-      var v=parseInt(document.getElementById(f.id).value,10);
+      var raw=document.getElementById(f.id).value;
+      var chosen=(prepaid&&f.key==='ins')||raw!=='';
+      var v=parseInt(raw,10);
       if(prepaid&&f.key==='ins') v=f.max;
+
+      if(!chosen){
+        html+='<div class="frw"><div><div class="fsc" style="color:var(--muted)">—<small>/'+f.max+'</small></div>'+
+          '<div class="fbar"><i style="width:0%"></i></div></div>'+
+          '<div class="fnm">'+f.nm+'</div>'+
+          '<div><div class="fms">아직 고르지 않았습니다</div><div class="src">'+f.src+'</div></div></div>';
+        return;
+      }
+
       var r=v/f.max;
       total+=v;
-      if(f.send) q.push(f.key+'='+f.cd[v]);
+      if(f.send&&f.cd[v]) q.push(f.key+'='+f.cd[v]);
       if(r<wr){wr=r;worst=f}
 
       var sub='',src=f.src,msg=f.ms[v];
@@ -449,6 +502,17 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
     // 그때는 보내지 않는다 — '가장 낮다'가 사실이 아니다.
     if(wr<1&&worst&&worst.fc) q.push('focus='+worst.fc);
 
+    if(!complete){
+      /* 🔴 미완성 — 점수를 만들지 않고, 최저 항목도 정하지 않습니다(유료 유도의 근원). */
+      sc.textContent='—';sc.style.color='var(--muted)';
+      gn.textContent='다섯 항목을 모두 고르시면 점수가 나옵니다';
+      gd.textContent='고르신 항목부터 근거가 채워집니다.';
+      nt.textContent='먼저 다섯 항목을 골라 주십시오';
+      ns.textContent='';
+      paths.innerHTML=cards(DIAG+(q.length?'?'+q.join('&'):''),nm,false);
+      return;
+    }
+
     var s=Math.round(total),g=G.find(function(x){return s>=x[0]}),c=tone(s/100);
     sc.textContent=s;sc.style.color=c;gn.textContent=g[1];gd.textContent=g[2];
 
@@ -465,14 +529,7 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
         : '';
     }
 
-    var carry=nm?('결제방식·결제기한과 목적 국가('+nm+')가 그대로 넘어갑니다. '):'목적 국가는 진단서에서 고르시면 됩니다. ';
-    var diagCard='<div class="path'+(insWorst?'':' lead')+'"><div class="pk">무료</div>'+
-      '<h3>수출 절차 진단서 이어서 작성하기</h3><p>'+carry+'남은 것은 바이어확인, 계약·문서, 통관, 운송 네 영역입니다.</p>'+
-      '<div class="go"><a class="btn '+(insWorst?'btn-secondary':'btn-primary')+'" href="'+url+'" data-track="precheck-diagnosis">이어서 작성하기</a></div></div>';
-    var packCard='<div class="path'+(insWorst?' lead':'')+'"><div class="pk">유료 · 수출바우처 결제 가능</div>'+
-      '<h3>무역보험 준비팩</h3><p>이 거래 한 건을 기준으로 이용 요건 점검, 신청서 형태로 정리한 거래 정보, 청구 시 요구되는 서류 목록, 사내 결재용 자료까지 갖춰 드립니다.</p>'+
-      '<div class="go"><a class="btn '+(insWorst?'btn-primary':'btn-secondary')+'" href="'+PACK+'" data-track="precheck-pack">무역보험 준비팩 요청</a></div></div>';
-    paths.innerHTML = insWorst ? packCard+diagCard : diagCard+packCard;
+    paths.innerHTML=cards(url,nm,insWorst);
   }
 
   f3.addEventListener('change',function(){fillCountries();run()});

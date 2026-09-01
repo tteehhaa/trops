@@ -99,9 +99,15 @@ test('readConfig 가 http:// env 를 https baseUrl 로 올린다 (배선 확인)
   }
 });
 
-test('두 소비처(_supabase.js · lookup-log.js)가 정규화 단일 출처를 거친다', () => {
+/*
+ * 🔄 **소비처가 둘에서 하나로 줄었습니다** 〔2026-09-01 · 죽은 표면 정리〕.
+ *    `api/lookup-log.js` 를 삭제했습니다(호출자 `/uae` 가 2026-08-30 에 내려간 뒤 0건).
+ * ⛔ **검사를 지우지 않았습니다** — 남은 소비처에 대해 그대로 유효합니다. 소비처가 다시
+ *    늘면 아래 배열에 더하십시오. 그것이 이 검사가 지키려는 축입니다.
+ */
+test('소비처가 정규화 단일 출처를 거친다', () => {
   const root = path.resolve(__dirname, '..');
-  for (const file of ['api/_supabase.js', 'api/lookup-log.js']) {
+  for (const file of ['api/_supabase.js']) {
     const src = fs.readFileSync(path.join(root, file), 'utf8');
     assert.ok(
       /KEYS\.normalizeSupabaseUrl\(/.test(src),
