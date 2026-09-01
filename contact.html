@@ -266,14 +266,19 @@ form{padding-block:clamp(8px,1.5vw,16px) clamp(48px,6vw,72px)}
        합니다. 링크 하나만 두고 체크박스를 받으면 동의를 받은 것이 아닙니다.
     ⚠️ 아래 세 줄은 privacy.html §02 표와 **같은 말**이어야 합니다. 한쪽만 고치면
        화면이 약속한 것과 방침이 적은 것이 갈라집니다.
-    🔴 보유기간은 화면에 적힌 그대로가 약속입니다 — 바꾸려면 방침을 먼저 고치십시오.
+    🔴 **보유 기간의 정본은 «코드»입니다** — api/_cleanup.js `LEADS_RETENTION_DAYS`
+       (inquiry 183일 · notify 365일)가 실제로 지우는 값이고, 아래 `RETENTION` 표는 그
+       숫자를 사람 말로 옮긴 것뿐입니다. 값이 바뀌면 네 곳을 한 번에 고치십시오 —
+       ① privacy.html §02 보관 칸 ② §03 문단 ③ 여기 ④ LEADS_RETENTION_DAYS(정본).
+    ⛔ 「응대 완료 후」·「수신거부 시까지」로 적지 마십시오 — 표에 그 컬럼이 없어 코드가
+       판단할 수 없습니다. 기준은 **접수일**입니다.
   -->
   <section class="consent">
     <h2>개인정보 수집·이용 동의 (필수)</h2>
     <dl>
       <dt>수집 항목</dt><dd id="c-items"></dd>
       <dt>이용 목적</dt><dd id="c-purpose"></dd>
-      <dt>보유 기간</dt><dd>문의 응대를 마치면 지체 없이 파기합니다. 요청하시면 그 전에도 즉시 삭제합니다.</dd>
+      <dt>보유 기간</dt><dd id="c-keep"></dd>
     </dl>
     <div class="agree">
       <input id="consent" name="consent" type="checkbox" required>
@@ -338,6 +343,17 @@ form{padding-block:clamp(8px,1.5vw,16px) clamp(48px,6vw,72px)}
     quote: '문의 내용 확인과 회신, 요청하신 범위의 견적 산정',
     notify: '출시 안내 발송'
   };
+  /*
+   * 보유 기간 — privacy.html §02 표 · §03 문단과 **같은 문장**입니다.
+   * ⚠️ 숫자의 정본은 api/_cleanup.js `LEADS_RETENTION_DAYS` 입니다(183 · 365).
+   *    여기는 그 값을 사람 말로 옮긴 자리이고, 갈라지면 화면이 못 지킬 약속을 합니다.
+   */
+  var KEEP_INQUIRY = '접수일부터 6개월(183일) 보관 후 삭제합니다. 요청하시면 그 전에도 삭제합니다.';
+  var RETENTION = {
+    consult: KEEP_INQUIRY,
+    quote: KEEP_INQUIRY,
+    notify: '접수일부터 1년(365일) 보관 후 삭제합니다. 요청하시면 그 전에도 삭제합니다.'
+  };
 
   var params = new URLSearchParams(location.search);
   var asked = params.get('type');
@@ -354,6 +370,7 @@ form{padding-block:clamp(8px,1.5vw,16px) clamp(48px,6vw,72px)}
   document.title = kind.title + ' — TROPS';
   $('c-items').textContent = kind.items;
   $('c-purpose').textContent = PURPOSE[type];
+  $('c-keep').textContent = RETENTION[type];
 
   [].forEach.call(document.querySelectorAll('.kind'), function(a){
     if (a.getAttribute('href').indexOf('type=' + type) !== -1) a.setAttribute('aria-current', 'true');
