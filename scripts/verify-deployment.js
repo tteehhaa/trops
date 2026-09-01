@@ -357,24 +357,30 @@ const CHECKS = [
   /* ── C-1 ① V5 (H3 계층) ─────────────────────────────────────────── */
   {
     id: 'V5-h3-정의',
-    label: 'V5 · h3/.h3 계층이 정의돼 있다 (28/600/1.35/−0.025em)',
+    /*
+     * 🔄 **선택자를 새 랜딩의 실제 규칙에 맞췄습니다** 〔2026-09-01 · v11 교체〕.
+     *    종전 `h3, .h3` 는 2026-08-29 개편이 `.h3` 단독으로 바꾼 뒤 계속 낡아 있었고,
+     *    v11 에는 `.h3` 도 없습니다. 실제로 존재하는 H3 계층은 3단계 카드의 `.sp h3` 입니다.
+     * ⚠️ **`line-height` 를 재지 않습니다** — `.sp h3` 가 그 값을 선언하지 않습니다(상속).
+     *    없는 속성을 요구하면 `sameRule` 이 「목록이 낡았습니다」로 red 가 됩니다.
+     *    ⛔ 값을 억지로 넣으려고 랜딩 CSS 를 고치지 마십시오 — 검사가 화면을 따라갑니다.
+     */
+    label: 'V5 · H3 계층이 정의돼 있다 (.sp h3 · 20/700/−0.02em)',
     page: '/',
-    check: (html) => sameRule(html, 'index.html', 'h3, .h3', TYPO),
+    check: (html) => sameRule(html, 'index.html', '.sp h3',
+      ['font-size', 'font-weight', 'letter-spacing']),
   },
-  {
-    id: 'V5-로드맵헤딩',
-    label: 'V5 · 로드맵 헤딩이 H3 계층으로 렌더된다 (700→600 · clamp 해제)',
-    page: '/',
-    check: (html) => {
-      const same = sameRule(html, 'index.html', '.how h2.rm-h2', TYPO);
-      if (same !== true) return same;
-      // 회귀 형태를 직접 막습니다 — clamp 가 돌아오면 H2 스케일로 다시 커집니다.
-      const d = decls(findRule(html, '.how h2.rm-h2'));
-      if (/clamp/.test(d['font-size'])) return `font-size 에 clamp 가 돌아왔습니다: ${d['font-size']}`;
-      if (d['font-weight'] !== '600') return `font-weight 가 ${d['font-weight']} 입니다 (600 이어야 함)`;
-      return true;
-    },
-  },
+  /*
+   * 🔴 **`V5-로드맵헤딩` 을 삭제했습니다** 〔2026-09-01 · 대표 지시〕.
+   *
+   * 그 검사는 `.how h2.rm-h2`(로드맵 헤딩)가 H3 계층으로 렌더되는지 봤습니다. **로드맵
+   * 섹션은 2026-08-29 `7876e98`(랜딩 개편: 사전점검 진단 중심 구조로 전면 교체)이
+   * 걷어냈고**, v11 에도 없습니다 — 잴 대상이 사라졌습니다.
+   * ⚠️ `test/landing-invariants.test.js` 머리주석이 그 개편이 걷어낸 섹션으로 로드맵을
+   *    명시합니다(같은 근거).
+   * 🔴 되살릴 조건: 랜딩에 로드맵이 다시 서면 그때 함께 되살리십시오
+   *    (원본: `git show 549794d:scripts/verify-deployment.js` 의 `V5-로드맵헤딩`).
+   */
 
   /* ── C-1 ② 패딩 통일 ────────────────────────────────────────────── */
   {

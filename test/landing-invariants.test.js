@@ -42,8 +42,35 @@ const path = require('node:path');
 const ROOT = path.resolve(__dirname, '..');
 const read = (f) => fs.readFileSync(path.join(ROOT, f), 'utf8');
 
-/** 🔴 랜딩 두 장을 **함께** 잽니다 — 한쪽만 고치는 것이 이 저장소의 반복 사고입니다. */
+/**
+ * 🔴 랜딩 두 장을 **함께** 잽니다 — 한쪽만 고치는 것이 이 저장소의 반복 사고입니다.
+ * ⚠️ **부재 단정에만** 씁니다(문구가 되살아나지 않는가). 구조 검사는 아래 `KO_LANDING`.
+ */
 const LANDINGS = ['index.html', 'en.html'];
+
+/**
+ * 🔴 **구조 검사는 국문 한 장만 봅니다** 〔2026-09-01 · v11 교체로 두 장이 갈렸습니다〕.
+ *
+ * 국문은 v11(`.fin` · `.qb-*`), 영문은 구판(`.close-cta` · `.stat-*`)입니다. 같은 선택자로
+ * 두 장을 재면 영문이 **없는 자리를 못 찾아** 거짓 red 가 납니다.
+ * ⛔ 이 갈림을 「두 장 다 검사 안 함」으로 덮지 마십시오 — 아래 [메타] 검사가 갈림 자체를
+ *    들고 있다가, 영문이 교체되는 날 red 로 알려 줍니다. 그때 이 상수를 지우고
+ *    구조 검사를 `LANDINGS` 로 되돌리십시오.
+ */
+const KO_LANDING = 'index.html';
+
+test('🔴 [메타] 국·영문 랜딩 구조가 갈려 있다 — 영문을 교체하면 이 검사가 red 로 알린다', () => {
+  /*
+   * 지금은 **사실을 적은 검사**입니다. 영문 랜딩을 v11 로 교체하면 아래 둘째 단정이 깨지고,
+   * 그것이 「구조 검사를 두 장으로 되돌릴 때가 됐다」는 신호입니다.
+   * ⚠️ 이 검사가 red 인 것은 고장이 아니라 **할 일이 생겼다**는 뜻입니다.
+   */
+  assert.ok(read('index.html').includes('class="fin'), '국문 랜딩이 v11(.fin) 이 아닙니다');
+  assert.ok(
+    read('en.html').includes('class="close-cta"'),
+    '영문 랜딩이 교체됐습니다 — KO_LANDING 을 지우고 구조 검사를 LANDINGS 로 되돌리십시오'
+  );
+});
 
 /** 주석·스타일·스크립트를 뺀 «보이는» 마크업. */
 const body = (f) =>
@@ -51,9 +78,15 @@ const body = (f) =>
     .replace(/<!--[\s\S]*?-->/g, '')
     .replace(/<(style|script)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, '');
 
-/** `.close-cta` 블록. ⚠️ 개편으로 `<section>` 이 아니라 `<div>` 입니다. */
+/**
+ * 마감 CTA 블록.
+ *
+ * 🔄 **선택자가 `.close-cta` → `.fin` 으로 바뀌었습니다** 〔2026-09-01 · v11 랜딩 교체〕.
+ *    구조가 바뀐 것이지 자리가 없어진 것이 아닙니다 — 페이지 마지막의 「지금 시작하세요」
+ *    블록은 그대로 있습니다. ⛔ 자리가 살아 있으면 선택자를 옮기지, 검사를 지우지 마십시오.
+ */
 function closeCta(f) {
-  const m = body(f).match(/<div class="close-cta">([\s\S]*?)<\/div>/);
+  const m = body(f).match(/<section class="fin[^"]*">([\s\S]*?)<\/section>/);
   return m ? m[1] : null;
 }
 
@@ -85,36 +118,44 @@ test('🔴 「상담 신청」을 되살리지 않았다 — 명칭은 「문의
 
 /* ══ ② 마감 CTA ═══════════════════════════════════════════════════════════ */
 
-test('마감 CTA 에는 버튼이 정확히 하나다', () => {
+test('마감 CTA 에 «주» 버튼이 정확히 하나다', () => {
   /*
-   * 🔴 **기대를 좁혔습니다** — 종전 단정(`data-purpose="inquiry"` · `data-timeline-open`
-   *    부재)은 그 속성이 개편으로 사라져 잴 수 없습니다. 남은 축은 **「버튼이 하나다」**이며,
-   *    그것이 원래 이 검사의 본론이었습니다(둘이 되면 무엇을 누를지 갈립니다).
+   * 🔄 **축을 「버튼 1개」에서 「주 버튼 1개」로 옮겼습니다** 〔2026-09-01 · v11 랜딩 교체〕.
+   *    새 마감 CTA 는 주 버튼(`.btn` = 무료 진단)과 보조(`.btn-2` = 상담 문의) **둘**입니다.
+   *    그것은 의도된 설계이지 결함이 아닙니다.
+   * 🔴 그래도 지켜야 하는 것이 남습니다 — **주 행동이 둘이 되면 무엇을 누를지 갈립니다.**
+   *    그래서 주 버튼(`.btn`)만 셉니다. 보조는 몇 개든 이 검사의 대상이 아닙니다.
+   * ⚠️ `class="btn "`·`class="btn"` 만 셉니다 — `btn-2`·`btn-s` 는 접미사가 붙어 안 걸립니다.
    */
-  for (const f of LANDINGS) {
-    const close = closeCta(f);
-    assert.ok(close, f + ' 에 .close-cta 가 없습니다');
-    const buttons = (close.match(/class="btn[ "]/g) || []).length;
-    assert.strictEqual(buttons, 1, f + ' 의 마감 CTA 버튼이 ' + buttons + '개입니다');
-  }
+  const close = closeCta(KO_LANDING);
+  assert.ok(close, KO_LANDING + ' 에 마감 CTA 블록이 없습니다');
+  const primary = (close.match(/class="btn"|class="btn /g) || []).length;
+  assert.strictEqual(primary, 1, KO_LANDING + ' 의 마감 CTA 주 버튼이 ' + primary + '개입니다');
 });
 
-test('마감 CTA 가 「상담」이라는 낱말을 쓰지 않는다 — 유상 자문 오인 이력', () => {
-  for (const f of LANDINGS) {
-    assert.ok(!/상담/.test(closeCta(f) || ''), f + ' 의 마감 CTA 에 「상담」이 있습니다');
-  }
-});
+/*
+ * 🔴 **「마감 CTA 가 «상담» 을 쓰지 않는다」를 걷었습니다** 〔2026-09-01 · 대표 결정으로 뒤집힘〕.
+ *
+ * 그 규칙은 「상담」이 **유상 자문**으로 오인된 이력에서 나왔습니다. 그런데 2026-09-01 에
+ * `/contact?type=consult` 의 라벨을 **「상담 문의」로 확정**했고(대표 지시 · contact.html
+ * `KINDS.consult.eyebrow`), 새 마감 CTA 가 그 라벨을 그대로 씁니다.
+ * ⛔ 「red 라서」 지운 것이 아닙니다 — **막으려던 대상이 승인된 문면이 됐기 때문**입니다.
+ *    그 라벨이 가리키는 곳은 무료 문의 폼이라, 유상 자문 오인이라는 원래 위험이 없습니다.
+ * 🔴 되살릴 조건: 「상담」이 다시 유상 자문을 뜻하게 되면 그때 함께 되살리십시오.
+ * ⚠️ 「상담 «신청»」 금지는 **살아 있습니다**(아래 ① · 페이지 전역). 확정 명칭은 「문의하기」
+ *    계열이고, 「신청」은 접수 흐름을 뜻해 다른 말입니다.
+ */
 
 /* ══ ③ 크기 위계 ══════════════════════════════════════════════════════════ */
 
 test('🔴 인용 출처가 본문보다 작다 — 출처가 본문만큼 크면 인용이 주장이 된다', () => {
   /*
-   * 🔴 **retarget** — 종전 대상 `.basis-list p` 가 사라졌고, 같은 성격의 자리가
-   *    새 통계 섹션의 `.stat-src` 입니다(출처 표기). 축은 그대로 「본문보다 작다」입니다.
-   * ⚠️ 실측 기준값: `.stat-src` 14.5px · 본문 16.5px.
+   * 🔄 **두 번째 retarget** 〔2026-09-01 · v11〕 — `.stat-quote .stat-src` → `.qb-src`.
+   *    출처 표기 자리는 그대로 있고 이름만 바뀌었습니다. 축도 그대로 「본문보다 작다」입니다.
+   * ⚠️ 실측 기준값: `.qb-src` 13px · 본문 16.5px.
    */
-  const css = read('index.html');
-  const src = Number((css.match(/\.stat-quote \.stat-src\{[^}]*font-size:([\d.]+)px/) || [])[1]);
+  const css = read(KO_LANDING);
+  const src = Number((css.match(/\.qb-src\{[^}]*font-size:([\d.]+)px/) || [])[1]);
   const bodySize = Number((css.match(/body\{[^}]*font-size:([\d.]+)px/) || [])[1]);
   assert.ok(src > 0 && bodySize > 0, '크기 값을 읽지 못했습니다 (src=' + src + ' body=' + bodySize + ')');
   assert.ok(src < bodySize, '인용 출처(' + src + 'px)가 본문(' + bodySize + 'px)보다 작지 않습니다');
@@ -127,9 +168,10 @@ test('🔴 통계 숫자가 그 설명보다 크다 — 「제일 중요한 한�
    *    그것은 **개편이 내린 결정**이지 결함이 아닙니다. 그래서 축을 같은 블록 «안»의
    *    위계로 좁혔습니다 — 숫자(`.stat-n`)가 라벨(`.stat-t`)보다 크다.
    */
-  const css = read('index.html');
-  const n = Number((css.match(/\.stat-n\{font-size:clamp\([\d.]+px,[^,]+,([\d.]+)px\)/) || [])[1]);
-  const t = Number((css.match(/\.stat-t\{font-size:([\d.]+)px/) || [])[1]);
+  const css = read(KO_LANDING);
+  /* 🔄 `.stat-n`/`.stat-t` → `.qb-stat .n`/`.qb-stat .l` 〔2026-09-01 · v11〕. 자리는 같습니다. */
+  const n = Number((css.match(/\.qb-stat \.n\{font-size:clamp\([\d.]+px,[^,]+,([\d.]+)px\)/) || [])[1]);
+  const t = Number((css.match(/\.qb-stat \.l\{font-size:([\d.]+)px/) || [])[1]);
   assert.ok(n > 0 && t > 0, '크기 값을 읽지 못했습니다 (n=' + n + ' t=' + t + ')');
   assert.ok(n > t, '통계 숫자(' + n + 'px)가 설명(' + t + 'px)보다 크지 않습니다');
 });
@@ -151,9 +193,20 @@ test('🔴 통계 숫자가 그 설명보다 크다 — 「제일 중요한 한�
 /* ══ ⑤ 배경 토큰 ══════════════════════════════════════════════════════════ */
 
 test('표면 배경 토큰이 살아 있다 — 섹션 교차의 값이 흩어지지 않는다', () => {
+  /*
+   * 🔄 **토큰 이름이 두 장에서 갈렸습니다** 〔2026-09-01 · v11〕 — 국문은 `--surface`·
+   *    `--line-soft`, 영문(구판)은 `--surface`·`--line-on-surface` 입니다.
+   * 🔴 축은 그대로입니다 — 「섹션 교차를 그리는 값이 :root 에 이름으로 있다」. 이름을 두 장에
+   *    맞춰 적는 대신 **각 장이 실제로 쓰는 짝**을 봅니다. 영문 교체 때 위 [메타] 검사가
+   *    먼저 red 가 되므로 이 표도 그때 함께 정리됩니다.
+   */
+  const PAIRS = {
+    'index.html': ['--surface', '--line-soft'],
+    'en.html': ['--surface', '--line-on-surface'],
+  };
   for (const f of LANDINGS) {
     const css = read(f);
-    for (const token of ['--surface', '--line-on-surface']) {
+    for (const token of PAIRS[f]) {
       assert.ok(css.includes(token + ':'), f + ' 에 ' + token + ' 가 없습니다');
     }
   }
