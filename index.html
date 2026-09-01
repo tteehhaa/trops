@@ -432,7 +432,13 @@ footer .cp{margin-top:18px;color:#64748B}
         <li>보험료 지원사업 해당 여부</li>
       </ul>
       <div class="tag">유료 · 거래 한 건 단위</div>
-      <div class="go"><a class="btn" href="https://app.trops.kr/insurance/quick" data-track="step2-quote">무역보험 준비팩 확인</a></div>
+      <!-- 🔴 `?from=landing` 은 **도메인을 넘는 유일한 출처 단서**입니다 〔2026-09-02〕 —
+           vercel.json 이 `Referrer-Policy: strict-origin-when-cross-origin` 을 걸어 두어
+           app.trops.kr 에는 `https://trops.kr/` 만 갑니다(**경로가 깎입니다**). 즉 앱은
+           Referer 로 랜딩과 /precheck 를 **구분할 수 없습니다**. ⛔ 이 값을 지우지 마십시오.
+           ⚠️ 짝: precheck.html `PACK`(`?from=precheck`). 깔때기는 page_events.label
+              `step2-quote` → 앱의 `from=landing` 으로 **집계끼리** 잇습니다(개인 식별자 없음). -->
+      <div class="go"><a class="btn" href="https://app.trops.kr/insurance/quick?from=landing" data-track="step2-quote">무역보험 준비팩 확인</a></div>
     </div>
     <div class="sp">
       <div class="no">3단계 · 선적 후</div>

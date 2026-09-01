@@ -346,8 +346,17 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
    *       들어가고 쿼리를 붙이지 않습니다(쿼리를 붙이는 것은 `DIAG` 뿐입니다).
    *    ⚠️ `?type=quote` 유형은 **남아 있습니다** — 주문 접수는 `/insurance/order` 이고
    *       확인 화면이 그 역할을 대신하지 않습니다(contact.html `KINDS.quote` 참조).
+   *
+   * 🔴 **`?from=precheck` 를 지우지 마십시오** 〔2026-09-02〕. vercel.json 의
+   *    `Referrer-Policy: strict-origin-when-cross-origin` 때문에 앱에는 `https://trops.kr/`
+   *    만 가고 **경로가 깎입니다** — Referer 로는 랜딩과 이 화면을 구분할 수 없습니다.
+   *    이 파라미터가 도메인을 넘는 유일한 출처 단서입니다.
+   *    ⚠️ 짝: index.html 유료 버튼(`?from=landing`). 깔때기는 page_events.label
+   *       `precheck-pack` → 앱의 `from=precheck` 로 **집계끼리** 잇습니다.
+   *    ⛔ 개인 식별자(클릭 id·방문자 id)를 여기 얹지 마십시오 — precheck-schema.sql §0-M
+   *       「개인 식별자가 0」과 privacy.html §01 이 걸려 있습니다.
    */
-  var PACK='https://app.trops.kr/insurance/quick';
+  var PACK='https://app.trops.kr/insurance/quick?from=precheck';
 
   // 권역 → 국가. 값은 ISO2로 넘긴다(앱 CountrySelect가 "국가명 (XX)" 규약을 쓴다).
   var COUNTRIES={
