@@ -21,6 +21,15 @@
  *
  * ⚠️ **`noindex` 입니다** — 접수 폼이라 검색에 잡힐 이유가 없고, `?type=` 세 벌이 중복
  *    문서로 색인되면 정본이 무엇인지 갈립니다. hreflang 도 두지 않습니다(영문판 없음).
+ *
+ * ── 🔴 랜딩이 어느 자리에서 어느 `type` 으로 오는가 〔2026-09-01 · 대표 확정〕 ─────
+ *    히어로 보조 CTA   → `?type=consult`
+ *    최종 보조 CTA     → `?type=consult`
+ *    2단계 카드        → `?type=quote`
+ *    3단계 카드        → `?type=notify`
+ * ⚠️ **아직 걸려 있지 않습니다.** 지금 라이브 랜딩의 문의 CTA 는 `mailto:` 이고, 그것은
+ *    **랜딩 교체 때 함께 정리합니다**(대표 지시). 그때까지 이 페이지로 오는 길은 없습니다.
+ * ⛔ 그 전에 랜딩의 mailto 를 혼자 바꾸지 마십시오 — 교체 배치와 갈라집니다.
  */
 :root{
     --ink:          #0F172A;
@@ -437,13 +446,15 @@ form{padding-block:clamp(8px,1.5vw,16px) clamp(48px,6vw,72px)}
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         /*
-         * ⚠️ `notify` 에는 이름 칸이 없는데 api/leads.js 는 name 을 **필수**로 받습니다
-         *    (test/leads-consent.test.js 「이름·이메일 검증은 종전대로 동작한다」가 그
-         *    400 을 잠급니다). 없는 이름을 지어내지 않고 **가진 식별자를 그대로** 씁니다.
-         * 🔴 이 자리는 결정 대기입니다 — leads.js 의 name 을 선택으로 여는 편이 옳다면
-         *    그 테스트와 함께 고쳐야 합니다. 지금은 계약을 건드리지 않는 쪽을 골랐습니다.
+         * 🔴 **이름은 있으면 보내고 없으면 빈 값으로 둡니다** 〔2026-09-01 · 대표 지시〕.
+         *    api/leads.js 가 이름을 **선택**으로 열었습니다(필수는 이메일과 필수 동의 둘).
+         *    ⚠️ 첫 판은 `notify` 에서 이메일을 이름 자리에 넣었습니다 — 그러면 확인 메일이
+         *       「someone@example.com님, 안녕하세요」로 나갑니다. 그 우회를 걷었습니다.
+         *    ⛔ 여기에 다시 대체값을 넣지 마십시오. 이름이 없으면 없는 채로 보내는 것이
+         *       맞고, 서버가 그때 인사말을 「안녕하세요.」로 시작합니다
+         *       (test/leads-consent.test.js 「이름 없이 제출해도 200 이다」가 잠급니다).
          */
-        name: kind.notifyOnly ? email : name,
+        name: name,
         email: email,
         company: ($('company').value || '').trim(),
         inquiry: buildInquiry(),
