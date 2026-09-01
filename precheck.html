@@ -3,7 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>수출건 1분 점검 · 100점 기준 점수 | TROPS</title>
+<!-- 🔴 **이름은 「수출 사전점검」 하나입니다** 〔2026-09-01 · 대표 결정〕.
+     종전에는 이름이 셋이었습니다 — 랜딩 버튼 「1분 점검」 · 이 페이지 「수출건 1분 점검」 ·
+     앱 「수출 절차 진단서」. 버튼에 적힌 말과 도착한 페이지의 제목이 다르면 잘못 눌렀다고
+     느낍니다. title·h1·랜딩 CTA 를 한 이름으로 모았습니다.
+     ⚠️ **붙여쓰기입니다** — 판정층 trops_a 가 이미 그렇게 씁니다(「수출 사전점검 — 진단하기」·
+        「— 결과보기」·「— 통관」). 띄어쓰면 같은 제품이 두 이름을 갖습니다.
+     ⚠️ 꼬리표는 `이름 — TROPS` 로 refund.html·privacy.html 과 같은 꼴입니다. -->
+<title>수출 사전점검 — TROPS</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
 <style>
 /*
@@ -97,6 +104,9 @@ h1{font-size:clamp(2.25rem,4.5vw,3.5rem);font-weight:700;line-height:1.30;letter
 .btn-secondary:hover{border-color:var(--muted);color:var(--ink)}
 
 .head{padding-block:clamp(48px,6vw,80px) clamp(28px,3.5vw,40px)}
+/* 히어로 배지 — 랜딩 `.mk-step span` 의 알약 꼴에 `--accent-soft`/`--accent` 를 입혔습니다.
+   ⛔ 새 색을 만들지 마십시오. 셋 다 랜딩 :root 에 이미 있는 값입니다. */
+.badge{display:inline-flex;align-items:center;margin-bottom:18px;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:var(--accent-soft);font-size:12.5px;font-weight:600;line-height:1.6;color:var(--accent)}
 
 /* ── 입력 ────────────────────────────────────────────────────────────────────
  * 랜딩의 `.sec-surface` 와 같은 처리입니다 — 띠 하나로 「여기가 입력」임을 나눕니다.
@@ -198,13 +208,25 @@ h1{font-size:clamp(2.25rem,4.5vw,3.5rem);font-weight:700;line-height:1.30;letter
 
 <main id="main">
 
-<!-- 🔄 제목 교체 〔2026-09-01 · 대표 지시〕 — 「이번 수출건이 어디까지 갖춰졌는지 봅니다」 → 「수출 사전 점검」.
-     ⚠️ 이 이름은 **app.trops.kr 의 무료 진단서 흐름**을 가리킵니다. refund.html 머리주석이
-        적어 둔 이름 충돌의 반대편입니다 — 그 문서는 **유료 서류 대조**라서 「서류 사전 확인」으로
-        갔고, 여기(무료 흐름의 입구)가 「수출 사전점검」을 쓰는 자리입니다.
-     ⛔ 이 자리에 유료 상품 이름을 붙이지 마십시오. -->
+<!-- ⚠️ 이 이름은 **app.trops.kr 의 무료 흐름**을 가리킵니다. refund.html 머리주석이 적어 둔
+     이름 충돌의 반대편입니다 — 그 문서는 **유료 서류 대조**라서 「서류 사전 확인」으로 갔고,
+     여기(무료 흐름의 입구)가 「수출 사전점검」을 쓰는 자리입니다.
+     ⛔ 이 자리에 유료 상품 이름을 붙이지 마십시오.
+
+     🔴 **배지는 「1분」을 이름에서 내려 «사실»로 적는 자리입니다** 〔2026-09-01 · 대표 결정〕.
+        셋 다 **이 페이지**에 대해 참입니다 — 서버 호출 0 · 저장 0 · 계정 없이 점수가 나옵니다.
+     ⚠️ 「로그인 없이」는 **이 페이지의 사실이지 흐름 전체의 사실이 아닙니다.**
+        다음 칸(app.trops.kr `/export-precheck/new`)은 **문은 열려 있고 제출에서 로그인을
+        요구합니다** — 판정층 `app/export-precheck/new/page.tsx` 머리주석 「로그인 전에도
+        열린다 — 게이트는 «제출 시점»이다」〔2026-08-30 · 창업자 지시 A안〕.
+     ⛔ 그러므로 이 배지를 **랜딩이나 진단서 진입 버튼 옆으로 옮기지 마십시오.** 그 자리에서는
+        거짓이 됩니다. 옛 랜딩의 영문 무로그인 문구가 금지 목록에 오른 것이 같은 형태였습니다
+        (test/price-exposure.test.js `RETIRED_OFFER_PHRASES` 2번 · 「종료된 무상 제공 문구」).
+     ⛔ 그 금지 문자열을 여기에 **리터럴로 적지 마십시오** — 그 검사는 주석까지 봅니다
+        (2026-09-01 에 이 주석이 실제로 걸렸습니다). -->
 <div class="container head">
-  <h1>수출 사전 점검</h1>
+  <p class="badge">무료 · 1분 · 로그인 없이</p>
+  <h1>수출 사전점검</h1>
 </div>
 
 <section class="inputs">
