@@ -50,7 +50,12 @@ export default function middleware(request) {
  *    제거했다(그 경로에 실제 페이지가 섰다). 이제 요청이 **정말로 여기까지 온다.**
  *    실측(2026-09-01): 쿠키 없음 · `lang=en` · `lang=ko` 셋 다 통과(리다이렉트 0 · throw 0).
  *    남겨 둔 것은 그래서다 — 빼도 같고, 영문판 `en-precheck.html` 이 서는 날
- *    PAIRS 에 `['/precheck', '/en-precheck']` 를 더하면 이 자리가 바로 살아난다.
+ *    PAIRS 에 「/precheck ↔ /en-precheck」 한 줄을 더하면 이 자리가 바로 살아난다.
+ *
+ * ⛔ **여기에 짝을 «배열 리터럴 꼴»로 예시하지 마십시오** 〔2026-09-01 실측〕.
+ *    `scripts/verify-deployment.js` 가 이 파일을 정규식으로 훑어 PAIRS 를 읽는다
+ *    (`/\['(\/[^']*)',\s*'(\/en[^']*)'\]/g`). 주석에 적은 예시도 그대로 잡혀서
+ *    **있지도 않은 짝이 표에 하나 더 생긴다** — 실제로 3개가 4개로 읽혔다.
  */
 export const config = {
   matcher: ['/', '/precheck', '/refund', '/nda', '/uae', '/privacy'],
