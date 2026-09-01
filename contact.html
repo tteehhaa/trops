@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>문의하기 — TROPS</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<style>
+/*
+ * 문의 접수 한 장 〔2026-09-01 · 대표 지시〕.
+ *
+ * 쿼리 `?type=` 으로 **같은 폼의 칸 구성만** 바꿉니다(consult · quote · notify).
+ * 페이지를 셋으로 나누지 않은 이유는 셋이 같은 접수처(api/leads.js)로 가고 같은 동의를
+ * 받기 때문입니다 — 나누면 동의 문구가 세 벌이 되고, 그 셋이 갈라지는 것이 이 저장소가
+ * 반복해서 겪은 사고입니다(사업자정보 6곳 · 항목수 5곳).
+ *
+ * 🔴 **디자인은 랜딩 :root 를 그대로 씁니다.** index.html · refund.html · privacy.html ·
+ *    precheck.html 이 같은 표를 씁니다. ⛔ 여기서 색이나 반경을 새로 만들지 마십시오 —
+ *    한 페이지만 다른 값을 쓰면 페이지를 오갈 때 그 자리만 튑니다(푸터 주석 참조).
+ *
+ * ⚠️ **`noindex` 입니다** — 접수 폼이라 검색에 잡힐 이유가 없고, `?type=` 세 벌이 중복
+ *    문서로 색인되면 정본이 무엇인지 갈립니다. hreflang 도 두지 않습니다(영문판 없음).
+ */
+:root{
+    --ink:          #0F172A;
+    --ink-70:       rgba(15, 23, 42, .7);
+    --ink-64:       rgba(15, 23, 42, .64);
+    --ink-62:       rgba(15, 23, 42, .62);
+    --accent:       #1D4ED8;
+    --accent-press: #1E40AF;
+    --accent-soft:  #EFF6FF;
+    --muted:        #94A3B8;
+    --line:         #E2E8F0;
+    --surface:      #E6ECF3;
+    --line-on-surface: #CBD5E1;
+    --surface-dark: #0F172A;
+    --bg:           #FFFFFF;
+    --warning:      #DC2626;
+    --d-ink-primary:   #FFFFFF;
+    --d-ink-secondary: rgba(255, 255, 255, .72);
+    --d-ink-tertiary:  rgba(255, 255, 255, .50);
+    --d-line:          rgba(255, 255, 255, .28);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+    font-size:16.5px;
+    line-height:1.76;
+    word-break:keep-all;
+    text-wrap:pretty;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+}
+a{color:var(--accent);text-decoration:none}
+a:hover{color:var(--accent-press)}
+::selection{background:rgba(15,23,42,.14)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+p{margin:0}
+h1,h2{margin:0}
+/*
+ * 🔴 **`[hidden]` 을 이기지 못하게 못질합니다** 〔2026-09-01 실측으로 발견〕.
+ *    `hidden` 속성은 UA 스타일시트의 `display:none` 인데, 이 파일의 `.fld{display:flex}`
+ *    같은 «저자» 규칙이 그것을 이깁니다 — `?type=notify` 에서 `f-company`·`f-name` 을
+ *    `hidden` 으로 내렸는데 **화면에 그대로 남아 있었습니다.**
+ * ⚠️ 스크립트가 칸을 여닫는 페이지라 이 한 줄이 없으면 「숨겼다고 믿는데 안 숨는」
+ *    형태가 계속 생깁니다. ⛔ 지우지 마십시오.
+ */
+[hidden]{display:none!important}
+h1{font-size:clamp(2.25rem,4.5vw,3.5rem);font-weight:700;line-height:1.30;letter-spacing:-.035em;max-width:16em}
+
+.container{max-width:1200px;margin:0 auto;padding-inline:clamp(24px,5vw,48px)}
+.narrow{max-width:780px}
+
+/* nav — precheck.html · refund.html 과 같은 구조입니다(내부 페이지 공통) */
+.nav{border-bottom:1px solid var(--line)}
+.nav-inner{height:64px;display:flex;align-items:center;gap:40px}
+.logo{display:inline-flex;align-items:center;gap:9px;font-size:18px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+.logo:hover{color:var(--ink)}
+.logo i{width:18px;height:18px;border-radius:5px;background:var(--accent);display:block}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.nav-quiet{font-size:14px;font-weight:500;color:var(--muted)}
+.nav-quiet:hover{color:var(--ink-64)}
+
+/* 버튼 3종 — 정본 C-1. 다섯 페이지가 같은 값을 씁니다 */
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:12px 22px;border-radius:6px;border:1px solid transparent;font:inherit;font-size:15.5px;font-weight:600;line-height:1;cursor:pointer;white-space:nowrap;transition:background-color .14s ease,border-color .14s ease,color .14s ease}
+.btn-primary{background:var(--accent);color:#FFFFFF}
+.btn-primary:hover{background:var(--accent-press);color:#FFFFFF}
+.btn[disabled]{background:var(--muted);cursor:not-allowed}
+.btn[disabled]:hover{background:var(--muted)}
+
+.head{padding-block:clamp(48px,6vw,80px) clamp(24px,3vw,32px)}
+.eyebrow{margin:0 0 18px;font-size:13.5px;font-weight:600;letter-spacing:.02em;color:var(--accent)}
+.lead{margin-top:16px;max-width:44em;font-size:17px;font-weight:500;line-height:1.72;color:var(--ink-64)}
+
+/* 접수 유형 — 지금 어느 칸 구성인지 보이게 합니다 */
+.kinds{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.kind{display:inline-flex;align-items:center;padding:6px 13px;border:1px solid var(--line);border-radius:999px;background:var(--bg);font-size:13.5px;font-weight:600;line-height:1.5;color:var(--ink-62)}
+.kind[aria-current="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+
+form{padding-block:clamp(8px,1.5vw,16px) clamp(48px,6vw,72px)}
+.fset{border:0;margin:0;padding:0}
+.fset + .fset{margin-top:28px;padding-top:24px;border-top:1px solid var(--line)}
+.fset legend{padding:0;font-size:13.5px;font-weight:600;letter-spacing:.01em;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px 20px;margin-top:16px}
+.fld{display:flex;flex-direction:column}
+.fld.wide{grid-column:1 / -1}
+.fld label{margin-bottom:8px;font-size:13.5px;font-weight:600;line-height:1.45;letter-spacing:-.01em;color:var(--ink-64)}
+.req{margin-left:4px;color:var(--accent);font-weight:700}
+/* 랜딩에는 폼 컨트롤이 없습니다 — `.btn` 의 반경 6px · min-height 44px · 15.5px 를 따랐습니다. */
+.fld input,.fld select,.fld textarea{
+    width:100%;min-height:44px;
+    padding:11px 13px;
+    border:1px solid var(--line);border-radius:6px;
+    background:var(--bg);color:var(--ink);
+    font:inherit;font-size:15.5px;font-weight:500;line-height:1.5;
+    transition:border-color .14s ease}
+.fld select{padding-right:40px;appearance:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M1 1l5 5 5-5' stroke='%2394A3B8' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat:no-repeat;background-position:right 14px center}
+.fld textarea{min-height:132px;resize:vertical}
+.fld input:hover,.fld select:hover,.fld textarea:hover{border-color:var(--muted)}
+.fld input::placeholder,.fld textarea::placeholder{color:var(--muted)}
+.fld .hint{margin-top:7px;font-size:13px;line-height:1.6;color:var(--ink-62)}
+
+/* 동의 — 접수 전에 무엇을 받고 얼마나 두는지 화면에서 읽히게 합니다 */
+.consent{margin-top:28px;padding:22px 24px;border:1px solid var(--line);border-radius:8px;background:var(--surface);--line:var(--line-on-surface)}
+.consent h2{font-size:15px;font-weight:600;letter-spacing:-.015em;line-height:1.45}
+.consent dl{margin:14px 0 0;display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13.5px;line-height:1.7}
+.consent dt{color:var(--ink-62);white-space:nowrap}
+.consent dd{margin:0;color:var(--ink)}
+.agree{display:flex;align-items:flex-start;gap:10px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.agree input{flex:none;width:18px;height:18px;min-height:0;margin-top:4px;accent-color:var(--accent)}
+.agree label{font-size:14.5px;line-height:1.65}
+
+.actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:28px}
+.note{font-size:13px;line-height:1.6;color:var(--ink-62)}
+
+/* 결과 — 성공·실패를 같은 자리에서 말합니다(둘이 다른 자리에 뜨면 못 봅니다) */
+.result{margin-top:20px;padding:16px 18px;border:1px solid var(--line);border-left-width:3px;border-radius:6px;font-size:15px;line-height:1.7}
+.result[hidden]{display:none}
+.result.ok{border-left-color:var(--accent);background:var(--accent-soft);color:var(--ink)}
+.result.bad{border-left-color:var(--warning);background:var(--bg);color:var(--ink)}
+
+/* 푸터 — 다섯 페이지가 같은 값을 씁니다. 여기만 바꾸면 오갈 때 색이 튑니다. */
+.footer{background:var(--surface-dark);color:var(--d-ink-secondary)}
+.footer-inner{padding-block:44px 28px;font-size:12.5px;line-height:1.7;color:var(--d-ink-tertiary)}
+.footer a{color:var(--d-ink-secondary);text-decoration:underline;text-underline-offset:3px}
+.footer a:hover{color:var(--d-ink-primary)}
+
+@media(max-width:768px){.grid2{grid-template-columns:1fr}}
+@media(max-width:640px){.nav-inner{gap:16px}.consent{padding:18px 20px}.consent dl{grid-template-columns:1fr;gap:2px 0}.consent dt{margin-top:8px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body>
+
+<nav class="nav">
+  <div class="container nav-inner">
+    <a class="logo" href="/"><i></i>TROPS</a>
+    <div class="nav-right"><a class="nav-quiet" href="/">서비스 소개 →</a></div>
+  </div>
+</nav>
+
+<main id="main">
+
+<div class="container narrow head">
+  <p class="eyebrow" id="kind-eyebrow">문의</p>
+  <h1 id="kind-title">문의하기</h1>
+  <p class="lead" id="kind-lead"></p>
+  <!-- 지금 어느 칸 구성인지 보여 주고, 다른 구성으로 건너갈 길을 둡니다.
+       ⚠️ 링크는 같은 페이지의 `?type=` 이라 새로 고침만 일어납니다. -->
+  <div class="kinds">
+    <a class="kind" href="/contact?type=consult">상담 문의</a>
+    <a class="kind" href="/contact?type=quote">견적 요청</a>
+    <a class="kind" href="/contact?type=notify">출시 알림</a>
+  </div>
+</div>
+
+<form class="container narrow" id="form" novalidate>
+
+  <fieldset class="fset" id="fs-who">
+    <legend>연락받을 곳</legend>
+    <div class="grid2">
+      <div class="fld" id="f-company">
+        <label for="company">회사명</label>
+        <input id="company" name="company" type="text" autocomplete="organization">
+      </div>
+      <div class="fld" id="f-name">
+        <label for="name">담당자<span class="req" aria-hidden="true">*</span></label>
+        <input id="name" name="name" type="text" autocomplete="name" required>
+      </div>
+      <div class="fld wide" id="f-email">
+        <label for="email">연락처<span class="req" aria-hidden="true">*</span></label>
+        <input id="email" name="email" type="email" autocomplete="email" inputmode="email" required>
+        <p class="hint" id="email-hint">회신은 이 주소로 드립니다.</p>
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- 견적 전용 칸. `?type=quote` 일 때만 폼에 붙습니다.
+       🔴 이 네 값은 api/leads.js 에 대응 칸이 없어 `inquiry` 안에 «적어» 보냅니다
+          (아래 스크립트 buildInquiry). ⛔ leads.js 에 칸을 새로 파지 마십시오 —
+          그 엔드포인트는 랜딩·영문 폼과 공용이고, 계약이 바뀌면 그쪽이 함께 흔들립니다. -->
+  <fieldset class="fset" id="fs-quote" hidden>
+    <legend>거래 개요</legend>
+    <div class="grid2">
+      <div class="fld">
+        <label for="amount">계약금액</label>
+        <!-- ⛔ placeholder 에 숫자를 적지 마십시오 — test/price-exposure.test.js 의 금액
+             검출기가 소스를 훑습니다(「원」·「만원」·₩ 표기가 걸립니다). -->
+        <input id="amount" name="amount" type="text" placeholder="통화와 금액">
+      </div>
+      <div class="fld">
+        <label for="dest">목적국</label>
+        <input id="dest" name="dest" type="text" placeholder="국가명">
+      </div>
+      <div class="fld">
+        <label for="terms">결제조건</label>
+        <!-- 문면은 /precheck 의 같은 문항과 맞췄습니다 — 두 화면이 다른 말을 쓰면
+             같은 것을 묻는지 알 수 없습니다. -->
+        <select id="terms" name="terms">
+          <option value="">선택하지 않음</option>
+          <option>전액 선지급</option>
+          <option>신용장 (L/C)</option>
+          <option>일부 선지급 + 잔금</option>
+          <option>D/P (지급인도)</option>
+          <option>D/A (인수인도)</option>
+          <option>선적 후 외상 (O/A)</option>
+        </select>
+      </div>
+      <div class="fld">
+        <label for="policy">무역보험 증권 보유 여부</label>
+        <select id="policy" name="policy">
+          <option value="">선택하지 않음</option>
+          <option>보유하고 있습니다</option>
+          <option>신청해 두었습니다</option>
+          <option>보유하고 있지 않습니다</option>
+        </select>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="fset" id="fs-inquiry">
+    <legend>문의 내용</legend>
+    <div class="grid2">
+      <div class="fld wide">
+        <label for="inquiry">어떤 건인지 적어 주십시오</label>
+        <textarea id="inquiry" name="inquiry" rows="6"></textarea>
+      </div>
+    </div>
+  </fieldset>
+
+  <!--
+    🔴 동의는 «무엇을 받고 · 왜 받고 · 얼마나 두는지»를 화면에서 읽고 누르는 것이어야
+       합니다. 링크 하나만 두고 체크박스를 받으면 동의를 받은 것이 아닙니다.
+    ⚠️ 아래 세 줄은 privacy.html §02 표와 **같은 말**이어야 합니다. 한쪽만 고치면
+       화면이 약속한 것과 방침이 적은 것이 갈라집니다.
+    🔴 보유기간은 화면에 적힌 그대로가 약속입니다 — 바꾸려면 방침을 먼저 고치십시오.
+  -->
+  <section class="consent">
+    <h2>개인정보 수집·이용 동의 (필수)</h2>
+    <dl>
+      <dt>수집 항목</dt><dd id="c-items"></dd>
+      <dt>이용 목적</dt><dd id="c-purpose"></dd>
+      <dt>보유 기간</dt><dd>문의 응대를 마치면 지체 없이 파기합니다. 요청하시면 그 전에도 즉시 삭제합니다.</dd>
+    </dl>
+    <div class="agree">
+      <input id="consent" name="consent" type="checkbox" required>
+      <label for="consent">위 항목을 수집·이용하는 데 동의합니다. 동의하지 않으셔도 되며, 그때는 이 양식으로 접수할 수 없습니다. 자세한 내용은 <a href="/privacy.html">개인정보처리방침</a>에서 확인하실 수 있습니다.</label>
+    </div>
+  </section>
+
+  <div class="actions">
+    <button class="btn btn-primary" id="submit" type="submit">보내기</button>
+    <p class="note" id="note"></p>
+  </div>
+
+  <!-- 성공·실패를 같은 자리에서 말합니다. `aria-live` 로 화면낭독기에도 읽힙니다. -->
+  <p class="result" id="result" role="status" aria-live="polite" hidden></p>
+</form>
+
+</main>
+
+<!-- 🔴 사업자정보는 site.config.json 이 원본입니다. 여기에 값을 적지 마십시오 —
+     토큰만 씁니다(test/site-config.test.js 가 하드코딩을 막습니다). -->
+<footer class="footer">
+  <div class="container footer-inner">
+    {{biz.companyName}} · 대표 {{biz.ceo}} · <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+
+  /*
+   * 접수 유형표. 화면 문구와 「어느 칸을 쓰는지」를 한 곳에 둡니다.
+   * ⚠️ 값이 없거나 목록에 없으면 consult 입니다(대표 지시). 오타로 빈 폼이 뜨는 것보다
+   *    기본 구성이 뜨는 편이 낫습니다.
+   */
+  var KINDS = {
+    consult: {
+      eyebrow: '상담 문의',
+      title: '문의하기',
+      lead: '수출 절차·서류·일정에 대해 궁금하신 점을 적어 주십시오. 영업일 기준으로 회신드립니다.',
+      quote: false,
+      items: '회사명, 담당자 이름, 이메일 주소, 문의 내용'
+    },
+    quote: {
+      eyebrow: '견적 요청',
+      title: '견적 요청하기',
+      lead: '거래 개요를 함께 주시면 필요한 범위와 일정을 정리해 회신드립니다.',
+      quote: true,
+      items: '회사명, 담당자 이름, 이메일 주소, 문의 내용, 거래 개요(계약금액·목적국·결제조건·무역보험 증권 보유 여부)'
+    },
+    notify: {
+      eyebrow: '출시 알림',
+      title: '출시 알림 받기',
+      lead: '준비되는 대로 이 주소로 안내해 드립니다. 다른 용도로 쓰지 않습니다.',
+      quote: false,
+      notifyOnly: true,
+      items: '이메일 주소'
+    }
+  };
+  var PURPOSE = {
+    consult: '문의 내용 확인과 회신',
+    quote: '문의 내용 확인과 회신, 요청하신 범위의 견적 산정',
+    notify: '출시 안내 발송'
+  };
+
+  var params = new URLSearchParams(location.search);
+  var asked = params.get('type');
+  var type = Object.prototype.hasOwnProperty.call(KINDS, asked) ? asked : 'consult';
+  var kind = KINDS[type];
+
+  var $ = function(id){ return document.getElementById(id); };
+  var form = $('form'), submit = $('submit'), result = $('result'), note = $('note');
+
+  /* ── 화면 구성 ─────────────────────────────────────────────────────────── */
+  $('kind-eyebrow').textContent = kind.eyebrow;
+  $('kind-title').textContent = kind.title;
+  $('kind-lead').textContent = kind.lead;
+  document.title = kind.title + ' — TROPS';
+  $('c-items').textContent = kind.items;
+  $('c-purpose').textContent = PURPOSE[type];
+
+  [].forEach.call(document.querySelectorAll('.kind'), function(a){
+    if (a.getAttribute('href').indexOf('type=' + type) !== -1) a.setAttribute('aria-current', 'true');
+  });
+
+  $('fs-quote').hidden = !kind.quote;
+
+  /*
+   * 🔴 `notify` 는 **이메일 한 칸**입니다(대표 지시). 회사명·담당자·문의 내용을 숨기고
+   *    required 도 함께 뗍니다 — 숨긴 칸에 required 가 남으면 브라우저가 «보이지 않는»
+   *    칸을 가리키며 제출을 막고, 사용자는 왜 안 되는지 알 수 없습니다.
+   */
+  if (kind.notifyOnly) {
+    $('f-company').hidden = true;
+    $('f-name').hidden = true;
+    $('fs-inquiry').hidden = true;
+    $('name').required = false;
+    document.querySelector('#f-email label').textContent = '이메일';
+    $('email-hint').textContent = '이 주소로만 안내를 보냅니다.';
+    $('fs-who').querySelector('legend').textContent = '받으실 주소';
+  }
+
+  /* ── 제출 ──────────────────────────────────────────────────────────────── */
+
+  /*
+   * 🔴 **중복 제출을 막습니다.** 두 겹입니다 —
+   *    ① `sending` 플래그(엔터 연타·더블클릭이 fetch 를 두 번 띄우는 것을 막음)
+   *    ② 성공하면 `done` 으로 잠그고 버튼을 되살리지 않음(같은 문의가 두 번 가면
+   *       담당자 메일함에서 두 건으로 보이고, 어느 쪽이 최신인지 알 수 없습니다)
+   *    ⚠️ 실패했을 때는 잠그지 «않습니다» — 네트워크가 끊겼을 때 다시 눌러야 합니다.
+   */
+  var sending = false, done = false;
+
+  function say(kindClass, text) {
+    result.hidden = false;
+    result.className = 'result ' + kindClass;
+    result.textContent = text;
+  }
+
+  /*
+   * 견적 칸 넷을 `inquiry` 한 덩이로 적어 보냅니다.
+   * ⚠️ api/leads.js 는 { name, email, company, inquiry, consentPrivacy } 만 받습니다.
+   *    새 칸을 그쪽에 파는 대신 여기서 «사람이 읽을 수 있게» 적습니다 — 담당자 메일에
+   *    그대로 실려 나갑니다.
+   */
+  function buildInquiry() {
+    var body = ($('inquiry').value || '').trim();
+    if (!kind.quote) return body;
+    var rows = [
+      ['계약금액', $('amount').value],
+      ['목적국', $('dest').value],
+      ['결제조건', $('terms').value],
+      ['무역보험 증권', $('policy').value]
+    ].filter(function(r){ return (r[1] || '').trim(); })
+     .map(function(r){ return r[0] + ': ' + r[1].trim(); });
+    if (!rows.length) return body;
+    return (body ? body + '\n\n' : '') + '[거래 개요]\n' + rows.join('\n');
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    if (sending || done) return;
+
+    var email = ($('email').value || '').trim();
+    var name = ($('name').value || '').trim();
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      say('bad', '이메일 주소를 다시 확인해 주십시오.');
+      $('email').focus();
+      return;
+    }
+    if (!kind.notifyOnly && !name) {
+      say('bad', '담당자 이름을 적어 주십시오.');
+      $('name').focus();
+      return;
+    }
+    if (!$('consent').checked) {
+      say('bad', '개인정보 수집·이용에 동의하셔야 접수할 수 있습니다.');
+      $('consent').focus();
+      return;
+    }
+
+    sending = true;
+    submit.disabled = true;
+    note.textContent = '보내는 중입니다…';
+    result.hidden = true;
+
+    fetch('/api/leads', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        /*
+         * ⚠️ `notify` 에는 이름 칸이 없는데 api/leads.js 는 name 을 **필수**로 받습니다
+         *    (test/leads-consent.test.js 「이름·이메일 검증은 종전대로 동작한다」가 그
+         *    400 을 잠급니다). 없는 이름을 지어내지 않고 **가진 식별자를 그대로** 씁니다.
+         * 🔴 이 자리는 결정 대기입니다 — leads.js 의 name 을 선택으로 여는 편이 옳다면
+         *    그 테스트와 함께 고쳐야 합니다. 지금은 계약을 건드리지 않는 쪽을 골랐습니다.
+         */
+        name: kind.notifyOnly ? email : name,
+        email: email,
+        company: ($('company').value || '').trim(),
+        inquiry: buildInquiry(),
+        consentPrivacy: true,
+        consentMarketing: false
+      })
+    }).then(function(res){
+      if (res.ok) {
+        done = true;
+        note.textContent = '';
+        say('ok', kind.notifyOnly
+          ? '등록되었습니다. 준비되는 대로 적어 주신 주소로 안내해 드리겠습니다.'
+          : '접수되었습니다. 확인 후 적어 주신 주소로 회신드리겠습니다. 확인 메일도 함께 보내 드렸습니다.');
+        form.querySelector('.actions').hidden = true;
+        return;
+      }
+      /* 서버가 왜 막았는지 알려 주는 경우가 있습니다(동의 누락 등) — 그대로 옮기지 않고
+         사람이 할 수 있는 말로 바꿉니다. */
+      throw new Error(res.status === 400 ? '입력값을 다시 확인해 주십시오.' : '보내지 못했습니다.');
+    }).catch(function(err){
+      sending = false;
+      submit.disabled = false;
+      note.textContent = '';
+      say('bad', (err && err.message ? err.message : '보내지 못했습니다.') +
+        ' 잠시 뒤 다시 시도해 주시거나 contact@theo-ne.com 으로 보내 주십시오.');
+    });
+  });
+})();
+</script>
+</body></html>

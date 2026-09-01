@@ -98,6 +98,18 @@ const STATIC = {
      *    `en-precheck.html` 을 만들고 두 장에 hreflang 3줄씩 함께 넣으십시오.
      */
     { file: 'precheck.html', locale: 'ko' },
+    /*
+     * 문의 접수 한 장 〔2026-09-01 · 대표 지시〕. `?type=` 으로 칸 구성만 바뀝니다
+     * (consult · quote · notify) — 페이지는 하나입니다.
+     *
+     * ⚠️ 영문 짝이 «없습니다». hreflang 을 넣지 마십시오(test/i18n-parity.test.js ③ 은
+     *    짝이 서로를 가리킬 때만 인정합니다). 영문판을 세우는 날 `en-contact.html` 과
+     *    함께 hreflang 3줄씩 넣으십시오.
+     * 🔴 이 페이지는 **개인정보를 새로 받습니다** — privacy.html §01·§02 가 「지금 새로
+     *    받는 개인정보는 없습니다」라고 적고 있는 상태와 정면으로 어긋납니다.
+     *    ⛔ 방침을 먼저 고치기 전에는 배포하지 마십시오(2026-09-01 결정 대기).
+     */
+    { file: 'contact.html', locale: 'ko' },
     { file: 'refund.html', locale: 'ko' },
     { file: 'privacy.html', locale: 'ko' },
     { file: 'en-privacy.html', locale: 'en' },
