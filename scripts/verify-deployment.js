@@ -401,17 +401,26 @@ const CHECKS = [
   },
   {
     id: '패딩-섹션리듬',
-    label: '패딩 · 섹션 상하가 한 값으로 통일됐다 (clamp 60/8vw/96)',
+    /*
+     * 🔄 **세 번째 재조준** 〔2026-09-01 · v11 교체〕. 종전에는 `clamp(60px,8vw,96px)` 문자열을
+     *    소스와 배포본에서 «세어» 비교했는데, v11 은 그 자리를 **고정값**으로 씁니다
+     *    (`section{padding:96px 0}` + 860px 미만에서 `68px 0`). 문자열이 사라져 red 였습니다.
+     * 🔴 축은 그대로입니다 — 「섹션 상하가 한 값으로 통일됐고, 소스가 정한 그 값이 그대로
+     *    배포됐는가」. 문자열을 세는 대신 **규칙 자체를 소스와 대조**합니다. 값이 clamp 이든
+     *    고정이든 따라가므로 다음 개편에서 또 낡지 않습니다.
+     * ⚠️ V7 이전 값(108·112·104px) 회귀 금지는 그대로 둡니다 — 한 페이지 안에서 96·104·108·
+     *    112 로 갈려 있던 상태가 실제로 있었습니다.
+     */
+    label: '패딩 · 섹션 상하가 소스와 같은 한 값이다',
     page: '/',
     check: (html) => {
-      const norm = (s) => s.replace(/\s+/g, '');
-      const expected = (source('index.html').match(/clamp\(\s*60px\s*,\s*8vw\s*,\s*96px\s*\)/g) || []).length;
-      const got = (norm(html).match(/clamp\(60px,8vw,96px\)/g) || []).length;
-      if (expected === 0) return '소스에 섹션 패딩 값이 없습니다 — 검사가 낡았습니다';
-      if (got !== expected) return `섹션 패딩 자리가 ${got}곳입니다 (소스 ${expected}곳)`;
-      // V7 이전 값들. 한 페이지 안에서 96·104·108·112 로 갈려 있던 상태입니다.
+      const same = sameRule(html, 'index.html', 'section', ['padding']);
+      if (same !== true) return same;
+      const norm = html.replace(/\s+/g, '');
       for (const stale of ['108px', '112px', '104px']) {
-        if (norm(html).includes('padding-block:' + stale)) return `V7 이전 값 ${stale} 가 남아 있습니다`;
+        if (norm.includes('padding:' + stale) || norm.includes('padding-block:' + stale)) {
+          return `V7 이전 값 ${stale} 가 남아 있습니다`;
+        }
       }
       return true;
     },
