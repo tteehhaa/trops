@@ -73,11 +73,19 @@ function findRule(css, selector) {
   return null;
 }
 
-/** 소스의 CSS 선언 블록을 통째로 꺼냅니다 — 기대값의 출처를 소스로 둡니다. */
+/**
+ * 소스의 CSS 선언 블록을 통째로 꺼냅니다 — 기대값의 출처를 소스로 둡니다.
+ *
+ * 🔴 **던지지 않습니다** 〔2026-09-01 · 대표 지시〕. 종전에는 규칙을 못 찾으면 `throw` 했고,
+ *    러너에 try/catch 가 없어서 **그 한 줄이 확인 전체를 끝냈습니다.** 실측: 20개 중
+ *    2개만 돌고 18개가 한 번도 실행되지 않았습니다(2026-09-01, `V5-h3-정의` 에서 중단).
+ *    ⚠️ 그 18개에는 법인명·항목수·주석제거·과금게이트·cron 비공개가 들어 있었습니다 —
+ *       「확인했다」고 적힌 로그가 실은 아무것도 안 본 상태였습니다.
+ * 🔴 이제 `null` 을 돌려주고 **부르는 쪽이 실패로 «적습니다»**. 한 항목의 실패는 그 항목만
+ *    빨갛게 만들고 나머지는 계속 돕니다(러너의 try/catch 와 짝입니다).
+ */
 function ruleFrom(file, selector) {
-  const body = findRule(source(file), selector);
-  if (body === null) throw new Error(`소스 ${file} 에 ${selector} 규칙이 없습니다`);
-  return body;
+  return findRule(source(file), selector);
 }
 
 /** 선언 목록을 { prop: value } 로. 배포본은 공백이 줄어 있을 수 있어 정규화합니다. */
@@ -93,7 +101,19 @@ function decls(body) {
 
 /** 배포본에서 같은 선택자의 선언을 꺼내 소스와 대조합니다. */
 function sameRule(html, file, selector, props) {
-  const expected = decls(ruleFrom(file, selector));
+  /*
+   * 🔴 **소스에 그 선택자가 없는 것은 «검사가 낡은» 것이지 배포 사고가 아닙니다.**
+   *    실제 사례: 2026-08-29 랜딩 전면교체가 `h3, .h3` 를 `.h3` 단독으로 바꿨는데
+   *    이 검사만 옛 선택자를 들고 있었습니다. 그때 던지는 대신 **그 사실을 적습니다** —
+   *    선택자로 규칙을 찾는 방식 자체가 부서지기 쉬우므로, 실패 문구가 「어디를 고쳐야
+   *    하는지」를 말하게 합니다.
+   */
+  const sourceBody = ruleFrom(file, selector);
+  if (sourceBody === null) {
+    return `소스 ${file} 에 ${selector} 규칙이 없습니다 — 검사가 낡았습니다 ` +
+      '(선택자가 바뀌었는지 보고, 바뀐 것이면 이 항목의 선택자를 함께 고치십시오)';
+  }
+  const expected = decls(sourceBody);
   const body = findRule(html, selector);
   if (body === null) return `배포본에 ${selector} 규칙이 없습니다`;
   const got = decls(body);
@@ -156,7 +176,74 @@ function cronPrivacyCheck(res) {
 const LANG_PAIRS = [...source('middleware.js').matchAll(/\['(\/[^']*)',\s*'(\/en[^']*)'\]/g)]
   .map((m) => [m[1], m[2]]);
 
+/* ──────────────────────────────────────────────────────────────
+ * 🔴 **표가 옳은지는 «숫자»가 아니라 «배포되는 페이지»로 잽니다** 〔2026-09-01 · 대표 지시〕
+ * ──────────────────────────────────────────────────────────────
+ * 종전에는 `LANG_PAIRS.length < 7` 이면 실패였습니다. 그 7 은 2026-08-16 당시의 장수였고,
+ * 2026-08-30 6장 제거로 짝이 **7 → 3** 이 되면서 기대만 남았습니다 — 라이브는 멀쩡한데
+ * 확인이 빨갛고, 그 빨강이 진짜 회귀를 가렸습니다.
+ *
+ * ⛔ 숫자를 3으로 다시 박지 않습니다. 페이지가 늘거나 줄면 또 틀립니다.
+ * 🔴 대신 **파생합니다** — 「영문 짝이 실제로 배포되는 국문 페이지」가 PAIRS 에 있어야 할
+ *    전부이고, 그것이 곧 「짝 없음이 의도된 페이지는 PAIRS 에 없어야 한다」이기도 합니다.
+ *    두 방향을 다 봅니다:
+ *      · 짝이 있는데 PAIRS 에 없다  → 그 페이지는 `lang=en` 을 골라도 국문에 머무른다
+ *      · PAIRS 에 있는데 짝이 없다  → 배포되지 않는 주소로 307 을 쏜다(404)
+ *
+ * ⚠️ 장수 표는 `scripts/build-static.js` `STATIC.html` 하나뿐입니다 — 여기에 사본을
+ *    만들지 않습니다(그 표가 「무엇이 배포되는가」의 정본입니다).
+ * ⚠️ 짝 이름 규칙은 `test/i18n-parity.test.js` 의 파생과 같습니다
+ *    (`index.html` ↔ `en.html` · `<이름>.html` ↔ `en-<이름>.html`).
+ */
+const { STATIC } = require('./build-static.js');
+
+/** 배포 경로. `index.html` → `/`, 그 밖에는 확장자를 뗀 clean URL 입니다(vercel.json). */
+const routeOf = (file) => (file === 'index.html' ? '/' : '/' + file.replace(/\.html$/, ''));
+/** 국문 파일의 영문 짝 «이름». 실제로 배포되는지는 따로 봅니다. */
+const enSiblingOf = (koFile) => (koFile === 'index.html' ? 'en.html' : 'en-' + koFile);
+
+const DEPLOYED_FILES = new Set(STATIC.html.map((e) => e.file));
+const KO_FILES = STATIC.html.filter((e) => e.locale === 'ko').map((e) => e.file);
+
+/** PAIRS 에 있어야 할 전부 — 영문 짝이 «실제로 배포되는» 국문 페이지. */
+const EXPECTED_LANG_PAIRS = KO_FILES
+  .filter((f) => DEPLOYED_FILES.has(enSiblingOf(f)))
+  .map((f) => [routeOf(f), routeOf(enSiblingOf(f))]);
+
 const CHECKS = [
+  /* ── 언어 짝 표가 배포되는 장수와 어긋나지 않는가 〔2026-09-01 신설〕 ─────────
+   * 🔴 종전에는 이 축이 `국문우선` 안에 「짝이 7개 미만이면 실패」로 섞여 있었습니다.
+   *    그래서 **표가 낡은 것**과 **라이브가 국문을 안 내주는 것**이 한 항목에서 같은
+   *    빨강으로 나왔고, 앞의 것이 뒤의 것을 가렸습니다. 두 질문이라 두 항목으로 나눕니다.
+   * ⚠️ 이 항목은 HTTP 를 쓰지 않습니다(`local`) — 소스끼리의 대조입니다.
+   */
+  {
+    id: '언어짝-표',
+    local: true,
+    label: 'middleware PAIRS 가 「영문 짝이 배포되는 국문 페이지」 전부와 같다',
+    check: () => {
+      const fmt = (pairs) => pairs.map(([ko, en]) => ko + ' → ' + en).sort();
+      const want = fmt(EXPECTED_LANG_PAIRS);
+      const got = fmt(LANG_PAIRS);
+
+      /* 0장은 「통과」가 아닙니다 — 파생이 깨지면 아래 비교가 조용히 전부 맞습니다. */
+      if (want.length === 0) {
+        return '영문 짝이 있는 국문 페이지가 0장입니다 — STATIC.html 파생이 깨졌습니다';
+      }
+
+      const missing = want.filter((x) => !got.includes(x));
+      const extra = got.filter((x) => !want.includes(x));
+      const why = [];
+      if (missing.length) {
+        why.push(`PAIRS 에 없습니다: ${missing.join(' · ')} — 그 페이지는 lang=en 을 골라도 국문에 머무릅니다`);
+      }
+      if (extra.length) {
+        why.push(`PAIRS 에만 있습니다: ${extra.join(' · ')} — 배포되지 않는 주소로 307 을 쏩니다`);
+      }
+      return why.length ? why.join(' / ') : true;
+    },
+  },
+
   /* ── 현관 — 국문 우선 접속 〔2026-08-30 · 대표 지시로 영어 우선(2026-08-21) 철회〕 ──
    * 🔴 **이것이 지금 이 사이트의 첫 화면을 정합니다.** middleware.js 가 `lang=en` 쿠키가
    *    없는 방문자에게는 국문 경로를 그대로 200 으로 내줍니다. 이게 조용히 뒤집히면
@@ -171,10 +258,13 @@ const CHECKS = [
     page: null,
     noCookie: true,
     raw: LANG_PAIRS.map(([ko]) => ko),
+    /*
+     * 🔴 **표가 옳은지는 여기서 재지 않습니다** 〔2026-09-01〕 — 위 `언어짝-표` 가 봅니다.
+     *    이 항목은 오직 「그 주소가 쿠키 없이 200 으로 오는가」 하나만 잽니다.
+     *    ⚠️ 표가 비면 대상이 0개가 되는데, 그때는 러너가 「대상 0개」로 실패시킵니다
+     *       (0개를 «통과»로 세지 않습니다).
+     */
     check: (res, target) => {
-      if (LANG_PAIRS.length < 7) {
-        return `middleware.js 에서 읽은 짝이 ${LANG_PAIRS.length}개입니다 — 표 파싱이 깨졌습니다`;
-      }
       if (res.status !== 200) {
         return `${res.status} 로 답했습니다 (200 이어야 합니다 — 국문이 그대로 나와야 함, ${target})`;
       }
@@ -632,30 +722,61 @@ async function main(argv) {
 
   for (const item of CHECKS) {
     /* `raw` 는 문자열 하나 또는 여러 개 — 200 을 전제하지 않는 검사(cron 비공개 · 국문우선 ·
-       영문선택-리다이렉트). */
-    const targets = item.raw ? [].concat(item.raw) : (item.pages || [item.page]);
+       영문선택-리다이렉트). `local` 은 HTTP 를 쓰지 않는 소스끼리의 대조입니다. */
+    const targets = item.local
+      ? ['(소스)']
+      : (item.raw ? [].concat(item.raw) : (item.pages || [item.page]));
+
+    /*
+     * 🔴 **대상 0개는 «통과»가 아닙니다** 〔2026-09-01 신설〕. 목록을 파생으로 바꾼 뒤로는
+     *    파생이 깨지면 대상이 비고, 그러면 아래 루프가 한 바퀴도 안 돌면서 초록이 됩니다 —
+     *    이 저장소가 가장 싫어하는 실패 형태(조용한 초록)입니다.
+     */
+    if (targets.length === 0) {
+      failed += 1;
+      console.log(`  ❌ ${item.id.padEnd(16)} ${item.label}`);
+      console.log('     └ 대상이 0개입니다 — 목록 파생이 깨졌습니다(0개를 통과로 세지 않습니다)');
+      continue;
+    }
+
     const results = [];
 
     for (const target of targets) {
-      /* `noCookie` — 쿠키 없는 첫 방문을 재는 검사(국문우선)만 씁니다.
-         `item.cookie` — 특정 쿠키를 골라 보내는 검사(영문선택-리다이렉트)만 씁니다.
-         둘 다 없으면 기본값 `lang=ko` 를 보냅니다(위 `get()` 주석 참조). */
-      const cookie = item.cookie !== undefined ? item.cookie : (item.noCookie ? null : 'lang=ko');
-      const res = await fetchPage(base + target, cookie);
+      /*
+       * 🔴 **한 항목이 던져도 나머지는 계속 돕니다** 〔2026-09-01 · 대표 지시〕.
+       *    종전에는 try/catch 가 없어서 `check` 안의 예외 하나가 **확인 전체를 끝냈습니다.**
+       *    실측(2026-09-01): 20개 중 2개만 돌고 18개가 한 번도 실행되지 않았습니다.
+       *    ⛔ 이 try 를 걷지 마십시오 — 걷으면 새 검사 하나의 오타가 다시 전체를 세웁니다.
+       *    ⚠️ 「던졌다」를 「통과」로 삼키지 않습니다. 실패로 «적고» 계속합니다.
+       */
+      try {
+        /* `noCookie` — 쿠키 없는 첫 방문을 재는 검사(국문우선)만 씁니다.
+           `item.cookie` — 특정 쿠키를 골라 보내는 검사(영문선택-리다이렉트)만 씁니다.
+           둘 다 없으면 기본값 `lang=ko` 를 보냅니다(위 `get()` 주석 참조). */
+        if (item.local) {
+          results.push([target, item.check()]);
+          continue;
+        }
 
-      if (item.raw) {
-        results.push([target, item.check(res, target)]);
-        continue;
-      }
+        const cookie = item.cookie !== undefined ? item.cookie : (item.noCookie ? null : 'lang=ko');
+        const res = await fetchPage(base + target, cookie);
 
-      if (res.status !== 200) {
-        results.push([target, `HTTP ${res.status}`]);
-        continue;
+        if (item.raw) {
+          results.push([target, item.check(res, target)]);
+          continue;
+        }
+
+        if (res.status !== 200) {
+          results.push([target, `HTTP ${res.status}`]);
+          continue;
+        }
+        results.push([target, item.check(res.body, {
+          sourceFile: item.sourceOf && item.sourceOf[target],
+          expected: item.expectedPer && item.expectedPer[target],
+        })]);
+      } catch (e) {
+        results.push([target, `검사가 예외를 던졌습니다: ${(e && e.message) || e}`]);
       }
-      results.push([target, item.check(res.body, {
-        sourceFile: item.sourceOf && item.sourceOf[target],
-        expected: item.expectedPer && item.expectedPer[target],
-      })]);
     }
 
     const bad = results.filter(([, r]) => r !== true);
@@ -670,7 +791,20 @@ async function main(argv) {
     }
   }
 
-  console.log(`\n  ${passed}개 통과 · ${failed}개 실패  (${base})\n`);
+  /*
+   * 🔴 **「정의된 것 중 몇 개를 실제로 봤는가」를 함께 적습니다** 〔2026-09-01 신설〕.
+   *    2026-09-01 이전에는 20개 중 2개만 돌고도 마지막 줄이 아예 찍히지 않아, 로그만
+   *    보면 「몇 개를 안 본 것인지」를 알 수 없었습니다. 이제 이 줄이 어긋나면
+   *    (실행 ≠ 정의) 러너가 중간에 무언가를 건너뛴 것입니다.
+   */
+  const ran = passed + failed;
+  console.log(`\n  ${passed}개 통과 · ${failed}개 실패  (정의 ${CHECKS.length}개 중 ${ran}개 실행)  ${base}`);
+  if (ran !== CHECKS.length) {
+    console.log(`  ⚠️ 정의된 ${CHECKS.length}개 중 ${CHECKS.length - ran}개가 실행되지 않았습니다 — 러너가 중간에 빠져나갔습니다`);
+    console.log('');
+    return 1;
+  }
+  console.log('');
   return failed === 0 ? 0 : 1;
 }
 
