@@ -108,7 +108,12 @@ h1{font-size:clamp(2.25rem,4.5vw,3.5rem);font-weight:700;line-height:1.30;letter
    `--accent-soft`/`--accent` 를 입혔고, 둘째 줄은 그 아래 작게 붙는 사실입니다.
    ⛔ 새 색을 만들지 마십시오. 전부 랜딩 :root 에 이미 있는 값입니다. */
 .badge{margin-bottom:18px}
-.badge-main{display:inline-flex;align-items:center;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:var(--accent-soft);font-size:12.5px;font-weight:600;line-height:1.6;color:var(--accent)}
+/* 🔄 알약(999px) → **라운드 스퀘어(6px)** 〔2026-09-01 · 대표 지시〕.
+   기준은 랜딩의 `.eyebrow`(「수출 리스크 관리」) 이고, 그 값은 index.html 의
+   `--r-control:6px` 입니다. 이 파일에는 그 토큰이 없어 같은 숫자를 씁니다 —
+   `.btn`·`select` 도 이미 6px 이라 한 페이지 안에서 반경이 하나로 모입니다.
+   ⚠️ `.fbar`(진행 막대)는 999px 그대로입니다 — 배지가 아니라 막대입니다. */
+.badge-main{display:inline-flex;align-items:center;padding:5px 12px;border:1px solid var(--line);border-radius:6px;background:var(--accent-soft);font-size:12.5px;font-weight:600;line-height:1.6;color:var(--accent)}
 .badge-sub{display:block;margin-top:8px;font-size:12px;font-weight:500;line-height:1.6;color:var(--ink-62)}
 
 /* ── 입력 ────────────────────────────────────────────────────────────────────
@@ -170,7 +175,7 @@ h1{font-size:clamp(2.25rem,4.5vw,3.5rem);font-weight:700;line-height:1.30;letter
    두 카드의 안쪽 치수가 어긋나지 않습니다. */
 .path.lead{border-color:var(--accent);background:var(--accent-soft)}
 /* 랜딩 `.mk-step span` 과 같은 알약 */
-.path .pk{align-self:flex-start;padding:4px 10px;border:1px solid var(--line);border-radius:999px;background:var(--bg);font-size:12px;font-weight:600;line-height:1.5;color:var(--ink-62)}
+.path .pk{align-self:flex-start;padding:4px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);font-size:12px;font-weight:600;line-height:1.5;color:var(--ink-62)}
 .path h3{margin:14px 0 0;font-size:19px;font-weight:600;line-height:1.45;letter-spacing:-.02em}
 .path p{flex:1;margin-top:10px;font-size:15.5px;line-height:1.7;color:var(--ink-64)}
 .path .go{margin-top:20px}
@@ -298,7 +303,8 @@ h1{font-size:clamp(2.25rem,4.5vw,3.5rem);font-weight:700;line-height:1.30;letter
       점수는 입력하신 조건만으로 산출한 참고값입니다. 권역 점수는 구간 기준이며, 국가별 등급은 진단서에서 한국무역보험공사 자료로 확인합니다.
       TROPS는 보험 상품을 추천하거나 가입을 대행하지 않으며, 미수금 회수를 보장하지 않습니다.
       가입 가능 여부와 조건은 한국무역보험공사 등 해당 기관이 약관과 심사 기준에 따라 정합니다.
-      입력값은 저장하지 않습니다. 진단서로 이동할 때 결제방식·결제기한·목적 국가만 주소에 담아 전달하며, 점수는 전달하지 않습니다.
+      입력값은 저장하지 않습니다. 진단서로 이동할 때 결제방식·결제기한·목적 국가와 가장 낮게 나온 항목의 영역 이름만
+      주소에 담아 전달하며, 점수는 전달하지 않습니다.
     </div>
   </div>
 </div>
@@ -335,7 +341,7 @@ h1{font-size:clamp(2.25rem,4.5vw,3.5rem);font-weight:700;line-height:1.30;letter
   // 🔴 프리필은 셋만 — 앱에 대응 칸이 있는 값만 넘긴다.
   //    무역보험·바이어 이력은 앱에 받는 칸이 없다(2026-08-31 실측).
   var F=[
-    {id:'f3',key:'region',send:false,max:20,nm:'목적국',
+    {id:'f3',key:'region',send:false,max:20,nm:'목적국',fc:'customs',
      src:'권역 구간 기준입니다. 국가별 등급은 진단서에서 한국무역보험공사 자료로 확인합니다.',
      ms:{20:'국가 위험이 낮은 권역입니다',16:'국가 위험이 보통인 권역입니다',
          11:'국가 위험이 높은 권역입니다',6:'국가 위험이 매우 높은 권역입니다',
@@ -344,19 +350,19 @@ h1{font-size:clamp(2.25rem,4.5vw,3.5rem);font-weight:700;line-height:1.30;letter
      src:'적어 주신 값을 그대로 씁니다. 배점은 TROPS가 정했습니다. 과거 결제 이력이 이번 건의 지급을 보장하지는 않습니다.',
      ms:{15:'결제 이력이 쌓여 있습니다',11:'이력이 쌓이는 중입니다',
          6:'판단할 이력이 부족합니다',2:'결제 이력이 없습니다'}},
-    {id:'f1',key:'pay',send:true,max:30,nm:'대금 조건',
+    {id:'f1',key:'pay',send:true,max:30,nm:'대금 조건',fc:'payment',
      cd:{30:'prepay',25:'lc',18:'partial',12:'dp',8:'da',4:'oa'},
      src:'미국 상무부·EXIM Trade Finance Guide — 결제방식별 수출자 위험 순서',
      ms:{30:'대금을 먼저 받고 선적합니다',25:'서류가 조건에 맞으면 은행이 지급합니다',
          18:'잔금이 바이어 신용에 걸려 있습니다',12:'서류를 넘기는 시점에 대금을 받습니다',
          8:'서류를 먼저 넘기고 지급 약속만 받습니다',4:'회수 근거가 계약뿐입니다'}},
-    {id:'f2',key:'term',send:true,max:20,nm:'결제 기한',
+    {id:'f2',key:'term',send:true,max:20,nm:'결제 기한',fc:'payment',
      cd:{20:'sight',16:'d30',12:'d60',8:'d90',3:'over90'},
      src:'K-SURE 단기수출보험 약관 — 상품별 결제기간 한도',
      ms:{20:'선적과 동시에 회수됩니다',16:'회수까지 한 달입니다',
          12:'회수까지 두 달입니다',8:'회수까지 석 달입니다',
          3:'회수까지 석 달이 넘습니다'}},
-    {id:'f4',key:'ins',send:false,max:15,nm:'무역보험',
+    {id:'f4',key:'ins',send:false,max:15,nm:'무역보험',fc:'payment',
      src:'적어 주신 값을 그대로 씁니다. TROPS는 가입 여부를 조회하지 않습니다.',
      ms:{15:'미회수 시 청구할 수 있습니다',9:'심사 결과를 기다리는 중입니다',
          5:'선적 전에 결론이 나야 하는 항목입니다',0:'미회수 시 청구할 곳이 없습니다'}}
@@ -421,6 +427,12 @@ h1{font-size:clamp(2.25rem,4.5vw,3.5rem);font-weight:700;line-height:1.30;letter
     rows.innerHTML=html;
 
     if(code) q.push('dest='+code);
+    // 가장 낮은 항목의 «영역»을 넘긴다 — 진단서가 그 칸을 위로 올린다.
+    // 점수는 넘기지 않는다(fc 는 영역 이름이다). 바이어 이력은 앱에 대응 칸이
+    // 없어 fc 가 없고, 그때는 아무것도 넘기지 않는다.
+    // 다섯이 만점이면 worst 가 첫 항목으로 남으므로(비교가 한 번도 참이 아니다)
+    // 그때는 보내지 않는다 — '가장 낮다'가 사실이 아니다.
+    if(wr<1&&worst&&worst.fc) q.push('focus='+worst.fc);
 
     var s=Math.round(total),g=G.find(function(x){return s>=x[0]}),c=tone(s/100);
     sc.textContent=s;sc.style.color=c;gn.textContent=g[1];gd.textContent=g[2];
