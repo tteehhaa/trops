@@ -299,7 +299,7 @@ form{padding-block:clamp(8px,1.5vw,16px) clamp(48px,6vw,72px)}
   </section>
 
   <div class="actions">
-    <button class="btn btn-primary" id="submit" type="submit">보내기</button>
+    <button class="btn btn-primary" id="submit" type="submit" data-track="contact-submit">보내기</button>
     <p class="note" id="note"></p>
   </div>
 
@@ -308,6 +308,11 @@ form{padding-block:clamp(8px,1.5vw,16px) clamp(48px,6vw,72px)}
 </form>
 
 </main>
+
+<!-- 🔴 익명 집계 〔2026-09-01〕 — 페이지 조회 1건과 `data-track` 버튼 클릭만 셉니다.
+     개인 식별값(쿠키·localStorage·IP·방문 경로)을 만들지도 읽지도 않습니다
+     (privacy.html §01 이 그 범위를 적어 두었습니다). ⛔ 히트맵·세션 재생을 붙이지 마십시오. -->
+<script defer src="/assets/track.js"></script>
 
 <!-- 🔴 사업자정보는 site.config.json 이 원본입니다. 여기에 값을 적지 마십시오 —
      토큰만 씁니다(test/site-config.test.js 가 하드코딩을 막습니다). -->
@@ -517,7 +522,17 @@ form{padding-block:clamp(8px,1.5vw,16px) clamp(48px,6vw,72px)}
         say('ok', kind.notifyOnly
           ? '등록되었습니다. 준비되는 대로 적어 주신 주소로 안내해 드리겠습니다.'
           : '접수되었습니다. 확인 후 적어 주신 주소로 회신드리겠습니다. 확인 메일도 함께 보내 드렸습니다.');
-        form.querySelector('.actions').hidden = true;
+        /*
+         * 🔴 **성공하면 폼 «전체»를 내립니다** 〔2026-09-01 · 대표 실사용 지적〕.
+         *    종전에는 `.actions`(버튼 줄)만 내려서, 접수가 끝났는데도 이메일 칸과 동의
+         *    블록이 그대로 남았습니다 — 실제로 「일처리가 안 된 것 같다」는 지적을 받았습니다.
+         * 🔴 `#result` 만 남기고 **직계 자식을 전부** 내립니다. 칸이 늘어도 따라옵니다
+         *    (자식을 이름으로 적으면 새 칸이 생길 때마다 여기가 낡습니다).
+         * ⚠️ 유형 칩(.kinds)은 `<form>` 밖이라 남습니다 — 다른 유형으로 건너갈 길입니다.
+         */
+        for (var i = 0; i < form.children.length; i += 1) {
+          if (form.children[i] !== result) form.children[i].hidden = true;
+        }
         return;
       }
       /* 서버가 왜 막았는지 알려 주는 경우가 있습니다(동의 누락 등) — 그대로 옮기지 않고

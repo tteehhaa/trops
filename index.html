@@ -356,7 +356,7 @@ footer .cp{margin-top:18px;color:#64748B}
 
 <nav><div class="w">
   <a class="logo" href="/"><i></i>TROPS</a>
-  <a class="btn-2 btn-s" href="/precheck">1분 무료 진단</a>
+  <a class="btn-2 btn-s" href="/precheck" data-track="nav-precheck">1분 무료 진단</a>
 </div></nav>
 
 <main id="main">
@@ -366,8 +366,8 @@ footer .cp{margin-top:18px;color:#64748B}
   <h1>선적 전 서류 체크부터<br>선적 후 미수금 관리까지</h1>
   <p class="lead">전담 부서 없이 계약부터 수금까지 도맡는 기업을 위해,<br class="pc-br">거래 한 건 단위로 리스크를 관리해 드립니다.</p>
   <div class="act">
-    <a class="btn" href="/precheck">1분 무료 진단 시작</a>
-    <a class="btn-2" href="/contact?type=consult">상담 문의</a>
+    <a class="btn" href="/precheck" data-track="hero-precheck">1분 무료 진단 시작</a>
+    <a class="btn-2" href="/contact?type=consult" data-track="hero-consult">상담 문의</a>
   </div>
   <p class="badge">무료 · 1분 · 회원가입 없이 진단</p>
 </div></header>
@@ -420,7 +420,7 @@ footer .cp{margin-top:18px;color:#64748B}
         <li>입력값을 저장하지 않습니다</li>
       </ul>
       <div class="tag">무료 · 계정 불필요</div>
-      <div class="go"><a class="btn-2" href="/precheck">사전점검 시작하기</a></div>
+      <div class="go"><a class="btn-2" href="/precheck" data-track="step1-precheck">사전점검 시작하기</a></div>
     </div>
     <div class="sp mid">
       <div class="no">2단계 · 계약 및 선적</div>
@@ -432,7 +432,7 @@ footer .cp{margin-top:18px;color:#64748B}
         <li>보험료 지원사업 해당 여부</li>
       </ul>
       <div class="tag">유료 · 거래 한 건 단위</div>
-      <div class="go"><a class="btn" href="/contact?type=quote">무역보험 준비팩 요청</a></div>
+      <div class="go"><a class="btn" href="/contact?type=quote" data-track="step2-quote">무역보험 준비팩 요청</a></div>
     </div>
     <div class="sp">
       <div class="no">3단계 · 선적 후</div>
@@ -444,7 +444,7 @@ footer .cp{margin-top:18px;color:#64748B}
         <li>증권 만료 관리</li>
       </ul>
       <div class="tag">준비 중</div>
-      <div class="go"><a class="btn-2" href="/contact?type=notify">출시 알림 받기</a></div>
+      <div class="go"><a class="btn-2" href="/contact?type=notify" data-track="step3-notify">출시 알림 받기</a></div>
     </div>
   </div>
 
@@ -551,8 +551,8 @@ footer .cp{margin-top:18px;color:#64748B}
 <section class="fin band"><div class="w">
   <h2 class="sec">이번 수출 거래, 선적 전 점수 확인하고<br class="pc-br">안전하게 수출하세요.</h2>
   <div style="margin-top:32px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-    <a class="btn" href="/precheck">1분 무료 진단 시작</a>
-    <a class="btn-2" href="/contact?type=consult">상담 문의</a>
+    <a class="btn" href="/precheck" data-track="final-precheck">1분 무료 진단 시작</a>
+    <a class="btn-2" href="/contact?type=consult" data-track="final-consult">상담 문의</a>
   </div>
 </div></section>
 
@@ -571,4 +571,7 @@ footer .cp{margin-top:18px;color:#64748B}
 <div><a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a></div>
 <div class="fl"><a href="/privacy.html">개인정보처리방침</a><a href="/refund.html">환불정책</a><a href="/en.html">English</a></div>
 <div class="cp">© 2026 TROPS. All rights reserved.</div>
-</div></footer></body></html>
+</div></footer>
+<!-- 🔴 익명 집계 〔2026-09-01〕 — 개인 식별값 없음(privacy.html §01). -->
+<script defer src="/assets/track.js"></script>
+</body></html>
