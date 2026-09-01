@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- 🔴 **이름은 「수출 사전점검」 하나입니다** 〔2026-09-01 · 대표 결정〕.
+     종전에는 이름이 셋이었습니다 — 랜딩 버튼 「1분 점검」 · 이 페이지 「수출건 1분 점검」 ·
+     앱 「수출 절차 진단서」. 버튼에 적힌 말과 도착한 페이지의 제목이 다르면 잘못 눌렀다고
+     느낍니다. title·h1·랜딩 CTA 를 한 이름으로 모았습니다.
+     ⚠️ **붙여쓰기입니다** — 판정층 trops_a 가 이미 그렇게 씁니다(「수출 사전점검 — 진단하기」·
+        「— 결과보기」·「— 통관」). 띄어쓰면 같은 제품이 두 이름을 갖습니다.
+     ⚠️ 꼬리표는 `이름 — TROPS` 로 refund.html·privacy.html 과 같은 꼴입니다. -->
+<title>수출 사전점검 — TROPS</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<style>
+/*
+ * 🔄 **표현층을 랜딩 디자인 시스템으로 교체했습니다** 〔2026-09-01 · 대표 지시
+ *    「랜딩 기준으로 precheck 도 디자인 스타일 맞춰 줘」〕.
+ *
+ * 이 페이지는 처음에 자기 팔레트(`--blue:#2F5CE0` · `--bg:#F7F9FC` · 카드 반경 14px ·
+ * font-weight 900)를 들고 왔습니다. 같은 사이트인데 `/` 에서 `/precheck` 으로 넘어가면
+ * 배경색·강조색·버튼 반경·글자 굵기가 전부 바뀌었습니다.
+ *
+ * 🔴 **값을 «옮겨 적은» 것이 아니라 네 페이지가 쓰는 그 표를 그대로 씁니다.**
+ *    index.html · refund.html · privacy.html · en-*.html 이 같은 :root 를 갖습니다.
+ *    ⛔ 여기서만 값을 바꾸지 마십시오 — 푸터 주석이 적어 둔 대로, 한 페이지만 다른 값을
+ *       쓰면 페이지를 오갈 때 그 자리만 색이 튑니다.
+ *
+ * ── 이 페이지가 «새로» 정한 것은 셋뿐입니다(랜딩에 대응 자리가 없어서) ──────────
+ *   1. `select` 꼴        랜딩에는 폼 컨트롤이 없습니다. `.btn` 의 반경 6px ·
+ *                        min-height 44px · 15.5px 를 그대로 따랐습니다.
+ *   2. 점수 숫자 크기      랜딩 최대 숫자는 `.stat-n`(≤38px)이고 h1 이 ≤56px 입니다.
+ *                        그 사이인 clamp(52px,6.5vw,68px) 로 잡았습니다 — 초점이되
+ *                        h1 을 넘지 않습니다. ⚠️ 종전 96px/900 은 랜딩에 없는 굵기입니다
+ *                        (랜딩 최대 굵기는 700 이고 이 페이지도 700 을 넘지 않습니다).
+ *   3. 항목 막대(`.fbar`) 랜딩 `.mk-step` 의 2px 상단선과 같은 성격이라 같은 잉크를 씁니다.
+ *
+ * ⚠️ **문구·배점·점수 로직은 한 글자도 건드리지 않았습니다** 〔2026-09-01 대표 지시 범위〕.
+ *    바뀐 것은 클래스 이름과 CSS 뿐이고, `F`·`G`·`COUNTRIES`·`DIAG` 쿼리는 그대로입니다.
+ */
+:root{
+    --ink:          #0F172A;
+    --ink-70:       rgba(15, 23, 42, .7);
+    --ink-64:       rgba(15, 23, 42, .64);
+    --ink-62:       rgba(15, 23, 42, .62);
+    --accent:       #1D4ED8;
+    --accent-press: #1E40AF;
+    --accent-soft:  #EFF6FF;
+    --muted:        #94A3B8;
+    --line:         #E2E8F0;
+    --surface:      #E6ECF3;
+    --line-on-surface: #CBD5E1;
+    --surface-dark: #0F172A;
+    --bg:           #FFFFFF;
+    --warning:      #DC2626;
+    --d-ink-primary:   #FFFFFF;
+    --d-ink-secondary: rgba(255, 255, 255, .72);
+    --d-ink-tertiary:  rgba(255, 255, 255, .50);
+    --d-line:          rgba(255, 255, 255, .28);
+}
+*,*::before,*::after{box-sizing:border-box}
+body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+    font-size:16.5px;
+    line-height:1.76;
+    word-break:keep-all;
+    text-wrap:pretty;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+}
+a{color:var(--accent);text-decoration:none}
+a:hover{color:var(--accent-press)}
+::selection{background:rgba(15,23,42,.14)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+p{margin:0}
+h1,h2{margin:0}
+h1{font-size:clamp(2.25rem,4.5vw,3.5rem);font-weight:700;line-height:1.30;letter-spacing:-.035em;max-width:16em}
+
+.container{max-width:1200px;margin:0 auto;padding-inline:clamp(24px,5vw,48px)}
+
+/* nav — 높이 64px · 하단 1px 선은 내부 페이지 공통입니다.
+   🔴 좌상단 로고는 **랜딩(index.html)의 `.logo` 를 그대로** 씁니다
+      〔2026-09-01 · 대표 지시 「좌상단 TROPS 는 랜딩 것과 동일해야 한다」〕.
+      종전에는 refund.html 계열의 `.wordmark`(19px · 사각형 없음)를 따랐는데, 랜딩에서
+      `/precheck` 으로 넘어올 때 **좌상단이 바뀌는 것이 가장 먼저 보이는 자리**입니다.
+      ⛔ 값을 여기서 손보지 마십시오 — index.html `.logo` 와 한 글자도 다르지 않아야 합니다. */
+.nav{border-bottom:1px solid var(--line)}
+.nav-inner{height:64px;display:flex;align-items:center;gap:40px}
+.logo{display:inline-flex;align-items:center;gap:9px;font-size:18px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+.logo:hover{color:var(--ink)}
+.logo i{width:18px;height:18px;border-radius:5px;background:var(--accent);display:block}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.nav-quiet{font-size:14px;font-weight:500;color:var(--muted)}
+.nav-quiet:hover{color:var(--ink-64)}
+
+/* 버튼 3종 — 정본 C-1. 네 페이지가 같은 값을 씁니다 */
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:12px 22px;border-radius:6px;border:1px solid transparent;font:inherit;font-size:15.5px;font-weight:600;line-height:1;cursor:pointer;white-space:nowrap;transition:background-color .14s ease,border-color .14s ease,color .14s ease}
+.btn-primary{background:var(--accent);color:#FFFFFF}
+.btn-primary:hover{background:var(--accent-press);color:#FFFFFF}
+.btn-secondary{background:transparent;border-color:var(--line);color:var(--ink)}
+.btn-secondary:hover{border-color:var(--muted);color:var(--ink)}
+
+.head{padding-block:clamp(48px,6vw,80px) clamp(28px,3.5vw,40px)}
+/* 히어로 배지 — 두 줄입니다. 첫 줄은 랜딩 `.mk-step span` 의 알약 꼴에
+   `--accent-soft`/`--accent` 를 입혔고, 둘째 줄은 그 아래 작게 붙는 사실입니다.
+   ⛔ 새 색을 만들지 마십시오. 전부 랜딩 :root 에 이미 있는 값입니다. */
+.badge{margin-bottom:18px}
+.badge-main{display:inline-flex;align-items:center;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:var(--accent-soft);font-size:12.5px;font-weight:600;line-height:1.6;color:var(--accent)}
+.badge-sub{display:block;margin-top:8px;font-size:12px;font-weight:500;line-height:1.6;color:var(--ink-62)}
+
+/* ── 입력 ────────────────────────────────────────────────────────────────────
+ * 랜딩의 `.sec-surface` 와 같은 처리입니다 — 띠 하나로 「여기가 입력」임을 나눕니다.
+ * ⚠️ 띠 안에서는 `--line` 을 `--line-on-surface` 로 덮습니다(랜딩과 같은 규칙).
+ *    #E6ECF3 위에서 #E2E8F0 은 사라집니다. */
+.inputs{background:var(--surface);--line:var(--line-on-surface);padding-block:clamp(28px,3.5vw,40px)}
+.frow{display:grid;grid-template-columns:repeat(3,1fr);gap:20px 24px}
+.fld label{display:block;margin-bottom:8px;font-size:13.5px;font-weight:600;line-height:1.45;letter-spacing:-.01em;color:var(--ink-64)}
+/* 랜딩에는 폼 컨트롤이 없습니다 — `.btn` 의 반경·높이·글자를 그대로 따릅니다(머리주석 1). */
+.fld select{
+    width:100%;min-height:44px;
+    padding:11px 40px 11px 13px;
+    border:1px solid var(--line);border-radius:6px;
+    background:var(--bg);color:var(--ink);
+    font:inherit;font-size:15.5px;font-weight:500;line-height:1.4;
+    appearance:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M1 1l5 5 5-5' stroke='%2394A3B8' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat:no-repeat;background-position:right 14px center;
+    transition:border-color .14s ease}
+.fld select:hover{border-color:var(--muted)}
+.fld select:disabled{background-color:var(--surface);color:var(--muted);cursor:not-allowed}
+.fld .hint{margin-top:8px;font-size:13px;line-height:1.6;color:var(--ink-62)}
+
+/* ── 결과 ─────────────────────────────────────────────────────────────────── */
+.result{padding-block:clamp(36px,4.5vw,56px) clamp(48px,6vw,72px)}
+.grid{display:grid;grid-template-columns:minmax(260px,320px) 1fr;gap:28px;align-items:start}
+
+.gradebox{border:1px solid var(--line);border-radius:10px;padding:28px 26px;background:var(--bg)}
+/* 머리주석 2 — h1(≤56px)과 `.stat-n`(≤38px) 사이. 굵기는 랜딩 상한인 700 입니다. */
+.score{font-size:clamp(52px,6.5vw,68px);font-weight:700;line-height:1;letter-spacing:-.04em;color:var(--accent);transition:color .3s ease}
+.pts{margin-top:10px;font-size:14px;line-height:1.6;color:var(--ink-62)}
+.gname{margin-top:22px;padding-top:18px;border-top:1px solid var(--line);font-size:19px;font-weight:600;line-height:1.45;letter-spacing:-.02em}
+.gdesc{margin-top:9px;font-size:15.5px;line-height:1.7;color:var(--ink-64)}
+.basis{margin-top:20px;padding-top:16px;border-top:1px solid var(--line);font-size:13.5px;line-height:1.65;color:var(--ink-62)}
+
+/* 항목 표 — 랜딩 `.st`·`.who-list` 와 같은 「선으로 나눈 행」입니다(카드 아님). */
+.factors{border-top:1px solid var(--line)}
+.fhead,.frw{display:grid;grid-template-columns:92px 1fr 1.15fr;gap:20px;align-items:start}
+.fhead{padding:12px 0;border-bottom:1px solid var(--line);font-size:13px;font-weight:600;letter-spacing:.01em;color:var(--muted);align-items:center}
+.frw{padding:18px 0;border-bottom:1px solid var(--line)}
+.fsc{font-size:17px;font-weight:700;line-height:1.2;letter-spacing:-.03em}
+.fsc small{margin-left:1px;font-size:13px;font-weight:600;color:var(--ink-62)}
+.fbar{margin-top:8px;height:4px;border-radius:999px;background:var(--surface);overflow:hidden}
+.fbar i{display:block;height:100%;border-radius:999px;transition:width .45s ease,background-color .3s ease}
+.fnm{font-size:16px;font-weight:600;line-height:1.5;letter-spacing:-.02em}
+.fnm span{display:block;margin-top:3px;font-size:13.5px;font-weight:500;color:var(--ink-62)}
+.fms{font-size:15.5px;line-height:1.65;color:var(--ink-64)}
+.src{margin-top:7px;font-size:13px;line-height:1.6;color:var(--ink-62)}
+
+/* ── 다음 단계 ────────────────────────────────────────────────────────────── */
+.next{margin-top:clamp(40px,5vw,64px);padding-top:clamp(32px,4vw,44px);border-top:1px solid var(--line)}
+/* 랜딩의 `.h3`(28px/600/-.025em) 를 씁니다 — h2 스케일(≤40px)은 도구 화면에서 과합니다. */
+.next h2{font-size:28px;font-weight:600;line-height:1.35;letter-spacing:-.025em}
+.next .s{margin-top:12px;max-width:54em;font-size:16.5px;line-height:1.75;color:var(--ink-64)}
+.paths{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:26px}
+.path{display:flex;flex-direction:column;padding:22px 24px;border:1px solid var(--line);border-radius:8px}
+/* 권하는 쪽 — 랜딩의 `--accent-soft` 자리입니다. 테두리 굵기를 키우지 않아
+   두 카드의 안쪽 치수가 어긋나지 않습니다. */
+.path.lead{border-color:var(--accent);background:var(--accent-soft)}
+/* 랜딩 `.mk-step span` 과 같은 알약 */
+.path .pk{align-self:flex-start;padding:4px 10px;border:1px solid var(--line);border-radius:999px;background:var(--bg);font-size:12px;font-weight:600;line-height:1.5;color:var(--ink-62)}
+.path h3{margin:14px 0 0;font-size:19px;font-weight:600;line-height:1.45;letter-spacing:-.02em}
+.path p{flex:1;margin-top:10px;font-size:15.5px;line-height:1.7;color:var(--ink-64)}
+.path .go{margin-top:20px}
+.disc{margin-top:clamp(28px,3.5vw,40px);max-width:64em;font-size:13.5px;line-height:1.75;color:var(--ink-62)}
+
+/* ── 푸터 ─────────────────────────────────────────────────────────────────────
+ * ⚠️ 네 페이지가 같은 값을 씁니다. 여기만 바꾸면 페이지를 오갈 때 푸터 색이 튑니다.
+ *    border-top 을 두지 않는 것도 같습니다 — 흰 배경에서 #0F172A 로 넘어가는 것
+ *    자체가 가장 강한 경계이고, 선을 끼우면 경계가 두 번 그려집니다. */
+.footer{background:var(--surface-dark);color:var(--d-ink-secondary)}
+.footer-inner{padding-block:44px 28px;font-size:12.5px;line-height:1.7;color:var(--d-ink-tertiary)}
+/* 다크에서는 --accent 가 2.3:1 로 무너집니다 — 밑줄로 클릭임을 알립니다(refund.html 과 같은 규칙). */
+.footer a{color:var(--d-ink-secondary);text-decoration:underline;text-underline-offset:3px}
+.footer a:hover{color:var(--d-ink-primary)}
+
+@media(max-width:960px){
+  .grid{grid-template-columns:1fr;gap:24px}
+}
+@media(max-width:768px){
+  .frow{grid-template-columns:1fr 1fr}
+  .fhead{display:none}
+  .frw{grid-template-columns:1fr;gap:10px;padding:20px 0}
+  .paths{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .frow{grid-template-columns:1fr}
+  .nav-inner{gap:16px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body>
+
+<nav class="nav">
+  <div class="container nav-inner">
+    <a class="logo" href="/"><i></i>TROPS</a>
+    <div class="nav-right"><a class="nav-quiet" href="/">서비스 소개 →</a></div>
+  </div>
+</nav>
+
+<main id="main">
+
+<!-- ⚠️ 이 이름은 **app.trops.kr 의 무료 흐름**을 가리킵니다. refund.html 머리주석이 적어 둔
+     이름 충돌의 반대편입니다 — 그 문서는 **유료 서류 대조**라서 「서류 사전 확인」으로 갔고,
+     여기(무료 흐름의 입구)가 「수출 사전점검」을 쓰는 자리입니다.
+     ⛔ 이 자리에 유료 상품 이름을 붙이지 마십시오.
+
+     🔴 **배지는 「1분」을 이름에서 내려 «사실»로 적는 자리입니다** 〔2026-09-01 · 대표 결정〕.
+
+     🔴 **「로그인 없이」를 쓰지 않습니다 — 「계정 없이 점수까지」로 범위를 끊었습니다**
+        〔2026-09-01 · 대표 지시〕. 첫 판은 「로그인 없이」였는데, 그것은 **이 페이지의 사실이지
+        흐름 전체의 사실이 아니었습니다.** 다음 칸(app.trops.kr `/export-precheck/new`)은
+        **문은 열려 있고 제출에서 계정을 요구합니다** — 판정층
+        `app/export-precheck/new/page.tsx` 머리주석 「로그인 전에도 열린다 — 게이트는
+        «제출 시점»이다」〔2026-08-30 · 창업자 지시 A안〕. 「점수까지」가 그 경계입니다.
+     ⛔ 이 배지에서 범위를 다시 넓히지 마십시오(「가입 없이」·「끝까지 무료」 따위).
+        옛 랜딩의 영문 무로그인 문구가 금지 목록에 오른 것이 같은 형태였습니다
+        (test/price-exposure.test.js `RETIRED_OFFER_PHRASES` 2번 · 「종료된 무상 제공 문구」).
+     ⛔ 그 금지 문자열을 여기에 **리터럴로 적지 마십시오** — 그 검사는 주석까지 봅니다
+        (2026-09-01 에 이 주석이 실제로 걸렸습니다).
+
+     ⚠️ 둘째 줄 「입력값은 저장하지 않습니다」는 아래 `.disc` 첫 문장과 **일부러 같은 말**입니다.
+        약속을 첫 화면에서 하고, 근거는 아래 깨알 글씨가 끝까지 적습니다.
+        고칠 때 두 자리를 함께 보십시오 — 한쪽만 고치면 같은 화면이 두 말을 합니다. -->
+<div class="container head">
+  <p class="badge"><span class="badge-main">무료 · 1분 · 계정 없이 점수까지</span><span class="badge-sub">입력값은 저장하지 않습니다</span></p>
+  <h1>수출 사전점검</h1>
+</div>
+
+<section class="inputs">
+  <div class="container">
+    <div class="frow">
+      <div class="fld"><label for="f3">어느 권역으로 보내십니까?</label><select id="f3">
+        <option value="20">북미 · 일본 · 서유럽</option><option value="16" selected>동아시아 · 동남아</option>
+        <option value="11">중동 · 중남미 · 동유럽</option><option value="6">남아시아 · 아프리카</option>
+        <option value="2">잘 모르겠습니다</option></select></div>
+
+      <div class="fld"><label for="f3b">어느 국가입니까?</label><select id="f3b"></select>
+        <p class="hint" id="h3b"></p></div>
+
+      <div class="fld"><label for="f5">바이어와 몇 번째 거래입니까?</label><select id="f5">
+        <option value="15">다섯 번 이상, 연체 없음</option><option value="11">두세 번</option>
+        <option value="6" selected>이번이 두 번째</option><option value="2">이번이 처음</option></select></div>
+
+      <div class="fld"><label for="f1">대금은 어떻게 받기로 하셨습니까?</label><select id="f1">
+        <option value="30">전액 선지급</option><option value="25">신용장 (L/C)</option>
+        <option value="18" selected>일부 선지급 + 잔금</option>
+        <option value="12">D/P (지급인도)</option><option value="8">D/A (인수인도)</option>
+        <option value="4">선적 후 외상 (O/A)</option></select></div>
+
+      <div class="fld"><label for="f2">대금은 언제 받기로 하셨습니까?</label><select id="f2">
+        <option value="20">즉시 · 일람불</option><option value="16">30일 이내</option>
+        <option value="12" selected>60일 이내</option><option value="8">90일 이내</option>
+        <option value="3">90일 초과</option></select></div>
+
+      <div class="fld"><label for="f4">이 건은 무역보험에 가입하셨습니까?</label><select id="f4">
+        <option value="15">가입을 마쳤습니다</option><option value="9">신청해 두었습니다</option>
+        <option value="5" selected>알아보는 중입니다</option><option value="0">아직 하지 않았습니다</option></select>
+        <p class="hint" id="h4"></p></div>
+    </div>
+  </div>
+</section>
+
+<div class="container result">
+  <div class="grid">
+    <div class="gradebox">
+      <div class="score" id="sc">0</div>
+      <div class="pts">/ 100점</div>
+      <div class="gname" id="gn"></div>
+      <div class="gdesc" id="gd"></div>
+      <div class="basis">
+        이 점수는 계약 조건에 대한 것입니다. 실제 회수는 선적 후의 이행에서 갈립니다.
+        항목별 판단 근거는 공개된 자료를 따르며, 다섯 항목을 하나로 합친 배점은 TROPS가 정한 것입니다.
+      </div>
+    </div>
+    <div class="factors">
+      <div class="fhead"><div>점수</div><div>항목</div><div>판단 근거</div></div>
+      <div id="rows"></div>
+    </div>
+  </div>
+
+  <div class="next">
+    <h2 id="nt"></h2>
+    <div class="s" id="ns"></div>
+    <div class="paths" id="paths"></div>
+    <div class="disc">
+      점수는 입력하신 조건만으로 산출한 참고값입니다. 권역 점수는 구간 기준이며, 국가별 등급은 진단서에서 한국무역보험공사 자료로 확인합니다.
+      TROPS는 보험 상품을 추천하거나 가입을 대행하지 않으며, 미수금 회수를 보장하지 않습니다.
+      가입 가능 여부와 조건은 한국무역보험공사 등 해당 기관이 약관과 심사 기준에 따라 정합니다.
+      입력값은 저장하지 않습니다. 진단서로 이동할 때 결제방식·결제기한·목적 국가만 주소에 담아 전달하며, 점수는 전달하지 않습니다.
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- 🔴 사업자정보는 site.config.json 이 원본입니다. 여기에 값을 적지 마십시오 —
+     토큰만 씁니다(test/site-config.test.js 가 하드코딩을 막습니다).
+     ⚠️ contact@theo-ne.com 은 biz 묶음에 없는 값이라 그대로 둡니다(index.html 과 같습니다). -->
+<footer class="footer">
+  <div class="container footer-inner">
+    {{biz.companyName}} · 대표 {{biz.ceo}} · <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var DIAG='https://app.trops.kr/export-precheck/new';
+  var PACK='mailto:contact@theo-ne.com?subject=%EB%AC%B4%EC%97%AD%EB%B3%B4%ED%97%98%20%EC%84%9C%EB%A5%98%20%ED%8C%A8%ED%82%A4%EC%A7%80%20%EB%AC%B8%EC%9D%98';
+
+  // 권역 → 국가. 값은 ISO2로 넘긴다(앱 CountrySelect가 "국가명 (XX)" 규약을 쓴다).
+  var COUNTRIES={
+    20:[['US','미국'],['JP','일본'],['DE','독일'],['FR','프랑스'],['GB','영국'],
+        ['NL','네덜란드'],['IT','이탈리아'],['ES','스페인'],['CA','캐나다'],['AU','호주']],
+    16:[['CN','중국'],['VN','베트남'],['TW','대만'],['HK','홍콩'],['SG','싱가포르'],
+        ['TH','태국'],['MY','말레이시아'],['ID','인도네시아'],['PH','필리핀']],
+    11:[['AE','아랍에미리트'],['SA','사우디아라비아'],['QA','카타르'],['TR','튀르키예'],
+        ['MX','멕시코'],['BR','브라질'],['CL','칠레'],['PL','폴란드'],['CZ','체코'],['RO','루마니아']],
+    6: [['IN','인도'],['BD','방글라데시'],['PK','파키스탄'],['LK','스리랑카'],
+        ['ZA','남아프리카공화국'],['EG','이집트'],['NG','나이지리아'],['KE','케냐'],['MA','모로코']],
+    2: []
+  };
+
+  // 🔴 프리필은 셋만 — 앱에 대응 칸이 있는 값만 넘긴다.
+  //    무역보험·바이어 이력은 앱에 받는 칸이 없다(2026-08-31 실측).
+  var F=[
+    {id:'f3',key:'region',send:false,max:20,nm:'목적국',
+     src:'권역 구간 기준입니다. 국가별 등급은 진단서에서 한국무역보험공사 자료로 확인합니다.',
+     ms:{20:'국가 위험이 낮은 권역입니다',16:'국가 위험이 보통인 권역입니다',
+         11:'국가 위험이 높은 권역입니다',6:'국가 위험이 매우 높은 권역입니다',
+         2:'권역이 정해지지 않아 최저 구간으로 잡았습니다'}},
+    {id:'f5',key:'buyer',send:false,max:15,nm:'바이어 이력',
+     src:'적어 주신 값을 그대로 씁니다. 배점은 TROPS가 정했습니다. 과거 결제 이력이 이번 건의 지급을 보장하지는 않습니다.',
+     ms:{15:'결제 이력이 쌓여 있습니다',11:'이력이 쌓이는 중입니다',
+         6:'판단할 이력이 부족합니다',2:'결제 이력이 없습니다'}},
+    {id:'f1',key:'pay',send:true,max:30,nm:'대금 조건',
+     cd:{30:'prepay',25:'lc',18:'partial',12:'dp',8:'da',4:'oa'},
+     src:'미국 상무부·EXIM Trade Finance Guide — 결제방식별 수출자 위험 순서',
+     ms:{30:'대금을 먼저 받고 선적합니다',25:'서류가 조건에 맞으면 은행이 지급합니다',
+         18:'잔금이 바이어 신용에 걸려 있습니다',12:'서류를 넘기는 시점에 대금을 받습니다',
+         8:'서류를 먼저 넘기고 지급 약속만 받습니다',4:'회수 근거가 계약뿐입니다'}},
+    {id:'f2',key:'term',send:true,max:20,nm:'결제 기한',
+     cd:{20:'sight',16:'d30',12:'d60',8:'d90',3:'over90'},
+     src:'K-SURE 단기수출보험 약관 — 상품별 결제기간 한도',
+     ms:{20:'선적과 동시에 회수됩니다',16:'회수까지 한 달입니다',
+         12:'회수까지 두 달입니다',8:'회수까지 석 달입니다',
+         3:'회수까지 석 달이 넘습니다'}},
+    {id:'f4',key:'ins',send:false,max:15,nm:'무역보험',
+     src:'적어 주신 값을 그대로 씁니다. TROPS는 가입 여부를 조회하지 않습니다.',
+     ms:{15:'미회수 시 청구할 수 있습니다',9:'심사 결과를 기다리는 중입니다',
+         5:'선적 전에 결론이 나야 하는 항목입니다',0:'미회수 시 청구할 곳이 없습니다'}}
+  ];
+  var G=[[85,'조건은 갖춰져 있습니다','계약 조건에서는 빠진 것이 없습니다. 다만 조건을 갖추는 것과 대금이 들어오는 것은 다릅니다. 남은 것은 선적 후의 서류와 통지기한, 결제기일입니다.'],
+         [65,'대체로 갖춰져 있습니다','낮은 항목 하나가 약점으로 남습니다.'],
+         [45,'절반은 비어 있습니다','지금은 문제없어 보이더라도 대금이 늦어지면 낮은 항목에서 막힙니다.'],
+         [0, '대금을 못 받았을 때 쓸 수 있는 수단이 적습니다','낮은 항목이 여럿입니다.']];
+
+  var sc=document.getElementById('sc'),gn=document.getElementById('gn'),gd=document.getElementById('gd'),
+      rows=document.getElementById('rows'),f3=document.getElementById('f3'),f3b=document.getElementById('f3b'),
+      h3b=document.getElementById('h3b'),h4=document.getElementById('h4'),
+      nt=document.getElementById('nt'),ns=document.getElementById('ns'),paths=document.getElementById('paths');
+  // 잉크 셋은 랜딩 :root 의 것을 그대로 부릅니다 — 이 파일에서 색을 새로 만들지 않습니다.
+  function tone(r){return r>=.75?'var(--accent)':r>=.4?'var(--ink-64)':'var(--warning)'}
+
+  function fillCountries(){
+    var region=parseInt(f3.value,10),list=COUNTRIES[region]||[],html='';
+    if(!list.length){
+      html='<option value="">권역 선택 후 표시됩니다</option>';
+      h3b.textContent='';
+    }else{
+      html='<option value="">선택하지 않음</option>';
+      list.forEach(function(c){html+='<option value="'+c[0]+'">'+c[1]+'</option>'});
+      h3b.textContent='';
+    }
+    f3b.innerHTML=html;
+  }
+
+  function countryName(code){
+    var list=COUNTRIES[parseInt(f3.value,10)]||[],hit=null;
+    list.forEach(function(c){if(c[0]===code)hit=c[1]});
+    return hit;
+  }
+
+  function run(){
+    var total=0,html='',worst=null,wr=2,q=[];
+    var code=f3b.value,nm=code?countryName(code):null;
+    // 전액 선지급 건은 미회수 위험이 없으므로 무역보험을 만점으로 처리한다.
+    var prepaid=(parseInt(document.getElementById('f1').value,10)===30);
+    var f4=document.getElementById('f4');
+    f4.disabled=prepaid;
+    h4.textContent=prepaid?'전액 선지급 건이므로 이 항목은 만점으로 처리합니다.':'';
+
+    F.forEach(function(f){
+      var v=parseInt(document.getElementById(f.id).value,10);
+      if(prepaid&&f.key==='ins') v=f.max;
+      var r=v/f.max;
+      total+=v;
+      if(f.send) q.push(f.key+'='+f.cd[v]);
+      if(r<wr){wr=r;worst=f}
+
+      var sub='',src=f.src,msg=f.ms[v];
+      if(f.key==='region'&&nm){ sub='<span>'+nm+'</span>'; src='권역 구간 기준입니다. 진단서에서 '+nm+'의 한국무역보험공사 등급을 확인합니다.'; }
+      if(prepaid&&f.key==='ins'){ msg='전액 선지급 건이므로 미회수 위험이 없습니다'; src='전액 선지급이면 보험 가입 여부와 무관하게 만점으로 처리합니다.'; }
+
+      html+='<div class="frw"><div><div class="fsc" style="color:'+tone(r)+'">'+v+'<small>/'+f.max+'</small></div>'+
+        '<div class="fbar"><i style="width:'+(r*100)+'%;background:'+tone(r)+'"></i></div></div>'+
+        '<div class="fnm">'+f.nm+sub+'</div>'+
+        '<div><div class="fms">'+msg+'</div><div class="src">'+src+'</div></div></div>';
+    });
+    rows.innerHTML=html;
+
+    if(code) q.push('dest='+code);
+
+    var s=Math.round(total),g=G.find(function(x){return s>=x[0]}),c=tone(s/100);
+    sc.textContent=s;sc.style.color=c;gn.textContent=g[1];gd.textContent=g[2];
+
+    var url=DIAG+(q.length?'?'+q.join('&'):'');
+    var insWorst=(worst.key==='ins');
+    if(wr>=1){
+      nt.textContent='다섯 항목 모두 갖춰져 있습니다';
+      ns.textContent='이 점검은 계약 조건만 봅니다. 거래 이력이 긴 바이어도 이번 건에서 지연될 수 있고, 조건을 다 갖추어도 서류와 통지기한을 놓치면 청구가 막힙니다. 남은 일은 선적 후에 있습니다.';
+      insWorst=false;
+    }else{
+      nt.textContent='가장 낮은 항목은 '+worst.nm+'입니다';
+      ns.textContent=insWorst
+        ? '선적 후에 받을 대금이 남아 있습니다. 무역보험은 선적 전에 결론이 나야 하는 항목입니다.'
+        : '';
+    }
+
+    var carry=nm?('결제방식·결제기한과 목적 국가('+nm+')가 그대로 넘어갑니다. '):'목적 국가는 진단서에서 고르시면 됩니다. ';
+    var diagCard='<div class="path'+(insWorst?'':' lead')+'"><div class="pk">무료</div>'+
+      '<h3>수출 절차 진단서 이어서 작성하기</h3><p>'+carry+'남은 것은 바이어확인, 계약·문서, 통관, 운송 네 영역입니다.</p>'+
+      '<div class="go"><a class="btn '+(insWorst?'btn-secondary':'btn-primary')+'" href="'+url+'">이어서 작성하기</a></div></div>';
+    var packCard='<div class="path'+(insWorst?' lead':'')+'"><div class="pk">유료 · 수출바우처 결제 가능</div>'+
+      '<h3>무역보험 서류 패키지</h3><p>이 거래 한 건을 기준으로 이용 요건 점검, 신청서 형태로 정리한 거래 정보, 청구 시 요구되는 서류 목록, 사내 결재용 자료까지 갖춰 드립니다.</p>'+
+      '<div class="go"><a class="btn '+(insWorst?'btn-primary':'btn-secondary')+'" href="'+PACK+'">서류 패키지 문의</a></div></div>';
+    paths.innerHTML = insWorst ? packCard+diagCard : diagCard+packCard;
+  }
+
+  f3.addEventListener('change',function(){fillCountries();run()});
+  f3b.addEventListener('change',run);
+  ['f1','f2','f4','f5'].forEach(function(id){document.getElementById(id).addEventListener('change',run)});
+  fillCountries();run();
+})();
+</script>
+</body></html>

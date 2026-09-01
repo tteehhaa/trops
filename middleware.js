@@ -42,9 +42,15 @@ export default function middleware(request) {
 
 /*
  * ⚠️ matcher 에 남은 `/precheck`·`/nda`·`/uae` 는 **PAIRS 에 없는 죽은 항목**이다
- *    (2026-08-30 6장 제거 때 PAIRS 에서만 빠졌다). 지금은 무해하다 — 그 셋은
- *    vercel.json 리다이렉트가 먼저 잡고, 여기까지 와도 enPath 가 없어 그대로 통과한다.
- *    이번 커밋 범위 밖이라 손대지 않았다. 정리할 때 PAIRS 와 함께 보십시오.
+ *    (2026-08-30 6장 제거 때 PAIRS 에서만 빠졌다). 무해하다 — enPath 가 없어 그대로
+ *    통과한다. 이번 커밋 범위 밖이라 손대지 않았다. 정리할 때 PAIRS 와 함께 보십시오.
+ *
+ * 🔴 **`/precheck` 의 사유가 2026-09-01 에 «달라졌다»** — 종전 주석은 「vercel.json
+ *    리다이렉트가 먼저 잡는다」를 무해함의 근거로 들었는데, 그 리다이렉트를 그날
+ *    제거했다(그 경로에 실제 페이지가 섰다). 이제 요청이 **정말로 여기까지 온다.**
+ *    실측(2026-09-01): 쿠키 없음 · `lang=en` · `lang=ko` 셋 다 통과(리다이렉트 0 · throw 0).
+ *    남겨 둔 것은 그래서다 — 빼도 같고, 영문판 `en-precheck.html` 이 서는 날
+ *    PAIRS 에 `['/precheck', '/en-precheck']` 를 더하면 이 자리가 바로 살아난다.
  */
 export const config = {
   matcher: ['/', '/precheck', '/refund', '/nda', '/uae', '/privacy'],
