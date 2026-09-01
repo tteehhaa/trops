@@ -79,7 +79,14 @@ h1,h2{margin:0}
  *    형태가 계속 생깁니다. ⛔ 지우지 마십시오.
  */
 [hidden]{display:none!important}
-h1{font-size:clamp(2.25rem,4.5vw,3.5rem);font-weight:700;line-height:1.30;letter-spacing:-.035em;max-width:16em}
+/* 🔄 **랜딩 h1 과 같은 값** 〔2026-09-01 · 대표 지시〕 — index.html 의
+   `h1{font-size:clamp(32px,4.5vw,52px);…;line-height:1.26}` 을 그대로 씁니다.
+   종전은 `clamp(2.25rem,4.5vw,3.5rem)`(=36~56px) · 1.30 이라 랜딩보다 한 단 컸고,
+   페이지를 오갈 때 제목만 커졌다 작아졌습니다.
+   ⚠️ `max-width:16em` 는 이 페이지의 폭 제한이라 그대로 둡니다 — 랜딩은 히어로가
+      가운데 정렬이라 `.hero h1{max-width:22ch}` 로 따로 잡습니다(성격이 다릅니다).
+   ⛔ 한 곳만 고치지 마십시오 — precheck·contact·랜딩 셋이 같은 값입니다. */
+h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spacing:-.035em;max-width:16em}
 
 .container{max-width:1200px;margin:0 auto;padding-inline:clamp(24px,5vw,48px)}
 .narrow{max-width:780px}
