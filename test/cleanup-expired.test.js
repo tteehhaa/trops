@@ -396,3 +396,155 @@ test('main: 정리가 실패하면 1 을 돌려준다', async () => {
     delete process.env.INTAKE_SUPABASE_SERVICE_ROLE_KEY;
   }
 });
+
+/* ──────────────────────────────────────────────────────────────
+ * 🔴 leads — 문의 · 견적 · 출시 알림 보관 〔2026-09-01 신설〕
+ *
+ * ⚠️ **2026-09-01 이전에는 이 표를 지우는 코드가 저장소에 0건이었습니다.** 방침이
+ *    「응대를 마치면 파기」라고 적어도 그것을 수행하는 장치가 없었습니다. 그 부재를
+ *    다시 만들지 않도록, 여기서 「기한이 지나면 실제로 DELETE 가 나간다」를 못질합니다.
+ * ⚠️ 기준은 `created_at` 입니다 — 표에 「응대 완료」 시각이 없습니다(본체 머리주석).
+ * ────────────────────────────────────────────────────────────── */
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+/** NOW 로부터 n일 전. */
+const ago = (n) => new Date(NOW - n * DAY_MS).toISOString();
+
+test('leadKind: 이름·회사·내용이 모두 비어야 출시 알림이다', () => {
+  const notify = { name: '', company: '', inquiry: '' };
+  assert.strictEqual(cleanup.leadKind(notify), 'notify');
+
+  /* 🔴 하나라도 차 있으면 문의입니다 — 애매하면 «짧은» 보관으로 붙습니다. */
+  for (const row of [
+    { name: '홍길동', company: '', inquiry: '' },
+    { name: '', company: 'ACME', inquiry: '' },
+    { name: '', company: '', inquiry: '문의합니다' },
+  ]) {
+    assert.strictEqual(cleanup.leadKind(row), 'inquiry', JSON.stringify(row));
+  }
+
+  /* 공백만 있는 값은 「없음」으로 봅니다. */
+  assert.strictEqual(cleanup.leadKind({ name: '  ', company: '', inquiry: '' }), 'notify');
+});
+
+test('isLeadExpired: 갈래마다 다른 기한을 쓴다 (문의 183일 · 알림 365일)', () => {
+  const inquiry = (d) => ({ name: '홍', inquiry: 'x', created_at: ago(d) });
+  const notify = (d) => ({ name: '', company: '', inquiry: '', created_at: ago(d) });
+
+  assert.strictEqual(cleanup.isLeadExpired(inquiry(182), NOW), false);
+  assert.strictEqual(cleanup.isLeadExpired(inquiry(183), NOW), true);
+  assert.strictEqual(cleanup.isLeadExpired(notify(364), NOW), false);
+  assert.strictEqual(cleanup.isLeadExpired(notify(365), NOW), true);
+
+  /* 🔴 알림은 문의보다 «오래» 남습니다 — 같은 200일에 문의는 지우고 알림은 남깁니다. */
+  assert.strictEqual(cleanup.isLeadExpired(inquiry(200), NOW), true);
+  assert.strictEqual(cleanup.isLeadExpired(notify(200), NOW), false);
+});
+
+test('isLeadExpired: 시각을 못 읽으면 지우지 않는다', () => {
+  /* cleanupOrphans 가 시각을 못 읽을 때 폴더를 건너뛰는 것과 같은 태도입니다. */
+  for (const bad of ['', 'not-a-date', undefined, null]) {
+    assert.strictEqual(
+      cleanup.isLeadExpired({ name: '홍', inquiry: 'x', created_at: bad }, NOW),
+      false,
+      JSON.stringify(bad)
+    );
+  }
+});
+
+test('summarizeLeads: 기한이 지난 행만 고르고 갈래별로 센다', () => {
+  const rows = [
+    { id: 'a', name: '홍', inquiry: 'x', created_at: ago(200) },   // 문의 · 지움
+    { id: 'b', name: '', company: '', inquiry: '', created_at: ago(400) }, // 알림 · 지움
+    { id: 'c', name: '', company: '', inquiry: '', created_at: ago(200) }, // 알림 · 남김
+    { id: 'd', name: '홍', inquiry: 'x', created_at: ago(10) },    // 문의 · 남김
+    { name: '홍', inquiry: 'x', created_at: ago(400) },            // id 없음 · 건너뜀
+  ];
+  const plan = cleanup.summarizeLeads(rows, NOW);
+
+  assert.deepStrictEqual(plan.ids, ['a', 'b']);
+  assert.deepStrictEqual(plan.byKind, { inquiry: 1, notify: 1 });
+  assert.strictEqual(plan.count, 2);
+  assert.strictEqual(plan.skipped, 2);
+});
+
+function leadsHandler(rows) {
+  return (call) => {
+    if (call.method === 'GET' && call.url.indexOf('/leads?created_at=lt.') !== -1) {
+      return { json: rows };
+    }
+    return { json: [] };
+  };
+}
+
+const LEAD_ROWS = [
+  { id: 'a', name: '홍', company: '', inquiry: 'x', created_at: ago(200) },
+  { id: 'b', name: '', company: '', inquiry: '', created_at: ago(400) },
+  { id: 'c', name: '', company: '', inquiry: '', created_at: ago(200) },
+];
+
+test('cleanupLeads: 기본은 미리보기 — DELETE 가 나가지 않는다', async () => {
+  await withFakeFetch(leadsHandler(LEAD_ROWS), async (calls) => {
+    const result = await cleanup.cleanupLeads(CONFIG, { apply: false, now: NOW });
+
+    assert.strictEqual(result.applied, false);
+    assert.strictEqual(result.rows, 2);
+    assert.strictEqual(calls.filter((c) => c.method === 'DELETE').length, 0);
+  });
+});
+
+test('🔴 cleanupLeads: --apply 는 기한이 지난 행을 실제로 지운다', async () => {
+  await withFakeFetch(leadsHandler(LEAD_ROWS), async (calls) => {
+    const result = await cleanup.cleanupLeads(CONFIG, { apply: true, now: NOW });
+
+    assert.strictEqual(result.applied, true);
+    assert.strictEqual(result.rows, 2);
+
+    const deletes = calls.filter((c) => c.method === 'DELETE');
+    assert.strictEqual(deletes.length, 1, 'DELETE 가 ' + deletes.length + '번입니다');
+
+    const url = decodeURIComponent(deletes[0].url);
+    assert.ok(url.indexOf('/leads?id=in.(') !== -1, '지운 표가 leads 가 아닙니다: ' + url);
+    assert.ok(url.indexOf('"a"') !== -1 && url.indexOf('"b"') !== -1, '지울 id 가 빠졌습니다: ' + url);
+    /* 🔴 아직 기한이 안 된 알림(c)을 함께 지우면 안 됩니다. */
+    assert.ok(url.indexOf('"c"') === -1, '기한 전인 행을 지웠습니다: ' + url);
+
+    /* leads 는 Storage 파일이 없습니다 — 파일 삭제로 새면 안 됩니다. */
+    assert.ok(
+      !calls.some((c) => c.url.indexOf('/storage/') !== -1),
+      'leads 정리가 Storage 를 건드렸습니다'
+    );
+  });
+});
+
+test('cleanupLeads: 조회는 «짧은 쪽» 경계로 넓게 잡는다', async () => {
+  await withFakeFetch(leadsHandler([]), async (calls) => {
+    await cleanup.cleanupLeads(CONFIG, { apply: true, now: NOW });
+    const url = decodeURIComponent(calls[0].url);
+    const boundary = new Date(NOW - cleanup.LEADS_RETENTION_DAYS.inquiry * DAY_MS).toISOString();
+    assert.ok(url.indexOf('created_at=lt.' + boundary) !== -1,
+      '조회 경계가 짧은 쪽(문의)이 아닙니다: ' + url);
+  });
+});
+
+test('cleanupLeads: 지울 것이 없으면 DELETE 를 보내지 않는다', async () => {
+  await withFakeFetch(leadsHandler([]), async (calls) => {
+    const result = await cleanup.cleanupLeads(CONFIG, { apply: true, now: NOW });
+    assert.strictEqual(result.rows, 0);
+    assert.strictEqual(calls.filter((c) => c.method === 'DELETE').length, 0);
+  });
+});
+
+test('cleanupLeads: 삭제가 실패하면 삼키지 않고 던진다', async () => {
+  const handler = (call) => {
+    /* ⚠️ withFakeFetch 는 `ok` 로 실패를 표현합니다 — status 만 바꾸면 ok 가 true 로 남습니다. */
+    if (call.method === 'DELETE') return { ok: false, status: 403 };
+    return leadsHandler(LEAD_ROWS)(call);
+  };
+  await withFakeFetch(handler, async () => {
+    await assert.rejects(
+      () => cleanup.cleanupLeads(CONFIG, { apply: true, now: NOW }),
+      /leads delete HTTP 403/
+    );
+  });
+});

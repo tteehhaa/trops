@@ -52,6 +52,46 @@ const PAGE = 500;            // 한 번에 읽어올 행 수
 const DELETE_CHUNK = 100;    // 한 번에 지울 행 수 (URL 길이 때문에 나눕니다)
 const LIST_PAGE = 1000;      // Storage 목록 한 페이지
 
+/* ══════════════════════════════════════════════════════════════════════════
+ * public.leads — 문의 · 견적 요청 · 출시 알림 신청 보관 〔2026-09-01 신설〕
+ * ══════════════════════════════════════════════════════════════════════════
+ * `/contact`(api/leads.js)가 남기는 행입니다. **2026-09-01 이전에는 이 표를 지우는
+ * 코드가 저장소 어디에도 없었습니다** — 방침이 「응대를 마치면 파기」라고 적어도
+ * 그것을 수행하는 장치가 0이었습니다.
+ *
+ * ── 🔴 기준값은 «확정 전»입니다 — 한 곳에 모아 둡니다 ──────────────────────
+ *   consult · quote  응대 완료 후 6개월
+ *   notify           발송 완료 또는 수신거부 시까지, 최대 1년
+ * ⚠️ 대표 확정 전 가정입니다. 바뀌면 **여기 한 곳**만 고치고, privacy.html §02 표의
+ *    보관 칸과 §03 문단, contact.html 동의 블록의 「보유 기간」을 함께 맞추십시오.
+ *    ⛔ 그 셋 중 하나만 고치면 화면이 약속한 것과 코드가 지우는 때가 갈라집니다.
+ *
+ * ── 🔴 「응대 완료」를 코드가 알 수 없습니다 — 접수일로 잡았습니다 ──────────
+ * `public.leads` 에는 응대 완료 시각도, 수신거부 표시도 **컬럼이 없습니다**
+ * (precheck-schema.sql §0-L: id · created_at · name · email · company · inquiry ·
+ * consent_privacy · consent_marketing 뿐).
+ * 그래서 **`created_at`(접수일) 기준**으로 셉니다. 뜻이 이렇게 달라집니다:
+ *   · 「응대 완료 후 6개월」  → 실제로는 「접수 후 6개월」 (응대가 늦으면 더 짧아집니다)
+ *   · 「수신거부 시까지」      → 구현할 수 없습니다. 최대 1년만 지킵니다.
+ * ⛔ 방침 문안을 이 기준에 맞추십시오. 「응대 완료 후」로 적으면 코드가 지키지 못합니다.
+ * 🔴 제대로 하려면 컬럼 둘이 필요합니다(`answered_at` · `unsubscribed_at`). 그것은
+ *    prod 마이그레이션이라 여기서 하지 않았습니다.
+ *
+ * ── 갈래를 어떻게 가리는가 ─────────────────────────────────────────────────
+ * `kind` 컬럼이 없습니다. precheck-schema.sql 이 이미 규약을 적어 두었습니다 —
+ * 「inquiry 값이 있으면 「문의」, 비어 있으면 「출시 알림 신청」」.
+ * 🔴 여기서 **한 겹 좁힙니다** — 이름·회사명·문의 내용이 **모두** 비어야 출시 알림입니다.
+ *    `/contact?type=notify` 가 정확히 그 셋을 빈 값으로 보내고, 그렇게 좁혀야
+ *    「문의 내용을 안 적은 상담 문의」가 1년으로 **길게** 남는 일이 없습니다.
+ *    ⚠️ 갈래를 잘못 재면 «더 오래» 남는 쪽이 위험합니다. 애매하면 짧은 쪽입니다.
+ */
+const LEADS_TABLE = 'leads';
+/** ⚠️ 달이 아니라 «일»로 셉니다 — 6개월 = 183일 · 1년 = 365일(근사, 짧은 쪽으로 붙습니다). */
+const LEADS_RETENTION_DAYS = {
+  inquiry: 183,
+  notify: 365,
+};
+
 /* ──────────────────────────────────────────────────────────────
  * 순수 함수 — 테스트가 여기를 봅니다
  * ────────────────────────────────────────────────────────────── */
@@ -101,6 +141,51 @@ function isOrphanExpired(objects, now, retentionDays) {
   return now - newest >= retentionDays * 24 * 60 * 60 * 1000;
 }
 
+/**
+ * leads 한 행의 갈래 — 'inquiry'(문의·견적) 또는 'notify'(출시 알림).
+ *
+ * ⚠️ 이름·회사명·문의 내용이 **모두** 비어야 출시 알림입니다(머리주석 「갈래를 어떻게
+ *    가리는가」). 애매하면 짧은 쪽(inquiry)으로 붙습니다.
+ */
+function leadKind(row) {
+  const filled = (v) => typeof v === 'string' && v.trim().length > 0;
+  if (filled(row && row.name) || filled(row && row.company) || filled(row && row.inquiry)) {
+    return 'inquiry';
+  }
+  return 'notify';
+}
+
+/**
+ * 이 행의 보관 기한이 지났는가.
+ *
+ * ⚠️ 기준은 `created_at`(접수일)입니다 — 「응대 완료」 시각이 표에 없습니다(머리주석).
+ * ⚠️ 시각을 읽지 못하면 **지우지 않습니다.** cleanupOrphans 가 시각을 못 읽을 때
+ *    폴더를 건너뛰는 것과 같은 태도입니다 — 못 읽은 것을 「오래됐다」로 읽지 않습니다.
+ */
+function isLeadExpired(row, now) {
+  const created = Date.parse((row && row.created_at) || '');
+  if (Number.isNaN(created)) return false;
+  const days = LEADS_RETENTION_DAYS[leadKind(row)];
+  return now - created >= days * 24 * 60 * 60 * 1000;
+}
+
+/** 지울 leads 행에서 id 와 갈래별 건수를 뽑습니다. */
+function summarizeLeads(rows, now) {
+  const ids = [];
+  const byKind = {};
+  let skipped = 0;
+
+  for (const row of rows || []) {
+    if (!row || !row.id) continue;
+    if (!isLeadExpired(row, now)) { skipped += 1; continue; }
+    ids.push(row.id);
+    const kind = leadKind(row);
+    byKind[kind] = (byKind[kind] || 0) + 1;
+  }
+
+  return { ids: ids, byKind: byKind, count: ids.length, skipped: skipped };
+}
+
 /* ──────────────────────────────────────────────────────────────
  * Supabase 접근
  * ────────────────────────────────────────────────────────────── */
@@ -135,6 +220,58 @@ async function deleteRows(config, ids) {
 
   if (!response.ok) {
     throw new Error('row delete HTTP ' + response.status +
+      ' | ' + (await safeText(response)).slice(0, 300));
+  }
+}
+
+/**
+ * 보관 기한이 지났을 «수 있는» leads 행을 긁어 옵니다.
+ *
+ * 🔴 질의는 **짧은 쪽 경계(6개월)로 넓게** 잡고, 갈래별 판정은 JS 가 합니다
+ *    (`summarizeLeads`). PostgREST 로 「문의면 183일, 알림이면 365일」을 한 줄로 쓰면
+ *    조건이 길고 읽기 어려워지는데, 그 판정은 순수 함수로 두어야 검사가 붙습니다.
+ * ⚠️ 그래서 여기서 온 행이 곧 지울 행은 아닙니다 — 반드시 `summarizeLeads` 를 거칩니다.
+ */
+async function fetchExpiredLeads(config, now, limit) {
+  const shortest = Math.min(LEADS_RETENTION_DAYS.inquiry, LEADS_RETENTION_DAYS.notify);
+  const boundary = new Date(now - shortest * 24 * 60 * 60 * 1000).toISOString();
+  const select = 'id,created_at,name,company,inquiry';
+  const url = config.restUrl + '/' + LEADS_TABLE +
+    '?created_at=lt.' + encodeURIComponent(boundary) +
+    '&select=' + select +
+    '&order=created_at.asc' +
+    '&limit=' + limit;
+
+  const response = await fetch(url, { headers: config.headers });
+  if (!response.ok) {
+    throw new Error('leads select HTTP ' + response.status +
+      ' | ' + (await safeText(response)).slice(0, 300));
+  }
+  const rows = await response.json();
+  return Array.isArray(rows) ? rows : [];
+}
+
+/**
+ * leads 행을 지웁니다.
+ *
+ * 🔴 **행 삭제만으로 끝납니다 — Storage 파일이 없습니다.** `scripts/erasure.js` 머리주석이
+ *    「SQL 로 직접 지우지 마십시오」라고 금한 이유는 intake 가 업로드 파일을 갖고 있어
+ *    행만 지우면 **Storage 에 바이트가 남기** 때문입니다. `public.leads` 는 파일을 갖지
+ *    않으므로(컬럼: id · created_at · name · email · company · inquiry · 동의 2종)
+ *    그 사유가 해당하지 않습니다. ⛔ leads 에 파일 컬럼이 생기면 이 판단을 다시 하십시오.
+ */
+async function deleteLeadRows(config, ids) {
+  const list = ids.map((id) => '"' + String(id).replace(/"/g, '') + '"').join(',');
+  const response = await fetch(
+    config.restUrl + '/' + LEADS_TABLE + '?id=in.(' + encodeURIComponent(list) + ')',
+    {
+      method: 'DELETE',
+      headers: Object.assign({}, config.headers, { Prefer: 'return=minimal' }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error('leads delete HTTP ' + response.status +
       ' | ' + (await safeText(response)).slice(0, 300));
   }
 }
@@ -206,6 +343,41 @@ async function cleanupExpired(config, options) {
   return { rows: plan.count, files: filesDeleted, byStatus: plan.byStatus, applied: true };
 }
 
+/**
+ * 보관 기한이 지난 leads 행을 지웁니다 〔2026-09-01 신설〕.
+ *
+ * `cleanupExpired` 와 같은 규약입니다 — `--apply` 없이는 세기만 하고, 로그를 남기고,
+ * 지운 건수를 돌려줍니다. 파일 단계가 없어 한 걸음 짧습니다.
+ */
+async function cleanupLeads(config, options) {
+  const apply = options.apply === true;
+  const log = options.log || (() => {});
+
+  const rows = await fetchExpiredLeads(config, options.now, options.limit || PAGE);
+  const plan = summarizeLeads(rows, options.now);
+
+  if (plan.count === 0) {
+    log('보관 기한이 지난 문의·알림이 없습니다.');
+    return { rows: 0, byKind: {}, applied: apply };
+  }
+
+  const kindLine = Object.keys(plan.byKind).sort()
+    .map((k) => k + ' ' + plan.byKind[k] + '건').join(' · ');
+  log('보관 기한 경과 ' + plan.count + '건 (' + kindLine + ')');
+
+  if (!apply) {
+    log('미리보기입니다. 실제로 지우려면 --apply 를 붙이십시오.');
+    return { rows: plan.count, byKind: plan.byKind, applied: false };
+  }
+
+  for (const part of chunk(plan.ids, DELETE_CHUNK)) {
+    await deleteLeadRows(config, part);
+  }
+  log('문의·알림 ' + plan.count + '건을 지웠습니다.');
+
+  return { rows: plan.count, byKind: plan.byKind, applied: true };
+}
+
 async function cleanupOrphans(config, options) {
   const apply = options.apply === true;
   const log = options.log || (() => {});
@@ -260,4 +432,14 @@ module.exports = {
   isOrphanExpired: isOrphanExpired,
   cleanupExpired: cleanupExpired,
   cleanupOrphans: cleanupOrphans,
+  /* leads 〔2026-09-01〕 — 순수 함수를 함께 내보냅니다(검사가 여기를 봅니다). */
+  LEADS_TABLE: LEADS_TABLE,
+  LEADS_RETENTION_DAYS: LEADS_RETENTION_DAYS,
+  /* 🔴 CLI(scripts/erasure.js)가 직접 지우지 않고 이 함수를 부릅니다 —
+     삭제 코드는 본체(api/)에만 둔다는 규칙이고 test/erasure-cli.test.js 가 그것을 잠급니다. */
+  deleteLeadRows: deleteLeadRows,
+  leadKind: leadKind,
+  isLeadExpired: isLeadExpired,
+  summarizeLeads: summarizeLeads,
+  cleanupLeads: cleanupLeads,
 };

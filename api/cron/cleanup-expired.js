@@ -37,9 +37,17 @@
  *      묻힙니다. 「돌았고 붙어 있지 않았다」와 「돌다가 죽었다」를 응답으로 가릅니다.
  *      (판정층 trops_a app/api/cron/precheck-retention 과 같은 처리입니다)
  *
- * ── 두 잡을 뭉치지 않습니다 ─────────────────────────────────────────────────
+ * ── 세 잡을 뭉치지 않습니다 ─────────────────────────────────────────────────
  *   expired  기한 지난 접수 행 + 그 파일
  *   orphans  행 없이 남은 Storage 폴더 (업로드 중간에 실패한 접수)
+ *   leads    보관 기한이 지난 문의·견적·출시 알림 행 〔2026-09-01 추가〕
+ *
+ *   ⚠️ leads 를 여기 붙인 이유: **이미 매일 도는 유일한 자리**입니다. 새 cron 을 만들 수
+ *      없기도 합니다 — Hobby 플랜은 프로젝트당 cron 2개까지이고 이 프로젝트는 이미 둘을
+ *      씁니다(이 파일 · refund-blocked). 붙이지 않으면 `public.leads` 는 **아무도 지우지
+ *      않습니다**(2026-09-01 이전 상태가 정확히 그것이었습니다).
+ *   ⚠️ leads 는 Storage 파일이 없어 행 삭제 한 걸음으로 끝납니다 — 근거는 api/_cleanup.js
+ *      `deleteLeadRows` 머리주석.
  *
  *   한 숫자로 합치면 「행은 지웠는데 고아 파일이 남은」 상태가 묻힙니다.
  *   따로 부르고 따로 보고합니다. 한쪽이 죽어도 다른 쪽은 돕니다 —
@@ -58,8 +66,8 @@
  *
  * ── 응답 ────────────────────────────────────────────────────────────────────
  *   200 { ok:true,  configured:false, note }           env 미등록 — 무동작
- *   200 { ok:true,  configured:true, expired, orphans } 전건 성공
- *   502 { ok:false, configured:true, expired, orphans } 부분 실패 (ok 는 「전건 성공」입니다)
+ *   200 { ok:true,  configured:true, expired, orphans, leads } 전건 성공
+ *   502 { ok:false, configured:true, expired, orphans, leads } 부분 실패 (ok 는 「전건 성공」입니다)
  *   404 (본문 없음)                                     인증 불일치 · CRON_SECRET 미설정
  *   405 { error }                                       인증은 통과했고 메서드가 GET 이 아님
  */
@@ -122,11 +130,13 @@ module.exports = async (req, res) => {
 
   const expired = await guarded(CLEANUP.cleanupExpired(config, options));
   const orphans = await guarded(CLEANUP.cleanupOrphans(config, options));
+  /* 🔴 셋째 잡. 앞 둘이 죽어도 이것은 돕니다 — 한 잡의 실패가 다른 약속을 밀지 않습니다. */
+  const leads = await guarded(CLEANUP.cleanupLeads(config, options));
 
-  const failed = Boolean(expired.error) || Boolean(orphans.error);
+  const failed = Boolean(expired.error) || Boolean(orphans.error) || Boolean(leads.error);
   if (failed) {
     console.error('cleanup cron partial failure: ' +
-      JSON.stringify({ expired: expired.error, orphans: orphans.error }));
+      JSON.stringify({ expired: expired.error, orphans: orphans.error, leads: leads.error }));
   }
 
   res.status(failed ? 502 : 200).json({
@@ -135,6 +145,7 @@ module.exports = async (req, res) => {
     configured: true,
     expired: expired,
     orphans: orphans,
+    leads: leads,
     note: NOT_OURS,
   });
 };

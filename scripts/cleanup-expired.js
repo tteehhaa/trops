@@ -66,6 +66,9 @@ async function main(argv) {
   try {
     await CLEANUP.cleanupExpired(config, options);
     if (orphans) await CLEANUP.cleanupOrphans(config, options);
+    /* 🔴 leads 는 --orphans 뒤에 숨기지 않습니다 〔2026-09-01〕 — 파일이 없어 판단이
+       가볍고, 숨겨 두면 사람이 미리보기에서 그 건수를 못 봅니다. */
+    await CLEANUP.cleanupLeads(config, options);
   } catch (err) {
     console.error('정리 실패: ' + (err && err.message ? err.message : err));
     return 1;
@@ -93,5 +96,13 @@ module.exports = {
   isOrphanExpired: CLEANUP.isOrphanExpired,
   cleanupExpired: CLEANUP.cleanupExpired,
   cleanupOrphans: CLEANUP.cleanupOrphans,
+  /* leads 〔2026-09-01〕 — 순수 함수까지 넘깁니다. test/cleanup-expired.test.js 가
+     본체가 아니라 이 껍데기를 require 하므로, 여기서 빠뜨리면 그 검사가 붙지 않습니다. */
+  LEADS_TABLE: CLEANUP.LEADS_TABLE,
+  LEADS_RETENTION_DAYS: CLEANUP.LEADS_RETENTION_DAYS,
+  leadKind: CLEANUP.leadKind,
+  isLeadExpired: CLEANUP.isLeadExpired,
+  summarizeLeads: CLEANUP.summarizeLeads,
+  cleanupLeads: CLEANUP.cleanupLeads,
   main: main,
 };
