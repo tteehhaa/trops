@@ -337,8 +337,17 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
    * ⚠️ 딸림으로 **메일 제목 문자열이 사라졌습니다**(종전 subject 파라미터). 그 제목이
    *    옛 상품명을 들고 있던 마지막 자리였습니다.
    * ⛔ 여기에 mailto 를 되돌리지 마십시오 — 접수가 다시 갈립니다.
+   *
+   * 🔄 **`/contact?type=quote` → `https://app.trops.kr/insurance/quick`** 〔2026-09-02 ·
+   *    대표 지시〕. app 에 «확인» 화면이 생겼습니다 — 가입 없이 이 거래에 붙일 수 있는
+   *    보험과 필요 서류를 봅니다. index.html 유료 버튼과 **같은 목적지**입니다.
+   *    ⛔ 둘 중 하나만 옮기지 마십시오 — 위 「두 곳으로 갈렸습니다」의 재발입니다.
+   *    ⚠️ 다른 도메인이라 **절대 URL** 입니다. 이 상수는 아래에서 `href` 에 그대로
+   *       들어가고 쿼리를 붙이지 않습니다(쿼리를 붙이는 것은 `DIAG` 뿐입니다).
+   *    ⚠️ `?type=quote` 유형은 **남아 있습니다** — 주문 접수는 `/insurance/order` 이고
+   *       확인 화면이 그 역할을 대신하지 않습니다(contact.html `KINDS.quote` 참조).
    */
-  var PACK='/contact?type=quote';
+  var PACK='https://app.trops.kr/insurance/quick';
 
   // 권역 → 국가. 값은 ISO2로 넘긴다(앱 CountrySelect가 "국가명 (XX)" 규약을 쓴다).
   var COUNTRIES={
@@ -429,7 +438,7 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
       '<div class="go"><a class="btn '+(insWorst?'btn-secondary':'btn-primary')+'" href="'+url+'" data-track="precheck-diagnosis">이어서 작성하기</a></div></div>';
     var packCard='<div class="path'+(insWorst?' lead':'')+'"><div class="pk">유료 · 수출바우처 결제 가능</div>'+
       '<h3>무역보험 준비팩</h3><p>이 거래 한 건을 기준으로 이용 요건 점검, 신청서 형태로 정리한 거래 정보, 청구 시 요구되는 서류 목록, 사내 결재용 자료까지 갖춰 드립니다.</p>'+
-      '<div class="go"><a class="btn '+(insWorst?'btn-primary':'btn-secondary')+'" href="'+PACK+'" data-track="precheck-pack">무역보험 준비팩 요청</a></div></div>';
+      '<div class="go"><a class="btn '+(insWorst?'btn-primary':'btn-secondary')+'" href="'+PACK+'" data-track="precheck-pack">무역보험 준비팩 확인</a></div></div>';
     return insWorst ? packCard+diagCard : diagCard+packCard;
   }
 
