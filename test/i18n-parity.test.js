@@ -185,12 +185,28 @@ test('🔴 폐기된 상품명이 어느 페이지 본문에도 없다', () => {
   /*
    * 같은 상품을 두 이름으로 부르면 한 페이지가 두 회사처럼 읽힙니다. 페이지 «전역»으로
    * 봅니다 — 종전에는 섹션 안만 보던 검사들이 그 섹션이 사라지자 조용히 통과했습니다.
+   *
+   * 🔴 **`무역보험 서류 패키지` 를 더했습니다** 〔2026-09-01 · 대표 지시〕. 유료 상품의
+   *    정본 이름은 `무역보험 준비팩` 하나이고, precheck 카드가 옛 이름을 들고 있었습니다.
+   *
+   * ⚠️ **`body()` 만으로는 그 자리를 못 봅니다** — `body()` 는 `<script>` 를 걷어내는데,
+   *    precheck 의 두 카드는 **JS 가 조립**합니다(문자열 안에 `<h3>…</h3>` 가 들어 있음).
+   *    목록에만 넣으면 정작 되살아날 자리를 감시하지 못하는 «조용한 초록»이 됩니다.
+   * 🔴 그래서 **두 겹으로 봅니다** — 화면 마크업(`body`)과 스크립트를 포함한 소스(`strip`).
+   *    `strip` 은 HTML 주석만 걷으므로 JS 문자열이 그대로 남습니다.
+   * ⛔ **이 이름들을 주석에 «리터럴로» 적지 마십시오** — 아래가 JS 주석까지 봅니다.
+   *    설명이 필요하면 「옛 상품명」처럼 풀어 쓰십시오(price-exposure 의 금지 문구와 같은 규약).
    */
-  const RETIRED = ['NDA 비교', '문서 대조', '거래 절차 트래킹'];
+  const RETIRED = ['NDA 비교', '문서 대조', '거래 절차 트래킹', '무역보험 서류 패키지'];
   const offenders = [];
   for (const { file } of STATIC_PAGES) {
-    const text = body(read(file));
-    for (const name of RETIRED) if (text.includes(name)) offenders.push(file + ': ' + name);
+    const seen = new Set();
+    for (const [where, text] of [['화면', body(read(file))], ['소스(JS 포함)', strip(read(file))]]) {
+      for (const name of RETIRED) {
+        const key = file + ': ' + name;
+        if (text.includes(name) && !seen.has(key)) { seen.add(key); offenders.push(key + ' [' + where + ']'); }
+      }
+    }
   }
   assert.deepStrictEqual(offenders, [], '폐기된 상품명이 남아 있습니다: ' + offenders.join(' · '));
 });

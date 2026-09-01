@@ -330,7 +330,15 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
 <script>
 (function(){
   var DIAG='https://app.trops.kr/export-precheck/new';
-  var PACK='mailto:contact@theo-ne.com?subject=%EB%AC%B4%EC%97%AD%EB%B3%B4%ED%97%98%20%EC%84%9C%EB%A5%98%20%ED%8C%A8%ED%82%A4%EC%A7%80%20%EB%AC%B8%EC%9D%98';
+  /*
+   * 🔄 **mailto → `/contact?type=quote`** 〔2026-09-01 · 대표 지시〕.
+   *    종전에는 메일 클라이언트를 열었고, 그래서 같은 유료 상품 접수가 **두 곳**으로
+   *    갈렸습니다 — 랜딩 버튼은 `/contact` 폼, 이 카드는 메일함. 한 곳으로 모읍니다.
+   * ⚠️ 딸림으로 **메일 제목 문자열이 사라졌습니다**(종전 subject 파라미터). 그 제목이
+   *    옛 상품명을 들고 있던 마지막 자리였습니다.
+   * ⛔ 여기에 mailto 를 되돌리지 마십시오 — 접수가 다시 갈립니다.
+   */
+  var PACK='/contact?type=quote';
 
   // 권역 → 국가. 값은 ISO2로 넘긴다(앱 CountrySelect가 "국가명 (XX)" 규약을 쓴다).
   var COUNTRIES={
@@ -462,8 +470,8 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
       '<h3>수출 절차 진단서 이어서 작성하기</h3><p>'+carry+'남은 것은 바이어확인, 계약·문서, 통관, 운송 네 영역입니다.</p>'+
       '<div class="go"><a class="btn '+(insWorst?'btn-secondary':'btn-primary')+'" href="'+url+'">이어서 작성하기</a></div></div>';
     var packCard='<div class="path'+(insWorst?' lead':'')+'"><div class="pk">유료 · 수출바우처 결제 가능</div>'+
-      '<h3>무역보험 서류 패키지</h3><p>이 거래 한 건을 기준으로 이용 요건 점검, 신청서 형태로 정리한 거래 정보, 청구 시 요구되는 서류 목록, 사내 결재용 자료까지 갖춰 드립니다.</p>'+
-      '<div class="go"><a class="btn '+(insWorst?'btn-primary':'btn-secondary')+'" href="'+PACK+'">서류 패키지 문의</a></div></div>';
+      '<h3>무역보험 준비팩</h3><p>이 거래 한 건을 기준으로 이용 요건 점검, 신청서 형태로 정리한 거래 정보, 청구 시 요구되는 서류 목록, 사내 결재용 자료까지 갖춰 드립니다.</p>'+
+      '<div class="go"><a class="btn '+(insWorst?'btn-primary':'btn-secondary')+'" href="'+PACK+'">무역보험 준비팩 요청</a></div></div>';
     paths.innerHTML = insWorst ? packCard+diagCard : diagCard+packCard;
   }
 
