@@ -210,6 +210,67 @@ const EXPECTED_LANG_PAIRS = KO_FILES
   .filter((f) => DEPLOYED_FILES.has(enSiblingOf(f)))
   .map((f) => [routeOf(f), routeOf(enSiblingOf(f))]);
 
+/* ──────────────────────────────────────────────────────────────
+ * 🔴 **장수 표는 여기 하나뿐입니다** 〔2026-09-01 · 대표 지시 「7건을 개별로 고치지 말고
+ *    뿌리 하나를 고쳐라」〕
+ * ──────────────────────────────────────────────────────────────
+ * 종전에는 검사 일곱이 각자 `['/', '/en', '/nda', '/precheck', '/refund', '/uae', …]` 를
+ * 손으로 들고 있었고, 2026-08-30 6장 제거 뒤 **일곱 곳이 한꺼번에 낡았습니다**(전부 307).
+ * 같은 목록을 일곱 벌 두면 지우는 날 일곱 곳을 고쳐야 하고, 그날 아무도 그러지 않습니다.
+ *
+ * ⛔ 아래 검사에 `pages: [...]` 를 손으로 적지 마십시오. 페이지가 늘거나 줄면
+ *    `scripts/build-static.js` `STATIC.html` 한 곳만 고치면 확인이 따라옵니다.
+ * ⚠️ `sourceOf` 도 적지 않습니다 — 경로에서 소스 파일을 되찾습니다(아래 `PAGE_FILES`).
+ */
+const PAGE_FILES = new Map(STATIC.html.map((e) => [routeOf(e.file), e.file]));
+const LOCALE_OF = new Map(STATIC.html.map((e) => [routeOf(e.file), e.locale]));
+const ALL_PAGES = [...PAGE_FILES.keys()];
+const EN_PAGES = STATIC.html.filter((e) => e.locale === 'en').map((e) => routeOf(e.file));
+/** 경로 → 소스 파일. 러너의 `sourceOf` 자리에 그대로 넣습니다. */
+const SOURCE_OF = Object.fromEntries(PAGE_FILES);
+
+/**
+ * 그 CSS 규칙을 «가진» 페이지만 고릅니다.
+ *
+ * 🔴 「배포되는 전 페이지」로 잡으면 그 규칙이 없는 페이지에서 거짓 red 가 납니다.
+ *    규칙을 가진 페이지끼리 값이 같은지가 이 검사의 질문이므로, 대상도 그렇게 좁힙니다.
+ * ⚠️ 대상이 0장이 되면 러너가 실패로 셉니다(조용한 초록 방지).
+ */
+const pagesWithRule = (selector) =>
+  ALL_PAGES.filter((p) => findRule(source(PAGE_FILES.get(p)), selector) !== null);
+
+/**
+ * 그 토큰을 «쓰는» 페이지와 자리 수. 「N개 항목」 검사의 대상입니다.
+ *
+ * ⚠️ `test/item-count.test.js` 는 자리 수를 **손으로** 유지합니다 — 그래야 「토큰 하나를
+ *    실수로 지웠다」를 잡습니다. 여기서 파생하는 것은 그 래칫을 무르는 것이 «아닙니다»:
+ *    이 스크립트의 질문은 「소스에 있는 자리가 배포본에도 그대로 나왔는가」이고,
+ *    소스의 자리 수가 옳은지는 그 단위 테스트가 이미 잠급니다. 층이 다릅니다.
+ */
+const ITEM_TOKEN = '{{precheck.itemCount}}';
+const ITEM_COUNT_PAGES = ALL_PAGES.filter((p) => source(PAGE_FILES.get(p)).includes(ITEM_TOKEN));
+const ITEM_COUNT_PER = Object.fromEntries(
+  ITEM_COUNT_PAGES.map((p) => [p, source(PAGE_FILES.get(p)).split(ITEM_TOKEN).length - 1])
+);
+/**
+ * 「N개 항목」이 로케일마다 **다른 말**입니다 — `test/item-count.test.js` 의 표를 그대로 씁니다.
+ * ⚠️ 영문은 `the` 를 요구합니다(그쪽 주석 참조). 국문 꼴 하나로만 재면 영문 자리가 0곳으로
+ *    나오고, 그러면 이 검사가 영문 환불 페이지를 통과시켜 버립니다.
+ */
+const COUNT_PHRASE = {
+  ko: () => /(\d+)\s*개 항목/g,
+  en: () => /\bthe\s+(\d+)\s+items\b/g,
+};
+
+/**
+ * hreflang 을 «선언한» 국·영 짝. 양쪽이 배포되고, 국문 소스가 실제로 hreflang 을 든 것만입니다.
+ * ⚠️ privacy 쌍은 아직 hreflang 이 없어 여기서 자동으로 빠집니다(인계 메모 §4). 그것은 이
+ *    스크립트가 잴 일이 아니라 **아직 안 한 일**이고, 짝이 서면 여기에 저절로 들어옵니다.
+ */
+const HREFLANG_PAIRS = EXPECTED_LANG_PAIRS.filter(([ko]) =>
+  /<link rel="alternate" hreflang=/.test(source(PAGE_FILES.get(ko)))
+);
+
 const CHECKS = [
   /* ── 언어 짝 표가 배포되는 장수와 어긋나지 않는가 〔2026-09-01 신설〕 ─────────
    * 🔴 종전에는 이 축이 `국문우선` 안에 「짝이 7개 미만이면 실패」로 섞여 있었습니다.
@@ -318,11 +379,10 @@ const CHECKS = [
   /* ── C-1 ② 패딩 통일 ────────────────────────────────────────────── */
   {
     id: '패딩-컨테이너',
-    label: '패딩 · 6페이지 .container 좌우가 같다 (상한 48px)',
+    label: '패딩 · .container 를 가진 전 페이지의 좌우가 같다 (상한 48px)',
     page: null,   // 여러 페이지 — pages 로 따로 돕니다
-    pages: ['/', '/en', '/nda', '/precheck', '/refund', '/uae'],
-    sourceOf: { '/': 'index.html', '/en': 'en.html', '/nda': 'nda.html',
-      '/precheck': 'precheck.html', '/refund': 'refund.html', '/uae': 'uae.html' },
+    pages: pagesWithRule('.container'),
+    sourceOf: SOURCE_OF,
     check: (html, ctx) => {
       const same = sameRule(html, ctx.sourceFile, '.container', ['max-width', 'padding-inline']);
       if (same !== true) return same;
@@ -366,18 +426,11 @@ const CHECKS = [
    */
   {
     id: 'en-페이지',
-    label: '영문 5개가 서고 영문으로 렌더된다',
-    /* 🔄 `/en-check` 를 뺐습니다 〔2026-08-30 · 사전 확인 3문항 제거〕.
-       ⚠️ `/en-precheck` 는 **이 커밋 범위 밖**입니다 — 2026-08-30 6장 제거(ca47218) 때
-          여기서 빠지지 않아 이미 낡은 항목이고, `en-precheck.html` 이 없어
-          `npm run verify:prod` 가 지금도 이 자리에서 넘어집니다. 함께 정리하십시오. */
-    pages: ['/en', '/en-precheck', '/en-refund', '/en-privacy'],
-    sourceOf: {
-      '/en': 'en.html',
-      '/en-precheck': 'en-precheck.html',
-      '/en-refund': 'en-refund.html',
-      '/en-privacy': 'en-privacy.html',
-    },
+    label: '배포되는 영문 페이지가 전부 서고 영문으로 렌더된다',
+    /* 🔴 목록을 걷고 빌드 분류표에서 파생합니다 〔2026-09-01〕 — 종전 목록은 2026-08-30
+       6장 제거 뒤 `/en-precheck`(없는 페이지)를 물고 있었습니다. */
+    pages: EN_PAGES,
+    sourceOf: SOURCE_OF,
     check: (html, ctx) => {
       if (!/<html[^>]+lang=["']en["']/.test(html)) return 'html lang="en" 이 아닙니다';
 
@@ -386,11 +439,22 @@ const CHECKS = [
       const got = (html.match(/<title>([^<]*)<\/title>/) || [])[1];
       if (got !== want) return `<title> 이 다릅니다 — 배포 ${JSON.stringify(got)} / 소스 ${JSON.stringify(want)}`;
 
-      /* 화면에 보이는 한글. 국문판이 영문 주소로 올라가거나 번역이 빠진 자리를 잡습니다.
-         ⚠️ nav 의 언어 전환 링크(「한국어」)만 예외입니다 — 그 글자가 한글인 것이 그 링크의 일입니다. */
+      /*
+       * 화면에 보이는 한글. 국문판이 영문 주소로 올라가거나 번역이 빠진 자리를 잡습니다.
+       * ⚠️ 언어 전환 링크(「한국어」)만 예외입니다 — 그 글자가 한글인 것이 그 링크의 일입니다.
+       *
+       * 🔴 **가리는 축을 `hreflang="ko"` 로 바꿨습니다** 〔2026-09-01 · 대표 지시〕.
+       *    종전에는 `<a class="nav-quiet">` 로 가렸는데 **en.html 에 그 클래스가 0건**이라
+       *    실제로는 아무것도 가리지 못했고, 언어 전환 링크의 「한국어」가 그대로 잡혀
+       *    라이브가 멀쩡한데 빨갰습니다.
+       * ⚠️ `test/i18n-parity.test.js` 가 같은 자리를 `hreflang="ko"` 로 가리고, 그 주석이
+       *    「클래스로 가리면 그 클래스를 입은 아무 링크나 이 검사를 빠져나갑니다」라고
+       *    적어 두었습니다 — 이 파일의 `en-경로누수` 도 이미 그 축을 씁니다.
+       *    한 파일 안에서 두 축이 갈려 있었습니다. ⛔ 클래스로 되돌리지 마십시오.
+       */
       const text = html
         .replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi, '')
-        .replace(/<a class="nav-quiet"[^>]*>[^<]*<\/a>/g, '')
+        .replace(/<a[^>]*hreflang="ko"[^>]*>[^<]*<\/a>/g, '')
         .replace(/<[^>]+>/g, ' ');
       const hangul = text.match(/[가-힣][가-힣\s·]*/g);
       if (hangul) return `화면에 한글이 있습니다: ${JSON.stringify(hangul.slice(0, 3))}`;
@@ -406,12 +470,9 @@ const CHECKS = [
    *    바뀌어도 이 파일을 손대지 않습니다.
    * ⚠️ privacy 쌍은 아직 hreflang 이 없어 목록에 없습니다(인계 메모 §4).
    */
-  ...[
-    ['/', '/en', 'index.html'],
-    /* ⚠️ `/precheck` 쌍은 위와 같은 이유로 남아 있습니다 — 이 커밋 범위 밖입니다. */
-    ['/precheck', '/en-precheck', 'precheck.html'],
-    ['/refund', '/en-refund', 'refund.html'],
-  ].map(([ko, en, koFile]) => ({
+  ...HREFLANG_PAIRS.map(([ko, en]) => {
+    const koFile = PAGE_FILES.get(ko);
+    return {
     id: 'hreflang' + en.replace(/\//g, '-'),
     label: `${ko} 과 ${en} 이 서로 hreflang 으로 가리킨다`,
     pages: [ko, en],
@@ -426,7 +487,8 @@ const CHECKS = [
       if (n !== 3) return `hreflang 이 ${n}줄입니다 — 3줄이어야 합니다`;
       return true;
     },
-  })),
+    };
+  }),
   /*
    * 🔴 영문 경로가 **끝까지 영문**인지. 라이브에서 봐야 하는 이유는, 마크업의 href
    *    만으로는 안 걸리는 자리가 있기 때문입니다 — replaceState 목적지와 토스
@@ -435,8 +497,8 @@ const CHECKS = [
    */
   {
     id: 'en-경로누수',
-    label: '영문 4개가 국문 페이지로 새지 않는다',
-    pages: ['/en', '/en-check', '/en-precheck', '/en-refund'],
+    label: '배포되는 영문 페이지가 국문 페이지로 새지 않는다',
+    pages: EN_PAGES,
     check: (html) => {
       /*
        * hreflang·canonical 은 국문 주소를 **가리켜야 하는** 자리라 뺍니다.
@@ -450,7 +512,14 @@ const CHECKS = [
       const body = html
         .replace(/<link[^>]+>/g, '')
         .replace(/<a[^>]*hreflang="ko"[^>]*>[^<]*<\/a>/g, '');
-      for (const ko of ['/precheck', '/check', '/refund', '/privacy']) {
+      /*
+       * 🔴 국문 경로 목록도 파생입니다 〔2026-09-01〕 — 종전에는 `/check` 처럼 **이미 없는**
+       *    경로를 세면서 정작 새로 선 국문 페이지는 못 봤습니다.
+       * ⚠️ `/` 는 뺍니다 — 너무 넓게 물어 아무 상대경로나 잡습니다
+       *    (`test/i18n-parity.test.js` 의 `koOnly` 도 `index.html` 을 같은 이유로 뺍니다).
+       */
+      const koOnly = ALL_PAGES.filter((p) => LOCALE_OF.get(p) === 'ko' && p !== '/');
+      for (const ko of koOnly) {
         const re = new RegExp('["\'\\(]' + ko + '(["\'?#]|$)');
         if (re.test(body)) return `국문 경로 ${ko} 가 남아 있습니다`;
       }
@@ -483,8 +552,30 @@ const CHECKS = [
     id: '법인명-ko',
     label: '/ 법인명·사업자정보가 site.config.json 값과 같다',
     page: '/',
+    /*
+     * 🔴 **판정 방식을 `test/site-config.test.js` 에서 그대로 가져왔습니다** 〔2026-09-01 · 대표 지시〕.
+     *
+     * 종전에는 여섯 항목을 **전부** 요구했습니다. 그런데 랜딩 푸터는 요약이라 상호·대표·
+     * 등록번호·주소 **넷만** 싣고, 통신판매업신고번호·전화는 정책 페이지 푸터가 듭니다 —
+     * 그래서 라이브가 멀쩡한데 「biz.ko.ecommerceNo 가 배포본에 없습니다」로 빨갰습니다.
+     * ⚠️ 같은 문제를 `test/site-config.test.js` 가 2026-08-30 에 이미 고쳤고, 그 주석이
+     *    「전 페이지가 여섯을 다 갖는다로 재면 랜딩이 거짓 red 가 됩니다」라고 적어 두었습니다.
+     *    이 스크립트만 옛 축에 남아 있었습니다.
+     * 🔴 그래서 **각 페이지가 «자기가 쓴 토큰의» 값을 갖는가**로 잽니다 — 값이 아니라 의도를
+     *    축으로 삼습니다. 푸터 구성이 바뀌어도 이 검사는 낡지 않습니다.
+     * ⛔ 여기에 키 목록을 다시 적지 마십시오.
+     */
     check: (html) => {
-      for (const key of ['companyName', 'ceo', 'registrationNo', 'ecommerceNo', 'address', 'phone']) {
+      const used = new Set(
+        [...source('index.html').matchAll(/\{\{\s*biz\.([a-zA-Z]+)\s*\}\}/g)].map((m) => m[1])
+      );
+      if (used.size === 0) {
+        return '소스 index.html 에 {{biz.*}} 토큰이 없습니다 — 검사가 낡았습니다(0개는 통과가 아닙니다)';
+      }
+      for (const key of used) {
+        if (!(key in config.biz.ko)) {
+          return `소스가 쓰는 {{biz.${key}}} 가 site.config.json 의 biz.ko 에 없습니다`;
+        }
         if (!html.includes(config.biz.ko[key])) {
           return `biz.ko.${key} 값(${config.biz.ko[key]})이 배포본에 없습니다`;
         }
@@ -496,13 +587,18 @@ const CHECKS = [
   /* ── 곁들여: 이번 배치와 함께 지켜야 하는 것 ────────────────────── */
   {
     id: '항목수',
-    label: '대조 항목 수가 5곳에 설정값으로 나온다',
+    label: '대조 항목 수가 토큰을 쓴 자리마다 설정값으로 나온다',
     page: null,
-    pages: ['/nda', '/uae', '/refund'],
-    expectedPer: { '/nda': 2, '/uae': 1, '/refund': 2 },
+    /* 🔴 대상도 자리 수도 소스에서 파생합니다 〔2026-09-01〕 — 종전 표(`/nda` 2 · `/uae` 1)는
+       그 두 장이 2026-08-30 에 삭제된 뒤로 없는 페이지를 세고 있었고, 그 사이 표에 들어온
+       `en-refund.html` 2곳은 아무도 세지 않았습니다. */
+    pages: ITEM_COUNT_PAGES,
+    expectedPer: ITEM_COUNT_PER,
+    sourceOf: SOURCE_OF,
     check: (html, ctx) => {
       const count = config.precheck.itemCount;
-      const found = [...html.matchAll(/(\d+)\s*개 항목/g)].map((m) => m[1]);
+      const phrase = (COUNT_PHRASE[LOCALE_OF.get(ctx.target)] || COUNT_PHRASE.ko)();
+      const found = [...html.matchAll(phrase)].map((m) => m[1]);
       if (found.length !== ctx.expected) {
         return `「N개 항목」이 ${found.length}곳입니다 (기대 ${ctx.expected}곳)`;
       }
@@ -517,7 +613,8 @@ const CHECKS = [
     id: '주석제거',
     label: '배포본에 주석·내부 표기가 남지 않았다',
     page: null,
-    pages: ['/', '/en', '/nda', '/precheck', '/refund', '/uae', '/privacy', '/en-privacy'],
+    /* 🔴 배포되는 전 페이지 〔2026-09-01 파생〕 — 손으로 적은 8장 중 둘이 이미 없었습니다. */
+    pages: ALL_PAGES,
     check: (html) => {
       const left = (html.match(/<!--(?!!)/g) || []).length;
       if (left) return `HTML 주석 ${left}개가 남았습니다`;
@@ -527,64 +624,23 @@ const CHECKS = [
       return true;
     },
   },
-  /* ── R-1 정가 취소선 제거 (2026-08-11) ──────────────────────────── */
-  {
-    id: 'R1-취소선',
-    label: '/precheck 에 정가 취소선이 없다 (판매가 총액 하나만 보인다)',
-    page: '/precheck',
-    check: (html) => {
-      // 세 겹으로 봅니다 — 마크업 · CSS · 값. 하나만 보면 되살아나는 형태를 놓칩니다.
-      const tags = (html.match(/<s[\s>]/g) || []).length;
-      if (tags) return `s 태그가 ${tags}개 남아 있습니다`;
-      if (/line-through/.test(html)) return 'line-through CSS 가 배포본에 있습니다';
-      if (/290,000/.test(html)) return '₩290,000 이 화면에 렌더되고 있습니다';
-
-      /*
-       * 🔴 **기대값을 `api/_payment.js` 에서 읽습니다** 〔2026-08-21〕 — 하드코딩을 걷었습니다.
-       *
-       * 종전에는 이 줄이 `₩300,000` 을 직접 들고 있었고, 2026-08-17 에 판매가가
-       * **₩330,000(VAT 포함 총액)** 으로 바뀌면서 **조용히 낡았습니다.** 이 파일 머리의
-       * 「⚠️ 기대값을 여기 하드코딩하지 마십시오 — 소스를 고칠 때 이 파일이 조용히
-       * 낡습니다」를 정작 이 검사가 어기고 있었던 자리입니다.
-       *
-       * ⚠️ 그 실패가 오래 안 보인 이유가 하나 더 있습니다 — 영어 우선 접속(2026-08-21)
-       *    이후로 이 검사가 `/precheck` 에 **닿지도 못했습니다**(HTTP 307). 두 고장이
-       *    겹치면 하나가 다른 하나를 가립니다(위 `get()` 쿠키 주석과 같은 사건).
-       * 🔴 `PRICE` 는 **서버가 신뢰하는 그 값**입니다(결제 요청 금액과 같은 상수) —
-       *    화면 표기가 그 값과 갈라지는 순간이 이 검사가 잡아야 하는 순간입니다.
-       */
-      const price = require(path.join(ROOT, 'api', '_payment.js')).PRICE;
-      const priceText = '₩' + price.toLocaleString('en-US');
-      if (!new RegExp(priceText).test(html)) {
-        return `${priceText} 이 없습니다 — 판매가 표기가 배포되지 않았습니다 ` +
-          '(api/_payment.js PRICE 기준)';
-      }
-      /*
-       * 🔴 **폐기가가 남아 있지 않은지도 봅니다.** md §4 가 「99,000원 헤드라인 폐기 확정」을
-       *    적었고, 값을 옮길 때 화면 3자리 중 하나만 고치는 것이 이 저장소에서 반복된 실수입니다.
-       */
-      if (/₩99,000/.test(html)) return '폐기된 ₩99,000 이 아직 렌더되고 있습니다 — 고친 자리가 일부뿐입니다';
-      /*
-       * 부가세 병기 — **문구도 소스(precheck.html)에서 읽습니다** 〔2026-08-21〕.
-       *
-       * 종전에는 `부가세(VAT) 별도` 를 하드코딩했습니다. 2026-08-17 에 판매가가 VAT 포함
-       * 총액(₩330,000)이 되면서 화면 문구가 **「부가세(VAT) 포함」으로 뒤집혔고**, 이 줄만
-       * 「별도」에 남아 있었습니다 — 위 금액과 **같은 한 번의 변경에서 같이 낡은** 자리입니다.
-       *
-       * 🔴 이 검사가 지켜야 하는 것은 「별도」라는 낱말이 아니라 **병기가 사라지지 않는 것**과
-       *    **배포본이 소스와 같은 말을 하는 것**입니다. 그래서 소스에서 찾은 그 문장을
-       *    배포본에 요구합니다 — 대표가 어느 쪽으로 정하든 검사가 따라갑니다.
-       */
-      const vat = (source('precheck.html').match(/부가세\(VAT\) (포함|별도)/) || [])[0];
-      if (!vat) {
-        return '소스 precheck.html 에서 부가세 병기를 찾지 못했습니다 — 병기가 사라졌습니다';
-      }
-      if (!html.includes(vat)) {
-        return `배포본에 「${vat}」 병기가 없습니다 (소스 precheck.html 기준)`;
-      }
-      return true;
-    },
-  },
+  /* ── R-1 정가 취소선 — **삭제했습니다** 〔2026-09-01 · 대표 지시〕 ─────────────
+   *
+   * 이 검사는 `/precheck` 에 **판매가 총액(₩330,000)이 «렌더돼 있는지»**를 요구했습니다.
+   * 2026-08-30 에 접수·결제 폼을 내리면서 그 화면이 사라졌고, 지금 `/precheck` 에 금액이
+   * 있으면 그것이 **사고**입니다 — 검사가 요구하던 것과 정반대가 됐습니다.
+   *
+   * 🔴 **지우기 전에 대체 그물을 확인했습니다**(대표 지시) — `test/price-exposure.test.js`
+   *    가 살아 있는 전 페이지 소스에서 금액 재등장을 막습니다. 실측(2026-09-01):
+   *      ₩330,000 ✅ · ₩300,000 ✅ · 33만원 ✅ · 30만원 ✅  (네 표기 모두 검출)
+   *    소스에 없으면 dist 에도 없습니다(build-static 의 「화면 문구 불변」 검증이 그 둘을
+   *    묶습니다). 그래서 배포 시점에 같은 것을 한 번 더 셀 필요가 없습니다.
+   * ⚠️ 함께 사라진 축 셋: 취소선 태그/CSS · ₩290,000 · 부가세 병기. 앞의 둘은 아래
+   *    `R1-비교표기` 가 **전 페이지**에서 계속 봅니다(더 넓습니다). 부가세 병기는 그 문구를
+   *    든 화면 자체가 없어져 잴 대상이 없습니다.
+   * 🔴 되살릴 조건: 이 저장소에 결제 폼이 다시 서면 그때 함께 되살리십시오
+   *    (원본: `git show 5a74892:scripts/verify-deployment.js` 의 `R1-취소선`).
+   */
 
   /* ── R-1 확장 · 「정가」 문자 표기 제거 (2026-08-12) ───────────────
    *
@@ -603,7 +659,8 @@ const CHECKS = [
   {
     id: 'R1-비교표기',
     label: '어느 페이지에도 「정가」·「런칭가」·290,000 이 없다',
-    pages: ['/', '/en', '/nda', '/precheck', '/refund', '/uae', '/privacy', '/en-privacy'],
+    /* 🔴 배포되는 전 페이지 〔2026-09-01 파생〕. 새 페이지가 서면 자동으로 대상이 됩니다. */
+    pages: ALL_PAGES,
     check: (html) => {
       if (html.includes('정가')) return '「정가」 표기가 남아 있습니다';
       if (html.includes('런칭가')) return '「런칭가」 표기가 남아 있습니다';
@@ -771,6 +828,9 @@ async function main(argv) {
           continue;
         }
         results.push([target, item.check(res.body, {
+          /* `target` 도 넘깁니다 〔2026-09-01〕 — 로케일마다 다른 말을 재는 검사(항목수)가
+             자기가 지금 어느 페이지를 보는지 알아야 합니다. */
+          target,
           sourceFile: item.sourceOf && item.sourceOf[target],
           expected: item.expectedPer && item.expectedPer[target],
         })]);
