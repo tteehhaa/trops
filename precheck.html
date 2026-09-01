@@ -104,9 +104,12 @@ h1{font-size:clamp(2.25rem,4.5vw,3.5rem);font-weight:700;line-height:1.30;letter
 .btn-secondary:hover{border-color:var(--muted);color:var(--ink)}
 
 .head{padding-block:clamp(48px,6vw,80px) clamp(28px,3.5vw,40px)}
-/* 히어로 배지 — 랜딩 `.mk-step span` 의 알약 꼴에 `--accent-soft`/`--accent` 를 입혔습니다.
-   ⛔ 새 색을 만들지 마십시오. 셋 다 랜딩 :root 에 이미 있는 값입니다. */
-.badge{display:inline-flex;align-items:center;margin-bottom:18px;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:var(--accent-soft);font-size:12.5px;font-weight:600;line-height:1.6;color:var(--accent)}
+/* 히어로 배지 — 두 줄입니다. 첫 줄은 랜딩 `.mk-step span` 의 알약 꼴에
+   `--accent-soft`/`--accent` 를 입혔고, 둘째 줄은 그 아래 작게 붙는 사실입니다.
+   ⛔ 새 색을 만들지 마십시오. 전부 랜딩 :root 에 이미 있는 값입니다. */
+.badge{margin-bottom:18px}
+.badge-main{display:inline-flex;align-items:center;padding:5px 12px;border:1px solid var(--line);border-radius:999px;background:var(--accent-soft);font-size:12.5px;font-weight:600;line-height:1.6;color:var(--accent)}
+.badge-sub{display:block;margin-top:8px;font-size:12px;font-weight:500;line-height:1.6;color:var(--ink-62)}
 
 /* ── 입력 ────────────────────────────────────────────────────────────────────
  * 랜딩의 `.sec-surface` 와 같은 처리입니다 — 띠 하나로 「여기가 입력」임을 나눕니다.
@@ -214,18 +217,24 @@ h1{font-size:clamp(2.25rem,4.5vw,3.5rem);font-weight:700;line-height:1.30;letter
      ⛔ 이 자리에 유료 상품 이름을 붙이지 마십시오.
 
      🔴 **배지는 「1분」을 이름에서 내려 «사실»로 적는 자리입니다** 〔2026-09-01 · 대표 결정〕.
-        셋 다 **이 페이지**에 대해 참입니다 — 서버 호출 0 · 저장 0 · 계정 없이 점수가 나옵니다.
-     ⚠️ 「로그인 없이」는 **이 페이지의 사실이지 흐름 전체의 사실이 아닙니다.**
-        다음 칸(app.trops.kr `/export-precheck/new`)은 **문은 열려 있고 제출에서 로그인을
-        요구합니다** — 판정층 `app/export-precheck/new/page.tsx` 머리주석 「로그인 전에도
-        열린다 — 게이트는 «제출 시점»이다」〔2026-08-30 · 창업자 지시 A안〕.
-     ⛔ 그러므로 이 배지를 **랜딩이나 진단서 진입 버튼 옆으로 옮기지 마십시오.** 그 자리에서는
-        거짓이 됩니다. 옛 랜딩의 영문 무로그인 문구가 금지 목록에 오른 것이 같은 형태였습니다
+
+     🔴 **「로그인 없이」를 쓰지 않습니다 — 「계정 없이 점수까지」로 범위를 끊었습니다**
+        〔2026-09-01 · 대표 지시〕. 첫 판은 「로그인 없이」였는데, 그것은 **이 페이지의 사실이지
+        흐름 전체의 사실이 아니었습니다.** 다음 칸(app.trops.kr `/export-precheck/new`)은
+        **문은 열려 있고 제출에서 계정을 요구합니다** — 판정층
+        `app/export-precheck/new/page.tsx` 머리주석 「로그인 전에도 열린다 — 게이트는
+        «제출 시점»이다」〔2026-08-30 · 창업자 지시 A안〕. 「점수까지」가 그 경계입니다.
+     ⛔ 이 배지에서 범위를 다시 넓히지 마십시오(「가입 없이」·「끝까지 무료」 따위).
+        옛 랜딩의 영문 무로그인 문구가 금지 목록에 오른 것이 같은 형태였습니다
         (test/price-exposure.test.js `RETIRED_OFFER_PHRASES` 2번 · 「종료된 무상 제공 문구」).
      ⛔ 그 금지 문자열을 여기에 **리터럴로 적지 마십시오** — 그 검사는 주석까지 봅니다
-        (2026-09-01 에 이 주석이 실제로 걸렸습니다). -->
+        (2026-09-01 에 이 주석이 실제로 걸렸습니다).
+
+     ⚠️ 둘째 줄 「입력값은 저장하지 않습니다」는 아래 `.disc` 첫 문장과 **일부러 같은 말**입니다.
+        약속을 첫 화면에서 하고, 근거는 아래 깨알 글씨가 끝까지 적습니다.
+        고칠 때 두 자리를 함께 보십시오 — 한쪽만 고치면 같은 화면이 두 말을 합니다. -->
 <div class="container head">
-  <p class="badge">무료 · 1분 · 로그인 없이</p>
+  <p class="badge"><span class="badge-main">무료 · 1분 · 계정 없이 점수까지</span><span class="badge-sub">입력값은 저장하지 않습니다</span></p>
   <h1>수출 사전점검</h1>
 </div>
 
