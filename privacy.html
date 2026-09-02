@@ -523,9 +523,16 @@
              그대로 대응합니다.
              🔴 이 페이지는 2026-08-17 까지 옛 값을 들고 있었습니다 — index·check·precheck 만
                 고치고 나머지를 놓친 것이고, 그동안 같은 회사의 페이지들이 서로 다른 회사를
-                소개하고 있었습니다. test/naming-consistency.test.js 가 이제 국문 7개 · 영문 4개
-                **전부**를 셉니다(종전에는 index·precheck 둘뿐이라 이 누락을 못 봤습니다).
-             ⚠️ 고치실 때 한 곳만 고치지 마십시오. -->
+                소개하고 있었습니다.
+             🔄 **가리키던 검사가 없어졌습니다** 〔2026-09-03〕. `test/naming-consistency.test.js`
+                는 커밋 `95664ef`(「낡은 기대 79건을 정리한다」)가 지웠습니다 — 최상단
+                `read('precheck.html')` 로 죽어 39개가 한 번도 안 돌던 파일이었고, 그 안의
+                살아 있는 축은 `test/i18n-parity.test.js` 로 옮겨 살렸습니다.
+             🔴 **이제 「한 곳만 고치는」 일이 구조적으로 불가능합니다** — 사업자정보는
+                site.config.json 한 곳이 원본이고 이 페이지는 `{{biz.*}}` 토큰만 씁니다.
+                하드코딩을 막는 것은 `test/site-config.test.js` 입니다(토큰 미치환·사전에
+                없는 토큰·두 언어 묶음까지 봅니다).
+             ⛔ 여기에 상호를 리터럴로 되돌리지 마십시오 — 그 검사가 막습니다. -->
         <span class="footer-meta">수출 사전점검 · 수출 거래관리 · 수출 채권관리 · contact@theo-ne.com</span>
       </div>
       <nav class="footer-links" aria-label="정책">
