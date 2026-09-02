@@ -319,10 +319,10 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
     <div class="s" id="ns"></div>
     <div class="paths" id="paths"></div>
     <div class="disc">
-      점수는 입력하신 조건만으로 산출한 참고값입니다. 권역 점수는 구간 기준이며, 국가별 등급은 진단서에서 한국무역보험공사 자료로 확인합니다.
+      점수는 입력하신 조건만으로 산출한 참고값입니다. 권역 점수는 구간 기준이며, 국가별 등급은 수출 사전점검에서 한국무역보험공사 자료로 확인합니다.
       TROPS는 보험 상품을 추천하거나 가입을 대행하지 않으며, 미수금 회수를 보장하지 않습니다.
       가입 가능 여부와 조건은 한국무역보험공사 등 해당 기관이 약관과 심사 기준에 따라 정합니다.
-      입력값은 저장하지 않습니다. 진단서로 이동할 때 결제방식·결제기한·목적 국가와 가장 낮게 나온 항목의 영역 이름만
+      입력값은 저장하지 않습니다. 수출 사전점검으로 이동할 때 결제방식·결제기한·목적 국가와 가장 낮게 나온 항목의 영역 이름만
       주소에 담아 전달하며, 점수는 전달하지 않습니다.
     </div>
   </div>
@@ -387,7 +387,7 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
   //    무역보험·바이어 이력은 앱에 받는 칸이 없다(2026-08-31 실측).
   var F=[
     {id:'f3',key:'region',send:false,max:20,nm:'목적국',fc:'customs',
-     src:'권역 구간 기준입니다. 국가별 등급은 진단서에서 한국무역보험공사 자료로 확인합니다.',
+     src:'권역 구간 기준입니다. 국가별 등급은 수출 사전점검에서 한국무역보험공사 자료로 확인합니다.',
      ms:{20:'국가 위험이 낮은 권역입니다',16:'국가 위험이 보통인 권역입니다',
          11:'국가 위험이 높은 권역입니다',6:'국가 위험이 매우 높은 권역입니다',
          2:'권역이 정해지지 않아 최저 구간으로 잡았습니다'}},
@@ -452,12 +452,21 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
    * ⛔ 두 갈래가 각자 마크업을 조립하게 만들지 마십시오(종전에 그랬고, 그래서 한쪽만
    *    고치면 카드가 갈렸습니다).
    */
+  /*
+   * 🔴 **「수출바우처 결제 가능」을 내렸습니다** 〔2026-09-03 · 대표 지시〕.
+   *    이 배지가 「유료 · 수출바우처 결제 가능」이었는데 **바우처 결제가 아직 안 됩니다**.
+   *    결제는 api/_payment.js 의 토스 한 갈래뿐입니다(`ORDER_NAME`·`PRICE`).
+   *    ⛔ 바우처 결제가 «실제로» 열리기 전에 이 문구를 되살리지 마십시오 — 되는 줄 알고
+   *       고른 사람이 결제창에서 막힙니다. 무료 문구와 달리 이건 결제수단 «안내»입니다.
+   *    ⚠️ 지금 문구는 랜딩 2단계 배지(index.html 「유료 · 거래 한 건 단위」)와 같은 말로
+   *       맞췄습니다 — 두 자리가 같은 상품을 다르게 소개하고 있었습니다.
+   */
   function cards(url,nm,insWorst){
-    var carry=nm?('결제방식·결제기한과 목적 국가('+nm+')가 그대로 넘어갑니다. '):'목적 국가는 진단서에서 고르시면 됩니다. ';
+    var carry=nm?('결제방식·결제기한과 목적 국가('+nm+')가 그대로 넘어갑니다. '):'목적 국가는 수출 사전점검에서 고르시면 됩니다. ';
     var diagCard='<div class="path'+(insWorst?'':' lead')+'"><div class="pk">무료</div>'+
       '<h3>수출 사전점검 이어서 작성하기</h3><p>'+carry+'남은 것은 바이어확인, 계약·문서, 통관, 운송 네 영역입니다.</p>'+
       '<div class="go"><a class="btn '+(insWorst?'btn-secondary':'btn-primary')+'" href="'+url+'" data-track="precheck-diagnosis">이어서 작성하기</a></div></div>';
-    var packCard='<div class="path'+(insWorst?' lead':'')+'"><div class="pk">유료 · 수출바우처 결제 가능</div>'+
+    var packCard='<div class="path'+(insWorst?' lead':'')+'"><div class="pk">유료 · 거래 한 건 단위</div>'+
       '<h3>무역보험 준비 패키지</h3><p>이 거래 한 건을 기준으로 이용 요건 점검, 신청서 형태로 정리한 거래 정보, 청구 시 요구되는 서류 목록, 사내 결재용 자료까지 갖춰 드립니다.</p>'+
       '<div class="go"><a class="btn '+(insWorst?'btn-primary':'btn-secondary')+'" href="'+PACK+'" data-track="precheck-pack">무역보험 준비 패키지 확인</a></div></div>';
     return insWorst ? packCard+diagCard : diagCard+packCard;
@@ -514,7 +523,7 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
       if(r<wr){wr=r;worst=f}
 
       var sub='',src=f.src,msg=f.ms[v];
-      if(f.key==='region'&&nm){ sub='<span>'+nm+'</span>'; src='권역 구간 기준입니다. 진단서에서 '+nm+'의 한국무역보험공사 등급을 확인합니다.'; }
+      if(f.key==='region'&&nm){ sub='<span>'+nm+'</span>'; src='권역 구간 기준입니다. 수출 사전점검에서 '+nm+'의 한국무역보험공사 등급을 확인합니다.'; }
       if(prepaid&&f.key==='ins'){ msg='전액 선지급 건이므로 미회수 위험이 없습니다'; src='전액 선지급이면 보험 가입 여부와 무관하게 만점으로 처리합니다.'; }
 
       html+='<div class="frw"><div><div class="fsc" style="color:'+tone(r)+'">'+v+'<small>/'+f.max+'</small></div>'+
@@ -525,7 +534,7 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
     rows.innerHTML=html;
 
     if(code) q.push('dest='+code);
-    // 가장 낮은 항목의 «영역»을 넘긴다 — 진단서가 그 칸을 위로 올린다.
+    // 가장 낮은 항목의 «영역»을 넘긴다 — 수출 사전점검이 그 칸을 위로 올린다.
     // 점수는 넘기지 않는다(fc 는 영역 이름이다). 바이어 이력은 앱에 대응 칸이
     // 없어 fc 가 없고, 그때는 아무것도 넘기지 않는다.
     // 다섯이 만점이면 worst 가 첫 항목으로 남으므로(비교가 한 번도 참이 아니다)
