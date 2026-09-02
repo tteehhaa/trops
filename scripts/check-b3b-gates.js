@@ -23,13 +23,36 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
-const BASE = process.argv[2] || 'HEAD';
+/*
+ * 🔴 **BASE 를 B3-b 배치 커밋으로 «고정»합니다** 〔2026-09-03〕.
+ *    종전 기본값은 `HEAD` 였습니다 — 뒤 배치가 랜딩을 정당하게 바꿀 때마다 이 게이트가
+ *    뜻 없이 빨개졌고, **뜻 없는 빨강은 곧 안 보게 됩니다**(같은 판단이 이 파일 G6 ·
+ *    check-b1-gates.js G1 주석에 있습니다). 확인하는 것은 **B3-b 배치 한 번**입니다:
+ *    `dbaafd0~1` → `dbaafd0`.
+ * ⚠️ 인자로 다른 ref 를 주면 그 구간을 봅니다(진단용). 기본값을 HEAD 로 되돌리지 마십시오.
+ */
+const BASE = process.argv[2] || 'dbaafd0';
+/*
+ * 🔴 **배치 판을 읽습니다 — 작업 트리가 아닙니다** 〔2026-09-03〕.
+ *    이 게이트가 지키던 페이지들은 그 뒤 정당하게 바뀌거나(2026-08-29 랜딩 전면교체)
+ *    저장소를 떠났습니다(`ca47218` 이 6장, `77c9162` 이 샘플 2장). 작업 트리를 읽으면
+ *    「없는 파일」·「바뀐 문면」으로 영구히 빨개지는데, 이 게이트가 확인하는 것은
+ *    **그 배치 한 번**이라 배치 판을 읽는 것이 맞습니다.
+ * ⚠️ 그래서 이 파일은 **현재를 지키지 않습니다.** 현재를 지키는 축은 `test/` 로
+ *    옮겼습니다 — landing-invariants(되살아나면 안 되는 문구 · 무료 경로 CTA ·
+ *    알림 약속 · 알림 주기) · i18n-parity(푸터 서비스명) · price-exposure(결제 표면 부재).
+ */
+const readPinned = (rel) => execFileSync(
+  'git', ['show', BASE + ':' + rel],
+  { cwd: ROOT, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 }
+);
+
 
 let failed = 0;
 const pass = (m) => console.log('  ✓ ' + m);
 const fail = (m) => { failed++; console.log('  ✗ ' + m); };
 
-const read = (rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8');
+const read = (rel) => readPinned(rel);
 /** 주석을 걷은 마크업. 이 저장소는 주석을 인수인계 수단으로 쓰고 빌드가 떼어냅니다. */
 const markup = (s) => s.replace(/<!--[\s\S]*?-->/g, '');
 
@@ -45,7 +68,12 @@ const SAMPLES = ['sample.html', 'en-sample.html'];
  */
 function gate1() {
   console.log('\nG1. /sample · /en-sample — STATIC 등재와 빌드 산출물');
-  const STATIC = require(path.join(ROOT, 'scripts', 'build-static.js')).STATIC.html;
+  /* 🔴 **배치 판 소스에서 읽습니다** 〔2026-09-03〕 — `require` 는 «현재» 모듈을 불러오고
+     그쪽에서는 샘플 2장이 `77c9162`(유입 0 으로 내림)에 빠졌습니다. 이 게이트는
+     「B3-b 가 등재를 빠뜨리지 않았다」는 기록이라 그때의 분류표를 봐야 합니다. */
+  const STATIC = [...readPinned('scripts/build-static.js')
+    .matchAll(/\{\s*file:\s*'([^']+)',\s*locale:\s*'([^']+)'\s*\}/g)]
+    .map((m) => ({ file: m[1], locale: m[2] }));
   for (const f of SAMPLES) {
     const row = STATIC.find((r) => r.file === f);
     if (!row) { fail(f + ': STATIC.html 에 없습니다 — 배포되지 않아 404 가 됩니다'); continue; }
@@ -53,9 +81,17 @@ function gate1() {
     if (row.locale !== wantLocale) fail(f + ": locale 이 '" + row.locale + "' 입니다 (기대: '" + wantLocale + "')");
     else pass(f + " STATIC 등재 · locale '" + row.locale + "'");
 
-    const out = path.join(ROOT, 'dist', f);
-    if (!fs.existsSync(out)) fail('dist/' + f + ' 이 없습니다 — `npm run build` 를 먼저 돌리십시오');
-    else pass('dist/' + f + ' (' + fs.statSync(out).size + ' bytes)');
+    /*
+     * 🔄 **빌드 산출물 확인은 «거뒀습니다»** 〔2026-09-03〕. `dist/` 는 버전 관리되지
+     *    않아 배치 판을 복원할 수 없습니다 — 지금 빌드는 «현재» 소스에서 나오고,
+     *    샘플 2장은 `77c9162`(유입 0 으로 내림)에 저장소를 떠났습니다. 그래서 이 자리는
+     *    영구히 「dist/ 에 없습니다」였습니다.
+     * 🔴 이 게이트가 «검사할 수 있는» 절반은 위 STATIC 등재입니다 — 배치가 정말로
+     *    빠뜨렸는지는 그것으로 판정됩니다(등재를 빠뜨리면 배포에서 404 가 나던 그 축).
+     * 🔴 «현재» 분류표와 산출물이 맞는지는 test/build-static.test.js 가 봅니다.
+     * ⛔ 조용히 지우지 않았습니다 — 왜 절반만 남았는지가 여기 있어야 다음 사람이
+     *    「검사가 약해졌다」로 오해하지 않습니다.
+     */
   }
   /* 예시 문서라 검색에 실물처럼 잡히면 안 됩니다 — 원본이 들고 온 성질이고 지키기만 합니다. */
   for (const f of SAMPLES) {
@@ -195,8 +231,9 @@ function gate6() {
   console.log('\nG6. 폐기된 산출물 명칭 저장소 전체 0건 — PRD §7 · §8-1 결정 1');
   /* ⚠️ -z 필수 — 기본 출력은 한글 경로를 따옴표 인용해 내보내고, 그 문자열로 파일을
      열면 ENOENT 가 나 조용히 건너뜁니다(B1 에서 실제로 겪었습니다). */
+  /* 🔴 목록도 «배치 판»에서 읽습니다 〔2026-09-03〕 — 사유는 이 파일 머리 `readPinned` 주석. */
   const files = execFileSync(
-    'git', ['ls-files', '-z', '--cached', '--others', '--exclude-standard'],
+    'git', ['ls-tree', '-r', '-z', '--name-only', BASE],
     { cwd: ROOT, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 }
   ).split('\0').filter((f) => f && !SKIP.test(f) && !BINARY.test(f));
 
@@ -204,8 +241,7 @@ function gate6() {
   for (const f of files) {
     let t;
     try {
-      if (!fs.statSync(path.join(ROOT, f)).isFile()) continue;
-      t = fs.readFileSync(path.join(ROOT, f), 'utf8');
+      t = readPinned(f);
     } catch (e) { fail('읽지 못한 파일: ' + f + ' (' + e.code + ')'); continue; }
     let at = t.indexOf(RETIRED_WORD);
     while (at !== -1) {
@@ -245,17 +281,17 @@ function gate7() {
   for (const file of ['precheck.html', 'en-precheck.html']) {
     let before;
     try {
-      before = execFileSync('git', ['show', BASE + ':' + file], { cwd: ROOT, encoding: 'utf8' });
+      before = execFileSync('git', ['show', BASE + '~1:' + file], { cwd: ROOT, encoding: 'utf8' });
     } catch (e) {
-      fail(file + ': ' + BASE + ' 판을 읽지 못했습니다 — 게이트를 통과시킬 수 없습니다');
+      fail(file + ': 배치 직전 판을 읽지 못했습니다 — 게이트를 통과시킬 수 없습니다');
       continue;
     }
     const after = read(file);
 
     let a, b;
     try {
-      a = protectedSlice(before, file, BASE);
-      b = protectedSlice(after, file, 'working');
+      a = protectedSlice(before, file, BASE + '~1');
+      b = protectedSlice(after, file, BASE);
     } catch (e) { fail(e.message); continue; }
 
     if (a === b) pass(file + ': 보호 구간(패턴 줄 + 결제 폼 블록) 바이트 동일');
@@ -265,7 +301,7 @@ function gate7() {
   for (const file of ['precheck.html', 'en-precheck.html']) {
     let out = '';
     try {
-      out = execFileSync('git', ['diff', '--numstat', BASE, '--', file], { cwd: ROOT, encoding: 'utf8' }).trim();
+      out = execFileSync('git', ['diff', '--numstat', BASE + '~1', BASE, '--', file], { cwd: ROOT, encoding: 'utf8' }).trim();
     } catch (e) { fail(file + ': diff 를 읽지 못했습니다'); continue; }
     if (out === '') pass(file + ': 파일 전체 diff 0줄');
     else fail(file + ': 파일이 바뀌었습니다 — ' + out);
@@ -295,7 +331,12 @@ function gate8() {
     else fail('국문 ' + name + ' 이 index.html 에 없습니다');
   }
   /* 영문에서 한 것 — 샘플 페이지 등재는 문구가 필요 없어 함께 나갔습니다. */
-  const STATIC = require(path.join(ROOT, 'scripts', 'build-static.js')).STATIC.html;
+  /* 🔴 **배치 판 소스에서 읽습니다** 〔2026-09-03〕 — `require` 는 «현재» 모듈을 불러오고
+     그쪽에서는 샘플 2장이 `77c9162`(유입 0 으로 내림)에 빠졌습니다. 이 게이트는
+     「B3-b 가 등재를 빠뜨리지 않았다」는 기록이라 그때의 분류표를 봐야 합니다. */
+  const STATIC = [...readPinned('scripts/build-static.js')
+    .matchAll(/\{\s*file:\s*'([^']+)',\s*locale:\s*'([^']+)'\s*\}/g)]
+    .map((m) => ({ file: m[1], locale: m[2] }));
   if (STATIC.some((r) => r.file === 'en-sample.html' && r.locale === 'en')) pass('영문 샘플 등재');
   else fail('en-sample.html 이 영문으로 등재되지 않았습니다');
 

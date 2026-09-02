@@ -20,7 +20,30 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
-const BASE = process.argv[2] || 'HEAD';
+/*
+ * 🔴 **BASE 를 B2 배치 커밋으로 «고정»합니다** 〔2026-09-03〕.
+ *    종전 기본값은 `HEAD` 였습니다 — 뒤 배치가 랜딩을 정당하게 바꿀 때마다 이 게이트가
+ *    뜻 없이 빨개졌고, **뜻 없는 빨강은 곧 안 보게 됩니다**(같은 판단이 이 파일 G6 ·
+ *    check-b1-gates.js G1 주석에 있습니다). 확인하는 것은 **B2 배치 한 번**입니다:
+ *    `ad1a4e1~1` → `ad1a4e1`.
+ * ⚠️ 인자로 다른 ref 를 주면 그 구간을 봅니다(진단용). 기본값을 HEAD 로 되돌리지 마십시오.
+ */
+const BASE = process.argv[2] || 'ad1a4e1';
+/*
+ * 🔴 **배치 판을 읽습니다 — 작업 트리가 아닙니다** 〔2026-09-03〕.
+ *    이 게이트가 지키던 페이지들은 그 뒤 정당하게 바뀌거나(2026-08-29 랜딩 전면교체)
+ *    저장소를 떠났습니다(`ca47218` 이 6장, `77c9162` 이 샘플 2장). 작업 트리를 읽으면
+ *    「없는 파일」·「바뀐 문면」으로 영구히 빨개지는데, 이 게이트가 확인하는 것은
+ *    **그 배치 한 번**이라 배치 판을 읽는 것이 맞습니다.
+ * ⚠️ 그래서 이 파일은 **현재를 지키지 않습니다.** 현재를 지키는 축은 `test/` 로
+ *    옮겼습니다 — landing-invariants(되살아나면 안 되는 문구 · 무료 경로 CTA ·
+ *    알림 약속 · 알림 주기) · i18n-parity(푸터 서비스명) · price-exposure(결제 표면 부재).
+ */
+const readPinned = (rel) => execFileSync(
+  'git', ['show', BASE + ':' + rel],
+  { cwd: ROOT, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 }
+);
+
 
 let failed = 0;
 const pass = (m) => console.log('  ✓ ' + m);
@@ -55,12 +78,12 @@ function gate1() {
   for (const file of ['precheck.html', 'en-precheck.html']) {
     let before;
     try {
-      before = execFileSync('git', ['show', BASE + ':' + file], { cwd: ROOT, encoding: 'utf8' });
+      before = execFileSync('git', ['show', BASE + '~1:' + file], { cwd: ROOT, encoding: 'utf8' });
     } catch (e) {
       fail(file + ': ' + BASE + ' 판을 읽지 못했습니다 — 게이트를 통과시킬 수 없습니다');
       continue;
     }
-    const after = fs.readFileSync(path.join(ROOT, file), 'utf8');
+    const after = readPinned(file);
 
     let a, b;
     try {
@@ -115,8 +138,10 @@ const BINARY = /\.(png|jpe?g|gif|webp|svg|ico|pdf|woff2?|ttf|eot|mp4|zip)$/i;
  * ⚠️ docs/ 는 뺍니다 — PRD·설계서가 「무엇을 지웠는지」를 적으려면 그 이름을 써야 합니다.
  */
 function sourceFiles() {
+  /* 🔴 목록도 «배치 판»에서 읽습니다 〔2026-09-03〕 — 작업 트리 목록을 쓰면 배치 뒤에
+     생긴 파일(contact.html · api/_precheck-metrics.js …)을 배치 판에서 열려다 죽습니다. */
   return execFileSync(
-    'git', ['ls-files', '-z', '--cached', '--others', '--exclude-standard'],
+    'git', ['ls-tree', '-r', '-z', '--name-only', BASE],
     { cwd: ROOT, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 }
   ).split('\0').filter((f) => f && IN_SCOPE(f) && !BINARY.test(f));
 }
@@ -125,8 +150,7 @@ function readAll() {
   const out = [];
   for (const f of sourceFiles()) {
     try {
-      if (!fs.statSync(path.join(ROOT, f)).isFile()) continue;
-      out.push([f, fs.readFileSync(path.join(ROOT, f), 'utf8')]);
+      out.push([f, readPinned(f)]);
     } catch (e) {
       fail('읽지 못한 파일이 있습니다: ' + f + ' (' + e.code + ')');
     }
@@ -154,17 +178,20 @@ function gate2(files) {
 
 const FOOTER_KO_OLD = '수출 사전점검 · 바이어 확인 · 기한 관리';
 /*
- * 🔄 **`수출 계약관리` → `수출 거래관리`** 〔2026-09-03 · 대표 지시〕.
- *    푸터 서비스명은 랜딩 3단계 «상품명»과 **다른 목록입니다** — 상품명은 같은 날
- *    「수출 사전점검 리포트 · 무역보험 준비 패키지 · 수출대금 관리」로 갔고, 이 줄은
- *    사업 범위 표기라 종전 이름을 유지합니다. ⛔ 둘을 같은 것으로 보고 맞추지 마십시오.
- * ⚠️ 영문도 같은 날 함께 옮겼습니다 — `contract` → `transaction`.
- *    「거래」의 영문은 `transaction` 으로 잡았습니다(`receivables management` 와 같은
- *    `Export … management` 꼴을 유지하고, 「계약」이 아니라 「거래」라는 축을 지킵니다).
+ * 🔴 **이 값은 B2 배치 «당시»의 문자열입니다 — 현재 값이 아닙니다** 〔2026-09-03〕.
+ *    2026-09-03 에 가운데가 `수출 계약관리` → `수출 거래관리`(영문 `contract` →
+ *    `transaction`)로 바뀌었지만, 이 게이트는 **B2 가 그때 14곳을 치환했다**는 기록이라
+ *    그때의 값을 들고 있어야 합니다. 현재 값으로 바꾸면 배치 판에 없는 문자열을 찾아
+ *    영구히 빨개집니다.
+ * 🔴 **현재 값을 지키는 것은 `test/i18n-parity.test.js` ⑥ 절입니다** — 「이 줄을 싣는
+ *    페이지」를 실측으로 골라 로케일마다 한 벌인지 봅니다(손 목록 0). 옛 문자열로
+ *    되돌리면 실제로 red 가 나는 것까지 대조해 두었습니다.
+ * ⚠️ 푸터 서비스명은 랜딩 3단계 «상품명»과 **다른 목록입니다**(사업 범위 표기 · 앱 콘솔
+ *    탭과 같은 활동 축). ⛔ 둘을 같은 것으로 보고 맞추지 마십시오.
  */
-const FOOTER_KO_NEW = '수출 사전점검 · 수출 거래관리 · 수출 채권관리';
+const FOOTER_KO_NEW = '수출 사전점검 · 수출 계약관리 · 수출 채권관리';
 const FOOTER_EN_OLD = 'Export pre-check · Buyer check · Deadline tracking';
-const FOOTER_EN_NEW = 'Export pre-check · Export transaction management · Export receivables management';
+const FOOTER_EN_NEW = 'Export pre-check · Export contract management · Export receivables management';
 
 /* PRD §6-2 는 국문 6개로 적었지만 privacy.html 이 빠져 있었습니다 — 실측 7개입니다. */
 const FOOTER_KO = ['index.html', 'uae.html', 'nda.html', 'refund.html', 'precheck.html', 'check.html', 'privacy.html'];
@@ -175,7 +202,7 @@ function gate3() {
   let bad = 0;
   const check = (list, want, old, label) => {
     for (const f of list) {
-      const s = fs.readFileSync(path.join(ROOT, f), 'utf8');
+      const s = readPinned(f);
       if (s.indexOf(want) === -1) { fail(f + ': 새 ' + label + ' 서비스명이 없습니다'); bad++; }
       if (s.indexOf(old) !== -1) { fail(f + ': 구 문자열이 남아 있습니다'); bad++; }
     }
@@ -189,7 +216,7 @@ function gate3() {
 
 function gate4() {
   console.log('\nG4. 상품 ③(수출 채권·보험관리) 문구에 「알려드립니다」 부재 — P-3');
-  const s = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const s = readPinned('index.html');
   const start = s.indexOf('id="feat-timeline-panel"');
   if (start === -1) { fail('상품 ③ 패널(#feat-timeline-panel)을 찾지 못했습니다'); return; }
   const end = s.indexOf('</div>\n\n        </div>', start);
@@ -211,13 +238,19 @@ const CTA = [
      🔴 B2 가 세운 것(「유료 아니면 문의뿐」을 없앤다)은 그대로입니다 — 무료 경로가
         더 짧아졌을 뿐입니다. ⛔ 이 줄을 지우지 마십시오. 목적지가 사라지면 그때는
         정말로 B2 가 되돌아간 것입니다. */
-  ['check.html', 'https://app.trops.kr/precheck',  '/check 서류 없음 분기'],
+  /* 🔴 **배치 «당시»의 목적지입니다** 〔2026-09-03 고정〕. 위 🔄 주석이 적은 대로 이 자리는
+     2026-08-23 B3-b 에서 앱 사전점검 화면으로 옮겨졌지만, 이 게이트는 **B2 한 번**의
+     기록이라 B2 가 세운 값(실측: `href="/precheck"`)을 들고 있어야 합니다.
+     ⛔ 현재 목적지로 바꾸지 마십시오 — 배치 판에 없는 문자열을 찾아 영구히 빨개집니다.
+     🔴 «현재» 무료 경로가 살아 있는지는 test/landing-invariants.test.js 가 봅니다
+        (「무료 경로 CTA 가 랜딩에 살아 있다」 — URL 이 아니라 존재로 축을 좁혔습니다). */
+  ['check.html', '/precheck',  '/check 서류 없음 분기'],
 ];
 
 function gate5() {
   console.log('\nG5. CTA 링크 목적지');
   for (const [f, url, label] of CTA) {
-    const s = fs.readFileSync(path.join(ROOT, f), 'utf8').replace(/<!--[\s\S]*?-->/g, '');
+    const s = readPinned(f).replace(/<!--[\s\S]*?-->/g, '');
     if (s.indexOf('href="' + url + '"') !== -1) pass(label + ' → ' + url);
     else fail(label + ': href="' + url + '" 가 없습니다');
   }

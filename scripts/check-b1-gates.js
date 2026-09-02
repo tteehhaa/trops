@@ -20,7 +20,15 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
-const BASE = process.argv[2] || 'HEAD';
+/*
+ * 🔴 **BASE 를 B1 배치 커밋으로 «고정»합니다** 〔2026-09-03〕.
+ *    종전 기본값은 `HEAD` 였습니다 — 뒤 배치가 랜딩·결제 표면을 정당하게 바꿀 때마다
+ *    이 게이트가 뜻 없이 빨개졌고, **뜻 없는 빨강은 곧 안 보게 됩니다**(같은 판단과
+ *    같은 처리가 check-b2-gates.js G6 · check-b3a-gates.js G6 주석에 있습니다).
+ *    이 게이트가 확인하는 것은 **B1 배치 한 번**입니다: `a1925ae~1` → `a1925ae`.
+ * ⚠️ 인자로 다른 ref 를 주면 그 구간을 봅니다(진단용). 기본값을 HEAD 로 되돌리지 마십시오.
+ */
+const BASE = process.argv[2] || 'a1925ae';
 
 let failed = 0;
 const pass = (m) => console.log('  ✓ ' + m);
@@ -50,22 +58,34 @@ function protectedSlice(text, file, label) {
   return JSON.stringify({ hits, block: lines.slice(start, end + 1) }, null, 1);
 }
 
+/*
+ * 🔴 **양끝을 «둘 다» git 에서 읽습니다** 〔2026-09-03〕. 종전에는 `BASE` 판과 **작업
+ *    트리**를 견줬습니다. 그 뒤 `ca47218` 이 결제 폼을 이 저장소에서 내보냈고
+ *    (`en-precheck.html` 은 파일째 사라졌습니다) 작업 트리 쪽에 견줄 것이 없어져
+ *    게이트가 「블록 경계를 찾지 못했습니다」로 죽었습니다.
+ * 🔴 **결제 표면의 «현재»를 지키는 것은 이제 test/price-exposure.test.js 입니다** —
+ *    「살아 있는 어느 페이지에도 결제 표면이 없다」·「원화 금액이 없다」를 단정하고,
+ *    검출기가 실제로 무는지 대조 테스트까지 갖췄습니다(0건 통과 금지). 그쪽이 더 센
+ *    보증입니다 — 바이트 대조가 아니라 «부재»를 단정합니다.
+ * ⛔ 그래서 이 게이트는 지우지 않고 **B1 배치의 기록**으로 얼립니다. 지우면
+ *    「B1 이 결제 표면을 건드리지 않았다」는 확인 수단이 사라집니다.
+ */
 function gate1() {
-  console.log('\nG1. 가격·결제 요소 diff 0줄 (base: ' + BASE + ')');
+  console.log('\nG1. 가격·결제 요소 diff 0줄 — B1 배치 구간 고정(' + BASE + '~1 → ' + BASE + ')');
   for (const file of ['precheck.html', 'en-precheck.html']) {
-    let before;
+    let before, after;
     try {
-      before = execFileSync('git', ['show', BASE + ':' + file], { cwd: ROOT, encoding: 'utf8' });
+      before = execFileSync('git', ['show', BASE + '~1:' + file], { cwd: ROOT, encoding: 'utf8' });
+      after = execFileSync('git', ['show', BASE + ':' + file], { cwd: ROOT, encoding: 'utf8' });
     } catch (e) {
-      fail(file + ': ' + BASE + ' 판을 읽지 못했습니다 — 게이트를 통과시킬 수 없습니다');
+      fail(file + ': 배치 판을 읽지 못했습니다 — 게이트를 통과시킬 수 없습니다');
       continue;
     }
-    const after = fs.readFileSync(path.join(ROOT, file), 'utf8');
 
     let a, b;
     try {
-      a = protectedSlice(before, file, BASE);
-      b = protectedSlice(after, file, 'working');
+      a = protectedSlice(before, file, BASE + '~1');
+      b = protectedSlice(after, file, BASE);
     } catch (e) {
       fail(e.message);
       continue;

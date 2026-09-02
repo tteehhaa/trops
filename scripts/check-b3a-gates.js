@@ -20,7 +20,30 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
-const BASE = process.argv[2] || 'HEAD';
+/*
+ * 🔴 **BASE 를 B3-a 배치 커밋으로 «고정»합니다** 〔2026-09-03〕.
+ *    종전 기본값은 `HEAD` 였습니다 — 뒤 배치가 랜딩을 정당하게 바꿀 때마다 이 게이트가
+ *    뜻 없이 빨개졌고, **뜻 없는 빨강은 곧 안 보게 됩니다**(같은 판단이 이 파일 G6 ·
+ *    check-b1-gates.js G1 주석에 있습니다). 확인하는 것은 **B3-a 배치 한 번**입니다:
+ *    `061da9f~1` → `061da9f`.
+ * ⚠️ 인자로 다른 ref 를 주면 그 구간을 봅니다(진단용). 기본값을 HEAD 로 되돌리지 마십시오.
+ */
+const BASE = process.argv[2] || '061da9f';
+/*
+ * 🔴 **배치 판을 읽습니다 — 작업 트리가 아닙니다** 〔2026-09-03〕.
+ *    이 게이트가 지키던 페이지들은 그 뒤 정당하게 바뀌거나(2026-08-29 랜딩 전면교체)
+ *    저장소를 떠났습니다(`ca47218` 이 6장, `77c9162` 이 샘플 2장). 작업 트리를 읽으면
+ *    「없는 파일」·「바뀐 문면」으로 영구히 빨개지는데, 이 게이트가 확인하는 것은
+ *    **그 배치 한 번**이라 배치 판을 읽는 것이 맞습니다.
+ * ⚠️ 그래서 이 파일은 **현재를 지키지 않습니다.** 현재를 지키는 축은 `test/` 로
+ *    옮겼습니다 — landing-invariants(되살아나면 안 되는 문구 · 무료 경로 CTA ·
+ *    알림 약속 · 알림 주기) · i18n-parity(푸터 서비스명) · price-exposure(결제 표면 부재).
+ */
+const readPinned = (rel) => execFileSync(
+  'git', ['show', BASE + ':' + rel],
+  { cwd: ROOT, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 }
+);
+
 
 let failed = 0;
 const pass = (m) => console.log('  ✓ ' + m);
@@ -55,12 +78,12 @@ function gate1() {
   for (const file of ['precheck.html', 'en-precheck.html']) {
     let before;
     try {
-      before = execFileSync('git', ['show', BASE + ':' + file], { cwd: ROOT, encoding: 'utf8' });
+      before = execFileSync('git', ['show', BASE + '~1:' + file], { cwd: ROOT, encoding: 'utf8' });
     } catch (e) {
       fail(file + ': ' + BASE + ' 판을 읽지 못했습니다 — 게이트를 통과시킬 수 없습니다');
       continue;
     }
-    const after = fs.readFileSync(path.join(ROOT, file), 'utf8');
+    const after = readPinned(file);
 
     let a, b;
     try {
@@ -101,7 +124,7 @@ const BASIS_AXES = ['규정 근거', '관세 근거', '문서 기준'];
 
 function gate2() {
   console.log('\nG2. 근거 섹션 §5-12');
-  const s = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8').replace(/<!--[\s\S]*?-->/g, '');
+  const s = readPinned('index.html').replace(/<!--[\s\S]*?-->/g, '');
   const a = s.indexOf('<section class="basis');
   const b = s.indexOf('</section>', a);
   if (a === -1 || b === -1) { fail('근거 섹션을 찾지 못했습니다'); return; }
@@ -196,7 +219,7 @@ function gate4() {
   }
   /* 마크업이 그 파일을 실제로 참조하는지 — 파일만 있고 안 쓰면 뜻이 없습니다. */
   for (const f of ['index.html', 'en.html']) {
-    const s = fs.readFileSync(path.join(ROOT, f), 'utf8');
+    const s = readPinned(f);
     const miss = TAB_IMAGES.filter((rel) => s.indexOf('/' + rel) === -1);
     if (miss.length === 0) pass(f + ': 세 이미지를 모두 참조');
     else fail(f + ': 참조 없음 — ' + miss.join(', '));
@@ -217,8 +240,8 @@ const BILINGUAL = [
 
 function gate5() {
   console.log('\nG5. 국문·영문 양쪽 반영');
-  const ko = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-  const en = fs.readFileSync(path.join(ROOT, 'en.html'), 'utf8');
+  const ko = readPinned('index.html');
+  const en = readPinned('en.html');
   for (const [name, koNeedle, enNeedle] of BILINGUAL) {
     const a = ko.indexOf(koNeedle) !== -1, b = en.indexOf(enNeedle) !== -1;
     if (a && b) pass(name);
@@ -314,11 +337,24 @@ const FAQ_EN = [
   'Does what TROPS organises replace legal advice?',
 ];
 
+/*
+ * 🔴 **이 게이트만 «다른 커밋»에 고정합니다** 〔2026-09-03〕. PRD §5-8 확정본 3문항은
+ *    B3-a 배치 커밋(`061da9f`)이 아니라 **후속 커밋 `c7a9696`**(「copy(faq): 결과물의
+ *    성격 3문항을 PRD 확정본으로 교체」)에 들어왔습니다. BASE 로 보면 배치 판에 아직
+ *    없는 문장을 찾아 8건이 빨개집니다 — 회귀가 아니라 **핀이 틀린 것**이었습니다.
+ * ⚠️ 배치와 후속 교체가 갈린 자리라 핀이 둘입니다. ⛔ 하나로 합치지 마십시오.
+ */
+const FAQ_PIN = 'c7a9696';
+
 function gate7() {
-  console.log('\nG7. FAQ 「결과물의 성격」 — PRD §5-8 확정본');
+  console.log('\nG7. FAQ 「결과물의 성격」 — PRD §5-8 확정본 (고정: ' + FAQ_PIN + ')');
   const strip = (t) => t.replace(/<!--[\s\S]*?-->/g, '');
-  const ko = strip(fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8'));
-  const en = strip(fs.readFileSync(path.join(ROOT, 'en.html'), 'utf8'));
+  const readFaq = (rel) => execFileSync(
+    'git', ['show', FAQ_PIN + ':' + rel],
+    { cwd: ROOT, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 }
+  );
+  const ko = strip(readFaq('index.html'));
+  const en = strip(readFaq('en.html'));
 
   if (ko.indexOf(FAQ_REQUIRED) !== -1) pass('필수 문장 포함(주석 제외): 「' + FAQ_REQUIRED + '」');
   else fail('🔴 필수 문장이 답변에 없습니다: 「' + FAQ_REQUIRED + '」');
