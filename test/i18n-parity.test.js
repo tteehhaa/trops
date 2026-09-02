@@ -179,6 +179,45 @@ test('[대조] 검출기가 실제로 문다 — 0건 통과 금지', () => {
   assert.ok(linked.length >= 3, 'en.html 에서 내부 링크를 ' + linked.length + '개만 찾았습니다');
 });
 
+/* ══ ⑥ 푸터 서비스명 — 국문·영문이 같은 셋을 말한다 ══════════════════════ */
+
+/*
+ * 🔄 **`scripts/check-b2-gates.js` G3 에서 옮겨 왔습니다** 〔2026-09-03〕. 그 게이트는
+ *    완료된 배치 기록이라 배치 커밋에 고정되는데, 이 축은 계속 유효한 «짝» 불변입니다.
+ * 🔴 **손 목록이 아닙니다** — 종전 게이트는 국문 7개·영문 7개를 손으로 적었고 그중
+ *    7개가 `ca47218` 로 사라져 게이트가 ENOENT 로 죽었습니다. 여기서는 「이 줄을 «싣는»
+ *    페이지」를 실측으로 고릅니다. 페이지가 늘거나 줄어도 이 파일을 고칠 일이 없습니다.
+ * ⚠️ 이 셋은 랜딩 3단계 «상품명»과 **다른 목록입니다**(사업 범위 표기). 상품명은
+ *    2026-09-03 에 따로 움직였습니다 — ⛔ 두 목록을 같은 것으로 보고 맞추지 마십시오.
+ */
+const FOOTER_SERVICES = {
+  ko: '수출 사전점검 · 수출 거래관리 · 수출 채권관리',
+  en: 'Export pre-check · Export transaction management · Export receivables management',
+};
+
+const FOOTER_PAGES = STATIC_PAGES.filter((p) => read(p.file).includes('class="footer-meta"'));
+
+test('푸터 서비스명을 싣는 페이지가 실제로 잡힌다 — 빈 목록은 조용한 초록불이다', () => {
+  assert.ok(
+    FOOTER_PAGES.length > 0,
+    '푸터 서비스명을 싣는 페이지가 0개입니다 — 아래 검사가 아무것도 재지 않습니다'
+  );
+});
+
+test('🔴 푸터 서비스명이 로케일마다 한 벌로 같다', () => {
+  const offenders = [];
+  for (const { file, locale } of FOOTER_PAGES) {
+    const want = FOOTER_SERVICES[locale];
+    assert.ok(want, file + ': 로케일 ' + locale + ' 의 정본 문자열이 없습니다');
+    if (!body(read(file)).includes(want)) offenders.push(file + ' (' + locale + ')');
+  }
+  assert.deepStrictEqual(
+    offenders, [],
+    '푸터 서비스명이 정본과 다른 페이지가 있습니다: ' + offenders.join(' · ') +
+    ' — 한 곳만 고치면 같은 회사가 다른 사업을 소개합니다'
+  );
+});
+
 /* ══ ⑤ 폐기된 상품명 ══════════════════════════════════════════════════════ */
 
 test('🔴 폐기된 상품명이 어느 페이지 본문에도 없다', () => {

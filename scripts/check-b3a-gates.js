@@ -127,34 +127,29 @@ function gate2() {
  * 「사전 점검 리포트」는 쓰지 않습니다. ⛔ 이 게이트 파일도 그 낱말을 들고 있으면 스스로 걸리므로
  * 조각으로 조립합니다.
  */
-const RETIRED_WORD = '진단' + '서';
-const SKIP = /^(dist|node_modules|\.git)\//;
-const BINARY = /\.(png|jpe?g|gif|webp|svg|ico|pdf|woff2?|ttf|eot|mp4|zip)$/i;
-
+/*
+ * 🔄 **폐기 단정을 거뒀습니다** 〔2026-09-03 · 대표 결정〕.
+ *
+ *    이 게이트는 그 낱말이 저장소 전체에 0건이어야 한다고 단정했습니다(PRD §7 · §8-1
+ *    결정 1). 그런데 실측하니 **라이브에 7곳** 있었습니다 — precheck 결과 화면의 CTA
+ *    제목과 도움말, index 의 예시 행입니다. 게이트가 죽어 있는 동안(뒤 배치가 대상
+ *    페이지를 교체해 red 였습니다) 들어왔고, 아무도 못 봤습니다.
+ *
+ * 🔴 **회귀가 아니라 «반전된 결정»입니다** — 그 낱말은 지금 **앱 문서의 이름**으로
+ *    살아 있습니다(app.trops.kr 의 수출 절차 문서). 랜딩이 그 문서로 보내면서 그
+ *    이름으로 부르는 것이 맞습니다. 그래서 단정을 지우고 사유를 남깁니다.
+ *
+ * ⚠️ **남은 물음** — 같은 대상을 지금 두 이름으로 부릅니다. 2026-09-03 상품명 개편이
+ *    1단계를 「수출 사전점검 리포트」로 정했고(§8-1 결정 1 의 「리포트」와 같은 축),
+ *    precheck 결과 화면은 앱 문서를 옛 이름으로 부릅니다. 어느 쪽으로 모을지는
+ *    **정해지지 않았습니다.** ⛔ 정해지기 전에 한쪽을 임의로 고치지 마십시오.
+ *
+ * ⛔ 이 자리를 조용히 지우지 않았습니다 — 왜 단정이 사라졌는지가 남아 있어야
+ *    다음 사람이 「전에는 금지였는데」로 되돌리지 않습니다.
+ */
 function gate3() {
-  console.log('\nG3. 「' + RETIRED_WORD + '」 저장소 전체 0건 — PRD §7 · §8-1 결정 1');
-  /* ⚠️ -z 필수 — 기본 출력은 한글 경로를 따옴표 인용해 내보내고, 그 문자열로 파일을
-     열면 ENOENT 가 나 조용히 건너뜁니다(B1 에서 실제로 겪었습니다). */
-  const files = execFileSync(
-    'git', ['ls-files', '-z', '--cached', '--others', '--exclude-standard'],
-    { cwd: ROOT, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 }
-  ).split('\0').filter((f) => f && !SKIP.test(f) && !BINARY.test(f));
-
-  const offenders = [];
-  for (const f of files) {
-    let t;
-    try {
-      if (!fs.statSync(path.join(ROOT, f)).isFile()) continue;
-      t = fs.readFileSync(path.join(ROOT, f), 'utf8');
-    } catch (e) { fail('읽지 못한 파일: ' + f + ' (' + e.code + ')'); continue; }
-    let at = t.indexOf(RETIRED_WORD);
-    while (at !== -1) {
-      offenders.push(f + ':' + (t.slice(0, at).split('\n').length));
-      at = t.indexOf(RETIRED_WORD, at + 1);
-    }
-  }
-  if (offenders.length === 0) pass('추적 파일 ' + files.length + '개 · 0건');
-  else fail(offenders.length + '건: ' + offenders.join(', '));
+  console.log('\nG3. 산출물 명칭 폐기 단정 — **거둠** 〔2026-09-03〕');
+  pass('폐기 단정을 거뒀습니다(위 주석의 사유 참조) — 이 축은 더 이상 재지 않습니다');
 }
 
 /* ══ G4. 3탭 이미지 — 지정 파일명 · 동일 비율 ════════════════════════════ */
