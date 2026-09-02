@@ -153,7 +153,14 @@ function gate2(files) {
 /* ══ G3. 푸터 서비스명 전수 치환 ══════════════════════════════════════════ */
 
 const FOOTER_KO_OLD = '수출 사전점검 · 바이어 확인 · 기한 관리';
-const FOOTER_KO_NEW = '수출 사전점검 · 수출 계약관리 · 수출 채권관리';
+/*
+ * 🔄 **`수출 계약관리` → `수출 거래관리`** 〔2026-09-03 · 대표 지시〕.
+ *    푸터 서비스명은 랜딩 3단계 «상품명»과 **다른 목록입니다** — 상품명은 같은 날
+ *    「수출 사전점검 리포트 · 무역보험 준비 패키지 · 수출대금 관리」로 갔고, 이 줄은
+ *    사업 범위 표기라 종전 이름을 유지합니다. ⛔ 둘을 같은 것으로 보고 맞추지 마십시오.
+ * ⚠️ 영문(`FOOTER_EN_NEW`)은 아직 `contract management` 입니다 — 국문만 옮겼습니다.
+ */
+const FOOTER_KO_NEW = '수출 사전점검 · 수출 거래관리 · 수출 채권관리';
 const FOOTER_EN_OLD = 'Export pre-check · Buyer check · Deadline tracking';
 const FOOTER_EN_NEW = 'Export pre-check · Export contract management · Export receivables management';
 
