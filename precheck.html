@@ -3,14 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<!-- 🔴 **이름은 「수출 사전점검」 하나입니다** 〔2026-09-01 · 대표 결정〕.
-     종전에는 이름이 셋이었습니다 — 랜딩 버튼 「1분 점검」 · 이 페이지 「수출건 1분 점검」 ·
-     앱 「수출 절차 진단서」. 버튼에 적힌 말과 도착한 페이지의 제목이 다르면 잘못 눌렀다고
-     느낍니다. title·h1·랜딩 CTA 를 한 이름으로 모았습니다.
-     ⚠️ **붙여쓰기입니다** — 판정층 trops_a 가 이미 그렇게 씁니다(「수출 사전점검 — 진단하기」·
-        「— 결과보기」·「— 통관」). 띄어쓰면 같은 제품이 두 이름을 갖습니다.
+<!-- 🔴 **이름은 「수출 사전점검 리포트」 하나입니다** 〔2026-09-03 · 대표 결정 — 상품명 3종 개편〕.
+     ⓐ 종전에는 이름이 셋이었습니다 — 랜딩 버튼 「1분 점검」 · 이 페이지 「수출건 1분 점검」 ·
+        앱 「수출 절차 진단서」. 버튼에 적힌 말과 도착한 페이지의 제목이 다르면 잘못 눌렀다고
+        느낍니다. 그래서 2026-09-01 에 title·h1·랜딩 CTA 를 한 이름으로 모았고,
+     ⓑ 2026-09-03 에 그 «한 이름»이 「수출 사전점검」 → 「수출 사전점검 리포트」로 바뀌었습니다.
+        ⛔ 한 이름 원칙은 그대로입니다 — title·h1·랜딩 3단계 카드 제목을 **따로 움직이지
+           마십시오**. 하나만 바꾸면 ⓐ 의 문제가 되돌아옵니다.
+     🔴 **미결 — 판정층 trops_a 가 아직 옛 이름을 씁니다** 〔2026-09-03〕.
+        그쪽은 「수출 사전점검 — 진단하기」·「— 결과보기」·「— 통관」이라 지금 **두 이름이
+        서 있습니다**. 이 저장소만으로는 닫을 수 없는 항목입니다(다른 저장소).
+        ⚠️ 그때도 **붙여쓰기**입니다 — 「사전점검」을 띄어쓰면 같은 제품이 또 갈라집니다.
      ⚠️ 꼬리표는 `이름 — TROPS` 로 refund.html·privacy.html 과 같은 꼴입니다. -->
-<title>수출 사전점검 — TROPS</title>
+<title>수출 사전점검 리포트 — TROPS</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
 <style>
 /*
@@ -223,7 +228,7 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
 
 <!-- ⚠️ 이 이름은 **app.trops.kr 의 무료 흐름**을 가리킵니다. refund.html 머리주석이 적어 둔
      이름 충돌의 반대편입니다 — 그 문서는 **유료 서류 대조**라서 「서류 사전 확인」으로 갔고,
-     여기(무료 흐름의 입구)가 「수출 사전점검」을 쓰는 자리입니다.
+     여기(무료 흐름의 입구)가 「수출 사전점검 리포트」를 쓰는 자리입니다.
      ⛔ 이 자리에 유료 상품 이름을 붙이지 마십시오.
 
      🔴 **배지는 「1분」을 이름에서 내려 «사실»로 적는 자리입니다** 〔2026-09-01 · 대표 결정〕.
@@ -247,7 +252,7 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
         ⛔ `.disc` 의 그 문장은 지우지 마십시오. 지우면 뒷문장이 전제를 잃습니다. -->
 <div class="container head">
   <p class="badge"><span class="badge-main">무료 · 1분 · 계정 없이 점수까지</span></p>
-  <h1>수출 사전점검</h1>
+  <h1>수출 사전점검 리포트</h1>
 </div>
 
 <section class="inputs">
@@ -446,8 +451,8 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
       '<h3>수출 절차 진단서 이어서 작성하기</h3><p>'+carry+'남은 것은 바이어확인, 계약·문서, 통관, 운송 네 영역입니다.</p>'+
       '<div class="go"><a class="btn '+(insWorst?'btn-secondary':'btn-primary')+'" href="'+url+'" data-track="precheck-diagnosis">이어서 작성하기</a></div></div>';
     var packCard='<div class="path'+(insWorst?' lead':'')+'"><div class="pk">유료 · 수출바우처 결제 가능</div>'+
-      '<h3>무역보험 준비팩</h3><p>이 거래 한 건을 기준으로 이용 요건 점검, 신청서 형태로 정리한 거래 정보, 청구 시 요구되는 서류 목록, 사내 결재용 자료까지 갖춰 드립니다.</p>'+
-      '<div class="go"><a class="btn '+(insWorst?'btn-primary':'btn-secondary')+'" href="'+PACK+'" data-track="precheck-pack">무역보험 준비팩 확인</a></div></div>';
+      '<h3>무역보험 준비 패키지</h3><p>이 거래 한 건을 기준으로 이용 요건 점검, 신청서 형태로 정리한 거래 정보, 청구 시 요구되는 서류 목록, 사내 결재용 자료까지 갖춰 드립니다.</p>'+
+      '<div class="go"><a class="btn '+(insWorst?'btn-primary':'btn-secondary')+'" href="'+PACK+'" data-track="precheck-pack">무역보험 준비 패키지 확인</a></div></div>';
     return insWorst ? packCard+diagCard : diagCard+packCard;
   }
 
