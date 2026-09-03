@@ -383,15 +383,16 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
     2: []
   };
 
-  // 🔴 프리필은 셋만 — 앱에 대응 칸이 있는 값만 넘긴다.
-  //    무역보험·바이어 이력은 앱에 받는 칸이 없다(2026-08-31 실측).
+  // 기본입력 답변은 다음 화면의 같은 칸으로 넘긴다. 점수는 넘기지 않는다.
   var F=[
-    {id:'f3',key:'region',send:false,max:20,nm:'목적국',fc:'customs',
+    {id:'f3',key:'region',send:true,max:20,nm:'목적국',fc:'customs',
+     cd:{20:'north_america_japan_western_europe',16:'east_southeast_asia',11:'middle_east_latin_eastern_europe',6:'south_asia_africa',2:'unknown'},
      src:'권역 구간 기준입니다. 국가별 등급은 수출 사전점검에서 한국무역보험공사 자료로 확인합니다.',
      ms:{20:'국가 위험이 낮은 권역입니다',16:'국가 위험이 보통인 권역입니다',
          11:'국가 위험이 높은 권역입니다',6:'국가 위험이 매우 높은 권역입니다',
          2:'권역이 정해지지 않아 최저 구간으로 잡았습니다'}},
-    {id:'f5',key:'buyer',send:false,max:15,nm:'바이어 이력',
+    {id:'f5',key:'buyer',send:true,max:15,nm:'바이어 이력',fc:'buyer',
+     cd:{15:'five_plus_no_delay',11:'two_or_three',6:'second',2:'first'},
      src:'적어 주신 값을 그대로 씁니다. 배점은 TROPS가 정했습니다. 과거 결제 이력이 이번 건의 지급을 보장하지는 않습니다.',
      ms:{15:'결제 이력이 쌓여 있습니다',11:'이력이 쌓이는 중입니다',
          6:'판단할 이력이 부족합니다',2:'결제 이력이 없습니다'}},
@@ -407,7 +408,8 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
      ms:{20:'선적과 동시에 회수됩니다',16:'회수까지 한 달입니다',
          12:'회수까지 두 달입니다',8:'회수까지 석 달입니다',
          3:'회수까지 석 달이 넘습니다'}},
-    {id:'f4',key:'ins',send:false,max:15,nm:'무역보험',fc:'payment',
+    {id:'f4',key:'ins',send:true,max:15,nm:'무역보험',fc:'payment',
+     cd:{15:'insured',9:'applying',5:'checking',0:'not_insured'},
      src:'적어 주신 값을 그대로 씁니다. TROPS는 가입 여부를 조회하지 않습니다.',
      ms:{15:'미회수 시 청구할 수 있습니다',9:'심사 결과를 기다리는 중입니다',
          5:'선적 전에 결론이 나야 하는 항목입니다',0:'미회수 시 청구할 곳이 없습니다'}}
@@ -462,7 +464,7 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
    *       맞췄습니다 — 두 자리가 같은 상품을 다르게 소개하고 있었습니다.
    */
   function cards(url,nm,insWorst){
-    var carry=nm?('결제방식·결제기한과 목적 국가('+nm+')가 그대로 넘어갑니다. '):'목적 국가는 수출 사전점검에서 고르시면 됩니다. ';
+    var carry=nm?('방금 입력한 기본정보와 목적 국가('+nm+')가 그대로 넘어갑니다. '):'방금 입력한 기본정보가 그대로 넘어갑니다. ';
     var diagCard='<div class="path'+(insWorst?'':' lead')+'"><div class="pk">무료</div>'+
       '<h3>수출 사전점검 이어서 작성하기</h3><p>'+carry+'남은 것은 바이어확인, 계약·문서, 통관, 운송 네 영역입니다.</p>'+
       '<div class="go"><a class="btn '+(insWorst?'btn-secondary':'btn-primary')+'" href="'+url+'" data-track="precheck-diagnosis">이어서 작성하기</a></div></div>';
@@ -534,9 +536,8 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
     rows.innerHTML=html;
 
     if(code) q.push('dest='+code);
-    // 가장 낮은 항목의 «영역»을 넘긴다 — 수출 사전점검이 그 칸을 위로 올린다.
-    // 점수는 넘기지 않는다(fc 는 영역 이름이다). 바이어 이력은 앱에 대응 칸이
-    // 없어 fc 가 없고, 그때는 아무것도 넘기지 않는다.
+    // 가장 낮은 항목의 «영역»을 넘긴다. 수출 사전점검 리포트가 관련 실행 항목을
+    // 먼저 보여 준다. 점수는 넘기지 않는다(fc 는 영역 이름이다).
     // 다섯이 만점이면 worst 가 첫 항목으로 남으므로(비교가 한 번도 참이 아니다)
     // 그때는 보내지 않는다 — '가장 낮다'가 사실이 아니다.
     if(wr<1&&worst&&worst.fc) q.push('focus='+worst.fc);
