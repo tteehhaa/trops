@@ -521,7 +521,8 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
 
       var r=v/f.max;
       total+=v;
-      if(f.send&&f.cd[v]) q.push(f.key+'='+f.cd[v]);
+      // 전액 선지급 때 보험 점수는 계산용 대체값일 뿐, 사용자가 「가입」을 고른 답이 아니다.
+      if(!(prepaid&&f.key==='ins')&&f.send&&f.cd[v]) q.push(f.key+'='+f.cd[v]);
       if(r<wr){wr=r;worst=f}
 
       var sub='',src=f.src,msg=f.ms[v];
