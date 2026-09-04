@@ -49,10 +49,33 @@ test('🔴 종전 표에는 칸 3개만 보낸다 — 그 표에 맥락 칸이 �
   }
 });
 
-test('🔴 본문이 text/plain 이다 — application/json 이면 sendBeacon 이 조용히 죽는다', () => {
+test('🔴 본문 형식이 보내는 곳마다 다르다 — 하나로 통일하면 한쪽이 죽는다', () => {
+  /*
+   * 🔴 **이 검사의 초판이 실제 사고를 «통과시켰다»**〔2026-09-04 실측〕. 초판은
+   *    「`application/json` 이 소스에 0건」을 단정했고, 그래서 같은-오리진 경로까지
+   *    `text/plain` 으로 보내는 코드가 green 으로 배포됐다 — 그 함수(`api/track.js`)는
+   *    JSON 으로 선언된 본문만 객체로 풀어 주므로 **모든 레거시 전송이 400** 이었다.
+   * 🔴 그래서 지금은 **어느 쪽에 무엇을 쓰는지**를 자리별로 잰다.
+   */
   const s = code(TRACK);
-  assert.ok(s.includes('text/plain;charset=UTF-8'), 'text/plain 이 아닙니다');
-  assert.ok(!s.includes('application/json'), 'json 으로 보내면 preflight 가 필요해집니다');
+  const legacy = s.match(/function sendLegacy\(payload\) \{[^\n]*\}/);
+  assert.ok(legacy, 'sendLegacy 를 못 찾았습니다');
+  assert.ok(
+    legacy[0].includes("'application/json'"),
+    '같은 오리진에 text/plain 으로 보내면 그 함수가 본문을 못 풀어 400 입니다'
+  );
+
+  const app = s.match(/post\(APP_ENDPOINT[^\n]*\)/);
+  assert.ok(app, '앱 전송 자리를 못 찾았습니다');
+  assert.ok(
+    app[0].includes("'text/plain;charset=UTF-8'"),
+    '다른 오리진에 json 으로 보내면 preflight 가 붙고 sendBeacon 이 조용히 죽습니다'
+  );
+
+  /* ⛔ 형식을 함수 안에 다시 박지 않는다 — 인자로 받아야 두 자리가 갈린다. */
+  const fn = s.match(/function post\(url, payload, beacon, contentType\)[\s\S]*?\n  \}/);
+  assert.ok(fn, 'post 가 형식을 인자로 받지 않습니다');
+  assert.ok(!/'(application\/json|text\/plain)/.test(fn[0]), 'post 안에 형식이 박혀 있습니다');
 });
 
 /* ══ ② 개인 식별자가 늘지 않았다 ═══════════════════════════════════════ */
