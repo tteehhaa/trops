@@ -84,6 +84,61 @@ test('🔴 skip 링크가 포커스로 «닿을 수 있게» 숨어 있다', () 
   }
 });
 
+test('🔴 정책 링크 라벨이 그 문서가 스스로 부르는 이름과 같다', () => {
+  /*
+   * 🔴 **축은 「그 문서의 이름」입니다** — 링크 라벨은 도착지 `<title>` 이 시작하는 말과
+   *    같아야 합니다. `refund.html` 은 스스로를 「환불규정」이라 부르고 저장소 전체가
+   *    (검사 · api · 방침 본문) 그 이름을 씁니다. 그런데 `index.html` 푸터만 「환불정책」
+   *    이었습니다 — 국문 6장 중 다섯이 「환불규정」인데 랜딩 한 장이 갈려 있었습니다.
+   * ⚠️ **완전일치가 아니라 «시작하는 말»로 봅니다** — `privacy.html` 의 title 은
+   *    「개인정보처리방침(초안) — TROPS」 입니다. 「(초안)」·「— TROPS」 는 그 문서의
+   *    상태와 사이트 이름이고, 이름 자체가 아닙니다. 확정본이 되어 「(초안)」이 빠지는
+   *    날 이 검사가 거짓 red 가 되면 안 됩니다.
+   *
+   * 🔴 **국문만 봅니다** 〔2026-09-05〕. 영문은 같은 형태의 갈림이 «더» 있고 그것은
+   *    문면 결정이 필요합니다 — `en.html`·`en-refund.html` 이 개인정보 문서를
+   *    「Privacy policy」로 부르는데 그 페이지 title 은 **「Privacy Notice」** 이고,
+   *    「Refund Policy」/「Refund policy」로 대소문자도 갈립니다.
+   *    ⛔ 이 검사를 영문으로 넓히기 전에 그 이름을 먼저 정하십시오 — 검사가 먼저
+   *       가면 「무엇이 맞는가」를 검사가 대신 정해 버립니다.
+   */
+  /*
+   * 🔴 **정책 문서만 대상입니다** — 대상 집합을 `(^|-)(privacy|refund)` 로 파생합니다
+   *    (`test/site-config.test.js` 와 같은 규칙).
+   * ⚠️ 처음에 전 페이지를 대상으로 뒀더니 **언어 전환 링크가 걸렸습니다** —
+   *    「English」 → `/en` 의 title 은 그 페이지의 홍보 문구입니다. 그 링크가 말하는 것은
+   *    문서 이름이 아니라 **언어 이름**이라 이 축의 대상이 아닙니다.
+   *    ⛔ 그 한 건을 예외 목록으로 빼지 마십시오 — 축을 좁히는 것이 맞습니다.
+   *       예외 목록은 다음에 들어오는 언어 전환 링크를 놓칩니다.
+   */
+  const NAME_OF = {};
+  for (const { file } of PAGES) {
+    if (!/(^|-)(privacy|refund)\.html$/.test(file)) continue;
+    const m = read(file).match(/<title>([^<]*)<\/title>/);
+    assert.ok(m, `${file}: <title> 이 없습니다`);
+    NAME_OF['/' + file.replace(/\.html$/, '')] = m[1].trim();
+  }
+  assert.strictEqual(Object.keys(NAME_OF).length, 4, '정책 문서를 4장 찾지 못했습니다 — 검사가 헛돕니다');
+
+  const offenders = [];
+  for (const { file, locale } of PAGES) {
+    if (locale !== 'ko') continue;
+    const footer = strip(read(file)).match(/<footer[\s\S]*?<\/footer\s*>/i);
+    assert.ok(footer, `${file}: <footer> 를 찾지 못했습니다`);
+    for (const m of footer[0].matchAll(/<a href="(\/[^"]*)"[^>]*>([^<]+)<\/a>/g)) {
+      const target = m[1].split(/[?#]/)[0].replace(/\.html$/, '');
+      const title = NAME_OF[target];
+      if (!title) continue; // 정책 문서가 아닌 링크(홈 · 언어 전환 · 외부)는 대상이 아닙니다
+      const label = m[2].trim();
+      if (!title.startsWith(label)) {
+        offenders.push(`${file}: 「${label}」 → ${target} 의 이름은 「${title}」`);
+      }
+    }
+  }
+  assert.deepStrictEqual(offenders, [],
+    '링크 라벨이 그 문서의 이름과 다릅니다: ' + offenders.join(' · '));
+});
+
 test('[대조] 공통요소 검사가 실제로 문다 — 0건 통과 금지', () => {
   /* 🔴 위 둘이 «아무것도 안 읽어서» 통과하는 상태를 막습니다. */
   assert.ok(PAGES.length >= 8, `분류표에서 ${PAGES.length}장만 찾았습니다 — 검사가 헛돕니다`);
