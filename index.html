@@ -2,6 +2,15 @@
 <html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="icon" href="/favicon.ico" sizes="any">
+<!-- 🔴 **app 도메인 미리 잇기** 〔2026-09-05〕 — 이 페이지의 «나가는» 링크는 전부
+     app.trops.kr 입니다(헤더 로그인 · 3단계 유료 버튼). 다른 출처라 클릭한 뒤에야
+     DNS→TCP→TLS 를 새로 트는데, 그 세 왕복이 첫 바이트 앞에 통째로 붙습니다.
+     미리 터 두면 클릭 시점에는 요청만 나갑니다.
+     ⚠️ `crossorigin` 을 붙이지 마십시오 — 문서 이동(navigation)이지 CORS 요청이
+        아니라, 붙이면 «다른» 연결이 되어 미리 튼 것이 버려집니다.
+     ⚠️ `dns-prefetch` 는 preconnect 를 무시하는 옛 브라우저용 보험입니다. -->
+<link rel="preconnect" href="https://app.trops.kr">
+<link rel="dns-prefetch" href="https://app.trops.kr">
 <title>무역보험 서류 준비와 수출대금 관리 · TROPS</title>
 <meta name="description" content="무역보험 청구에 필요한 서류를 선적 전에 갖추고, 수출대금 미회수에 대비해 결제기일과 사고통지 기한을 관리합니다. 수출 사전점검은 회원가입 없이 무료로 이용하실 수 있습니다.">
 <link rel="canonical" href="https://trops.kr/">
@@ -187,6 +196,9 @@ p,li,.sp .p,.nm .desc,.faq .a,.dr .rs,.dcard .gd,.demofoot p,.sec-sub,.lead{text
 
 nav{border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);z-index:10}
 nav .w{display:flex;justify-content:space-between;align-items:center;height:64px}
+.nav-right{display:flex;align-items:center;gap:18px}
+.nav-login{font-size:14px;font-weight:600;color:var(--ink-2);text-decoration:none}
+.nav-login:hover{color:var(--ink)}
 /* 🔴 **skip 링크** 〔2026-09-01 복원 · 대표 지시〕. 구판 index.html·en.html 과 **같은 값**입니다
    (`.skip` 두 줄 · 문구 「본문으로 건너뛰기」). v11 원본에 이 요소가 없어 접근성 요소가
    조용히 빠져 있었습니다 — 새로 지은 문구가 아니라 라이브에 있던 것을 되돌린 것입니다.
@@ -364,7 +376,14 @@ footer .cp{margin-top:18px;color:#64748B}
 
 <nav data-section="nav"><div class="w">
   <a class="logo" href="/"><i></i>TROPS</a>
-  <a class="btn-2 btn-s" href="/precheck" data-track="nav-precheck">1분 무료 진단</a>
+  <!-- 🔴 **기존 고객 자리** 〔2026-09-05 · 대표 지시〕 — 여태 헤더에는 «처음 오는 사람»의
+       길만 있었습니다. 이미 쓰는 분이 돌아왔을 때 갈 곳이 랜딩에 없었습니다.
+       ⚠️ 조용한 링크입니다 — 버튼으로 만들면 「1분 무료 진단」과 둘이 다투고, 처음 오는
+          사람에게 로그인을 먼저 내미는 화면이 됩니다. 그 순서를 바꾸지 마십시오. -->
+  <div class="nav-right">
+    <a class="nav-login" href="https://app.trops.kr/login" data-track="nav-login">로그인</a>
+    <a class="btn-2 btn-s" href="/precheck" data-track="nav-precheck">1분 무료 진단</a>
+  </div>
 </div></nav>
 
 <main id="main">
@@ -606,7 +625,11 @@ footer .cp{margin-top:18px;color:#64748B}
      ⚠️ 2026-09-05 까지 이 자리만 「환불정책」이었습니다 — 국문 6장 중 랜딩 한 장이
         갈려 있었습니다. test/page-essentials.test.js 가 이제 그것을 막습니다.
      ⛔ 「English」 는 이 축의 대상이 아닙니다 — 문서 이름이 아니라 언어 이름입니다. -->
-<div class="fl"><a href="/privacy.html">개인정보처리방침</a><a href="/refund.html">환불규정</a><a href="/en.html">English</a></div>
+<!-- 🔴 **`.html` 을 붙이지 마십시오** 〔2026-09-05 실측〕 — vercel.json 이 `cleanUrls:true`
+     라 `/privacy.html` 은 **308 로 `/privacy` 에 튕깁니다**. 세 링크가 각각 왕복
+     하나씩을 더 쓰고 있었습니다(프로덕션에서 308 확인). 같은 문서로 가는 같은 링크이니
+     클린 주소로 곧장 갑니다. -->
+<div class="fl"><a href="/privacy">개인정보처리방침</a><a href="/refund">환불규정</a><a href="/en">English</a></div>
 <div class="cp">© 2026 TROPS. All rights reserved.</div>
 </div></footer>
 <!-- 🔴 익명 집계 〔2026-09-01〕 — 개인 식별값 없음(privacy.html §01). -->

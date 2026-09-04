@@ -4,6 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="icon" href="/favicon.ico" sizes="any">
+<!-- 🔴 **app 도메인 미리 잇기** 〔2026-09-05〕 — 이 화면의 두 카드가 모두
+     app.trops.kr 로 나갑니다. 다른 출처라 클릭 뒤에야 DNS→TCP→TLS 를 트는데,
+     그 세 왕복이 첫 바이트 앞에 통째로 붙습니다. 점수를 보는 동안 미리 터 둡니다.
+     ⚠️ `crossorigin` 을 붙이지 마십시오 — 문서 이동이라 붙이면 «다른» 연결이 되어
+        미리 튼 것이 버려집니다. -->
+<link rel="preconnect" href="https://app.trops.kr">
+<link rel="dns-prefetch" href="https://app.trops.kr">
 <!-- 🔴 **이 페이지의 이름은 「수출 사전점검」입니다 — «활동» 축입니다** 〔2026-09-03 · 대표 결정〕.
      ⓐ 종전에는 이름이 셋이었습니다 — 랜딩 버튼 「1분 점검」 · 이 페이지 「수출건 1분 점검」 ·
         앱의 옛 이름. 버튼에 적힌 말과 도착한 페이지의 제목이 다르면 잘못 눌렀다고
@@ -297,11 +304,22 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
         <option value="" selected>선택해 주십시오</option><option value="15">다섯 번 이상, 연체 없음</option><option value="11">두세 번</option>
         <option value="6">이번이 두 번째</option><option value="2">이번이 처음</option></select></div>
 
-      <div class="fld"><label for="f1">대금은 어떻게 받기로 하셨습니까?</label><select id="f1">
-        <option value="" selected>선택해 주십시오</option><option value="30">전액 선지급</option><option value="25">신용장 (L/C)</option>
-        <option value="18">일부 선지급 + 잔금</option>
-        <option value="12">D/P (지급인도)</option><option value="8">D/A (인수인도)</option>
-        <option value="4">선적 후 외상 (O/A)</option></select></div>
+      <!-- 🔴 **한 칸이던 「대금 조건」을 둘로 나눴습니다** 〔2026-09-05 · 대표 지시〕.
+           종전 여섯 선택지는 «방식»(L/C·D/P·D/A·O/A)과 «수취조건»(전액 선지급·일부 선지급)을
+           한 줄에 섞어 놓아, 「T/T 로 전액 후불」처럼 흔한 조합을 고를 자리가 없었습니다.
+           ⚠️ 값이 **점수에서 코드로 바뀌었습니다** — 이 두 칸만 그렇습니다. 나머지 넷은
+              여전히 점수를 value 로 들고 있습니다(`F[].cd` 가 코드를 붙입니다).
+              점수는 아래 `PAY_SCORE()` 가 두 답을 합쳐 «한 축»으로 만듭니다.
+           ⛔ 축을 여섯으로 늘리지 마십시오 — 100점 배분(20·15·30·20·15)이 그대로입니다. -->
+      <div class="fld"><label for="f1">대금을 어떤 방식으로 받으십니까?</label><select id="f1">
+        <option value="" selected>선택해 주십시오</option><option value="tt">해외송금 (T/T)</option><option value="lc">신용장 (L/C)</option>
+        <option value="dp">D/P (지급인도)</option><option value="da">D/A (인수인도)</option>
+        <option value="oa">선적 후 외상 (O/A)</option><option value="other">그 밖의 방식</option></select></div>
+
+      <div class="fld"><label for="f1b">대금을 어떻게 나누어 받으십니까?</label><select id="f1b">
+        <option value="" selected>선택해 주십시오</option><option value="prepaid">전액 선지급</option><option value="split">선금 + 잔금</option>
+        <option value="postpaid">전액 후불</option><option value="other">그 밖의 조건</option></select>
+        <p class="hint" id="h1b"></p></div>
 
       <div class="fld"><label for="f2">대금은 언제 받기로 하셨습니까?</label><select id="f2">
         <option value="" selected>선택해 주십시오</option><option value="20">즉시 · 일람불</option><option value="16">30일 이내</option>
@@ -404,7 +422,17 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
    *    ⛔ 개인 식별자(클릭 id·방문자 id)를 여기 얹지 마십시오 — precheck-schema.sql §0-M
    *       「개인 식별자가 0」과 privacy.html §01 이 걸려 있습니다.
    */
-  var PACK='https://app.trops.kr/insurance/quick?from=precheck';
+  /*
+   * 🔄 **쿼리를 떼어 «기본 주소»만 둡니다** 〔2026-09-05 · Handoff v2 Sender〕.
+   *    종전 주석은 「쿼리를 붙이는 것은 DIAG 뿐입니다」였는데, 그 규칙이 바뀌었습니다 —
+   *    이 카드도 방금 고른 답을 그대로 실어 보냅니다. 그러지 않으면 사전점검에서 이미
+   *    답한 목적국·결제조건을 준비패키지 화면에서 **처음부터 다시** 묻습니다.
+   * 🔴 **`from=precheck` 는 그대로입니다** — 아래 호출부가 쿼리 끝에 붙입니다.
+   *    Referrer-Policy 때문에 앱에는 `https://trops.kr/` 만 가고 경로가 깎이므로,
+   *    이 값이 여전히 도메인을 넘는 유일한 출처 단서입니다. ⛔ 지우지 마십시오.
+   *    ⚠️ 짝: index.html 유료 버튼(`?from=landing`).
+   */
+  var PACK='https://app.trops.kr/insurance/quick';
 
   // 권역 → 국가. 값은 ISO2로 넘긴다(앱 CountrySelect가 "국가명 (XX)" 규약을 쓴다).
   var COUNTRIES={
@@ -419,6 +447,55 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
     2: []
   };
 
+  /*
+   * ══════════════════════════════════════════════════════════════════════
+   * 🔴 **대금 조건 축 — 방식이 구간을 정하고, 수취조건이 그 안에서 움직입니다**
+   * ══════════════════════════════════════════════════════════════════════
+   * 옛 한 칸(여섯 선택지)의 점수를 그대로 잇습니다: L/C 25 · D/P 12 · D/A 8 · O/A 4.
+   * 「전액 선지급 30」과 「일부 선지급 18」은 이제 **수취조건**이 만듭니다.
+   *
+   * 🔴 **전액 선지급이면 방식과 무관하게 30입니다** — 선적 전에 이미 받았으므로 회수
+   *    위험이 없습니다. 그래서 `adj` 가 `null` 이고(가산이 아니라 «덮어쓰기») 무역보험
+   *    칸도 함께 잠깁니다.
+   * ⚠️ `tt`(해외송금)는 옛 목록에 «없던» 값입니다. 송금 자체는 은행의 지급 확약이 아니라
+   *    중간(15)에 두고, 언제 받는지를 수취조건이 올리고 내립니다 — T/T 는 선지급일 수도
+   *    후불일 수도 있어서, 방식만으로는 위험이 정해지지 않습니다.
+   * ⛔ 여기에 판정 문장을 새로 쓰지 마십시오 — 앱이 아니라 이 화면의 «구간 설명»입니다.
+   */
+  var PAY_METHOD={
+    tt:   {s:15,nm:'해외송금 (T/T)',   ms:'은행의 지급 확약 없이 송금 약속에 기댑니다'},
+    lc:   {s:25,nm:'신용장 (L/C)',     ms:'서류가 조건에 맞으면 은행이 지급합니다'},
+    dp:   {s:12,nm:'D/P (지급인도)',   ms:'서류를 넘기는 시점에 대금을 받습니다'},
+    da:   {s:8, nm:'D/A (인수인도)',   ms:'서류를 먼저 넘기고 지급 약속만 받습니다'},
+    oa:   {s:4, nm:'선적 후 외상 (O/A)',ms:'회수 근거가 계약뿐입니다'},
+    other:{s:10,nm:'그 밖의 방식',     ms:'방식이 정해지지 않아 가운데 아래로 잡았습니다'}
+  };
+  var PAY_RECEIPT={
+    prepaid: {adj:null,nm:'전액 선지급', ms:'대금을 먼저 받고 선적합니다'},
+    split:   {adj:3,   nm:'선금 + 잔금', ms:''},
+    postpaid:{adj:-3,  nm:'전액 후불',   ms:''},
+    other:   {adj:0,   nm:'그 밖의 조건',ms:''}
+  };
+  function payScore(m,r){
+    if(r==='prepaid') return 30;
+    var v=PAY_METHOD[m].s+PAY_RECEIPT[r].adj;
+    return v<0?0:(v>30?30:v);
+  }
+
+  /*
+   * 🔴 **legacy `pay` 한 칸으로 되돌리는 표** — 앱 수신기의 `LEGACY_PAY_TO_STRUCTURE`
+   *    (`lib/handoff/contract-v2.ts`)를 거꾸로 읽은 것입니다. 그 표가 정본입니다.
+   * ⛔ **없는 칸을 지어내지 마십시오.** `tt`·`other` 는 옛 여섯에 대응이 없어 legacy `pay`
+   *    를 **보내지 않습니다**. 「T/T 니까 전액 선지급일 것이다」는 우리 추론입니다.
+   *    수취조건이 정해 주는 두 갈래(선지급·선금+잔금)가 방식보다 먼저입니다 — 옛 목록에서
+   *    그 둘이 방식이 아니라 «시점»이었기 때문입니다.
+   */
+  var LEGACY_PAY_BY_RECEIPT={prepaid:'prepay',split:'partial'};
+  var LEGACY_PAY_BY_METHOD={lc:'lc',dp:'dp',da:'da',oa:'oa'};
+
+  /* `term` 코드 → canonical 구간 이름. 앱 `TERM_TO_BAND` 와 같은 표입니다. */
+  var TERM_TO_BAND={sight:'immediate',d30:'within_30d',d60:'within_60d',d90:'within_90d',over90:'over_90d'};
+
   // 기본입력 답변은 다음 화면의 같은 칸으로 넘긴다. 점수는 넘기지 않는다.
   var F=[
     {id:'f3',key:'region',send:true,max:20,nm:'목적국',fc:'customs',
@@ -432,12 +509,14 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
      src:'적어 주신 값을 그대로 씁니다. 배점은 TROPS가 정했습니다. 과거 결제 이력이 이번 건의 지급을 보장하지는 않습니다.',
      ms:{15:'결제 이력이 쌓여 있습니다',11:'이력이 쌓이는 중입니다',
          6:'판단할 이력이 부족합니다',2:'결제 이력이 없습니다'}},
-    {id:'f1',key:'pay',send:true,max:30,nm:'대금 조건',fc:'payment',
-     cd:{30:'prepay',25:'lc',18:'partial',12:'dp',8:'da',4:'oa'},
-     src:'미국 상무부·EXIM Trade Finance Guide — 결제방식별 수출자 위험 순서',
-     ms:{30:'대금을 먼저 받고 선적합니다',25:'서류가 조건에 맞으면 은행이 지급합니다',
-         18:'잔금이 바이어 신용에 걸려 있습니다',12:'서류를 넘기는 시점에 대금을 받습니다',
-         8:'서류를 먼저 넘기고 지급 약속만 받습니다',4:'회수 근거가 계약뿐입니다'}},
+    /*
+     * 🔴 **두 칸이 한 축을 만듭니다** 〔2026-09-05〕. 질문은 둘로 늘었지만 축은 그대로
+     *    다섯이고 배점도 20·15·**30**·20·15 = 100 그대로입니다.
+     * ⚠️ `id2` 가 있는 유일한 항목입니다 — 아래 `pick()`·`run()` 이 이 칸을 보고 갈래를 탑니다.
+     * ⚠️ `cd`·`ms` 가 없습니다. 점수도 문안도 `payScore()`·`PAY_METHOD` 가 만듭니다.
+     */
+    {id:'f1',id2:'f1b',key:'pay',send:true,max:30,nm:'대금 조건',fc:'payment',
+     src:'미국 상무부·EXIM Trade Finance Guide — 결제방식별 수출자 위험 순서. 수취조건은 적어 주신 값을 그대로 씁니다.'},
     {id:'f2',key:'term',send:true,max:20,nm:'결제 기한',fc:'payment',
      cd:{20:'sight',16:'d30',12:'d60',8:'d90',3:'over90'},
      src:'K-SURE 단기수출보험 약관 — 상품별 결제기간 한도',
@@ -454,6 +533,48 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
          [65,'대체로 갖춰져 있습니다','낮은 항목 하나가 약점으로 남습니다.'],
          [45,'절반은 비어 있습니다','지금은 문제없어 보이더라도 대금이 늦어지면 낮은 항목에서 막힙니다.'],
          [0, '대금을 못 받았을 때 쓸 수 있는 수단이 적습니다','낮은 항목이 여럿입니다.']];
+
+  /*
+   * ══════════════════════════════════════════════════════════════════════
+   * 🔴 **Handoff Contract v2 — 보내는 쪽(Sender)** 〔2026-09-05〕
+   * ══════════════════════════════════════════════════════════════════════
+   * 정본은 앱의 `lib/handoff/contract-v2.ts` 입니다. 그 파일이 canonical 이름 여덟과
+   * legacy 이름 여덟을 **같은 자리에서** 읽고, 충돌하면 칸 단위로 v2 가 이깁니다.
+   *
+   * 🔴 **둘 다 보냅니다.** v2 만 보내면 아직 옛 이름만 읽는 소비처가 빈손이 되고, legacy 만
+   *    보내면 나눈 두 칸(방식·수취조건)을 옛 한 칸에 도로 뭉개야 합니다. 수신기가 겹침을
+   *    전제로 지어져 있으므로 겹쳐 보내는 것이 «맞는» 씀씀이입니다.
+   * 🔴 **점수는 넘기지 않습니다** — 넘어가는 것은 «고른 답»뿐입니다. 판정은 앱이 합니다.
+   * ⚠️ 값 어휘를 여기서 새로 만들지 마십시오. 국가는 ISO2, 나머지는 앱 상수의
+   *    `landingCode` 그대로입니다 — 목록 밖 값은 앱이 조용히 버립니다.
+   * ⛔ 개인 식별자를 얹지 마십시오(precheck-schema.sql §0-M · privacy.html §01).
+   */
+  function query(k){
+    var q=[];
+    /* ── canonical(v2) ── */
+    q.push('source=one_minute_check');
+    q.push('handoff_v=2');
+    if(k.country) q.push('country='+k.country);
+    if(k.buyer)   q.push('buyer_stage='+k.buyer);
+    if(k.method)  q.push('payment_method='+k.method);
+    if(k.receipt) q.push('payment_receipt='+k.receipt);
+    if(k.term)    q.push('payment_period_band='+TERM_TO_BAND[k.term]);
+    if(k.ins)     q.push('insurance_status='+k.ins);
+
+    /* ── legacy — ⛔ 지우지 마십시오. 제거는 앱이 옛 이름을 그만 읽는 날입니다. ── */
+    if(k.region)  q.push('region='+k.region);
+    if(k.buyer)   q.push('buyer='+k.buyer);
+    if(k.term)    q.push('term='+k.term);
+    if(k.ins)     q.push('ins='+k.ins);
+    if(k.country) q.push('dest='+k.country);
+    /* 옛 한 칸은 «시점»이 먼저 정합니다 — 정해지지 않으면 보내지 않습니다(지어내지 않음). */
+    var legacyPay=LEGACY_PAY_BY_RECEIPT[k.receipt]||LEGACY_PAY_BY_METHOD[k.method];
+    if(legacyPay) q.push('pay='+legacyPay);
+
+    /* focus 는 두 규약이 같은 이름을 씁니다 — 한 번만 담습니다. */
+    if(k.focus) q.push('focus='+k.focus);
+    return '?'+q.join('&');
+  }
 
   var sc=document.getElementById('sc'),gn=document.getElementById('gn'),gd=document.getElementById('gd'),
       rows=document.getElementById('rows'),f3=document.getElementById('f3'),f3b=document.getElementById('f3b'),
@@ -499,14 +620,14 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
    *    ⚠️ 지금 문구는 랜딩 2단계 배지(index.html 「유료 · 거래 한 건 단위」)와 같은 말로
    *       맞췄습니다 — 두 자리가 같은 상품을 다르게 소개하고 있었습니다.
    */
-  function cards(url,nm,insWorst){
+  function cards(url,packUrl,nm,insWorst){
     var carry=nm?('방금 입력한 기본정보와 목적 국가('+nm+')가 그대로 넘어갑니다. '):'방금 입력한 기본정보가 그대로 넘어갑니다. ';
     var diagCard='<div class="path'+(insWorst?'':' lead')+'"><div class="pk">무료</div>'+
       '<h3>수출 사전점검 이어서 작성하기</h3><p>'+carry+'남은 것은 바이어확인, 계약·문서, 통관, 운송 네 영역입니다.</p>'+
       '<div class="go"><a class="btn '+(insWorst?'btn-secondary':'btn-primary')+'" href="'+url+'" data-track="precheck-diagnosis">이어서 작성하기</a></div></div>';
     var packCard='<div class="path'+(insWorst?' lead':'')+'"><div class="pk">유료 · 거래 한 건 단위</div>'+
       '<h3>무역보험 준비 패키지</h3><p>이 거래 한 건을 기준으로 이용 요건 점검, 신청서 형태로 정리한 거래 정보, 청구 시 요구되는 서류 목록, 사내 결재용 자료까지 갖춰 드립니다.</p>'+
-      '<div class="go"><a class="btn '+(insWorst?'btn-primary':'btn-secondary')+'" href="'+PACK+'" data-track="precheck-pack">무역보험 준비 패키지 확인</a></div></div>';
+      '<div class="go"><a class="btn '+(insWorst?'btn-primary':'btn-secondary')+'" href="'+packUrl+'" data-track="precheck-pack">무역보험 준비 패키지 확인</a></div></div>';
     return insWorst ? packCard+diagCard : diagCard+packCard;
   }
 
@@ -528,23 +649,32 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
    * ⛔ 여기에 기본 선택값을 되돌리지 마십시오. 되돌리면 위 유도가 함께 돌아옵니다.
    */
   function run(){
-    var total=0,html='',worst=null,wr=2,q=[];
+    var total=0,html='',worst=null,wr=2,pick={};
     var code=f3b.value,nm=code?countryName(code):null;
-    // 전액 선지급 건은 미회수 위험이 없으므로 무역보험을 만점으로 처리한다.
-    var prepaid=(parseInt(document.getElementById('f1').value,10)===30);
+    /*
+     * 전액 선지급 건은 미회수 위험이 없으므로 무역보험을 만점으로 처리한다.
+     * 🔄 그 판정이 «방식» 칸에서 «수취조건» 칸으로 옮겨졌습니다 〔2026-09-05〕 — 나뉘기
+     *    전에는 방식 목록 안에 「전액 선지급」이 섞여 있었습니다.
+     */
+    var prepaid=(document.getElementById('f1b').value==='prepaid');
     var f4=document.getElementById('f4');
     f4.disabled=prepaid;
     h4.textContent=prepaid?'전액 선지급 건이므로 이 항목은 만점으로 처리합니다.':'';
+    document.getElementById('h1b').textContent=prepaid?'선적 전에 대금을 다 받으므로 미회수 위험이 없습니다.':'';
 
+    /* 대금 조건 축만 칸이 둘이라 «둘 다» 골라야 채워집니다. */
     var complete=F.every(function(f){
       if(prepaid&&f.key==='ins') return true;
-      return document.getElementById(f.id).value!=='';
+      if(document.getElementById(f.id).value==='') return false;
+      return !f.id2||document.getElementById(f.id2).value!=='';
     });
 
     F.forEach(function(f){
       var raw=document.getElementById(f.id).value;
-      var chosen=(prepaid&&f.key==='ins')||raw!=='';
-      var v=parseInt(raw,10);
+      var raw2=f.id2?document.getElementById(f.id2).value:null;
+      var isPay=!!f.id2;
+      var chosen=(prepaid&&f.key==='ins')||(isPay?(raw!==''&&raw2!==''):raw!=='');
+      var v=isPay?(chosen?payScore(raw,raw2):0):parseInt(raw,10);
       if(prepaid&&f.key==='ins') v=f.max;
 
       if(!chosen){
@@ -557,11 +687,22 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
 
       var r=v/f.max;
       total+=v;
-      // 전액 선지급 때 보험 점수는 계산용 대체값일 뿐, 사용자가 「가입」을 고른 답이 아니다.
-      if(!(prepaid&&f.key==='ins')&&f.send&&f.cd[v]) q.push(f.key+'='+f.cd[v]);
+      /*
+       * 고른 답을 «코드»로 모읍니다 — 점수는 넘기지 않습니다.
+       * 전액 선지급 때 보험 점수는 계산용 대체값일 뿐, 사용자가 「가입」을 고른 답이 아니라
+       * 그 칸은 담지 않습니다.
+       */
+      if(f.send&&!(prepaid&&f.key==='ins')){
+        if(isPay){ pick.method=raw; pick.receipt=raw2; }
+        else if(f.cd[v]) pick[f.key]=f.cd[v];
+      }
       if(r<wr){wr=r;worst=f}
 
-      var sub='',src=f.src,msg=f.ms[v];
+      var sub='',src=f.src,msg=isPay?'':f.ms[v];
+      if(isPay){
+        msg=(raw2==='prepaid')?PAY_RECEIPT.prepaid.ms:PAY_METHOD[raw].ms;
+        sub='<span>'+PAY_METHOD[raw].nm+' · '+PAY_RECEIPT[raw2].nm+'</span>';
+      }
       if(f.key==='region'&&nm){ sub='<span>'+nm+'</span>'; src='권역 구간 기준입니다. 수출 사전점검에서 '+nm+'의 한국무역보험공사 등급을 확인합니다.'; }
       if(prepaid&&f.key==='ins'){ msg='전액 선지급 건이므로 미회수 위험이 없습니다'; src='전액 선지급이면 보험 가입 여부와 무관하게 만점으로 처리합니다.'; }
 
@@ -572,12 +713,14 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
     });
     rows.innerHTML=html;
 
-    if(code) q.push('dest='+code);
+    if(code) pick.country=code;
     // 가장 낮은 항목의 «영역»을 넘긴다. 수출 사전점검 리포트가 관련 실행 항목을
     // 먼저 보여 준다. 점수는 넘기지 않는다(fc 는 영역 이름이다).
     // 다섯이 만점이면 worst 가 첫 항목으로 남으므로(비교가 한 번도 참이 아니다)
     // 그때는 보내지 않는다 — '가장 낮다'가 사실이 아니다.
-    if(wr<1&&worst&&worst.fc) q.push('focus='+worst.fc);
+    if(wr<1&&worst&&worst.fc) pick.focus=worst.fc;
+
+    var qs=query(pick);
 
     if(!complete){
       /* 🔴 미완성 — 점수를 만들지 않고, 최저 항목도 정하지 않습니다(유료 유도의 근원). */
@@ -586,14 +729,13 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
       gd.textContent='고르신 항목부터 근거가 채워집니다.';
       nt.textContent='먼저 다섯 항목을 골라 주십시오';
       ns.textContent='';
-      paths.innerHTML=cards(DIAG+(q.length?'?'+q.join('&'):''),nm,false);
+      paths.innerHTML=cards(DIAG+qs,PACK+qs+'&from=precheck',nm,false);
       return;
     }
 
     var s=Math.round(total),g=G.find(function(x){return s>=x[0]}),c=tone(s/100);
     sc.textContent=s;sc.style.color=c;gn.textContent=g[1];gd.textContent=g[2];
 
-    var url=DIAG+(q.length?'?'+q.join('&'):'');
     var insWorst=(worst.key==='ins');
     if(wr>=1){
       nt.textContent='다섯 항목 모두 갖춰져 있습니다';
@@ -606,12 +748,12 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
         : '';
     }
 
-    paths.innerHTML=cards(url,nm,insWorst);
+    paths.innerHTML=cards(DIAG+qs,PACK+qs+'&from=precheck',nm,insWorst);
   }
 
   f3.addEventListener('change',function(){fillCountries();run()});
   f3b.addEventListener('change',run);
-  ['f1','f2','f4','f5'].forEach(function(id){document.getElementById(id).addEventListener('change',run)});
+  ['f1','f1b','f2','f4','f5'].forEach(function(id){document.getElementById(id).addEventListener('change',run)});
   fillCountries();run();
 })();
 </script>
