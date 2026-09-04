@@ -190,6 +190,16 @@ const STATIC = {
   ],
   // assets/ = track.js(2026-08-18 페이지 조회·클릭 익명 집계). 주석 제거 없이 통째 복사.
   dirs: ['data', 'img', 'assets'],
+  /*
+   * 🔴 **루트에 그대로 놓여야 하는 파일** 〔신설 2026-09-05〕 — 이름과 위치가 규약인 것만
+   *    여기 옵니다. `favicon.ico` 가 그렇습니다: 링크 태그를 안 보고 `/favicon.ico` 를
+   *    바로 찔러보는 브라우저·크롤러가 있어서, 하위 폴더로 내리면 그쪽에서 못 찾습니다.
+   *
+   * ⚠️ **아무 파일이나 여기 넣지 마십시오.** 정적 자산은 기본이 `dirs` 입니다. 이 칸은
+   *    「루트가 아니면 뜻이 없어지는 것」 전용입니다(robots.txt · sitemap.xml 도 그 부류).
+   * ⚠️ `html` 과 달리 **주석 제거도 토큰 치환도 하지 않습니다** — 바이너리를 그대로 옮깁니다.
+   */
+  files: ['favicon.ico'],
 };
 
 /** 배포되지 않는 것. api/ 는 Vercel 이 소스 루트에서 직접 함수로 잡습니다. */
@@ -345,6 +355,7 @@ async function main() {
   const known = new Set([
     ...STATIC.html.map((h) => h.file),
     ...STATIC.dirs,
+    ...STATIC.files,
     ...NOT_DEPLOYED,
   ]);
   const unknown = fs
@@ -451,6 +462,16 @@ async function main() {
     }
     copyDir(src, path.join(OUT, dir));
     console.log(`  ${(dir + '/').padEnd(15)} 복사`);
+  }
+
+  for (const name of STATIC.files) {
+    const src = path.join(ROOT, name);
+    if (!fs.existsSync(src)) {
+      console.error(`✋ ${name} 이 없습니다. STATIC.files 목록과 실제 파일이 어긋납니다.`);
+      process.exit(1);
+    }
+    fs.copyFileSync(src, path.join(OUT, name));
+    console.log(`  ${name.padEnd(15)} 복사`);
   }
 
   console.log(`\n  주석 ${totalBytes.toLocaleString()}자 제거 → dist/\n`);
