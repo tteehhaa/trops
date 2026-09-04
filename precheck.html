@@ -106,6 +106,16 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
       종전에는 refund.html 계열의 `.wordmark`(19px · 사각형 없음)를 따랐는데, 랜딩에서
       `/precheck` 으로 넘어올 때 **좌상단이 바뀌는 것이 가장 먼저 보이는 자리**입니다.
       ⛔ 값을 여기서 손보지 마십시오 — index.html `.logo` 와 한 글자도 다르지 않아야 합니다. */
+/* 🔴 **skip 링크** 〔2026-09-04 신설〕. `index.html` · `en.html` 과 **같은 값**입니다
+   (`.skip` 두 줄 · 문구 「본문으로 건너뛰기」 / 「Skip to content」). 이 여섯 장은 v11 이후
+   새로 서거나 다시 지어지면서 이 요소를 받지 못했습니다 — 랜딩 두 장에만 있었습니다.
+   ⚠️ `z-index` 는 지금 하는 일이 없습니다 — 이 페이지의 `.nav` 는 `position:sticky` 가
+      아닙니다. index.html 과 같은 값으로 둡니다: nav 가 sticky 가 되는 날 포커스된 skip 이
+      nav 뒤로 숨는 일(구판에서 실제로 겪었습니다)을 되풀이하지 않기 위해서입니다.
+   ⛔ `left:-9999px` 를 `display:none` 이나 `visibility:hidden` 으로 바꾸지 마십시오 —
+      그러면 포커스가 아예 닿지 않아 링크가 있으나 없으나 같아집니다. */
+.skip{position:absolute;left:-9999px;top:8px;padding:10px 16px;border-radius:6px;background:var(--ink);color:#fff;font-size:14px;z-index:20}
+.skip:focus{left:16px;color:#fff}
 .nav{border-bottom:1px solid var(--line)}
 .nav-inner{height:64px;display:flex;align-items:center;gap:40px}
 .logo{display:inline-flex;align-items:center;gap:9px;font-size:18px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
@@ -231,6 +241,7 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style></head><body>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
 
 <nav class="nav">
   <div class="container nav-inner">
