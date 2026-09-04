@@ -207,6 +207,14 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
 /* 다크에서는 --accent 가 2.3:1 로 무너집니다 — 밑줄로 클릭임을 알립니다(refund.html 과 같은 규칙). */
 .footer a{color:var(--d-ink-secondary);text-decoration:underline;text-underline-offset:3px}
 .footer a:hover{color:var(--d-ink-primary)}
+/* 🔴 **정책 링크·저작권 줄** 〔2026-09-04 신설〕. 클래스 이름을 privacy·refund 4장과 «같게»
+   씁니다 — 다크 푸터 여섯 장이 한 어휘를 쓰게 두는 것이 목적입니다(랜딩만 `.nd/.fl/.cp`
+   로 갈려 있고 그 갈림은 이 배치에서 건드리지 않았습니다).
+   ⚠️ 이 두 줄이 없어서 이 페이지가 상호·대표·이메일 한 줄만 싣고 배포됐습니다 —
+      `scripts/build-static.js` 의 `FOOTER_TIERS.summary` 가 이제 그것을 선언으로 막습니다. */
+.footer-links{margin:18px 0 0;display:flex;flex-wrap:wrap;gap:6px 16px}
+.footer-legal{margin:18px 0 0}
+.footer-legal p{margin:0}
 
 @media(max-width:960px){
   .grid{grid-template-columns:1fr;gap:24px}
@@ -335,7 +343,23 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
      ⚠️ contact@theo-ne.com 은 biz 묶음에 없는 값이라 그대로 둡니다(index.html 과 같습니다). -->
 <footer class="footer">
   <div class="container footer-inner">
-    {{biz.companyName}} · 대표 {{biz.ceo}} · <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>
+    <!-- 🔴 사업자정보는 site.config.json 이 원본입니다 — 토큰만 씁니다
+         (test/site-config.test.js 가 하드코딩을 막습니다).
+         🔴 **푸터 티어는 `summary`** 로 선언돼 있습니다(scripts/build-static.js `STATIC.html`).
+            싣는 것은 넷 — 상호·대표·사업자등록번호·주소. 통신판매업신고번호와 전화는
+            정책 페이지 푸터(`full`)가 듭니다.
+         ⚠️ 신고번호 항목을 여기 넣지 마십시오 — 신고 전이고, 그 이름을 **토큰 리터럴로
+            적으면** test/site-config.test.js 가 주석까지 훑어 red 를 냅니다. -->
+    <div>{{biz.companyName}} · 대표 {{biz.ceo}} · 사업자등록번호 {{biz.registrationNo}} · {{biz.address}}</div>
+    <div><a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a></div>
+    <!-- 🔴 라벨은 그 페이지 <title> 을 따릅니다 — refund.html 이 「환불규정」입니다.
+         ⚠️ English 링크를 넣지 마십시오 — 이 페이지는 영문 짝이 «없습니다»(대표 지시).
+            /en 으로 보내면 같은 내용의 영문판이 아니라 다른 페이지로 떨어집니다. -->
+    <nav class="footer-links" aria-label="정책">
+      <a href="/privacy">개인정보처리방침</a>
+      <a href="/refund">환불규정</a>
+    </nav>
+    <div class="footer-legal"><p>© 2026 TROPS. All rights reserved.</p></div>
   </div>
 </footer>
 

@@ -58,6 +58,54 @@ const OUT = path.join(ROOT, 'dist');
  *    폴더는 STATIC.dirs 로 가야 하는데 dirs 는 주석 제거 없이 통째 복사입니다.
  *    영문 페이지는 형제 파일(en.html · en-privacy.html)로 둡니다.
  */
+/**
+ * 🔴 **푸터 티어** 〔신설 2026-09-04〕 — 「이 페이지가 푸터에 **무엇을 실어야 하는가**」를
+ *    여기 한 곳에 선언합니다. 아래 `STATIC.html` 의 `footer:` 칸이 이 표를 가리킵니다.
+ *
+ * ⚠️ **왜 필요했나 — 이 축이 어디에도 없었습니다.** `test/site-config.test.js` 와
+ *    `scripts/verify-deployment.js`(`법인명-ko`) 는 둘 다 「각 페이지가 **자기가 쓴**
+ *    토큰의 값을 갖는가」를 봅니다. 그것은 «배선»(설정 → 산출물) 검사로 맞고, 두 주석이
+ *    스스로 「푸터 구성이 바뀌어도 이 검사는 낡지 않습니다」라고 적어 두었습니다.
+ *    바로 그래서 **푸터가 줄어드는 것을 볼 수 없었습니다** — 2026-09-04 실측에서
+ *    `/precheck`·`/contact` 가 상호·대표·이메일 **한 줄만**(93px) 싣고 있었는데
+ *    두 검사 모두 초록이었습니다(정책 4장 355~377px · 랜딩 363px).
+ * 🔴 **두 사고 다 「파일을 새로 지으며 옛 푸터를 안 옮긴 것」입니다** —
+ *    `ca47218`(옛 precheck.html 삭제) → `cbd233a`(새로 세움) ·
+ *    `a962bf9`(check.html 삭제) → `90d95ec`(contact.html 신설).
+ *    푸터 블록은 태어난 뒤 한 번도 고쳐지지 않았습니다(`git log -L` 결과가 생성 커밋 하나).
+ *    선언을 두면 다음에 페이지를 새로 지을 때 `footer:` 가 없어 **빌드가 멈춥니다.**
+ * ⛔ 티어를 늘리지 마십시오. 셋이면 충분하고, 넷째가 생기는 순간 「이 페이지는 어느
+ *    쪽인가」가 다시 사람의 판단거리가 됩니다 — 새 페이지는 셋 중 하나를 고르십시오.
+ */
+const FOOTER_TIERS = {
+  /** 정책 페이지 — 사업자정보 여섯을 전부 싣습니다. */
+  full: {
+    biz: ['companyName', 'ceo', 'registrationNo', 'ecommerceNo', 'address', 'phone'],
+    policyLinks: true,
+    copyright: true,
+  },
+  /*
+   * 랜딩·전환 페이지 — 요약 넷입니다.
+   * ⚠️ 통신판매업신고번호·전화가 **의도적으로** 빠져 있습니다. 신고번호는 신고 전이고
+   *    (`site.config.json` 의 `ecommerceNo` 가 「신청 중」), 그 판단은 `index.html` 푸터
+   *    주석과 `test/site-config.test.js` 주석이 이미 적어 두었습니다.
+   *    ⛔ 여기에 그 둘을 넣지 마십시오 — 넣는 순간 랜딩 두 장이 red 가 됩니다.
+   */
+  summary: {
+    biz: ['companyName', 'ceo', 'registrationNo', 'address'],
+    policyLinks: true,
+    copyright: true,
+  },
+  /*
+   * 푸터가 **없는** 페이지. 지금은 0장입니다.
+   * 🔴 이 값이 있는 이유 — 종전 `test/site-config.test.js` 의 `carriesBiz` 는 「소스가
+   *    `{{biz.` 를 쓰는가」로 대상을 **추측**했고, 그 주석이 `sample.html`(푸터 없음)에서
+   *    거짓 red 가 나는 것을 피하려고 그렇게 했다고 적고 있었습니다. 선언이 있으면
+   *    추측할 이유가 없습니다 — 그런 페이지가 생기면 여기로 보내십시오.
+   */
+  none: null,
+};
+
 const STATIC = {
   // en.html 은 cleanUrls 로 /en 에 붙습니다 (vercel.json).
   /*
@@ -76,8 +124,8 @@ const STATIC = {
    *       없는 상대를 가리킨다(검색엔진은 상호 지목이 아니면 무시한다).
    */
   html: [
-    { file: 'index.html', locale: 'ko' },
-    { file: 'en.html', locale: 'en' },
+    { file: 'index.html', locale: 'ko', footer: 'summary' },
+    { file: 'en.html', locale: 'en', footer: 'summary' },
     /*
      * 🔄 **`precheck.html` 이 «다른 페이지»로 되돌아왔습니다** 〔2026-09-01 · 대표 지시〕.
      *
@@ -97,7 +145,7 @@ const STATIC = {
      *    때만 인정하고, 한쪽만 선언하면 검색엔진이 무시합니다. 영문판을 세우는 날
      *    `en-precheck.html` 을 만들고 두 장에 hreflang 3줄씩 함께 넣으십시오.
      */
-    { file: 'precheck.html', locale: 'ko' },
+    { file: 'precheck.html', locale: 'ko', footer: 'summary' },
     /*
      * 문의 접수 한 장 〔2026-09-01 · 대표 지시〕. `?type=` 으로 칸 구성만 바뀝니다
      * (consult · quote · notify) — 페이지는 하나입니다.
@@ -109,14 +157,14 @@ const STATIC = {
      *    받는 개인정보는 없습니다」라고 적고 있는 상태와 정면으로 어긋납니다.
      *    ⛔ 방침을 먼저 고치기 전에는 배포하지 마십시오(2026-09-01 결정 대기).
      */
-    { file: 'contact.html', locale: 'ko' },
-    { file: 'refund.html', locale: 'ko' },
-    { file: 'privacy.html', locale: 'ko' },
-    { file: 'en-privacy.html', locale: 'en' },
+    { file: 'contact.html', locale: 'ko', footer: 'summary' },
+    { file: 'refund.html', locale: 'ko', footer: 'full' },
+    { file: 'privacy.html', locale: 'ko', footer: 'full' },
+    { file: 'en-privacy.html', locale: 'en', footer: 'full' },
     // 영문 〔2026-08-16〕. en.html 의 형제 파일로 두고 cleanUrls 가 /en-refund 에 붙입니다.
     // 국문 짝은 refund 이고, 두 쌍 모두 <head> 에 hreflang 3줄이 서로를 가리킵니다.
     // ⚠️ 여기 빠뜨리면 파일은 있는데 배포만 안 되어 404 가 납니다 — 조용한 실패입니다.
-    { file: 'en-refund.html', locale: 'en' },
+    { file: 'en-refund.html', locale: 'en', footer: 'full' },
     // 영문 2종 추가 〔2026-08-20〕. en-nda.html 은 nda.html 의, en-uae.html 은 uae.html 의
     // 형제 파일이고 cleanUrls 가 /en-nda · /en-uae 에 붙입니다. hreflang 3줄이 각각
     // nda.html · uae.html 을 서로 가리킵니다.
@@ -315,10 +363,24 @@ async function main() {
 
   let totalBytes = 0;
 
-  for (const { file: name, locale } of STATIC.html) {
+  for (const { file: name, locale, footer } of STATIC.html) {
     const src = path.join(ROOT, name);
     if (!fs.existsSync(src)) {
       console.error(`✋ ${name} 이 없습니다. STATIC.html 목록과 실제 파일이 어긋납니다.`);
+      process.exit(1);
+    }
+    /*
+     * 🔴 **푸터 티어 선언이 없으면 여기서 멈춥니다** 〔2026-09-04〕. 이 한 줄이 이번 사고의
+     *    재발 방지입니다 — 페이지를 새로 지으면서 푸터를 «새로 쓰는» 순간, 어느 티어인지
+     *    적지 않고는 배포까지 갈 수 없습니다. 실을 것이 없는 페이지는 `footer: 'none'`.
+     * ⛔ 이 검사를 「없으면 summary 로 본다」 같은 기본값으로 바꾸지 마십시오 —
+     *    기본값은 «적지 않아도 통과하는 길»이고, 그것이 두 번 새게 한 구멍입니다.
+     */
+    if (!Object.prototype.hasOwnProperty.call(FOOTER_TIERS, String(footer))) {
+      console.error(
+        `✋ ${name} 에 footer 티어 선언이 없습니다(값: ${JSON.stringify(footer)}). ` +
+        `STATIC.html 항목에 footer: '${Object.keys(FOOTER_TIERS).join("' | '")}' 중 하나를 적으십시오.`
+      );
       process.exit(1);
     }
 
@@ -408,4 +470,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { STATIC: STATIC, NOT_DEPLOYED: NOT_DEPLOYED };
+module.exports = { STATIC: STATIC, NOT_DEPLOYED: NOT_DEPLOYED, FOOTER_TIERS: FOOTER_TIERS };
