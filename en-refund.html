@@ -462,8 +462,15 @@
            ⛔ 라벨만 두고 목적지를 바꾸거나 그 반대로 하지 마십시오. -->
       <nav class="footer-links" aria-label="Policies">
         <a href="https://app.trops.kr/export-precheck/new">Export pre-check (free)</a>
-        <a href="/en-refund">Refund policy</a>
-        <a href="/en-privacy">Privacy policy</a>
+        <!-- 🔴 라벨은 그 문서가 스스로 부르는 이름입니다 〔2026-09-05 · 대표 결정〕 —
+             en-privacy.html 의 <title> 은 「Privacy Notice (draft)」, en-refund.html 은
+             「Refund Policy」 입니다. 국문 「환불규정」을 맞춘 것과 같은 축입니다.
+             ⚠️ 여기는 「Privacy policy」·「Refund policy」였습니다 — 이름이 다르고
+                (Notice ≠ policy) 대소문자도 en-privacy.html 푸터와 갈렸습니다.
+             ⛔ 소문자 policy 로 되돌리지 마십시오 — test/page-essentials.test.js 가
+                국·영문 둘 다 잽니다. -->
+        <a href="/en-refund">Refund Policy</a>
+        <a href="/en-privacy">Privacy Notice</a>
       </nav>
 
       <dl class="footer-biz" aria-label="Business information">

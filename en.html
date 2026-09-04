@@ -373,8 +373,15 @@ h2{max-width:18em;font-size:clamp(1.75rem,3vw,2.5rem);font-weight:700;line-heigh
              🔴 언어 전환 링크에는 `hreflang="ko"` 를 답니다 — 「이것은 이 페이지의 국문판」
                 이라는 선언이며, 검사가 **그 선언으로** 의도된 교차 링크를 가립니다
                 (⛔ 클래스로 가리면 그 클래스를 입은 아무 링크나 빠져나갑니다). -->
-        <a href="/en-privacy">Privacy policy</a>
-        <a href="/en-refund">Refund policy</a>
+        <!-- 🔴 라벨은 그 문서가 스스로 부르는 이름입니다 〔2026-09-05 · 대표 결정〕 —
+             en-privacy.html 의 <title> 은 「Privacy Notice (draft)」, en-refund.html 은
+             「Refund Policy」 입니다. 국문 「환불규정」을 맞춘 것과 같은 축입니다.
+             ⚠️ 여기는 「Privacy policy」·「Refund policy」였습니다 — 이름이 다르고
+                (Notice ≠ policy) 대소문자도 en-privacy.html 푸터와 갈렸습니다.
+             ⛔ 소문자 policy 로 되돌리지 마십시오 — test/page-essentials.test.js 가
+                국·영문 둘 다 잽니다. -->
+        <a href="/en-privacy">Privacy Notice</a>
+        <a href="/en-refund">Refund Policy</a>
         <a href="/" hreflang="ko" lang="ko">한국어</a>
       </div>
       <p class="copy">© 2026 TROPS. All rights reserved.</p>

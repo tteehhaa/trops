@@ -95,12 +95,14 @@ test('🔴 정책 링크 라벨이 그 문서가 스스로 부르는 이름과 �
    *    상태와 사이트 이름이고, 이름 자체가 아닙니다. 확정본이 되어 「(초안)」이 빠지는
    *    날 이 검사가 거짓 red 가 되면 안 됩니다.
    *
-   * 🔴 **국문만 봅니다** 〔2026-09-05〕. 영문은 같은 형태의 갈림이 «더» 있고 그것은
-   *    문면 결정이 필요합니다 — `en.html`·`en-refund.html` 이 개인정보 문서를
-   *    「Privacy policy」로 부르는데 그 페이지 title 은 **「Privacy Notice」** 이고,
-   *    「Refund Policy」/「Refund policy」로 대소문자도 갈립니다.
-   *    ⛔ 이 검사를 영문으로 넓히기 전에 그 이름을 먼저 정하십시오 — 검사가 먼저
-   *       가면 「무엇이 맞는가」를 검사가 대신 정해 버립니다.
+   * 🔴 **국·영문 둘 다 봅니다** 〔2026-09-05 영문 확장 · 대표 결정〕. 영문 이름은
+   *    **Privacy Notice · Refund Policy** 입니다 — 두 페이지의 `<title>` 이 그렇게
+   *    적고 있었고, 그 이름으로 확정됐습니다.
+   *    ⚠️ 확장 전 실측: `en.html`·`en-refund.html` 이 개인정보 문서를 「Privacy policy」로
+   *       부르고 있었고(그 페이지 이름은 「Privacy Notice」), 환불 문서는 「Refund policy」/
+   *       「Refund Policy」로 대소문자가 갈렸습니다. `en-privacy.html` 만 둘 다 맞았습니다.
+   *    🔴 이름을 «먼저» 정하고 검사를 넓혔습니다 — 순서를 뒤집으면 검사가
+   *       「무엇이 맞는가」를 대신 정해 버립니다.
    */
   /*
    * 🔴 **정책 문서만 대상입니다** — 대상 집합을 `(^|-)(privacy|refund)` 로 파생합니다
@@ -121,8 +123,7 @@ test('🔴 정책 링크 라벨이 그 문서가 스스로 부르는 이름과 �
   assert.strictEqual(Object.keys(NAME_OF).length, 4, '정책 문서를 4장 찾지 못했습니다 — 검사가 헛돕니다');
 
   const offenders = [];
-  for (const { file, locale } of PAGES) {
-    if (locale !== 'ko') continue;
+  for (const { file } of PAGES) {
     const footer = strip(read(file)).match(/<footer[\s\S]*?<\/footer\s*>/i);
     assert.ok(footer, `${file}: <footer> 를 찾지 못했습니다`);
     for (const m of footer[0].matchAll(/<a href="(\/[^"]*)"[^>]*>([^<]+)<\/a>/g)) {
