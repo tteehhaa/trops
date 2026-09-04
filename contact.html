@@ -109,6 +109,8 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
 .logo:hover{color:var(--ink)}
 .logo i{width:18px;height:18px;background:url(/img/icon_primary.svg) center/contain no-repeat;display:block}
 .nav-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.nav-login{font-size:14px;font-weight:600;color:var(--ink-64);text-decoration:none}
+.nav-login:hover{color:var(--ink)}
 .nav-quiet{font-size:14px;font-weight:500;color:var(--muted)}
 .nav-quiet:hover{color:var(--ink-64)}
 
@@ -200,7 +202,10 @@ form{padding-block:clamp(8px,1.5vw,16px) clamp(48px,6vw,72px)}
 <nav class="nav">
   <div class="container nav-inner">
     <a class="logo" href="/"><i></i>TROPS</a>
-    <div class="nav-right"><a class="nav-quiet" href="/">서비스 소개 →</a></div>
+    <!-- 🔴 **기존 고객 자리** 〔2026-09-05 · 대표 지시〕 — 네 장의 헤더가 같은 진입로를
+         갖습니다(index·precheck·contact·en). 돌아온 분이 어느 장에 떨어지든 갈 곳이 있습니다.
+         ⚠️ 조용한 링크입니다 — 버튼으로 만들지 마십시오. -->
+    <div class="nav-right"><a class="nav-login" href="https://app.trops.kr/login" data-track="nav-login">로그인</a><a class="nav-quiet" href="/">서비스 소개 →</a></div>
   </div>
 </nav>
 
