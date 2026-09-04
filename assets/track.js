@@ -106,19 +106,33 @@
   var ID = identity();
   var SRC = source();
 
-  function post(url, payload, beacon) {
+  /*
+   * 🔴 **본문 형식이 보내는 곳마다 다릅니다 — 그리고 그 차이가 «필수»입니다.**
+   *
+   *   · 같은 오리진(`/api/track`) → **`application/json`**
+   *     그 함수(`api/track.js`)는 Vercel 이 **JSON 으로 선언된 본문만** 객체로 풀어 주기 때문에
+   *     `text/plain` 으로 보내면 `req.body` 가 **문자열**이 되고 `kind` 가 undefined 라
+   *     **400 으로 거절됩니다**(실측 2026-09-04 · 배포 직후 콘솔 400). 같은 오리진은 preflight
+   *     자체가 없으므로 `text/plain` 으로 얻는 것이 하나도 없습니다.
+   *   · 다른 오리진(앱) → **`text/plain;charset=UTF-8`**
+   *     CORS 안전 목록이라 preflight 가 붙지 않습니다. `application/json` 이면 preflight 가
+   *     필요해지고 `sendBeacon` 은 preflight 를 못 해 **조용히** 실패합니다.
+   *
+   * ⛔ 두 값을 하나로 통일하지 마십시오 — 어느 쪽으로 통일해도 한쪽이 죽습니다.
+   *    (한쪽은 400 으로 시끄럽게, 다른 쪽은 조용히.)
+   */
+  function post(url, payload, beacon, contentType) {
     var body = JSON.stringify(payload);
     if (beacon) {
       try {
-        /* text/plain 이라야 preflight 없이 나갑니다(위 머리말). */
-        var blob = new Blob([body], { type: 'text/plain;charset=UTF-8' });
+        var blob = new Blob([body], { type: contentType });
         if (navigator.sendBeacon && navigator.sendBeacon(url, blob)) return;
       } catch (e) { /* fetch 로 폴백합니다 */ }
     }
     try {
       fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+        headers: { 'Content-Type': contentType },
         body: body,
         keepalive: true,
         mode: 'cors',
@@ -127,7 +141,7 @@
   }
 
   /* 종전 경로 — 칸 3개 그대로입니다. ⛔ 여기에 맥락을 얹지 마십시오(그 표에 칸이 없습니다). */
-  function sendLegacy(payload) { post(SAME_ORIGIN, payload, true); }
+  function sendLegacy(payload) { post(SAME_ORIGIN, payload, true, 'application/json'); }
 
   /* 앱 경로 — 맥락을 함께 보냅니다. */
   function sendApp(extra, beacon) {
@@ -143,7 +157,7 @@
       dwellMs: typeof extra.dwellMs === 'number' ? extra.dwellMs : null,
       scrollDepth: typeof extra.scrollDepth === 'number' ? extra.scrollDepth : null
     };
-    post(APP_ENDPOINT, body, beacon !== false);
+    post(APP_ENDPOINT, body, beacon !== false, 'text/plain;charset=UTF-8');
   }
 
   /* ── 페이지 조회 ── */
