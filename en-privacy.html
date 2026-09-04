@@ -260,8 +260,31 @@
         <p>We no longer receive any new personal information on trops.kr. Enquiries reach us by email at <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>, and we delete those messages once we have answered them.</p>
         <p>Documents from pre-check intakes made on trops.kr up to 20 August 2026 are still held. We no longer accept them, but what remains is kept and deleted exactly as §02 and §03 below set out.</p>
         <p>Pre-check intake has moved to app.trops.kr. Processing that happens there is covered by that site's own privacy notice.</p>
-        <p>We run no advertising identifiers or behavioural tracking on this site. We set no analytics or advertising cookies, and we keep nothing that identifies or tracks you in browser storage.</p>
-        <p>One exception: a single functional cookie, <code>lang</code>, remembers which language (Korean/English) you're reading in (2026-08-21). Its value is only <code>ko</code> or <code>en</code> &mdash; it is never used for advertising or analytics, and never linked across visits to identify who you are.</p>
+        <p>We run no advertising identifiers or behavioural tracking on this site. We set no analytics or advertising cookies, and we keep nothing in browser storage that <strong>identifies you or ties one visit to another</strong>.</p>
+        <p>One of two exceptions: a functional cookie, <code>lang</code>, remembers which language (Korean/English) you're reading in (2026-08-21). Its value is only <code>ko</code> or <code>en</code> &mdash; it is never used for advertising or analytics, and never linked across visits to identify who you are.</p>
+        <!-- 🔴 **2026-09-04 — added with section measurement.** The Korean page (privacy.html §01)
+             is the source; this had **no equivalent of the 2026-08-18 aggregation paragraph at all**,
+             which is a gap that predates this change. Both paragraphs are added here so the two
+             languages say the same thing.
+             ⛔ Do not extend measurement without editing both pages. -->
+        <p>A second exception is a <strong>temporary key that groups one visit</strong> (2026-09-04).
+        To count which parts of a page you saw and how long you stayed <strong>per visit</strong>, the
+        events of that visit have to be recognisable as one visit. The key is a random value, it
+        <strong>disappears when you close the tab</strong> (<code>sessionStorage</code>), and it is not
+        connected to anything else we hold. Alongside it we send whether you have visited before as a
+        <strong>single true/false</strong> &mdash; the marker behind that (<code>trops_seen</code>) only
+        ever holds the value <code>1</code> and is <strong>never sent to our servers</strong>. So our
+        records alone <strong>cannot join two visits to the same person</strong>.</p>
+        <p>We count how often each page is opened and how often the main buttons are pressed
+        (2026-08-18). From 4 September 2026 we also count <strong>which sections of a page you saw,
+        how long you stayed on each, how far down you scrolled, and which next step you chose</strong>.
+        For how you arrived we keep only <strong>one of five buckets</strong> (search, direct,
+        referral, social, AI) and the <strong>domain</strong> of the site that sent you &mdash; the rest
+        of that address is discarded.</p>
+        <p>None of this records <strong>cookies, device identifiers, IP addresses, or browser
+        details</strong>. Because the temporary key lives only inside that visit and disappears when the
+        tab closes, <strong>we cannot tell who you are</strong>. We know whether you have been here
+        before only as true or false &mdash; <strong>not how many times</strong>.</p>
       </section>
       <section>
         <h2><span class="doc-num" aria-hidden="true">02</span><span>What we receive and why</span></h2>

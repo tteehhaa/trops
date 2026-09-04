@@ -86,7 +86,14 @@ const body = (f) =>
  *    블록은 그대로 있습니다. ⛔ 자리가 살아 있으면 선택자를 옮기지, 검사를 지우지 마십시오.
  */
 function closeCta(f) {
-  const m = body(f).match(/<section class="fin[^"]*">([\s\S]*?)<\/section>/);
+  /*
+   * ⚠️ **class 뒤에 다른 속성이 올 수 있습니다** 〔2026-09-04〕 — 영역 계측이 `data-section`
+   *    을 붙이면서 종전 `class="fin[^"]*">` 가 안 맞아 이 검사가 「블록이 없다」로 죽었습니다.
+   *    이 함수가 하는 일은 **마감 CTA 를 찾는 것**이지 속성 순서를 단정하는 것이 아닙니다.
+   * 🔴 그래도 «찾았는지»는 그대로 단정합니다 — 못 찾으면 호출부가 실패합니다(조용히 넘어가지
+   *    않습니다).
+   */
+  const m = body(f).match(/<section class="fin[^"]*"[^>]*>([\s\S]*?)<\/section>/);
   return m ? m[1] : null;
 }
 
