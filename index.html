@@ -679,7 +679,14 @@ footer .cp{margin-top:18px;color:#64748B}
      라 `/privacy.html` 은 **308 로 `/privacy` 에 튕깁니다**. 세 링크가 각각 왕복
      하나씩을 더 쓰고 있었습니다(프로덕션에서 308 확인). 같은 문서로 가는 같은 링크이니
      클린 주소로 곧장 갑니다. -->
-<div class="fl"><a href="/privacy">개인정보처리방침</a><a href="/refund">환불규정</a><a href="/en">English</a></div>
+<!-- 🔴 **이용약관은 앱 도메인에 있습니다** 〔2026-09-05 · 대표 결정〕 —
+     `trops_a/app/terms/page.tsx` 가 정본이고 랜딩에는 사본을 두지 않습니다.
+     같은 법률 문서를 두 곳에 두면 반드시 갈립니다(환불 조건이 실제로 그렇게
+     갈렸습니다 — 환불규정 · 약관 제10조 · /insurance/quick 화면 셋이었습니다).
+     ⚠️ 그래서 **절대 주소**입니다. 상대 경로로 바꾸지 마십시오.
+     ⚠️ 영문 페이지에는 넣지 않았습니다 — 그 문서가 국문뿐이라, 「Terms of
+        Service」로 걸면 영문 독자를 국문 문서로 보냅니다. 번역이 서면 그때 겁니다. -->
+<div class="fl"><a href="https://app.trops.kr/terms">이용약관</a><a href="/privacy">개인정보처리방침</a><a href="/refund">환불규정</a><a href="/en">English</a></div>
 <div class="cp">© 2026 TROPS. All rights reserved.</div>
 </div></footer>
 <!-- 🔴 익명 집계 〔2026-09-01〕 — 개인 식별값 없음(privacy.html §01). -->

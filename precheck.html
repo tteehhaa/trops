@@ -386,7 +386,15 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
     <!-- 🔴 라벨은 그 페이지 <title> 을 따릅니다 — refund.html 이 「환불규정」입니다.
          ⚠️ English 링크를 넣지 마십시오 — 이 페이지는 영문 짝이 «없습니다»(대표 지시).
             /en 으로 보내면 같은 내용의 영문판이 아니라 다른 페이지로 떨어집니다. -->
+    <!-- 🔴 **이용약관은 앱 도메인에 있습니다** 〔2026-09-05 · 대표 결정〕 —
+           `trops_a/app/terms/page.tsx` 가 정본이고 랜딩에는 사본을 두지 않습니다.
+           같은 법률 문서를 두 곳에 두면 반드시 갈립니다(환불 조건이 실제로 그렇게
+           갈렸습니다 — 환불규정 · 약관 제10조 · /insurance/quick 화면 셋이었습니다).
+           ⚠️ 그래서 **절대 주소**입니다. 상대 경로로 바꾸지 마십시오.
+           ⚠️ 영문 페이지에는 넣지 않았습니다 — 그 문서가 국문뿐이라, 「Terms of
+              Service」로 걸면 영문 독자를 국문 문서로 보냅니다. 번역이 서면 그때 겁니다. -->
     <nav class="footer-links" aria-label="정책">
+      <a href="https://app.trops.kr/terms">이용약관</a>
       <a href="/privacy">개인정보처리방침</a>
       <a href="/refund">환불규정</a>
     </nav>
