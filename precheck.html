@@ -346,10 +346,6 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
       <div class="pts">/ 100점</div>
       <div class="gname" id="gn"></div>
       <div class="gdesc" id="gd"></div>
-      <div class="basis">
-        이 점수는 계약 조건에 대한 것입니다. 실제 회수는 선적 후의 이행에서 갈립니다.
-        항목별 판단 근거는 공개된 자료를 따르며, 다섯 항목을 하나로 합친 배점은 TROPS가 정한 것입니다.
-      </div>
     </div>
     <div class="factors">
       <div class="fhead"><div>점수</div><div>항목</div><div>판단 근거</div></div>
@@ -505,13 +501,11 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
   var F=[
     {id:'f3',key:'region',send:true,max:20,nm:'목적국',fc:'customs',
      cd:{20:'north_america_japan_western_europe',16:'east_southeast_asia',11:'middle_east_latin_eastern_europe',6:'south_asia_africa',2:'unknown'},
-     src:'권역 구간 기준입니다. 국가별 등급은 수출 사전점검에서 한국무역보험공사 자료로 확인합니다.',
      ms:{20:'국가 위험이 낮은 권역입니다',16:'국가 위험이 보통인 권역입니다',
          11:'국가 위험이 높은 권역입니다',6:'국가 위험이 매우 높은 권역입니다',
          2:'권역이 정해지지 않아 최저 구간으로 잡았습니다'}},
     {id:'f5',key:'buyer',send:true,max:15,nm:'바이어 이력',fc:'buyer',
      cd:{15:'five_plus_no_delay',11:'two_or_three',6:'second',2:'first'},
-     src:'적어 주신 값을 그대로 씁니다. 배점은 TROPS가 정했습니다. 과거 결제 이력이 이번 건의 지급을 보장하지는 않습니다.',
      ms:{15:'결제 이력이 쌓여 있습니다',11:'이력이 쌓이는 중입니다',
          6:'판단할 이력이 부족합니다',2:'결제 이력이 없습니다'}},
     /*
@@ -520,17 +514,14 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
      * ⚠️ `id2` 가 있는 유일한 항목입니다 — 아래 `pick()`·`run()` 이 이 칸을 보고 갈래를 탑니다.
      * ⚠️ `cd`·`ms` 가 없습니다. 점수도 문안도 `payScore()`·`PAY_METHOD` 가 만듭니다.
      */
-    {id:'f1',id2:'f1b',key:'pay',send:true,max:30,nm:'대금 조건',fc:'payment',
-     src:'미국 상무부·EXIM Trade Finance Guide — 결제방식별 수출자 위험 순서. 수취조건은 적어 주신 값을 그대로 씁니다.'},
+    {id:'f1',id2:'f1b',key:'pay',send:true,max:30,nm:'대금 조건',fc:'payment'},
     {id:'f2',key:'term',send:true,max:20,nm:'결제 기한',fc:'payment',
      cd:{20:'sight',16:'d30',12:'d60',8:'d90',3:'over90'},
-     src:'K-SURE 단기수출보험 약관 — 상품별 결제기간 한도',
      ms:{20:'선적과 동시에 회수됩니다',16:'회수까지 한 달입니다',
          12:'회수까지 두 달입니다',8:'회수까지 석 달입니다',
          3:'회수까지 석 달이 넘습니다'}},
     {id:'f4',key:'ins',send:true,max:15,nm:'무역보험',fc:'payment',
      cd:{15:'insured',9:'applying',5:'checking',0:'not_insured'},
-     src:'적어 주신 값을 그대로 씁니다. TROPS는 가입 여부를 조회하지 않습니다.',
      ms:{15:'미회수 시 청구할 수 있습니다',9:'심사 결과를 기다리는 중입니다',
          5:'선적 전에 결론이 나야 하는 항목입니다',0:'미회수 시 청구할 곳이 없습니다'}}
   ];
@@ -686,7 +677,7 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
         html+='<div class="frw"><div><div class="fsc" style="color:var(--muted)">—<small>/'+f.max+'</small></div>'+
           '<div class="fbar"><i style="width:0%"></i></div></div>'+
           '<div class="fnm">'+f.nm+'</div>'+
-          '<div><div class="fms">아직 고르지 않았습니다</div><div class="src">'+f.src+'</div></div></div>';
+          '<div><div class="fms">아직 고르지 않았습니다</div></div></div>';
         return;
       }
 
@@ -703,18 +694,18 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
       }
       if(r<wr){wr=r;worst=f}
 
-      var sub='',src=f.src,msg=isPay?'':f.ms[v];
+      var sub='',msg=isPay?'':f.ms[v];
       if(isPay){
         msg=(raw2==='prepaid')?PAY_RECEIPT.prepaid.ms:PAY_METHOD[raw].ms;
         sub='<span>'+PAY_METHOD[raw].nm+' · '+PAY_RECEIPT[raw2].nm+'</span>';
       }
-      if(f.key==='region'&&nm){ sub='<span>'+nm+'</span>'; src='권역 구간 기준입니다. 수출 사전점검에서 '+nm+'의 한국무역보험공사 등급을 확인합니다.'; }
-      if(prepaid&&f.key==='ins'){ msg='전액 선지급 건이므로 미회수 위험이 없습니다'; src='전액 선지급이면 보험 가입 여부와 무관하게 만점으로 처리합니다.'; }
+      if(f.key==='region'&&nm){ sub='<span>'+nm+'</span>'; }
+      if(prepaid&&f.key==='ins'){ msg='전액 선지급 건이므로 미회수 위험이 없습니다'; }
 
       html+='<div class="frw"><div><div class="fsc" style="color:'+tone(r)+'">'+v+'<small>/'+f.max+'</small></div>'+
         '<div class="fbar"><i style="width:'+(r*100)+'%;background:'+tone(r)+'"></i></div></div>'+
         '<div class="fnm">'+f.nm+sub+'</div>'+
-        '<div><div class="fms">'+msg+'</div><div class="src">'+src+'</div></div></div>';
+        '<div><div class="fms">'+msg+'</div></div></div>';
     });
     rows.innerHTML=html;
 
