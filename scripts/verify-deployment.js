@@ -147,11 +147,12 @@ const CRON_ROUTES = fs.existsSync(CRON_DIR)
       .sort()
   : [];
 
-// 조용히 0개로 빠지면 "전부 통과"로 보입니다 — 탐지가 깨진 것과 검사할 게
-// 없는 것을 구분하지 못하므로 여기서 죽입니다(이 저장소는 cron 이 최소 1개입니다).
-if (CRON_ROUTES.length === 0) {
-  throw new Error('api/cron/ 에서 cron 라우트를 하나도 찾지 못했습니다 — CRON_DIR 탐지가 깨졌을 수 있습니다: ' + CRON_DIR);
-}
+// 🔴 **0개가 «정상»이 됐습니다** 〔2026-09-09 · 앞단 Supabase 폐기〕.
+// 종전에는 0개면 던졌습니다 — 「이 저장소는 cron 이 최소 1개」라는 전제였고, 탐지가
+// 깨진 것과 검사할 게 없는 것을 구분하려던 것입니다. 그 전제가 뒤집혔습니다:
+// cleanup-expired · refund-blocked 둘 다 앞단만 보던 배치라 함께 걷었습니다.
+// ⚠️ 그래서 이제 「0개」를 실패로 읽지 않습니다. cron 이 다시 생기면 이 배열이
+//    스스로 채워지고 검사도 따라옵니다 — 손볼 자리가 아닙니다.
 
 /**
  * cron 라우트는 전부 같은 약속을 지켜야 합니다 — 무인증 호출에 404, 본문 없음.
@@ -684,46 +685,12 @@ const CHECKS = [
     },
   },
 
-  /* ── R-2 과금 게이트 (2026-08-11) ───────────────────────────────── */
-  {
-    id: 'R2-과금게이트',
-    /*
-     * 🔴 **배포 시 대조**입니다. 게이트 값은 코드 상수라 배포본에 굳습니다 —
-     *    소스를 고치고 배포를 잊거나, 배포는 됐는데 다른 커밋이 올라간 경우
-     *    라이브가 소스와 다른 답을 합니다. 그 침묵을 여기서 깹니다.
-     *
-     * ⚠️ 기대값을 하드코딩하지 않습니다. 이 저장소 소스에서 읽어 대조합니다 —
-     *    하드코딩하면 게이트를 여는 날 이 파일이 조용히 낡습니다.
-     */
-    label: '/api/payment-config 의 과금 게이트가 소스와 같다',
-    page: null,
-    raw: '/api/payment-config',
-    check: (res) => {
-      if (res.status !== 200) return `HTTP ${res.status}`;
-      let body;
-      try { body = JSON.parse(res.body); } catch (e) { return '응답이 JSON 이 아닙니다'; }
-
-      const gate = require(path.join(ROOT, 'api', '_precheck-charge-gate.js'));
-      const expected = gate.isPrecheckPaidChargeEnabled();
-
-      if (typeof body.chargeEnabled !== 'boolean') {
-        return 'chargeEnabled 가 응답에 없습니다 — 게이트 배선이 배포되지 않았습니다';
-      }
-      if (body.chargeEnabled !== expected) {
-        return `라이브 chargeEnabled=${body.chargeEnabled} · 소스=${expected} — 배포본이 소스와 다릅니다`;
-      }
-      if (!expected) {
-        const want = gate.precheckChargeBlockers();
-        const got = body.chargeBlockers || [];
-        if (got.join(',') !== want.join(',')) {
-          return `막힌 사유가 다릅니다 — 라이브 [${got}] · 소스 [${want}]`;
-        }
-      }
-      // 게시는 과금과 별개로 계속 열려 있어야 합니다.
-      if (body.displayEnabled !== true) return '게시(displayEnabled)까지 닫혔습니다';
-      return true;
-    },
-  },
+  /* ── R-2 과금 게이트 — 걷었습니다 〔2026-09-09〕 ───────────────────
+   * `/api/payment-config` 가 배포본의 과금 게이트를 소스와 대조하던 검사입니다.
+   * 앞단 Supabase 폐기와 함께 api/payment-config.js · _payment.js ·
+   * _precheck-charge-gate.js 를 걷었으므로 **대조할 양쪽이 다 사라졌습니다.**
+   * ⛔ 결제를 이 저장소로 되돌리지 마십시오 — app.trops.kr 소관입니다.
+   */
   /*
    * api/cron/ 의 라우트 수만큼 자동으로 만들어집니다 — 새 cron 파일을 추가하면
    * 이 배열을 손대지 않아도 다음 실행부터 검사 대상에 들어갑니다.
