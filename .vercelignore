@@ -19,3 +19,30 @@ design_handoff_trops_landing/
 .bkit/
 precheck-schema.sql
 test/
+
+# ── 휴면 엔드포인트 — 배포에서만 뺍니다 〔2026-09-08 · 앞단 Supabase 폐지 준비〕 ────
+#
+# 부르는 화면이 «0건»입니다. 서류 접수 폼이 app.trops.kr 로 옮겨 갔고(2026-08-20 접수
+# 종료), vercel.json 이 /precheck 를 그쪽으로 넘깁니다. 셋 다 leaf 라 다른 파일이
+# require 하지 않습니다(실측 2026-09-08).
+#
+# 🔴 **왜 지우지 않고 «배포만» 막는가**
+#    api/intake.js 를 지우면 테스트 8개가 함께 죽는데, 그 여덟이 재는 것 중에는
+#    **남아 있는 헬퍼**가 있습니다 — _intake-route · _agreements · _precheck-charge-gate ·
+#    _payment. 그 헬퍼들은 cron(refund-blocked)과 운영 스크립트가 계속 씁니다.
+#    소스를 남기면 검사가 그대로 돌고, 배포에서 빼면 «살아 있는 HTTP 창구»는 사라집니다.
+#    지우는 것은 그 여덟을 헬퍼 직접 검사로 옮긴 뒤에 합니다.
+#
+# ⚠️ api/intake.js 는 **인증 없이 파일 업로드를 받아** 앞단 Storage 와 표에 씁니다
+#    (POST/PATCH 4곳). 부르는 화면이 없어도 창구가 열려 있는 한 쓰기가 가능합니다.
+#    앞단을 지우기 전에 닫아 두는 것이 이 항목의 요점입니다.
+#
+# ⛔ 여기에 api/erasure.js 를 넣지 마십시오 — privacy.html 이 「엔드포인트는 살아
+#    있습니다」를 명시합니다(§05 주석). 빼려면 그 문면을 먼저 고쳐야 합니다.
+# ⛔ api/payment-config.js 도 넣지 마십시오 — scripts/verify-deployment.js 의
+#    「R2-과금게이트」 검사가 프로덕션에서 그 주소를 부릅니다. 배포 게이트가 깨집니다.
+# ⛔ api/prestep.js 도 넣지 마십시오 — 앞단 Supabase 와 무관한 trops_a 프록시이고,
+#    PRESTEP_INGEST_SECRET 을 두 저장소가 공유합니다.
+api/intake.js
+api/slots.js
+api/payment-confirm.js
