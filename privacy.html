@@ -168,6 +168,8 @@
   .doc-num { font-size: 13px; font-weight: 600; color: var(--muted); line-height: 1.85; }
   .doc p { margin: 12px 0 0; font-size: 16.5px; line-height: 1.75; color: var(--ink-62); max-width: 54ch; }
   .doc p.lead { color: var(--ink); }
+  /* §07 개정 고지의 소제목. 이 문서의 유일한 h3 라 규칙이 없으면 브라우저 기본값으로 떨어진다. */
+  .doc h3 { margin: 22px 0 0; font-size: 16.5px; line-height: 1.6; letter-spacing: -0.012em; font-weight: 700; color: var(--ink); }
 
   table {
     margin-top: 20px;
@@ -276,6 +278,7 @@
       <h1>개인정보처리방침</h1>
       <p class="head-meta">
         초안 · 법무 검토 전 &middot; 작성일 2026년 8월 11일 &middot; 시행일 2026년 8월 20일<br>
+        개정 2026년 9월 8일 &middot; <strong>개정 시행일 2026년 9월 15일</strong> &mdash; 바뀌는 내용은 §07 에 적었습니다.<br>
         {{biz.companyName}} (이하 &ldquo;회사&rdquo;)가 trops.kr 에서 제공하는 서비스에 적용됩니다.
       </p>
     </div>
@@ -396,7 +399,8 @@
           <thead><tr><th scope="col">맡기는 곳</th><th scope="col">맡기는 일</th></tr></thead>
           <tbody>
             <tr><th scope="row">Resend</th><td>안내·확인 메일 발송</td></tr>
-            <tr><th scope="row">Supabase<br><span class="lead">(인도 뭄바이 리전)</span></th><td>문의 &middot; 견적 &middot; 출시 알림 기록 보관 · 남아 있는 접수 기록·업로드 파일 보관 · 페이지 조회·버튼 클릭 익명 집계 보관</td></tr>
+            <tr><th scope="row">Supabase<br><span class="lead">(대한민국 서울 리전)</span></th><td>문의 &middot; 견적 &middot; 출시 알림 기록 보관 &middot; 페이지 조회·버튼 클릭 익명 집계 보관<br><span class="lead">2026년 9월 15일부터</span></td></tr>
+            <tr><th scope="row">Supabase<br><span class="lead">(인도 뭄바이 리전)</span></th><td>남아 있는 접수 기록·업로드 파일 보관<br><span class="lead">2026년 9월 15일 전까지는 문의 &middot; 견적 &middot; 출시 알림 기록과 조회 집계도 이 리전에 보관합니다.</span></td></tr>
             <tr><th scope="row">Vercel</th><td>웹사이트 호스팅과 요청 처리</td></tr>
             <tr><th scope="row">Anthropic</th><td>업로드 문서 OCR·AI 분석</td></tr>
           </tbody>
@@ -412,7 +416,7 @@
           </thead>
           <tbody>
             <!-- ══════════════════════════════════════════════════════════════
-                 🔴 **서울 행 — 유지하되 범위를 못질했습니다** 〔2026-09-01 · 대표 결정〕
+                 🔴 **서울 행 — 범위가 넓어집니다** 〔2026-09-08 · 대표 결정 · 시행 2026-09-15〕
                  ══════════════════════════════════════════════════════════════
                  이 행이 가리키는 것은 **앱(app.trops.kr)의 Supabase 프로젝트**입니다
                  (ref `bdlq…` = `trops` prod · 서울 ap-northeast-2). 접수용
@@ -427,36 +431,47 @@
                     국외이전 고지가 없게 됩니다.** 앱 제4조가 Supabase·리전을 실제로 담은
                     뒤에 다시 검토하십시오.
 
-                 ── 🔴 「이전되지 않습니다」가 «구조적으로» 참이 됐습니다 ──
-                 2026-09-01 에 그 프로젝트를 보던 코드를 **전부 내렸습니다**. 넷 다 부르는
-                 화면이 0건이었고 배포에만 남아 있던 것들입니다:
+                 ── 🔴 「이전되지 않습니다」를 «걷었습니다» 〔2026-09-08〕 ──
+                 종전 이 칸에는 「trops.kr 에서 수집한 정보는 이 프로젝트로 이전되지
+                 않습니다」가 있었고, 그 문장이 참이 되도록 코드를 맞춰 두었습니다 —
+                 2026-09-01 에 그 프로젝트를 보던 넷을 내렸습니다(assets/auth.js ·
+                 auth.css · vendor/supabase-ssr.js · api/lookup-log.js · 153,576 B).
 
-                   assets/auth.js                 27,079 B  호출자 제거 7876e98(2026-08-29)
-                   assets/auth.css                12,542 B
-                   assets/vendor/supabase-ssr.js 113,955 B  auth.js 전용이라 딸림 삭제
-                   api/lookup-log.js               8,509 B  호출자 /uae 제거 ca47218(2026-08-30)
-                 정적 자산 153,576 B 가 매 배포에서 빠집니다.
+                 그 전제가 뒤집혔습니다. 앞단 Supabase(뭄바이 `iyvd…` trops-precheck)를
+                 폐지하기로 하면서 랜딩의 문의·출시 알림 기록과 조회 집계가 **이 프로젝트로
+                 옮겨 옵니다** 〔trops_a 세션 ②차 요청 · B안〕. 그래서 그 문장을 지우고
+                 범위를 다시 적었습니다. 종전 주석이 「넣어야 한다면 이 행의 문면을 먼저
+                 고치십시오」라고 했고, **이것이 그 이행입니다** — 문면이 먼저 섰습니다.
 
-                 ⚠️ env `UAE_LOG_SUPABASE_URL`·`_SECRET_KEY` 는 **Vercel Production 에 남아
-                    있습니다** — 읽는 코드가 없어 무해하지만, 정리하려면 대시보드에서 지웁니다.
-                 ⛔ 그 프로젝트를 다시 두드리는 코드를 넣으면 위 문장이 **거짓이 됩니다.**
-                    넣어야 한다면 이 행의 문면을 먼저 고치십시오 — 문장과 코드가 묶여 있습니다.
+                 🔴 **시행일 2026-09-15. 코드가 문면을 앞지르면 안 됩니다.**
+                    그날 trops_a 가 `LANDING_TO_MAIN_DB_ALLOWED` 를 켭니다. 그 전까지 랜딩
+                    수집분은 뭄바이에 남습니다(그쪽이 2026-09-08 에 문을 달았습니다).
+                    ⛔ 그날보다 먼저 켜면 위 표가 거짓이 됩니다 — 순서가 계약입니다.
+                 ⚠️ 이 저장소가 시행일에 할 일은 **없습니다.** 랜딩 코드(assets/track.js 의
+                    같은 오리진 호출 · contact.html 제출 주소) 교체는 그 뒤 ③ 단계이고
+                    별도 요청으로 옵니다. ⛔ 그 전에 api/leads.js 를 건드리지 마십시오.
+
+                 ⚠️ env `UAE_LOG_SUPABASE_URL`·`_SECRET_KEY` 가 **Vercel Production 에 남아
+                    있습니다** — 이 프로젝트(`bdlq…`)를 가리키지만 읽는 코드가 없는 폐기
+                    잔여물입니다. ⛔ ③ 에서 **재활용하지 마십시오.** 랜딩은 앱 엔드포인트
+                    (app.trops.kr)를 부르고, 이 저장소에 본체 접속을 새로 만들지 않습니다 —
+                    api/_supabase.js 를 17개 파일이 공유하기 때문입니다.
                  ══════════════════════════════════════════════════════════════ -->
             <tr>
               <th scope="row">Supabase, Inc.<br><span class="lead">(인프라: AWS)</span></th>
-              <td>이메일, 회사정보, 업로드 문서, 결제 관련 식별정보</td>
+              <td>이메일, 회사정보, 업로드 문서, 결제 관련 식별정보<br>문의 내용 &middot; 담당자 이름 <span class="lead">(2026년 9월 15일부터)</span></td>
               <td>대한민국(서울, ap-northeast-2)</td>
               <td>서비스 이용 시점 실시간 전송</td>
-              <td>데이터베이스 저장, 서비스 운영<br><strong>app.trops.kr 서비스 이용에 한합니다. trops.kr 에서 수집한 정보는 이 프로젝트로 이전되지 않습니다.</strong></td>
-              <td>회원 탈퇴 또는 목적 달성 시까지</td>
+              <td>데이터베이스 저장, 서비스 운영<br><strong>2026년 9월 15일부터 trops.kr 의 문의 &middot; 견적 &middot; 출시 알림 기록을 이 프로젝트에 보관합니다.</strong> 그 전까지는 아래 뭄바이 프로젝트에 보관합니다.</td>
+              <td>회원 탈퇴 또는 목적 달성 시까지<br><span class="lead">문의 &middot; 견적 6개월 &middot; 출시 알림 1년 (2026년 9월 15일부터 · §02 &middot; §03)</span></td>
             </tr>
             <tr>
               <th scope="row">Supabase, Inc.<br><span class="lead">(인프라: AWS)</span></th>
-              <td>사전점검 신청 정보, 이메일, 업로드 문서, 문의 내용, 담당자 이름</td>
+              <td>사전점검 신청 정보, 이메일, 업로드 문서<br>문의 내용 &middot; 담당자 이름 <span class="lead">(2026년 9월 15일까지)</span></td>
               <td>인도(뭄바이, ap-south-1)</td>
               <td>서비스 이용 시점 실시간 전송</td>
               <td>사전점검 서비스 운영</td>
-              <td>원문은 30일 후 삭제·해시화</td>
+              <td>원문은 30일 후 삭제·해시화<br><span class="lead">문의 &middot; 견적 6개월 &middot; 출시 알림 1년 (§02 &middot; §03)</span></td>
             </tr>
             <tr>
               <th scope="row">Vercel Inc.</th>
@@ -485,7 +500,7 @@
           </tbody>
         </table>
         </div>
-        <p>위 표는 남아 있는 자료가 지금 어디에 보관되어 있는지를 적은 것입니다. trops.kr 에서 새로 접수받는 것이 없으므로 새로운 국외 이전은 일어나지 않습니다. 이용자는 국외이전에 동의하지 않을 권리가 있으며, 동의하지 않으시면 남아 있는 자료의 삭제를 요청하실 수 있습니다(§05).</p>
+        <p>위 표는 자료가 지금 어디에 보관되어 있는지를 적은 것입니다. trops.kr 에서 수출 사전점검을 새로 접수받지는 않지만, <a href="/contact">문의 &middot; 견적 요청 &middot; 출시 알림 신청</a>은 계속 받으며 그 기록은 위 표대로 보관됩니다. 이용자는 국외이전에 동의하지 않을 권리가 있으며, 동의하지 않으시면 접수하지 않으실 수 있고 남아 있는 자료의 삭제를 요청하실 수 있습니다(§05).</p>
       </section>
       <section>
         <h2><span class="doc-num" aria-hidden="true">05</span><span>이용자가 요구할 수 있는 것</span></h2>
@@ -524,6 +539,9 @@
       <section>
         <h2><span class="doc-num" aria-hidden="true">07</span><span>방침이 바뀔 때</span></h2>
         <p>내용이 바뀌면 이 페이지에 바뀐 내용과 적용일을 함께 올립니다. 이용자에게 불리하게 바뀌는 경우에는 적용일 전에 알려 드립니다.</p>
+        <h3>2026년 9월 15일 시행 &mdash; 보관 위치가 바뀝니다</h3>
+        <p>문의 &middot; 견적 요청 &middot; 출시 알림 신청 기록과 페이지 조회·클릭 익명 집계의 <strong>보관 위치</strong>가 Supabase 인도(뭄바이) 리전에서 <strong>대한민국(서울) 리전</strong>으로 바뀝니다. 자세한 내용은 §04 의 두 표에 적었습니다.</p>
+        <p><strong>받는 항목과 보관 기간은 달라지지 않습니다</strong> &mdash; 무엇을 받는지(§02)도, 문의 &middot; 견적 6개월 &middot; 출시 알림 1년이라는 기한(§02 &middot; §03)도 그대로입니다. 맡기는 곳도 같은 회사(Supabase, Inc.)입니다. 바뀌는 것은 그 자료가 놓이는 나라뿐이며, 국외에서 국내로 옮겨 오는 변경입니다.</p>
       </section>
       <section>
         <h2><span class="doc-num" aria-hidden="true">08</span><span>아직 확정하지 못한 항목</span></h2>

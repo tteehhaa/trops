@@ -149,6 +149,8 @@
   .doc-num { font-size: 13px; font-weight: 600; color: var(--muted); line-height: 1.85; }
   .doc p { margin: 12px 0 0; font-size: 16.5px; line-height: 1.75; color: var(--ink-62); max-width: 54ch; }
   .doc p.lead { color: var(--ink); }
+  /* §07 개정 고지의 소제목. 이 문서의 유일한 h3 라 규칙이 없으면 브라우저 기본값으로 떨어진다. */
+  .doc h3 { margin: 22px 0 0; font-size: 16.5px; line-height: 1.6; letter-spacing: -0.012em; font-weight: 700; color: var(--ink); }
 
   table {
     margin-top: 20px;
@@ -257,6 +259,7 @@
       <h1>Privacy Notice</h1>
       <p class="head-meta">
         Draft &middot; pending legal review &middot; written 11 August 2026 &middot; effective 20 August 2026<br>
+        Amended 8 September 2026 &middot; <strong>amendment effective 15 September 2026</strong> &mdash; see §07 for what changes.<br>
         Applies to services {{biz.companyName}} provides at trops.kr.
       </p>
     </div>
@@ -346,7 +349,8 @@
           <thead><tr><th scope="col">Processor</th><th scope="col">What they do</th></tr></thead>
           <tbody>
             <tr><th scope="row">Resend</th><td>Sending notification and confirmation email</td></tr>
-            <tr><th scope="row">Supabase</th><td>Storing the intake records and uploaded files that remain · storing anonymous page-view and button-click counts</td></tr>
+            <tr><th scope="row">Supabase<br><span class="lead">(Seoul region)</span></th><td>Storing anonymous page-view and button-click counts<br><span class="lead">from 15 September 2026</span></td></tr>
+            <tr><th scope="row">Supabase<br><span class="lead">(Mumbai region)</span></th><td>Storing the intake records and uploaded files that remain<br><span class="lead">Until 15 September 2026 the page-view and click counts are held in this region too.</span></td></tr>
             <tr><th scope="row">Vercel</th><td>Hosting the site and serving requests</td></tr>
             <tr><th scope="row">Anthropic</th><td>OCR and AI analysis of uploaded documents</td></tr>
           </tbody>
@@ -404,7 +408,7 @@
           </tbody>
         </table>
         </div>
-        <p>The table above records where what remains is held today. Since trops.kr accepts no new intakes, no new cross-border transfer takes place. You have the right to refuse a cross-border transfer, and if you refuse you may ask us to delete what remains (§05).</p>
+        <p>The table above records where data is held today. trops.kr accepts no new pre-check intakes, so no new intake data is transferred; the anonymous page-view and click counts described in §01 are transmitted as you browse. You have the right to refuse a cross-border transfer, and if you refuse you may ask us to delete what remains (§05).</p>
       </section>
       <section>
         <h2><span class="doc-num" aria-hidden="true">05</span><span>What you can ask us to do</span></h2>
@@ -436,6 +440,9 @@
       <section>
         <h2><span class="doc-num" aria-hidden="true">07</span><span>When this notice changes</span></h2>
         <p>If the content changes we post the change and the date it takes effect on this page. Where a change is to your disadvantage we tell you before it takes effect.</p>
+        <h3>Effective 15 September 2026 &mdash; where the data is held changes</h3>
+        <p>The anonymous page-view and button-click counts move from Supabase's India (Mumbai) region to its <strong>Republic of Korea (Seoul)</strong> region. The processor table in §04 sets out the detail. These counts identify no one (§01), so they are not listed in the cross-border transfer table, which covers personal information.</p>
+        <p><strong>What we collect and how long we keep it do not change</strong> &mdash; neither the items in §02 nor the retention in §03. The processor is the same company (Supabase, Inc.). Only the country the data sits in changes, and it moves from abroad into Korea.</p>
       </section>
       <section>
         <h2><span class="doc-num" aria-hidden="true">08</span><span>Not settled yet</span></h2>
