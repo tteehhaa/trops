@@ -25,45 +25,39 @@ const code = (f) =>
 const TRACK = 'assets/track.js';
 const LANDING = 'index.html';
 
-/* ══ ① 보내는 곳이 둘이다 ══════════════════════════════════════════════ */
+/* ══ ① 보내는 곳이 «하나»다 ═══════════════════════════════════════════ */
 
-test('앱 계측으로도 보낸다 — 그러지 않으면 영역 집계에 영원히 닿지 않는다', () => {
+test('앱 계측으로 보낸다 — 그러지 않으면 영역 집계에 영원히 닿지 않는다', () => {
   const s = code(TRACK);
   assert.ok(s.includes("'https://app.trops.kr/api/track'"), '앱 엔드포인트가 없습니다');
-  assert.ok(s.includes("'/api/track'"), '종전 같은-오리진 경로가 사라졌습니다');
 });
 
-test('🔴 종전 표에는 칸 3개만 보낸다 — 그 표에 맥락 칸이 없다', () => {
+/*
+ * 🔴 **종전 같은-오리진 경로가 되살아나지 않았는지 잰다** 〔2026-09-15 · 앞단 폐지〕.
+ *    2026-09-15 이전에는 이 자리가 정반대를 단정했다 — 「`'/api/track'` 이 «있어야»
+ *    한다」. 그 경로가 적던 `public.page_events` 가 앞단 Supabase(뭄바이)에 있고
+ *    그 프로젝트를 폐지하므로, 지금은 **없어야** 한다.
+ * ⚠️ 앱 주소에도 `/api/track` 이 들어 있으므로 «따옴표로 시작하는» 상대경로만 잰다 —
+ *    `s.includes('/api/track')` 로 재면 앱 엔드포인트에 걸려 영원히 실패한다.
+ */
+test('🔴 같은-오리진 계측 경로가 되살아나지 않았다 — 그 표는 곧 사라진다', () => {
   const s = code(TRACK);
-  /* ⚠️ 한 줄 함수입니다 — 여러 줄로 읽으면 다음 함수까지 삼켜 이 검사가 무의미해집니다. */
-  const m = s.match(/function sendLegacy\(payload\) \{[^\n]*\}/);
-  assert.ok(m, 'sendLegacy 를 못 찾았습니다');
-  for (const k of ['sessionKey', 'section', 'dwellMs', 'scrollDepth', 'isReturn']) {
-    assert.ok(!m[0].includes(k), 'sendLegacy 가 ' + k + ' 를 보냅니다');
-  }
-  /* 부르는 자리가 넘기는 것도 칸 3개뿐이다. */
-  for (const call of s.match(/sendLegacy\(\{[^}]*\}\)/g) || []) {
-    for (const k of ['sessionKey', 'section', 'dwellMs', 'scrollDepth', 'isReturn']) {
-      assert.ok(!call.includes(k), 'sendLegacy 호출이 ' + k + ' 를 넘깁니다');
-    }
-  }
+  assert.ok(!s.includes("'/api/track'"), '같은-오리진 경로가 다시 생겼습니다');
+  assert.ok(!s.includes('SAME_ORIGIN'), 'SAME_ORIGIN 상수가 남아 있습니다');
+  assert.ok(!s.includes('sendLegacy'), 'sendLegacy 가 남아 있습니다');
 });
 
-test('🔴 본문 형식이 보내는 곳마다 다르다 — 하나로 통일하면 한쪽이 죽는다', () => {
+test('🔴 앱에는 text/plain 으로 보낸다 — json 이면 sendBeacon 이 조용히 죽는다', () => {
   /*
    * 🔴 **이 검사의 초판이 실제 사고를 «통과시켰다»**〔2026-09-04 실측〕. 초판은
    *    「`application/json` 이 소스에 0건」을 단정했고, 그래서 같은-오리진 경로까지
    *    `text/plain` 으로 보내는 코드가 green 으로 배포됐다 — 그 함수(`api/track.js`)는
    *    JSON 으로 선언된 본문만 객체로 풀어 주므로 **모든 레거시 전송이 400** 이었다.
-   * 🔴 그래서 지금은 **어느 쪽에 무엇을 쓰는지**를 자리별로 잰다.
+   * 🔴 그래서 「소스에 몇 건」이 아니라 **그 자리에 무엇을 쓰는지**를 잰다.
+   *    보내는 곳이 하나가 된 지금도 그 방식을 유지한다 — 자리로 재야 둘째 자리가
+   *    생기는 날 이 검사가 따라온다.
    */
   const s = code(TRACK);
-  const legacy = s.match(/function sendLegacy\(payload\) \{[^\n]*\}/);
-  assert.ok(legacy, 'sendLegacy 를 못 찾았습니다');
-  assert.ok(
-    legacy[0].includes("'application/json'"),
-    '같은 오리진에 text/plain 으로 보내면 그 함수가 본문을 못 풀어 400 입니다'
-  );
 
   const app = s.match(/post\(APP_ENDPOINT[^\n]*\)/);
   assert.ok(app, '앱 전송 자리를 못 찾았습니다');

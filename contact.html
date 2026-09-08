@@ -553,7 +553,21 @@ form{padding-block:clamp(8px,1.5vw,16px) clamp(48px,6vw,72px)}
     note.textContent = '보내는 중입니다…';
     result.hidden = true;
 
-    fetch('/api/leads', {
+    /*
+     * 🔴 **앱 엔드포인트로 보냅니다** 〔2026-09-15 · 앞단 폐지〕.
+     *    종전에는 같은 오리진 `/api/leads` 였고 그것이 앞단 Supabase(뭄바이)의
+     *    `public.leads` 에 적었습니다. 그 프로젝트를 폐지하므로 접수처를 앱으로 넘깁니다.
+     *    ⛔ `api/leads.js` 를 고쳐 본체를 보게 하지 마십시오 — 그 파일이 부르는
+     *       `api/_supabase.js` 를 **17개 파일이 공유**해서 접수 파이프라인 전체가 딸려 옵니다.
+     *       그래서 「접속을 늘리는」 대신 「이미 있는 엔드포인트를 쓰는」 길로 갑니다.
+     * ⚠️ 다른 오리진이지만 `application/json` 그대로입니다 — 이건 `sendBeacon` 이 아니라
+     *    보통 `fetch` 라 preflight 를 할 수 있습니다(OPTIONS 204 실측 2026-09-08).
+     *    ⛔ track.js 처럼 `text/plain` 으로 바꾸지 마십시오 — 거기 이유는 sendBeacon 이고
+     *       여기엔 해당하지 않습니다.
+     * ⚠️ 응답 계약은 종전과 같습니다 — 2xx 성공 · 400 입력값 · 그 밖은 실패.
+     *    아래 `.then` 이 그 셋으로 갈립니다.
+     */
+    fetch('https://app.trops.kr/api/leads', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

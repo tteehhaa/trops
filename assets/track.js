@@ -1,14 +1,17 @@
 /*
- * track.js — 페이지 조회·버튼 클릭·영역 계측 〔2026-08-18 신설 · 2026-09-04 영역 축 추가〕
+ * track.js — 페이지 조회·버튼 클릭·영역 계측 〔2026-08-18 신설 · 2026-09-04 영역 축 추가
+ *                                          · 2026-09-15 같은 오리진 경로 철거〕
  *
- * 보내는 곳이 둘입니다.
- *   · 같은 오리진 `/api/track` → `public.page_events`(칸 3개). 종전 그대로입니다.
- *   · 앱 `app.trops.kr/api/track` → `precheck_app_event`. 영역·체류·스크롤·세션이 그리로 갑니다.
+ * 보내는 곳은 **하나**입니다 — 앱 `app.trops.kr/api/track`.
  *
- * 왜 둘인가 — 운영 화면(`/admin/growth`)의 영역·방문·유입 집계는 **앱 표**를 읽습니다.
- * 랜딩이 자기 표에만 적으면 그 집계에 영원히 닿지 않습니다(랜딩 영역 체류가 「아직 측정
- * 안 함」으로 남아 있던 것이 그 이유입니다). 종전 경로를 지우지 않은 것은 그 표를 읽는
- * 화면이 따로 있기 때문입니다.
+ * ── 🔴 종전의 둘째 경로를 걷었습니다 〔2026-09-15 · 앞단 폐지〕 ─────────────
+ * 종전에는 같은 오리진 `/api/track` → `public.page_events`(칸 3개)로도 보냈습니다.
+ * 그 표는 **앞단 Supabase**(뭄바이 trops-precheck)에 있고 그 프로젝트를 폐지합니다.
+ * 앱 엔드포인트가 **같은 것을 더 많이** 받으므로(영역·체류·스크롤·세션) `page_events`
+ * 는 그 부분집합이고, 걷어도 **잃는 집계가 없습니다.**
+ * ⛔ 같은 오리진 호출을 되살리지 마십시오 — 그 표가 곧 사라집니다.
+ *    되살려야 할 이유가 생기면 그것은 「본체에 표를 만드는」 이야기이지
+ *    `api/track.js` 를 다시 부르는 이야기가 아닙니다.
  *
  * 🔴 **누구인지는 여전히 모릅니다.** 쿠키·IP·User-Agent·광고 식별자를 만들지도 읽지도
  *    않습니다. 새로 생긴 것은 **한 번의 방문을 묶는 임시 열쇠**이며,
@@ -31,7 +34,6 @@
 (function () {
   'use strict';
 
-  var SAME_ORIGIN = '/api/track';
   var APP_ENDPOINT = 'https://app.trops.kr/api/track';
 
   var SS_KEY = 'trops_vs';
@@ -107,19 +109,14 @@
   var SRC = source();
 
   /*
-   * 🔴 **본문 형식이 보내는 곳마다 다릅니다 — 그리고 그 차이가 «필수»입니다.**
+   * 🔴 **앱으로는 `text/plain;charset=UTF-8` 입니다.** CORS 안전 목록이라 preflight 가
+   *    붙지 않습니다. `application/json` 이면 preflight 가 필요해지고 `sendBeacon` 은
+   *    preflight 를 못 해 **조용히** 실패합니다.
    *
-   *   · 같은 오리진(`/api/track`) → **`application/json`**
-   *     그 함수(`api/track.js`)는 Vercel 이 **JSON 으로 선언된 본문만** 객체로 풀어 주기 때문에
-   *     `text/plain` 으로 보내면 `req.body` 가 **문자열**이 되고 `kind` 가 undefined 라
-   *     **400 으로 거절됩니다**(실측 2026-09-04 · 배포 직후 콘솔 400). 같은 오리진은 preflight
-   *     자체가 없으므로 `text/plain` 으로 얻는 것이 하나도 없습니다.
-   *   · 다른 오리진(앱) → **`text/plain;charset=UTF-8`**
-   *     CORS 안전 목록이라 preflight 가 붙지 않습니다. `application/json` 이면 preflight 가
-   *     필요해지고 `sendBeacon` 은 preflight 를 못 해 **조용히** 실패합니다.
-   *
-   * ⛔ 두 값을 하나로 통일하지 마십시오 — 어느 쪽으로 통일해도 한쪽이 죽습니다.
-   *    (한쪽은 400 으로 시끄럽게, 다른 쪽은 조용히.)
+   * ⚠️ 형식은 여전히 **인자로 받습니다.** 보내는 곳이 지금은 하나뿐이지만, 함수 안에
+   *    박아 두면 둘째 자리가 생기는 날 조용히 잘못된 형식으로 나갑니다 —
+   *    2026-09-04 에 정확히 그 사고가 있었습니다(같은 오리진에 text/plain 을 보내
+   *    전 건이 400 이었고, 검사가 그것을 green 으로 통과시켰습니다).
    */
   function post(url, payload, beacon, contentType) {
     var body = JSON.stringify(payload);
@@ -140,9 +137,6 @@
     } catch (e) { /* 조용히 포기합니다 — 집계는 부가 기능입니다 */ }
   }
 
-  /* 종전 경로 — 칸 3개 그대로입니다. ⛔ 여기에 맥락을 얹지 마십시오(그 표에 칸이 없습니다). */
-  function sendLegacy(payload) { post(SAME_ORIGIN, payload, true, 'application/json'); }
-
   /* 앱 경로 — 맥락을 함께 보냅니다. */
   function sendApp(extra, beacon) {
     var body = {
@@ -161,7 +155,6 @@
   }
 
   /* ── 페이지 조회 ── */
-  sendLegacy({ kind: 'pageview', path: location.pathname });
   sendApp({ kind: 'pageview' }, false);
 
   /* ══════════════ 영역 — 본 것 · 머문 시간 ══════════════ */
@@ -287,7 +280,6 @@
     var label = el.getAttribute('data-track');
     var section = sectionOf(el);
 
-    sendLegacy({ kind: 'click', path: location.pathname, label: label });
     sendApp({ kind: 'click', label: label, section: section });
 
     var step = nextStepOf(el.getAttribute('href'));
