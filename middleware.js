@@ -19,8 +19,44 @@ const PAIRS = [
 
 const KO_TO_EN = new Map(PAIRS);
 
+/*
+ * 🔴 **네이버 소유확인은 «파일이 아니라 여기»에서 나갑니다** 〔2026-09-09〕.
+ *
+ * 네이버 서치어드바이저가 내려 준 `navera3294….html` 을 저장소 루트에 두는 것으로는
+ * 되지 않습니다. 이 사이트는 `vercel.json` 이 `cleanUrls: true` 라서 **`.html` 로
+ * 끝나는 요청을 무조건 308 로 확장자 없는 주소로 돌립니다** — 그 파일이 dist/ 에
+ * 있든 없든 똑같이 돌립니다(2026-09-09 실측: 파일이 없는 상태에서도 308).
+ * 네이버는 등록한 주소에서 **200 과 본문**을 받아야 하므로 파일 방식은 이 설정에서
+ * 성립하지 않습니다. `rewrites` 로도 못 잡습니다 — 리다이렉트가 파일시스템·rewrite
+ * «앞» 단계라 그 308 이 먼저 끝나 버립니다. 미들웨어만 그보다 앞에서 돕니다.
+ *
+ * ⚠️ `cleanUrls` 를 끄는 것으로 풀지 마십시오. 배포되는 7개 페이지의 주소가 전부
+ *    `/privacy` 꼴이고 canonical · hreflang · sitemap 이 그 꼴을 가리킵니다.
+ *
+ * 본문은 내려받은 파일의 내용 그대로 한 줄(67바이트, 줄바꿈 없음)입니다. 파일을
+ * 저장소에 함께 두지 않는 것은 토큰이 두 곳에 생기는 것을 피하기 위해서입니다 —
+ * 원본은 이 한 줄이 전부라 잃는 것이 없습니다.
+ *
+ * 🔴 소유확인이 끝나 이 경로가 더 필요 없어지면 **아래 matcher 에서도 함께 지우십시오.**
+ *    여기만 지우면 요청이 계속 미들웨어를 깨우고 아무 일도 하지 않습니다.
+ */
+const NAVER_VERIFY_PATH = '/navera3294de2d83b96c80b628307d539f51a.html';
+const NAVER_VERIFY_BODY =
+  'naver-site-verification: navera3294de2d83b96c80b628307d539f51a.html';
+
 export default function middleware(request) {
   const url = new URL(request.url);
+
+  if (url.pathname === NAVER_VERIFY_PATH) {
+    return new Response(NAVER_VERIFY_BODY, {
+      status: 200,
+      headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'no-store',
+      },
+    });
+  }
+
   const enPath = KO_TO_EN.get(url.pathname);
   if (!enPath) return; // matcher 범위 밖 — 원래는 여기까지 오지 않는다
 
@@ -62,6 +98,6 @@ export default function middleware(request) {
  *    실제로 3개가 4개로 읽혔다.
  */
 export const config = {
-  matcher: ['/', '/refund', '/privacy'],
+  matcher: ['/', '/refund', '/privacy', '/navera3294de2d83b96c80b628307d539f51a.html'],
   runtime: 'edge',
 };
