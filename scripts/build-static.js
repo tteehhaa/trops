@@ -112,8 +112,15 @@ const STATIC = {
    * 🔄 **여섯 장을 내렸다** 〔2026-08-30 · 대표 지시 「nda·uae·precheck 안 씀 · 영문 동일」〕.
    *    `precheck.html` 은 **접수·결제 폼 자체**였다 — 그 흐름이 함께 내려간다.
    * 🔴 **이미 나간 링크는 살렸다** — 접수 확인 메일이 `/precheck?r=<token>` 을 가리키므로
-   *    `vercel.json` 이 그 토큰을 **결과지**(`app.trops.kr/c/<token>`)로 넘긴다. 그냥 지우면
-   *    그 메일의 링크가 전부 404 다.
+   *    `vercel.json` 이 그 토큰을 **결과지**(`app.trops.kr/c/<token>`)로 넘겼다.
+   *    🔄 **그 규칙 둘을 걷었다** 〔2026-09-09〕 — 앱의 앞단 계열이 폐지되며 `/c` 라우트가
+   *       사라져서, 살려 둔 그 링크가 **404 로 가고 있었다**(실측 2026-09-09). 규칙이 없으면
+   *       `/precheck?r=<token>` 은 쿼리를 무시하고 이 저장소의 `/precheck` 를 그대로 200 으로
+   *       띄운다 — 죽은 앱 화면보다 살아 있는 우리 페이지가 낫다. 토큰이 가리키던 결과지는
+   *       어디로 보내도 이제 없다(그 자료도 2026-09-09 에 전부 삭제됐다).
+   *       ⚠️ 영문 짝(`/en-precheck?r=`)은 규칙을 지우자 **바로 아래 `/en-precheck` 규칙**이
+   *          받아 앱 `export-precheck/new` 로 간다 — 영문 랜딩 페이지가 없기 때문이다.
+   *       ⛔ 같은 규칙을 되살리지 마십시오 — 목적지부터 세우고 나서 잇는 순서입니다.
    * ⚠️ 여기서 빼면 배포만 안 되고 파일은 남는 조용한 실패가 되므로 **파일도 함께 지웠다.**
    *
    * 🔄 **사전 확인 3문항도 내렸다** 〔2026-08-30 · 대표 지시〕 — `check.html` · `en-check.html`.
@@ -199,7 +206,19 @@ const STATIC = {
    *    「루트가 아니면 뜻이 없어지는 것」 전용입니다(robots.txt · sitemap.xml 도 그 부류).
    * ⚠️ `html` 과 달리 **주석 제거도 토큰 치환도 하지 않습니다** — 바이너리를 그대로 옮깁니다.
    */
-  files: ['favicon.ico'],
+  /*
+   * 🔴 **robots.txt · llms.txt 는 «손으로 적는» 파일입니다** 〔신설 2026-09-09〕.
+   *    사이트맵만 아래에서 «만듭니다» — 사이트맵은 「배포되는 페이지 전부」라 위 표에서
+   *    파생돼야 하고, 이 둘은 「무엇을 허용하는가 · 무엇을 인용해도 되는가」라 사람이
+   *    고르는 목록이기 때문입니다. 페이지가 늘 때 사이트맵은 저절로 따라오지만,
+   *    이 둘은 «따라오면 안 됩니다» — 새 페이지를 인용 대상으로 삼을지는 판단거리입니다.
+   * ⚠️ 이 칸은 **토큰 치환도 주석 제거도 하지 않습니다.** 두 파일에 `{{biz.*}}` 를
+   *    쓰지 마십시오 — 화면에 `{{biz.companyName}}` 이 글자 그대로 나갑니다. 사업자정보가
+   *    필요하면 그 값을 쓰는 페이지로 링크하십시오(llms.txt 가 그렇게 합니다).
+   * ⚠️ 두 파일의 `#` 주석은 **공개됩니다.** 인수인계 메모는 이 스크립트에 남기고,
+   *    그쪽에는 밖에서 읽혀도 되는 말만 적으십시오.
+   */
+  files: ['favicon.ico', 'robots.txt', 'llms.txt'],
 };
 
 /** 배포되지 않는 것. api/ 는 Vercel 이 소스 루트에서 직접 함수로 잡습니다. */
@@ -348,6 +367,78 @@ function visibleText(html) {
     .trim();
 }
 
+/* ──────────────────────────────────────────────────────────────
+ * 사이트맵 〔신설 2026-09-09 · 실측에서 /sitemap.xml 이 404 였습니다〕
+ *
+ * 🔴 **손으로 적지 않습니다** — 페이지가 늘 때 갈리기 때문입니다. 위 `STATIC.html` 이
+ *    「배포되는 페이지」의 유일한 목록이고, 사이트맵은 거기서 파생됩니다.
+ *
+ * 🔴 **값은 페이지가 «스스로 말한 것»을 옮깁니다** — `<loc>` 은 그 페이지의
+ *    `rel="canonical"`, 대체 링크는 그 페이지 <head> 의 `hreflang` 줄입니다.
+ *    ⛔ 여기에 주소를 적지 마십시오. 두 곳이 같은 주소를 각자 적으면 갈리고, 갈린
+ *       hreflang 은 검색엔진이 «양쪽 다» 무시합니다(상호 지목이 깨지기 때문입니다).
+ *       주소를 바꿀 일이 있으면 페이지의 canonical·hreflang 을 고치십시오 — 여기는
+ *       따라옵니다.
+ *
+ * 🔴 **호스트가 apex(`trops.kr`)입니다.** canonical·hreflang·og:url 이 전부 apex 이고,
+ *    `index.html` <head> 주석이 그 축을 정해 두었습니다 — 「문서의 이름」은 apex,
+ *    「자산의 주소」만 www. 사이트맵은 그 문서들의 목록이라 문서 쪽 축을 씁니다.
+ *    apex 는 www 로 308 하지만 검색엔진은 robots·사이트맵의 리다이렉트를 따라갑니다
+ *    (카카오 이미지 페처와 다릅니다 — 그래서 og:image 만 www 입니다).
+ *    ⚠️ 여기만 www 로 바꾸지 마십시오 — `<loc>` 과 대체 링크가 서로 다른 호스트를
+ *       가리키게 되고, 그 둘은 같은 축이어야 뜻이 있습니다.
+ *
+ * ⚠️ `<lastmod>` 를 «넣지 않았습니다». 믿을 수 있는 날짜의 출처가 빌드 환경에
+ *    없습니다 — Vercel 은 얕은 클론이라 파일별 커밋 시각을 읽지 못하고, 빌드 시각을
+ *    적으면 배포할 때마다 「전 페이지가 바뀌었다」가 되어 크롤러가 그 값을 통째로
+ *    무시합니다. 없는 편이 거짓말보다 낫습니다.
+ *
+ * ⚠️ `noindex` 인 페이지는 **빠집니다.** 사이트맵은 「색인해 달라」는 목록이라 스스로
+ *    색인을 거부하는 페이지를 실으면 두 신호가 서로 반대말을 합니다. 지금은
+ *    `contact.html` 한 장이고, 그 페이지 <head> 가 이유를 적고 있습니다.
+ * ────────────────────────────────────────────────────────────── */
+
+/** robots.txt 가 가리켜야 하는 주소. 아래에서 그 줄과 대조합니다. */
+const SITEMAP_URL = 'https://trops.kr/sitemap.xml';
+
+/** `<link …>` 을 속성 묶음으로 풉니다. 속성 «순서»에 기대지 않습니다. */
+function linkTags(html) {
+  return (html.match(/<link\b[^>]*>/gi) || []).map((tag) => {
+    const attr = (name) => {
+      const m = tag.match(new RegExp('(?:^|\\s)' + name + '\\s*=\\s*"([^"]*)"', 'i'));
+      return m ? m[1] : null;
+    };
+    return { rel: attr('rel'), hreflang: attr('hreflang'), href: attr('href') };
+  });
+}
+
+const isNoindex = (html) =>
+  /<meta\b[^>]*\bname\s*=\s*"robots"[^>]*\bcontent\s*=\s*"[^"]*noindex/i.test(html);
+
+const xmlEscape = (s) =>
+  s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+function sitemapXml(pages) {
+  const body = pages.map(({ loc, alternates }) => {
+    const lines = ['  <url>', `    <loc>${xmlEscape(loc)}</loc>`];
+    for (const a of alternates) {
+      lines.push(
+        `    <xhtml:link rel="alternate" hreflang="${xmlEscape(a.hreflang)}"` +
+          ` href="${xmlEscape(a.href)}"/>`
+      );
+    }
+    lines.push('  </url>');
+    return lines.join('\n');
+  });
+  return (
+    '<?xml version="1.0" encoding="UTF-8"?>\n' +
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\n' +
+    '        xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' +
+    body.join('\n') +
+    '\n</urlset>\n'
+  );
+}
+
 async function main() {
   const config = loadSiteConfig();
 
@@ -377,6 +468,8 @@ async function main() {
   fs.mkdirSync(OUT, { recursive: true });
 
   let totalBytes = 0;
+  /** 사이트맵에 실릴 페이지 선언. 아래 루프가 «산출물»에서 읽어 채웁니다. */
+  const sitemapPages = [];
 
   for (const { file: name, locale, footer } of STATIC.html) {
     const src = path.join(ROOT, name);
@@ -445,6 +538,33 @@ async function main() {
     //       바꾸지 않는다」이고, 치환이 문구를 바꾸는지는 test/site-config.test.js 몫입니다.
     if (visibleText(before) !== visibleText(after)) fail('화면에 보이는 문구가 변했습니다');
 
+    /*
+     * E. 사이트맵에 실을 선언을 «산출물에서» 읽습니다.
+     *    소스가 아니라 after 를 읽는 이유는 둘입니다 — 주석이 이미 걷혔으므로 인수인계
+     *    메모 안의 링크처럼 보이는 글자에 속지 않고, 실제로 배포되는 바이트가 기준이
+     *    되기 때문입니다.
+     */
+    if (isNoindex(after)) {
+      // 색인을 거부한 페이지는 사이트맵에서 빠집니다 (위 사이트맵 절 참조).
+      console.log(`  ${name.padEnd(15)} noindex — 사이트맵에서 제외`);
+    } else {
+      const links = linkTags(after);
+      const canonical = links.find((l) => l.rel === 'canonical' && l.href);
+      if (!canonical) {
+        fail(
+          'rel="canonical" 이 없습니다 — 사이트맵이 이 페이지를 무슨 주소로 실어야 할지\n' +
+            '   알 수 없습니다. 색인을 원하지 않는 페이지라면 <head> 에\n' +
+            '   <meta name="robots" content="noindex"> 를 다십시오(그러면 사이트맵에서 빠집니다).'
+        );
+      }
+      sitemapPages.push({
+        loc: canonical.href,
+        alternates: links
+          .filter((l) => l.rel === 'alternate' && l.hreflang && l.href)
+          .map((l) => ({ hreflang: l.hreflang, href: l.href })),
+      });
+    }
+
     fs.writeFileSync(path.join(OUT, name), after);
     const saved = raw.length - after.length;
     totalBytes += saved;
@@ -472,6 +592,55 @@ async function main() {
     }
     fs.copyFileSync(src, path.join(OUT, name));
     console.log(`  ${name.padEnd(15)} 복사`);
+  }
+
+  /*
+   * 사이트맵 — 위에서 모은 «페이지가 스스로 말한 주소»를 그대로 옮깁니다.
+   * ⚠️ 루트에 sitemap.xml 을 두지 마십시오. 두면 이 파일이 그것을 덮어쓰고, 다음 사람은
+   *    루트의 것을 고치고 있는데 배포본은 여기서 만든 것이 나가는 상태가 됩니다.
+   */
+  fs.writeFileSync(path.join(OUT, 'sitemap.xml'), sitemapXml(sitemapPages));
+  console.log(`  ${'sitemap.xml'.padEnd(15)} ${sitemapPages.length}개 주소 생성`);
+
+  /*
+   * robots.txt 가 «가리키는» 사이트맵이 이 빌드가 «만드는» 그것인가.
+   * 주소를 두 곳이 각자 적고 있으므로 조용히 갈릴 수 있습니다 — 갈리면 여기서 멈춥니다.
+   * (호스트를 바꿀 일이 생기면 위 SITEMAP_URL 과 robots.txt 를 «같은 배치에서» 고치십시오)
+   */
+  const robots = fs.readFileSync(path.join(ROOT, 'robots.txt'), 'utf8');
+  const declared = robots.match(/^Sitemap:\s*(\S+)\s*$/m);
+  if (!declared) {
+    console.error('✋ robots.txt 에 `Sitemap:` 줄이 없습니다. 마지막 줄에 절대 URL 로 적으십시오.');
+    process.exit(1);
+  }
+  if (declared[1] !== SITEMAP_URL) {
+    console.error(
+      `✋ robots.txt 의 Sitemap 은 ${declared[1]} 인데 빌드가 만드는 것은 ${SITEMAP_URL} 입니다.\n` +
+        '   둘이 갈리면 크롤러가 없는 사이트맵을 부릅니다.'
+    );
+    process.exit(1);
+  }
+
+  /*
+   * llms.txt 가 «죽은 랜딩 주소»를 인용 대상으로 내놓지 않는가.
+   * 그 파일은 손으로 적는 목록이라(STATIC.files 주석 참조) 페이지가 내려가도 따라오지
+   * 않습니다 — 사이트맵에 실리는 주소만 여기 적을 수 있게 막습니다.
+   * ⚠️ 앱(app.trops.kr) 주소는 **다른 저장소**라 빌드 시점에 확인할 수단이 없습니다.
+   *    안내서가 늘거나 줄면 llms.txt 를 손으로 맞추십시오 — 지금 21건 + 목차·용어·기관입니다.
+   */
+  const llms = fs.readFileSync(path.join(ROOT, 'llms.txt'), 'utf8');
+  const live = new Set(sitemapPages.map((p) => p.loc));
+  const dead = [...new Set(llms.match(/https:\/\/trops\.kr[^\s)\]<>"']*/g) || [])].filter(
+    (u) => !live.has(u)
+  );
+  if (dead.length) {
+    console.error(
+      '\n✋ llms.txt 가 사이트맵에 없는 랜딩 주소를 싣고 있습니다:\n' +
+        dead.map((u) => '     ' + u).join('\n') +
+        '\n\n   내려갔거나 noindex 인 페이지입니다. 인용해도 되는 «공개» 문서 목록이므로\n' +
+        '   사이트맵에 실리는 주소만 적을 수 있습니다.\n'
+    );
+    process.exit(1);
   }
 
   console.log(`\n  주석 ${totalBytes.toLocaleString()}자 제거 → dist/\n`);

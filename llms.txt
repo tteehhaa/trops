@@ -1,0 +1,58 @@
+# TROPS
+
+> TROPS 는 중소기업의 수출 실무를 돕는 소프트웨어입니다. 수출 한 건에 필요한 서류를
+> 절차 순서로 안내하고, 무역보험 청구에 필요한 서류를 선적 전에 갖추도록 하며,
+> 수출대금의 결제기일과 사고통지 기한을 관리합니다.
+
+아래 문서는 전부 공개되어 있고 로그인이 필요하지 않습니다. 인용하셔도 됩니다.
+회원 전용 화면(사전점검 결과 · 거래·채권 관리 · 계정 설정)은 이 목록에 없습니다.
+사업자정보는 개인정보처리방침 페이지 아래쪽에 있습니다.
+
+## 수출절차 안내서
+
+수출 한 건에서 오가는 서류 21건을 절차 순서로 모은 안내서입니다.
+
+- [무역업고유번호 부여증](https://app.trops.kr/guide/trade-business-number): 수출신고의 전제조건. 온라인 무료, 신청 즉시 부여
+- [HS코드 사전심사 신청서](https://app.trops.kr/guide/hs-preclassification): 품목 분류번호. 관세율과 협정 혜택이 여기서 갈립니다
+- [전략물자 판정](https://app.trops.kr/guide/strategic-items): 수출 자체가 막힐 수 있는 항목. 견적 전에 확인하세요
+- [바이어 신용조사 보고서](https://app.trops.kr/guide/buyer-credit-report): 상대가 실재하는 회사인지, 대금을 낼 수 있는지 확인
+- [기밀유지계약 (NDA)](https://app.trops.kr/guide/nda): 기술·도면 등 민감정보를 주고받기 전에 맺는 계약
+- [견적서](https://app.trops.kr/guide/quotation): 가격만 적는 문서가 아닙니다. 조건이 여기서 정해집니다
+- [견적송장 (P/I)](https://app.trops.kr/guide/proforma-invoice): 바이어가 수입허가나 결제 준비에 쓰는 견적송장
+- [매매계약서](https://app.trops.kr/guide/sales-contract): 거래조건을 법적으로 확정하는 문서. 초안을 누가 쓰는지가 중요
+- [결제조건 합의](https://app.trops.kr/guide/payment-terms): 대금을 언제 어떻게 받을지. 계약서에 반드시 넣으세요
+- [신용장 개설·네고서류](https://app.trops.kr/guide/letter-of-credit): 신용장 결제를 택했다면 선적 후 은행에 낼 서류가 있습니다
+- [독점판매계약서](https://app.trops.kr/guide/exclusive-agreement): 바이어가 독점권을 요구할 때. 해지 조건을 꼭 넣으세요
+- [원산지증명서](https://app.trops.kr/guide/certificate-of-origin): 바이어가 자국에서 관세 혜택을 받기 위해 요구하는 서류
+- [위생증명서·자유판매증명서](https://app.trops.kr/guide/free-sale-certificate): 식품·화장품 수출 시 바이어가 요구하는 경우가 많습니다
+- [해외인증·공급망 실사자료](https://app.trops.kr/guide/overseas-certifications): 인증이 없으면 계약 자체가 어려운 시장도 있습니다
+- [원산지소명서](https://app.trops.kr/guide/origin-statement): 원산지증명서를 받으려면 먼저 근거를 만들어야 합니다
+- [수출신고필증](https://app.trops.kr/guide/export-declaration): 선적 전에 반드시. 이게 없으면 배에 실을 수 없습니다
+- [선적서류 3종](https://app.trops.kr/guide/shipping-documents): 상업송장·포장명세서·선하증권. 셋의 내용이 맞아야 합니다
+- [수출보험 청약](https://app.trops.kr/guide/export-insurance): 대금을 못 받았을 때를 대비. 계약 전에 알아보세요
+- [대금회수 절차](https://app.trops.kr/guide/payment-recovery): 잔금이 안 들어올 때. 보험 말고도 방법이 있습니다
+- [클레임 대응](https://app.trops.kr/guide/claim-notice): 물건에 문제가 있다는 연락을 받았을 때
+- [관세환급 신청서](https://app.trops.kr/guide/duty-drawback): 원재료 수입 때 낸 관세를 돌려받는 제도. 기한이 있습니다
+
+## 용어와 기관
+
+- [안내서 목차](https://app.trops.kr/guide): 위 21건을 절차 순서로 늘어놓은 목차
+- [헷갈리는 용어 사전](https://app.trops.kr/guide/glossary): 수출 실무에서 자주 갈리는 용어를 뜻으로 갈라 놓은 사전
+- [관련 기관 링크](https://app.trops.kr/guide/links): 신청·발급을 실제로 하는 기관의 창구
+
+## 서비스 안내
+
+- [TROPS 소개](https://trops.kr/): 무역보험 서류 준비와 수출대금 관리
+- [TROPS overview (English)](https://trops.kr/en): The required export steps in order, and what to check now
+- [수출 사전점검](https://trops.kr/precheck): 권역·거래 횟수·결제 방식을 고르면 지금 챙길 서류와 기한을 1분 안에 짚어 드립니다. 회원가입 없이 무료입니다
+
+## 정책
+
+- [개인정보처리방침](https://trops.kr/privacy): 어떤 자리에서 어떤 정보를 받아 무엇에 쓰고 언제 지우는지. 법무 검토 전 초안입니다
+- [환불규정](https://trops.kr/refund): 요금 납부 전 취소, 자료 전달 전 전액 환불
+- [Privacy Notice](https://trops.kr/en-privacy): Where TROPS receives your information, what we use it for and when we delete it. Draft, pending legal review
+- [Refund Policy](https://trops.kr/en-refund): Cancel before your summary is delivered and we refund in full
+
+## 문의
+
+- contact@theo-ne.com

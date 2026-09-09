@@ -21,30 +21,6 @@
   ],
   "redirects": [
     {
-      "source": "/precheck",
-      "has": [
-        {
-          "type": "query",
-          "key": "r",
-          "value": "(?<token>.*)"
-        }
-      ],
-      "destination": "https://app.trops.kr/c/:token",
-      "permanent": false
-    },
-    {
-      "source": "/en-precheck",
-      "has": [
-        {
-          "type": "query",
-          "key": "r",
-          "value": "(?<token>.*)"
-        }
-      ],
-      "destination": "https://app.trops.kr/c/:token",
-      "permanent": false
-    },
-    {
       "source": "/en-precheck",
       "destination": "https://app.trops.kr/export-precheck/new",
       "permanent": false
