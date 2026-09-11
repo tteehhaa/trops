@@ -67,10 +67,10 @@ function build() {
  */
 function resolved(page) {
   const config = JSON.parse(fs.readFileSync(path.join(ROOT, 'site.config.json'), 'utf8'));
-  const dicts = { biz: config.biz[PAGE_LOCALES[page]], precheck: config.precheck };
+  const dicts = { biz: config.biz[PAGE_LOCALES[page]], precheck: config.precheck, analytics: config.analytics };
   return fs
     .readFileSync(path.join(ROOT, page), 'utf8')
-    .replace(/\{\{\s*(biz|precheck)\.([A-Za-z0-9_]+)\s*\}\}/g, (whole, ns, key) => {
+    .replace(/\{\{\s*(biz|precheck|analytics)\.([A-Za-z0-9_]+)\s*\}\}/g, (whole, ns, key) => {
       const values = dicts[ns];
       return values && Object.prototype.hasOwnProperty.call(values, key)
         ? String(values[key])

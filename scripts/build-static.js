@@ -196,6 +196,8 @@ const STATIC = {
      */
   ],
   // assets/ = track.js(2026-08-18 페이지 조회·클릭 익명 집계). 주석 제거 없이 통째 복사.
+  // ⚠️ GA4 는 여기 없습니다 — 8장의 <head> 에 스니펫으로 있습니다. 공용 .js 로 빼면
+  //    구글 태그 감지기가 HTML 에서 gtag.js 를 못 찾습니다(2026-09-12 실측).
   dirs: ['data', 'img', 'assets'],
   /*
    * 🔴 **루트에 그대로 놓여야 하는 파일** 〔신설 2026-09-05〕 — 이름과 위치가 규약인 것만
@@ -272,6 +274,10 @@ const NOT_DEPLOYED = new Set([
  *   biz       파일의 locale 에 따라 biz.ko / biz.en 중 하나로 채웁니다
  *   precheck  언어와 무관한 한 벌입니다 — 제품 사실(대조 항목 수)이라
  *             국·영문이 같은 숫자를 씁니다
+ *   analytics 언어와 무관한 한 벌입니다 — GA4 측정 ID 〔2026-09-12〕.
+ *             ⚠️ 스니펫은 8장에 그대로 있고 **ID 만** 토큰입니다. 공용 .js 로
+ *                빼면 구글 태그 감지기가 HTML 에서 gtag.js 를 못 찾습니다
+ *                (site.config.json 의 _comment_analytics 에 실측이 있습니다).
  *
  * ⚠️ 토큰에 언어를 박지 마십시오({{biz.ko.…}}). 파일 단위로 한 번만 정하는 것이
  *    en 파일에 ko 토큰을 붙여넣는 실수를 막습니다 (STATIC.html 주석 참조).
@@ -282,7 +288,7 @@ const NOT_DEPLOYED = new Set([
  * ────────────────────────────────────────────────────────────── */
 
 /** 아는 묶음 이름. 여기 없는 이름은 애초에 토큰으로 잡히지 않습니다(오타 = 빌드 실패). */
-const TOKEN_NAMESPACES = ['biz', 'precheck'];
+const TOKEN_NAMESPACES = ['biz', 'precheck', 'analytics'];
 
 const TOKEN_RE = new RegExp(
   '\\{\\{\\s*(' + TOKEN_NAMESPACES.join('|') + ')\\.([A-Za-z0-9_]+)\\s*\\}\\}',
@@ -316,12 +322,26 @@ function loadSiteConfig() {
     process.exit(1);
   }
 
+  /*
+   * GA4 측정 ID. 8장의 <head> 가 이 값을 토큰으로 씁니다 — 오타가 나면 수집이
+   * **조용히** 0 이 됩니다(화면은 아무 말도 하지 않습니다). 꼴을 여기서 막습니다.
+   */
+  const gaId = config.analytics && config.analytics.gaId;
+  if (typeof gaId !== 'string' || !/^G-[A-Z0-9]{6,}$/.test(gaId)) {
+    console.error(
+      '✋ site.config.json 의 analytics.gaId 가 GA4 측정 ID 꼴이 아닙니다: ' +
+        JSON.stringify(gaId) +
+        '\n   `G-` 로 시작하는 대문자·숫자 식별자입니다(예: G-XXXXXXXXXX).'
+    );
+    process.exit(1);
+  }
+
   return config;
 }
 
 /** 파일 하나를 채울 사전 — 묶음 이름 → 값 묶음. locale 은 biz 에만 걸립니다. */
 function tokenValues(config, locale) {
-  return { biz: config.biz[locale], precheck: config.precheck };
+  return { biz: config.biz[locale], precheck: config.precheck, analytics: config.analytics };
 }
 
 /**

@@ -2,17 +2,28 @@
 <html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="icon" href="/favicon.ico" sizes="any">
-<!-- 🔴 **Google Analytics 4** 〔2026-09-12 신설〕 — 측정 ID 와 설정은 `assets/ga.js`
-     한 곳입니다. ⛔ 여기에 구글이 주는 gtag 4줄 스니펫을 붙여넣지 마십시오 —
-     배포되는 8장이 같은 측정 ID 를 각자 들게 되고, 속성을 바꿀 때 8곳이 갈립니다.
-     🔴 **이 줄이 분석 쿠키(`_ga` · `_ga_RQ1NWGK0KM`)를 심습니다.** 그래서 방침을
-        같은 배치에서 함께 고쳤습니다 — `privacy.html` §01(셋째 예외) · §04 의 두 표
-        (수탁 · 국외이전) · §07 개정 고지, 그리고 짝인 `en-privacy.html` 의 같은 네 자리.
-     ⛔ 이 줄을 걷을 때 그 자리들도 **함께** 걷으십시오 — 남겨 두면 방침이 하지도 않는
-        처리를 적게 됩니다. 반대 방향(방침만 걷기)은 더 나쁩니다.
-     ⚠️ 지키는 검사는 `test/ga-policy.test.js` 입니다(측정 ID 단일 · 8장 전부 · 방침 대응).
-        ⛔ `test/track-section.test.js` 와 합치지 마십시오 — 그쪽은 쿠키 없는 자체 집계입니다. -->
-<script async src="/assets/ga.js"></script>
+<!-- 🔴 **Google tag (gtag.js) — GA4** 〔2026-09-12〕. 구글이 주는 스니펫 그대로이고
+     **측정 ID 만 토큰**입니다(`site.config.json` 의 `analytics.gaId` 한 곳이 원본).
+     ⛔ **공용 `.js` 파일로 빼지 마십시오** 〔2026-09-12 실측〕 — 처음에 `assets/ga.js`
+        가 gtag.js 를 주입하게 만들었고 **수집은 정상**이었는데(`/g/collect` 204)
+        GA 화면은 「웹사이트에서 Google 태그가 감지되지 않았습니다」였습니다.
+        감지기는 실행된 DOM 이 아니라 **HTML 소스**에서 gtag.js 를 찾습니다.
+     ⚠️ 8장이 이 블록을 **문자 그대로 같게** 싣습니다. 한 장이라도 갈리면
+        `test/ga-policy.test.js` 가 red 입니다 — 고칠 때는 8장을 함께 고치십시오.
+     🔴 광고 두 값을 **false 로 못박습니다** — 방침 §01 이 「광고 기능(Google 신호
+        데이터 · 광고 맞춤설정)을 켜지 않았습니다」를 단정합니다. GA 콘솔 설정에
+        맡기면 그 문면이 저장소 밖 토글에 매달립니다(첫 배포에서 `npa=0` 이 나갔습니다).
+     🔴 **이 블록이 분석 쿠키(`_ga` · `_ga_<속성ID>`)를 심습니다.** 걷을 때는
+        `privacy.html` §01(셋째 예외) · §04 두 표 · §07 개정 고지와 짝인
+        `en-privacy.html` 의 같은 네 자리를 **함께** 걷으십시오.
+     ⛔ `test/track-section.test.js` 와 합치지 마십시오 — 그쪽은 쿠키 없는 자체 집계입니다. -->
+<script async src="https://www.googletagmanager.com/gtag/js?id={{analytics.gaId}}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', '{{analytics.gaId}}', { allow_google_signals: false, allow_ad_personalization_signals: false });
+</script>
 <!-- 🔴 **app 도메인 미리 잇기** 〔2026-09-05〕 — 이 페이지의 «나가는» 링크는 전부
      app.trops.kr 입니다(헤더 로그인 · 3단계 유료 버튼). 다른 출처라 클릭한 뒤에야
      DNS→TCP→TLS 를 새로 트는데, 그 세 왕복이 첫 바이트 앞에 통째로 붙습니다.
