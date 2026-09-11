@@ -51,6 +51,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="/favicon.ico" sizes="any">
+<!-- 🔴 **Google Analytics 4** 〔2026-09-12 신설〕 — 측정 ID 와 설정은 `assets/ga.js`
+     한 곳입니다. ⛔ 여기에 구글이 주는 gtag 4줄 스니펫을 붙여넣지 마십시오 —
+     배포되는 8장이 같은 측정 ID 를 각자 들게 되고, 속성을 바꿀 때 8곳이 갈립니다.
+     🔴 **이 줄이 분석 쿠키(`_ga` · `_ga_RQ1NWGK0KM`)를 심습니다.** 그래서 방침을
+        같은 배치에서 함께 고쳤습니다 — `privacy.html` §01(셋째 예외) · §04 의 두 표
+        (수탁 · 국외이전) · §07 개정 고지, 그리고 짝인 `en-privacy.html` 의 같은 네 자리.
+     ⛔ 이 줄을 걷을 때 그 자리들도 **함께** 걷으십시오 — 남겨 두면 방침이 하지도 않는
+        처리를 적게 됩니다. 반대 방향(방침만 걷기)은 더 나쁩니다.
+     ⚠️ 지키는 검사는 `test/ga-policy.test.js` 입니다(측정 ID 단일 · 8장 전부 · 방침 대응).
+        ⛔ `test/track-section.test.js` 와 합치지 마십시오 — 그쪽은 쿠키 없는 자체 집계입니다. -->
+<script async src="/assets/ga.js"></script>
 <title>개인정보처리방침(초안) — TROPS</title>
 <meta name="description" content="TROPS 가 어떤 자리에서 어떤 정보를 받아 무엇에 쓰고 언제 지우는지 적은 문서입니다. 법무 검토 전 초안입니다.">
 <link rel="canonical" href="https://trops.kr/privacy">
@@ -286,7 +297,7 @@
       <h1>개인정보처리방침</h1>
       <p class="head-meta">
         초안 · 법무 검토 전 &middot; 작성일 2026년 8월 11일 &middot; 시행일 2026년 8월 20일<br>
-        <strong>개정 &middot; 시행 2026년 9월 8일</strong> &mdash; 바뀌는 내용은 §07 에 적었습니다.<br>
+        <strong>개정 &middot; 시행 2026년 9월 12일</strong> &mdash; 바뀌는 내용은 §07 에 적었습니다.<br>
         {{biz.companyName}} (이하 &ldquo;회사&rdquo;)가 trops.kr 에서 제공하는 서비스에 적용됩니다.
       </p>
     </div>
@@ -308,8 +319,8 @@
         <p>trops.kr 에서 회사가 받는 개인정보는 <a href="/contact">문의·견적 요청·출시 알림 신청</a> 한 자리입니다. 무엇을 받고 무엇에 쓰며 언제 지우는지는 아래 §02 &middot; §03 에 적었습니다. 메일로 직접 보내셔도 되며(<a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>), 그 메일은 응대를 마치면 파기합니다.</p>
         <p>2026년 8월 20일까지 trops.kr 에서 접수한 수출 사전점검 건이 있었습니다. <strong>2026년 9월 9일에 그 접수 기록과 업로드 파일을 모두 삭제했고, 보관하던 데이터베이스도 함께 폐기했습니다.</strong> 지금 trops.kr 이 보관하는 사전점검 자료는 없습니다.</p>
         <p>수출 사전점검 접수는 app.trops.kr 로 옮겼습니다. 그곳에서 이루어지는 처리는 그 사이트의 개인정보처리방침이 다룹니다.</p>
-        <p>회사는 이 사이트에서 광고 식별자·행태정보 수집 도구를 쓰지 않습니다. 광고 목적의 쿠키를 심지 않고, <strong>누구인지 알아내거나 다른 방문과 이어 붙이는 정보</strong>를 브라우저 저장소에 남기지 않습니다.</p>
-        <p>예외 둘 중 하나 — 화면 언어(한국어/영어) 선택을 기억하는 기능성 쿠키 <code>lang</code> 입니다(2026-08-21). 값은 <code>ko</code>·<code>en</code> 둘 중 하나뿐이고, 광고·분석에 쓰이지 않으며, 다른 방문과 연결해 누구인지 구분하는 데 쓰이지 않습니다.</p>
+        <p>회사는 이 사이트에서 광고 식별자·행태정보 수집 도구를 쓰지 않습니다. 광고 목적의 쿠키를 심지 않고, 이용자를 광고 대상으로 분류하지 않으며, 광고회사에 개인정보를 넘기지 않습니다. <strong>다만 방문 통계를 보기 위해 Google Analytics 를 쓰며, 그 쿠키는 같은 브라우저의 여러 방문을 서로 이어 붙입니다</strong>(2026년 9월 12일 &mdash; 아래 셋째 예외).</p>
+        <p>예외 셋 중 하나 — 화면 언어(한국어/영어) 선택을 기억하는 기능성 쿠키 <code>lang</code> 입니다(2026-08-21). 값은 <code>ko</code>·<code>en</code> 둘 중 하나뿐이고, 광고·분석에 쓰이지 않으며, 다른 방문과 연결해 누구인지 구분하는 데 쓰이지 않습니다.</p>
         <!-- 🔴 **2026-09-04 — 영역 계측이 서면서 이 절을 고쳤습니다.**
              종전 문장은 ⓐ 「브라우저 저장소에 추적 정보를 남기지 않는다」 ⓑ 「예외 1건」
              ⓒ 「접속 시각별 방문 경로를 남기지 않는다」 ⓓ 「같은 분이 두 번 방문해도 두 번으로
@@ -319,7 +330,19 @@
              ⚠️ 이 문서는 아직 법무 검토 전 초안입니다(맨 위 배너) — 확정본에서 다시 봅니다. -->
         <p>예외 하나가 더 있습니다 — <strong>한 번의 방문을 묶는 임시 열쇠</strong>입니다(2026-09-04). 어느 영역을 보셨고 얼마나 머무셨는지를 <strong>한 번의 방문 단위로</strong> 세려면 그 방문의 이벤트들이 같은 방문임을 알아야 하기 때문입니다. 이 열쇠는 무작위 값이고, <strong>탭을 닫으면 사라지며</strong>(<code>sessionStorage</code>), 회사가 가진 다른 정보와 연결되지 않습니다. 함께 “전에 오신 적이 있는지”를 <strong>참/거짓 하나</strong>로 보냅니다 — 그 참/거짓을 만드는 표시(<code>trops_seen</code>)는 값이 <code>1</code> 하나뿐이고 <strong>회사 서버로 보내지 않습니다.</strong> 그래서 회사에 쌓인 기록만으로는 <strong>두 방문을 같은 분의 것으로 이을 수 없습니다.</strong></p>
         <p>어느 페이지가 몇 번 열렸는지, 주요 버튼이 몇 번 눌렸는지를 집계합니다(2026-08-18). 2026년 9월 4일부터는 <strong>화면의 어느 영역을 보셨는지·그 영역에 얼마나 머무셨는지·얼마나 아래로 내려 보셨는지·다음으로 어디를 고르셨는지</strong>도 함께 셉니다. 어느 경로로 들어오셨는지는 <strong>검색·직접·추천·소셜·AI 다섯 갈래</strong>와 <strong>보내 준 사이트의 주소(도메인)</strong>까지만 남기고 그 뒤의 세부 주소는 버립니다.</p>
-        <p>여기 어디에도 <strong>쿠키·기기 식별자·IP 주소·브라우저 종류</strong>를 남기지 않습니다. 위 임시 열쇠는 그 방문 안에서만 쓰이고 탭을 닫으면 사라지므로, <strong>“누가” 왔는지는 회사도 알 수 없습니다.</strong> 다시 오신 분인지는 참/거짓으로만 알 뿐, <strong>몇 번째 방문인지도 셀 수 없습니다.</strong></p>
+        <p>회사가 <strong>직접 셈하는 위 집계</strong>에는 여기 어디에도 <strong>쿠키·기기 식별자·IP 주소·브라우저 종류</strong>를 남기지 않습니다. 위 임시 열쇠는 그 방문 안에서만 쓰이고 탭을 닫으면 사라지므로, <strong>“누가” 왔는지는 회사도 알 수 없습니다.</strong> 다시 오신 분인지는 참/거짓으로만 알 뿐, <strong>몇 번째 방문인지도 셀 수 없습니다.</strong> 바로 아래 Google Analytics 집계는 이와 <strong>별개</strong>이고, 그쪽은 쿠키를 씁니다.</p>
+        <!-- 🔴 **2026-09-12 — Google Analytics 4 가 들어오면서 이 절을 고쳤습니다.**
+             심는 코드는 `assets/ga.js` 한 곳이고 배포되는 8장이 <head> 에서 그것을 부릅니다.
+             ⛔ 태그를 걷으면 이 두 문단과 §04 의 두 행(수탁 · 국외이전) · §07 의 개정 고지를
+                **함께** 걷으십시오. 남겨 두면 방침이 하지 않는 처리를 적게 됩니다.
+             ⚠️ 짝은 `en-privacy.html` 의 같은 자리입니다 — ⛔ 한쪽만 고치지 마십시오.
+             ⚠️ 「광고에 쓰지 않는다」는 **속성 설정에 달려 있습니다**(Google 신호 데이터 ·
+                광고 맞춤설정). 그 둘을 켜면 이 문단이 거짓이 됩니다 — 켜야 할 이유가
+                생기면 문면을 먼저 고치십시오.
+             ⚠️ 보관 기간은 GA 속성의 설정값입니다(기본 2개월 · 최대 14개월). 그 값이
+                정해지면 §04 「보유·이용 기간」 칸과 §08 항목을 함께 닫으십시오. -->
+        <p>셋째 예외는 <strong>방문 통계 도구 Google Analytics 4</strong> 입니다(2026년 9월 12일). 어느 페이지가 얼마나 열리고 어느 화면에서 나가시는지를 보기 위해 씁니다. 이 도구는 브라우저에 쿠키 <code>_ga</code> &middot; <code>_ga_RQ1NWGK0KM</code> 를 심고(최대 2년), 그 값으로 <strong>같은 브라우저의 여러 방문을 하나로 이어</strong> 셉니다. 함께 보내지는 것은 <strong>열어 보신 페이지의 주소 &middot; 기기와 브라우저 종류 &middot; 화면 크기 &middot; 대략적인 지역(도시 수준) &middot; 어느 경로로 들어오셨는지</strong>이며, 이름 &middot; 연락처처럼 누구인지 특정하는 값은 보내지 않습니다. IP 주소는 Google 이 지역을 추정하는 데 쓰고 <strong>저장하지 않습니다.</strong></p>
+        <p>이 집계를 <strong>광고에 쓰지 않습니다</strong> &mdash; 광고 기능(Google 신호 데이터 &middot; 광고 맞춤설정)을 켜지 않았고, 이용자를 광고 대상으로 분류하거나 다른 회사에 넘기지 않습니다. 집계 기록은 미국의 <strong>Google LLC</strong> 에서 처리되며, 그 국외 이전 내역은 §04 의 표에 적었습니다. 이 집계에서 빠지고 싶으시면 브라우저 설정에서 쿠키를 차단하시거나 Google 이 제공하는 <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer">Google Analytics 차단 부가기능</a>을 설치하시면 됩니다. 차단하셔도 사이트 이용에는 아무 제약이 없습니다.</p>
       </section>
       <section>
         <h2><span class="doc-num" aria-hidden="true">02</span><span>받는 항목과 쓰는 목적</span></h2>
@@ -414,6 +437,10 @@
             <tr><th scope="row">Supabase<br><span class="lead">(인도 뭄바이 리전 &mdash; 2026년 9월 9일 종료)</span></th><td><strong>위탁이 끝났습니다.</strong> 사전점검 접수 기록·업로드 파일을 보관했고, 2026년 9월 8일까지는 문의 &middot; 견적 &middot; 출시 알림 기록과 조회 집계도 이 리전에 있었습니다. 자료를 모두 삭제하고 <strong>프로젝트 자체를 폐기</strong>했습니다.</td></tr>
             <tr><th scope="row">Vercel</th><td>웹사이트 호스팅과 요청 처리</td></tr>
             <tr><th scope="row">Anthropic</th><td>업로드 문서 OCR·AI 분석</td></tr>
+            <!-- 🔴 아래 국외이전 표의 Google LLC 행과 **짝**입니다 〔2026-09-12〕.
+                 ⛔ 하나만 넣거나 하나만 걷지 마십시오 — 수탁은 적고 국외이전은 빠지면
+                    그 고지가 어디에도 없게 됩니다(위 서울 행 주석이 겪은 그 형태입니다). -->
+            <tr><th scope="row">Google LLC<br><span class="lead">(Google Analytics 4)</span></th><td>방문 통계 집계 &middot; 보관<br><span class="lead">2026년 9월 12일부터</span></td></tr>
           </tbody>
         </table>
         </div>
@@ -505,6 +532,14 @@
               <td>기본 30일 내 자동 삭제, 모델 학습에 쓰지 않습니다(Zero Data Retention 별도 계약 여부는 <strong>확인 필요</strong>)</td>
             </tr>
             <tr>
+              <th scope="row">Google LLC</th>
+              <td>쿠키 식별자(<code>_ga</code>), 열어 보신 페이지 주소, 기기 &middot; 브라우저 종류, 화면 크기, 대략적인 지역(도시 수준), 유입 경로</td>
+              <td>미국</td>
+              <td>페이지 열람 시점 실시간 전송</td>
+              <td>방문 통계 집계(§01)</td>
+              <td>쿠키 최대 2년<br>집계 기록은 Google Analytics 속성의 데이터 보관 설정에 따릅니다(기본 2개월 &middot; 최대 14개월 &mdash; 현재 설정 <strong>확인 필요</strong> &middot; §08)</td>
+            </tr>
+            <tr>
               <th scope="row">토스페이먼츠(주)</th>
               <td>결제 관련 정보</td>
               <td>대한민국</td>
@@ -554,6 +589,8 @@
       <section>
         <h2><span class="doc-num" aria-hidden="true">07</span><span>방침이 바뀔 때</span></h2>
         <p>내용이 바뀌면 이 페이지에 바뀐 내용과 적용일을 함께 올립니다. 이용자에게 불리하게 바뀌는 경우에는 적용일 전에 알려 드립니다.</p>
+        <h3>2026년 9월 12일 시행 &mdash; 방문 통계 도구를 씁니다</h3>
+        <p>trops.kr 의 모든 페이지에 <strong>Google Analytics 4</strong> 를 넣었습니다. 그에 따라 브라우저에 쿠키 두 개(<code>_ga</code> &middot; <code>_ga_RQ1NWGK0KM</code>)가 새로 심기고, 집계 기록이 <strong>미국의 Google LLC</strong> 로 이전됩니다 &mdash; 무엇이 보내지는지는 §01 에, 국외 이전 내역은 §04 에 적었습니다. <strong>광고에는 쓰지 않습니다.</strong> 받는 개인정보 항목(§02)과 보관 기간(§03)이 달라진 것은 없습니다. 이 집계에서 빠지는 방법도 §01 에 적었습니다.</p>
         <h3>2026년 9월 9일 시행 &mdash; 인도(뭄바이) 보관이 끝났습니다</h3>
         <p>2026년 8월 20일까지 접수한 수출 사전점검 자료를 <strong>모두 삭제하고, 보관하던 Supabase 프로젝트(인도 뭄바이 리전) 자체를 폐기</strong>했습니다. 그에 따라 §01 &middot; §02 &middot; §03 의 「남아 있는 자료」 서술과 §04 의 뭄바이 관련 행을 사실에 맞게 고쳤습니다. <strong>받는 항목과 보관 기간이 달라진 것은 없습니다</strong> &mdash; 보관하던 자료가 없어졌을 뿐입니다.</p>
         <h3>2026년 9월 8일 시행 &mdash; 보관 위치가 바뀝니다</h3>
@@ -566,6 +603,7 @@
         <p class="lead">아래는 법무 검토에서 확정할 항목입니다. <strong>지어내지 않고 비워 두었습니다.</strong></p>
         <ul>
           <li>Anthropic, PBC 와의 데이터 처리 계약에서 Zero Data Retention(ZDR) 적용 여부</li>
+          <li>Google Analytics 속성의 데이터 보관 기간 설정 &mdash; 기본 2개월 &middot; 최대 14개월 중 어느 값으로 둘지(확정되면 §04 의 「보유 &middot; 이용 기간」 칸에 반영합니다)</li>
         </ul>
         <p>확인이 필요하시면 <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a> 으로 물어봐 주십시오. 문서가 확정되기 전이라도 현재 처리 방식은 위에 적은 그대로입니다.</p>
       </section>

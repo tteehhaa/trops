@@ -24,6 +24,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="/favicon.ico" sizes="any">
+<!-- 🔴 **Google Analytics 4** 〔2026-09-12 신설〕 — 측정 ID 와 설정은 `assets/ga.js`
+     한 곳입니다. ⛔ 여기에 구글이 주는 gtag 4줄 스니펫을 붙여넣지 마십시오 —
+     배포되는 8장이 같은 측정 ID 를 각자 들게 되고, 속성을 바꿀 때 8곳이 갈립니다.
+     🔴 **이 줄이 분석 쿠키(`_ga` · `_ga_RQ1NWGK0KM`)를 심습니다.** 그래서 방침을
+        같은 배치에서 함께 고쳤습니다 — `privacy.html` §01(셋째 예외) · §04 의 두 표
+        (수탁 · 국외이전) · §07 개정 고지, 그리고 짝인 `en-privacy.html` 의 같은 네 자리.
+     ⛔ 이 줄을 걷을 때 그 자리들도 **함께** 걷으십시오 — 남겨 두면 방침이 하지도 않는
+        처리를 적게 됩니다. 반대 방향(방침만 걷기)은 더 나쁩니다.
+     ⚠️ 지키는 검사는 `test/ga-policy.test.js` 입니다(측정 ID 단일 · 8장 전부 · 방침 대응).
+        ⛔ `test/track-section.test.js` 와 합치지 마십시오 — 그쪽은 쿠키 없는 자체 집계입니다. -->
+<script async src="/assets/ga.js"></script>
 <title>Privacy Notice (draft) · TROPS</title>
 <meta name="description" content="Where TROPS receives your information, what we use it for and when we delete it. Draft, pending legal review.">
 <link rel="canonical" href="https://trops.kr/en-privacy">
@@ -259,7 +270,7 @@
       <h1>Privacy Notice</h1>
       <p class="head-meta">
         Draft &middot; pending legal review &middot; written 11 August 2026 &middot; effective 20 August 2026<br>
-        <strong>Amended and effective 8 September 2026</strong> &mdash; see §07 for what changes.<br>
+        <strong>Amended and effective 12 September 2026</strong> &mdash; see §07 for what changes.<br>
         Applies to services {{biz.companyName}} provides at trops.kr.
       </p>
     </div>
@@ -276,8 +287,8 @@
         <p>We no longer receive any new personal information on trops.kr. Enquiries reach us by email at <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>, and we delete those messages once we have answered them.</p>
         <p>Documents from pre-check intakes made on trops.kr up to 20 August 2026 are still held. We no longer accept them, but what remains is kept and deleted exactly as §02 and §03 below set out.</p>
         <p>Pre-check intake has moved to app.trops.kr. Processing that happens there is covered by that site's own privacy notice.</p>
-        <p>We run no advertising identifiers or behavioural tracking on this site. We set no analytics or advertising cookies, and we keep nothing in browser storage that <strong>identifies you or ties one visit to another</strong>.</p>
-        <p>One of two exceptions: a functional cookie, <code>lang</code>, remembers which language (Korean/English) you're reading in (2026-08-21). Its value is only <code>ko</code> or <code>en</code> &mdash; it is never used for advertising or analytics, and never linked across visits to identify who you are.</p>
+        <p>We run no advertising identifiers or behavioural tracking on this site. We set no advertising cookies, we do not put you into advertising audiences, and we pass no personal information to advertising companies. <strong>We do, however, use Google Analytics to see visit statistics, and its cookies do tie several visits from the same browser together</strong> (12 September 2026 &mdash; the third exception below).</p>
+        <p>One of three exceptions: a functional cookie, <code>lang</code>, remembers which language (Korean/English) you're reading in (2026-08-21). Its value is only <code>ko</code> or <code>en</code> &mdash; it is never used for advertising or analytics, and never linked across visits to identify who you are.</p>
         <!-- 🔴 **2026-09-04 — added with section measurement.** The Korean page (privacy.html §01)
              is the source; this had **no equivalent of the 2026-08-18 aggregation paragraph at all**,
              which is a gap that predates this change. Both paragraphs are added here so the two
@@ -297,10 +308,35 @@
         For how you arrived we keep only <strong>one of five buckets</strong> (search, direct,
         referral, social, AI) and the <strong>domain</strong> of the site that sent you &mdash; the rest
         of that address is discarded.</p>
-        <p>None of this records <strong>cookies, device identifiers, IP addresses, or browser
+        <p>The counting <strong>we do ourselves</strong>, described above, records no
+        <strong>cookies, device identifiers, IP addresses, or browser
         details</strong>. Because the temporary key lives only inside that visit and disappears when the
         tab closes, <strong>we cannot tell who you are</strong>. We know whether you have been here
-        before only as true or false &mdash; <strong>not how many times</strong>.</p>
+        before only as true or false &mdash; <strong>not how many times</strong>. The Google Analytics
+        counting described next is <strong>separate</strong>, and that one does use cookies.</p>
+        <!-- 🔴 **2026-09-12 — added with Google Analytics 4.** The Korean page
+             (privacy.html §01) is the source; these two paragraphs correspond to it 1:1.
+             ⛔ If the tag is removed, remove these two paragraphs, the two rows in §04
+                (processor and cross-border transfer) and the §07 entry **together** —
+                otherwise the notice describes processing we do not do.
+             ⚠️ "Not used for advertising" depends on property settings (Google signals,
+                ad personalisation). Turning either on makes this paragraph false: change
+                the wording first. -->
+        <p>A third exception is <strong>Google Analytics 4</strong>, a visit-statistics tool
+        (12 September 2026). We use it to see how often each page is opened and where people leave.
+        It sets the cookies <code>_ga</code> and <code>_ga_RQ1NWGK0KM</code> in your browser (up to
+        two years) and uses them to <strong>tie several visits from the same browser into one</strong>
+        count. Sent with them are <strong>the address of the page you opened, your device and browser
+        type, your screen size, your approximate location (city level), and how you arrived</strong>.
+        Nothing that identifies you personally, such as a name or contact details, is sent. Google uses
+        your IP address to estimate location and <strong>does not store it</strong>.</p>
+        <p>We <strong>do not use these counts for advertising</strong> &mdash; the advertising features
+        (Google signals, ad personalisation) are switched off, we do not put you into advertising
+        audiences, and we pass nothing to other companies. The counts are processed by
+        <strong>Google LLC</strong> in the United States; §04 records that cross-border transfer. If you
+        would rather not be counted, block cookies in your browser settings or install Google's
+        <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer">Google
+        Analytics opt-out add-on</a>. Blocking it restricts nothing on this site.</p>
       </section>
       <section>
         <h2><span class="doc-num" aria-hidden="true">02</span><span>What we receive and why</span></h2>
@@ -353,6 +389,9 @@
             <tr><th scope="row">Supabase<br><span class="lead">(Mumbai region &mdash; ended 9 Sep 2026)</span></th><td><strong>This processing has ended.</strong> It held the pre-check intake records and uploaded files, and until 8 September 2026 the page-view and click counts as well. Everything was deleted and <strong>the project itself decommissioned</strong>.</td></tr>
             <tr><th scope="row">Vercel</th><td>Hosting the site and serving requests</td></tr>
             <tr><th scope="row">Anthropic</th><td>OCR and AI analysis of uploaded documents</td></tr>
+            <!-- 🔴 Paired with the Google LLC row in the cross-border table below
+                 〔2026-09-12〕. ⛔ Never add or remove only one of the two. -->
+            <tr><th scope="row">Google LLC<br><span class="lead">(Google Analytics 4)</span></th><td>Collecting and storing visit statistics<br><span class="lead">from 12 September 2026</span></td></tr>
           </tbody>
         </table>
         </div>
@@ -398,6 +437,14 @@
               <td>Automatically deleted within 30 days by default, never used for model training (whether a separate Zero Data Retention agreement applies is <strong>to be confirmed</strong>)</td>
             </tr>
             <tr>
+              <th scope="row">Google LLC</th>
+              <td>Cookie identifier (<code>_ga</code>), address of the page opened, device and browser type, screen size, approximate location (city level), how you arrived</td>
+              <td>United States</td>
+              <td>Transmitted in real time when a page is opened</td>
+              <td>Visit statistics (§01)</td>
+              <td>Cookies up to two years<br>The counts are kept for as long as the Google Analytics property's data-retention setting says (default two months, up to 14 months &mdash; the current setting is <strong>to be confirmed</strong>, §08)</td>
+            </tr>
+            <tr>
               <th scope="row">Toss Payments Corp.</th>
               <td>Payment-related information</td>
               <td>Republic of Korea</td>
@@ -440,6 +487,13 @@
       <section>
         <h2><span class="doc-num" aria-hidden="true">07</span><span>When this notice changes</span></h2>
         <p>If the content changes we post the change and the date it takes effect on this page. Where a change is to your disadvantage we tell you before it takes effect.</p>
+        <h3>Effective 12 September 2026 &mdash; we use a visit-statistics tool</h3>
+        <p>We have added <strong>Google Analytics 4</strong> to every page on trops.kr. Two cookies
+        (<code>_ga</code> and <code>_ga_RQ1NWGK0KM</code>) are now set in your browser, and the counts are
+        transferred to <strong>Google LLC in the United States</strong> &mdash; §01 sets out what is sent
+        and §04 records the transfer. <strong>We do not use it for advertising.</strong> Nothing changed
+        about the personal information we receive (§02) or how long we keep it (§03). §01 also explains
+        how to opt out of this counting.</p>
         <h3>Effective 9 September 2026 &mdash; the India (Mumbai) storage has ended</h3>
         <p>Everything from the document pre-check intake that closed on 20 August 2026 was <strong>deleted, and the Supabase project (India, Mumbai region) that held it was decommissioned</strong>. §01, §02 and §03 no longer describe data as remaining, and the Mumbai rows in §04 record the processing as ended. <strong>Nothing changed about what we collect or how long we keep it</strong> &mdash; what was held simply no longer exists.</p>
         <h3>Effective 8 September 2026 &mdash; where the data is held changes</h3>
@@ -452,6 +506,7 @@
         <p class="lead">The following are for legal review to settle. <strong>We have left them blank rather than invent them.</strong></p>
         <ul>
           <li>Whether a Zero Data Retention agreement applies to our data processing arrangement with Anthropic, PBC</li>
+          <li>Which data-retention setting the Google Analytics property should use &mdash; the default of two months or the maximum of 14 (once settled, it goes in the retention column of §04)</li>
         </ul>
         <p>If you need certainty on any of these, write to <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>. Until the document is settled, what we actually do is exactly what is written above.</p>
       </section>
