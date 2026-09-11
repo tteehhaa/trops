@@ -77,10 +77,20 @@ test('🔴 배포되는 페이지 전부가 GA 를 «한 번» 부른다', () =>
  * ⚠️ 그 둘은 **GA 속성 설정**이기도 해서 코드만으로는 다 잴 수 없습니다. 코드에서
  *    켜는 길만 막아 둡니다 — 속성 쪽은 사람이 봅니다(§08 에 미결로 적혀 있습니다).
  */
-test('🔴 ga.js 가 광고 기능을 켜지 않는다 — 켜면 방침 §01 이 거짓이 된다', () => {
+test('🔴 ga.js 가 광고 기능을 «끈다» — 켜면 방침 §01 이 거짓이 된다', () => {
   const s = read(GA);
-  for (const forbidden of ['allow_google_signals', 'allow_ad_personalization_signals', 'user_id']) {
-    assert.ok(!s.includes(forbidden), GA + ' 가 ' + forbidden + ' 를 씁니다 — 방침을 먼저 고치십시오');
+  /*
+   * 🔴 **명시적으로 false 여야 합니다** 〔2026-09-12 실측〕. 처음에는 이 자리가
+   *    「두 이름이 아예 없어야 한다」였는데, 그러면 «기본값»에 맡기는 것이 됩니다 —
+   *    실제 프로덕션 요청에 `npa=0`(광고 맞춤설정 허용)이 붙어 나갔습니다.
+   *    방침이 「켜지 않았다」를 단정하므로 코드가 그것을 직접 내려야 합니다.
+   */
+  for (const off of ['allow_google_signals: false', 'allow_ad_personalization_signals: false']) {
+    assert.ok(s.includes(off), GA + ' 에 ' + off + ' 가 없습니다 — 방침 §01 이 거짓이 됩니다');
+  }
+  /* ⛔ true 로 뒤집히지 않았는가. */
+  for (const on of ['allow_google_signals: true', 'allow_ad_personalization_signals: true', 'user_id']) {
+    assert.ok(!s.includes(on), GA + ' 가 ' + on + ' 를 씁니다 — 방침을 먼저 고치십시오');
   }
 });
 

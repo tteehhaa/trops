@@ -39,5 +39,16 @@
   window.gtag = gtag;
 
   gtag('js', new Date());
-  gtag('config', ID);
+  /*
+   * 🔴 광고 기능을 **코드에서** 끕니다 〔2026-09-12〕 — 개인정보처리방침 §01 이
+   *    「광고 기능(Google 신호 데이터 · 광고 맞춤설정)을 켜지 않았다」고 적습니다.
+   *    그 둘은 GA 콘솔의 속성 설정으로도 켜지는데, 여기서 끄면 설정이 바뀌어도
+   *    이 태그가 보내는 요청은 그대로 비광고입니다(요청의 `npa=1` 로 확인).
+   *    ⛔ 두 값을 true 로 바꾸지 마십시오 — 바꾸는 순간 방침이 거짓이 됩니다.
+   *       광고 연동이 필요해지면 방침 §01 · §04 · §07 을 먼저 고치십시오.
+   */
+  gtag('config', ID, {
+    allow_google_signals: false,
+    allow_ad_personalization_signals: false,
+  });
 })();
