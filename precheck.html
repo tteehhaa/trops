@@ -685,11 +685,11 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
   function cards(url,packUrl,nm,insWorst){
     var carry=nm?('방금 입력한 기본정보와 목적 국가('+nm+')가 그대로 넘어갑니다. '):'방금 입력한 기본정보가 그대로 넘어갑니다. ';
     var diagCard='<div class="path'+(insWorst?'':' lead')+'"><div class="pk">무료</div>'+
-      '<h3>수출 사전점검 이어서 작성하기</h3><p>'+carry+'남은 것은 바이어확인, 계약·문서, 통관, 운송 네 영역입니다.</p>'+
-      '<div class="go"><a class="btn '+(insWorst?'btn-secondary':'btn-primary')+'" href="'+url+'" data-track="precheck-diagnosis">이어서 작성하기</a></div></div>';
+      '<h3>수출준비 체크리스트</h3><p>'+carry+'남은 것은 바이어확인, 계약·문서, 통관, 운송 네 영역입니다.</p>'+
+      '<div class="go"><a class="btn '+(insWorst?'btn-secondary':'btn-primary')+'" href="'+url+'" data-track="precheck-diagnosis">확인하기</a></div></div>';
     var packCard='<div class="path'+(insWorst?' lead':'')+'"><div class="pk">유료</div>'+
       '<h3>무역보험 준비 패키지</h3><p>이 거래 한 건을 기준으로 이용 요건 점검, 신청서 형태로 정리한 거래 정보, 청구 시 요구되는 서류 목록, 사내 결재용 자료까지 갖춰 드립니다.</p>'+
-      '<div class="go"><a class="btn '+(insWorst?'btn-primary':'btn-secondary')+'" href="'+packUrl+'" data-track="precheck-pack">무역보험 준비 패키지 확인</a></div></div>';
+      '<div class="go"><a class="btn '+(insWorst?'btn-primary':'btn-secondary')+'" href="'+packUrl+'" data-track="precheck-pack">알아보기</a></div></div>';
     return insWorst ? packCard+diagCard : diagCard+packCard;
   }
 
