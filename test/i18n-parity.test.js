@@ -269,3 +269,29 @@ test('🔴 폐기된 상품명이 어느 페이지 본문에도 없다', () => {
   }
   assert.deepStrictEqual(offenders, [], '폐기된 상품명이 남아 있습니다: ' + offenders.join(' · '));
 });
+
+/* ══ ⑦ 🔴 언어 전환이 쿠키로 «갇히지» 않는다 〔2026-09-19 · 모바일 신고〕 ══════════ */
+
+/*
+ * middleware.js 는 `lang=en` 쿠키가 있으면 `/` 를 `/en` 으로 돌려보냅니다. 그 쿠키를 되돌리는
+ * 길은 `a[hreflang="ko"]` 를 누를 때 assets/lang-switch.js 가 `lang=ko` 를 심는 것 하나뿐입니다.
+ * 2026-08-29 랜딩 교체가 두 랜딩에서 그 스크립트를 걷어, `lang=en` 을 가진 방문자는 /en 의
+ * 「한국어」를 눌러도 곧장 /en 으로 되돌아갔습니다 — 국문 홈에 들어갈 길이 없었습니다.
+ */
+test('🔴 언어 전환 링크가 있는 페이지는 전부 lang-switch.js 를 싣는다', () => {
+  const missing = [];
+  for (const { file } of STATIC_PAGES) {
+    const html = strip(read(file));
+    if (!/<a[^>]*hreflang="(ko|en)"/.test(html)) continue;
+    if (!html.includes('src="/assets/lang-switch.js"')) missing.push(file);
+  }
+  assert.deepStrictEqual(missing, [],
+    '언어 링크는 있는데 쿠키를 심을 스크립트가 없습니다: ' + missing.join(', '));
+});
+
+test('🔴 배너 닫기(✕)는 lang 쿠키를 심지 않는다 — 닫은 것은 「영어를 골랐다」가 아니다', () => {
+  const src = read('assets/lang-switch.js').replace(/\/\*[\s\S]*?\*\//g, '');
+  const close = src.match(/closeBtn\.addEventListener\('click', function \(\) \{([\s\S]*?)\}\);/);
+  assert.ok(close, '닫기 버튼 핸들러를 찾지 못했습니다 — 검사가 헛돕니다');
+  assert.ok(!/setCookie/.test(close[1]), '닫기 버튼이 쿠키를 심습니다 — 그 방문자는 반년 동안 국문 홈에 못 들어옵니다');
+});

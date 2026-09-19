@@ -744,9 +744,13 @@ footer .cp{margin-top:18px;color:#64748B}
      ⚠️ 그래서 **절대 주소**입니다. 상대 경로로 바꾸지 마십시오.
      ⚠️ 영문 페이지에는 넣지 않았습니다 — 그 문서가 국문뿐이라, 「Terms of
         Service」로 걸면 영문 독자를 국문 문서로 보냅니다. 번역이 서면 그때 겁니다. -->
-<div class="fl"><a href="https://app.trops.kr/terms">이용약관</a><a href="/privacy">개인정보처리방침</a><a href="/refund">환불규정</a><a href="/en">English</a></div>
+<!-- 🔴 「English」 에 `hreflang="en"` 을 답니다 〔2026-09-19〕 — assets/lang-switch.js 가 그 선언을 보고
+     누를 때 `lang=en` 쿠키를 심습니다. 정책 두 장의 [EN] 과 같은 동작입니다. -->
+<div class="fl"><a href="https://app.trops.kr/terms">이용약관</a><a href="/privacy">개인정보처리방침</a><a href="/refund">환불규정</a><a href="/en" hreflang="en" lang="en">English</a></div>
 <div class="cp">© 2026 TROPS. All rights reserved.</div>
 </div></footer>
 <!-- 🔴 익명 집계 〔2026-09-01〕 — 개인 식별값 없음(privacy.html §01). -->
 <script defer src="/assets/track.js"></script>
+<!-- 🔴 언어 전환 〔2026-09-19 복구〕 — 2026-08-29 랜딩 교체가 이 줄을 걷었습니다. en.html 에도 같은 줄이 있습니다. -->
+<script defer src="/assets/lang-switch.js"></script>
 </body></html>

@@ -9,6 +9,12 @@
  * 한국어인 방문자에게 "한국어로 보기" 배너를 보여준다. ② 기존 언어 전환 링크
  * (`a[hreflang]`)에 lang 쿠키를 심는다.
  *
+ * 🔴 **이 파일을 싣는 페이지는 랜딩 두 장 + 정책 네 장입니다** 〔2026-09-19 복구〕. 2026-08-29
+ *    랜딩 교체가 index.html·en.html 에서 이 파일을 걷었고, 그 뒤로 en.html 의 「한국어」가
+ *    쿠키를 못 심었습니다 — `lang=en` 을 가진 방문자는 「한국어」를 눌러도 middleware.js 가
+ *    곧장 /en 으로 되돌려 보내, **국문 홈에 들어갈 길이 없었습니다**(2026-09-19 실측).
+ *    ⛔ `a[hreflang]` 언어 링크가 있는 페이지에서 이 파일을 빼지 마십시오.
+ *
  * 🔴 **화면 우하단에 떠 있던 [English] 알약을 걷었다** 〔2026-08-21 · 대표 지시〕. 그 알약이
  *    하던 일(국문 페이지에서 영문으로 되돌아가기)은 이제 **헤더의 언어 전환 링크**가 한다 —
  *    index.html·en.html 이 이미 갖고 있던 `.nav-quiet` 링크를 나머지 12개 페이지(check ·
@@ -113,8 +119,17 @@
     closeBtn.textContent = '✕';
     closeBtn.style.cssText =
       'background:none;border:none;color:#fff;font-size:16px;line-height:1;cursor:pointer;padding:2px 4px;';
+    /*
+     * 🔴 **닫기(✕)는 배너만 닫습니다 — 쿠키를 심지 않습니다** 〔2026-09-19 · 모바일 신고〕.
+     *    종전에는 ✕ 가 `lang=en` 을 180일 심었고, middleware.js 는 그 쿠키를 「영어를 골랐다」로
+     *    읽어 **trops.kr 첫 화면을 /en 으로 돌려보냈습니다.** 한국어 브라우저로 영문 페이지에
+     *    잠깐 들른 사람이 배너를 닫은 것뿐인데, 그 뒤 반년 동안 국문 홈에 못 들어왔습니다
+     *    (폰에서 배너를 닫는 일이 특히 잦습니다). 「영어로 보겠다」는 선택은 [EN]·English
+     *    링크를 누르는 것 하나로만 기록합니다.
+     * ⚠️ 그래서 쿠키가 없는 한국어 브라우저에는 영문 페이지를 열 때마다 배너가 다시 뜹니다 —
+     *    알고 받아들인 값입니다. ⛔ 여기서 다시 쿠키를 심지 마십시오.
+     */
     closeBtn.addEventListener('click', function () {
-      setCookie('lang', 'en');
       bar.parentNode && bar.parentNode.removeChild(bar);
     });
     bar.appendChild(closeBtn);
