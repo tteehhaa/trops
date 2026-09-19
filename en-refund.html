@@ -47,7 +47,7 @@
 <title>Refund Policy · TROPS</title>
 <!-- ⚠️ 국문 refund.html 의 같은 자리 주석을 보십시오 — 인계문서가 준 네 자리 밖의
      다섯 번째 자리이고, 검색 결과에 그대로 찍힙니다. 부제와 같은 이름을 씁니다. -->
-<meta name="description" content="Refund policy for the TROPS Document pre-check service (submissions up to August 20, 2026). Cancel before your summary is delivered and we refund in full.">
+<meta name="description" content="Cancellation and refund policy for the TROPS Trade Insurance Prep Package. Cancel anytime before you pay, and get a full refund if you cancel before your materials are delivered.">
 <link rel="canonical" href="https://trops.kr/en-refund">
 <!-- hreflang 은 양쪽이 서로를 가리켜야 검색엔진이 인정합니다 — 한쪽만 있으면 무시됩니다.
      refund.html <head> 에도 같은 3줄이 있습니다. 한쪽만 고치지 마십시오.
@@ -258,69 +258,77 @@
     <div class="container narrow head">
       <p class="eyebrow">For users</p>
       <h1>Refund Policy</h1>
-      <!-- 🔴 **이름이 충돌하고 있었습니다** 〔2026-08-30 · trops_a docs/06-ops/
-           refund-policy-copy-handoff.md (069a7272)〕. 국문판 같은 자리의 주석을 보십시오.
-           「Document pre-check」는 en-privacy.html §02 표가 쓰는 이름과 같습니다
-           (「Document pre-check intake (up to 20 Aug 2026)」) — 두 문서가 같은 말을 씁니다.
-           ⛔ 여기에 「Export pre-check」를 되돌리지 마십시오. 그 이름은 이제 app.trops.kr 의
-              무료 진단서의 것이고, 푸터 링크가 그 이름을 그쪽으로 씁니다.
-           ⚠️ provides → provided. **시제 하나가 이 문서 전체의 뜻을 바꿉니다.** -->
+      <!-- 🔄 **2026-09-05 전부개정 · 초안 — 영문판 반영 2026-09-19.** 국문 refund.html 이 9월 5일
+           현행 상품(무역보험 준비 패키지) 기준으로 전부개정됐는데, 영문판은 2주 동안 종전 문서
+           («The Company currently sells no paid service»)로 남아 **거짓이 된 문장**을 싣고
+           있었습니다. 국문과 같은 13개 조항 · 같은 경계(01~06 현행 · 07 경과 · 08~12 종전)입니다.
+           ⚠️ 이름: 현행 상품은 「Trade Insurance Prep Package」(en.html 과 같은 이름), 종전 서비스는
+              「Document pre-check」(en-privacy.html §02 와 같은 이름)입니다. ⛔ 「Export pre-check」를
+              이 문서에서 유료 상품 이름으로 쓰지 마십시오 — 그 이름은 무료 진단의 것입니다.
+           ⚠️ 국문 09·11 의 「아래 03」·「02에 적은 대로」는 조항 번호를 옮기기 전의 참조입니다(각각
+              10 · 09 를 뜻합니다). 영문은 **옮긴 뒤의 번호**로 적었습니다.
+           ⛔ 금액을 적지 마십시오 — 요금은 문의로 안내합니다(02). -->
       <p class="head-meta">
-        Document pre-check service (submissions up to August 20, 2026) · Effective August 8, 2026<br>
-        Applies to paid services {{biz.companyName}} (&ldquo;the Company&rdquo;) provided at trops.kr.
-        The Company currently sells no paid service. This policy applies to paid submissions received up to August 20, 2026, and the refund and deletion rights attached to them remain in force.
+        Effective September 5, 2026 · Supersedes in full the policy of August 8, 2026<br>
+        This policy governs cancellations and refunds for paid services provided by {{biz.companyName}} (&ldquo;the Company&rdquo;).
+        It covers the Trade Insurance Prep Package we offer today, as well as Document pre-check submissions, which are no longer accepted.
       </p>
     </div>
 
     <div class="container narrow doc">
+
+      <!-- 🔴 **01~06 은 현행 상품** · **07~12 는 종전 서비스**입니다. 07 이 그 경계를 선언합니다.
+           ⛔ 두 묶음을 섞지 마십시오 — 결제 수단도 전달 방식도 다릅니다. -->
       <section>
         <h2><span class="doc-num" aria-hidden="true">01</span><span>Scope</span></h2>
-        <!-- 대조 항목 수는 site.config.json 의 precheck.itemCount 한 곳이 원본입니다.
-             ⚠️ 이 페이지의 두 자리(여기 · 04 표의 「N개 항목 중 일부가…」)는 **환불 사유**의
-                근거입니다. 판정층(trops_a)이 실제로 대조하는 개수와 어긋나면 지키지 못하는
-                약속이 됩니다. 숫자를 직접 적지 마십시오 — test/item-count.test.js 가 막습니다.
-
-             ⚠️ 2026-08-12 〔R-1 확장〕: 이 문장에서 비교 기준값과 그 수식어를 뗐습니다.
-                기준값에 실제 판매 이력이 없어 「종전거래가격」 표시 요건을 채우지 못합니다 —
-                /precheck 의 취소선과 같은 사유입니다.
-                ⛔ 비교를 함의하는 수식어로 되돌리지 마십시오. 뗀 이유가 표현이 아니라 비교
-                   자체입니다. 이 문장이 정하는 것은 **환불 규정의 적용 대상**
-                   (= 유상 결제 건)이지 가격의 유리함이 아닙니다.
-
-             🔄 2026-08-13: 금액이 99,000원 → 300,000원(부가세 별도)으로 바뀌었습니다
-                〔흐름 md §4 1차 테스트가〕. 시행일은 옮기지 않았습니다 — 환불 **조건**은
-                한 글자도 바뀌지 않았고 적용 대상 금액 표기만 현행화한 것이었습니다.
-                ⚠️ 조건(전액환불 기준·처리 기간)을 고칠 때는 시행일을 함께 옮기십시오.
-
-             🔴 2026-08-17: 금액 숫자 자체를 뺐습니다(국문판과 같은 이유 · 「가격은 결제
-                단계 마지막에만 보인다」). 적용 대상을 「one-time paid submission」으로만
-                말합니다 — 판매가가 바뀌어도 이 문장을 다시 고칠 필요가 없습니다.
-
-             ⚠️ 이 주석에 그 값·수식어를 문자 그대로 적지 마십시오 — 확인이 원문을 세므로
-                주석이 오탐이 됩니다. 확인은 scripts/verify-deployment.js 「R1-비교표기」.
-
-             🔴 2026-08-30: 「You can see the exact amount on the payment screen」을 뺐습니다.
-                국문판과 같은 사유입니다 — 가리키는 화면이 없습니다(접수·결제 폼이 내려갔고
-                toss SDK 를 부르는 페이지가 0개입니다).
-             ⚠️ 첫 문장(서비스 설명)은 그대로 둡니다 · ⛔ §01~§05 를 통째로 걷지 마십시오.
-                사유 전문은 국문 refund.html 의 같은 자리에 있습니다. -->
         <p class="lead">
-          We review the {{precheck.itemCount}} items in the document your buyer sent, compare them against a standard, and deliver a same-day summary.
-          This policy applies to one-time paid submissions. Intake and payment closed on August 20, 2026.
+          This policy applies to the Trade Insurance Prep Package. It is a paid service in which, for a single export deal,
+          we check the eligibility requirements and prepare your deal information in application-ready form,
+          a list of the documents a claim requires, and materials for internal approval, then deliver them to you by email.
         </p>
         <p>
-          Free (₩0) submissions don’t involve payment, so refunds don’t apply.
-          You can cancel anytime before delivery at no cost.
+          The Company does not underwrite insurance, review claims or apply for coverage on your behalf, and does not recommend specific products.
+          Eligibility and terms are decided by the relevant institution, such as the Korea Trade Insurance Corporation (K-SURE), under its policy terms and review criteria.
+          <strong>Whether you obtain coverage or receive a claim payment is therefore not grounds for a refund under this policy.</strong>
+        </p>
+        <p>
+          The export pre-check is free, so no payment is involved and refunds don’t apply.
+          Sections 07 through 12 below apply to Document pre-check submissions received on or before August 20, 2026.
         </p>
       </section>
 
       <section>
-        <h2><span class="doc-num" aria-hidden="true">02</span><span>Refund criteria</span></h2>
+        <h2><span class="doc-num" aria-hidden="true">02</span><span>Pricing and payment</span></h2>
+        <!-- ⚠️ 요금을 공개하지 않는 것은 «가격 정책»입니다 — 국문판 같은 자리 주석. ⛔ 예시 금액을 적지 마십시오. -->
         <p>
-          This is a service that produces and delivers an intangible summary.
-          The reference point is <strong>when we deliver your summary</strong>, and we handle things differently before and after that point.
+          Pricing depends on how many documents we prepare, so there is no fixed price up front.
+          When you send a request, <strong>we quote the price and turnaround time within one business day</strong>,
+          and you pay only after you’ve reviewed them.
         </p>
+        <p>
+          You can pay by bank transfer, against a tax invoice, or by card (processed by Toss Payments).
+          We don’t use automatic, recurring or subscription billing.
+        </p>
+      </section>
 
+      <section>
+        <h2><span class="doc-num" aria-hidden="true">03</span><span>Cancellation</span></h2>
+        <p>
+          <strong>You can cancel at any time before you pay, at no cost.</strong>
+          If you request a quote but don’t pay, we won’t charge you.
+        </p>
+        <p>
+          To cancel, just let us know at <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>.
+        </p>
+      </section>
+
+      <section>
+        <h2><span class="doc-num" aria-hidden="true">04</span><span>Refund criteria</span></h2>
+        <p>
+          This service produces and delivers intangible materials.
+          The reference point is <strong>when we email you the materials we’ve prepared</strong>,
+          and we handle refunds differently before and after that point, as shown below.
+        </p>
         <div class="table-wrap">
           <table>
             <caption>Refunds by delivery timing, counted from the payment date</caption>
@@ -329,26 +337,25 @@
             </thead>
             <tbody>
               <tr>
-                <th scope="row">Payment ~ before summary delivery</th>
-                <td>Full refund, even if comparison has already started.</td>
+                <th scope="row">After payment, before delivery</th>
+                <td>Full refund, even if we’ve already started preparing your materials.</td>
               </tr>
               <tr>
-                <th scope="row">After summary delivery</th>
-                <td>Refunds generally aren’t available given the nature of the service, unless one of the cases in 03 applies, which get a full refund even after delivery.</td>
+                <th scope="row">After delivery</th>
+                <td>Given the nature of the service, refunds generally aren’t available. However, if one of the cases in 05 applies, you get a full refund even after delivery.</td>
               </tr>
             </tbody>
           </table>
         </div>
-
-        <p>
-          We deliver your summary via a link sent by email.
-          We treat the time we send that link as the delivery time.
-        </p>
+        <p>We deliver the materials by email. The time we send that email counts as the delivery time.</p>
       </section>
 
       <section>
-        <h2><span class="doc-num" aria-hidden="true">03</span><span>Full refund even after delivery</span></h2>
-        <p>These are cases where we didn’t keep our end of the deal. You don’t need to prove why.</p>
+        <h2><span class="doc-num" aria-hidden="true">05</span><span>Full refund even after delivery</span></h2>
+        <p>These are cases where we didn’t keep our end of the deal. You don’t need to prove anything.</p>
+        <!-- 🔴 **네 번째 줄의 경계** — 반송은 **회사가 작성한 서류의 미비**를 사유로 한 것만입니다.
+             ⛔ 아래 「This does not include…」 문단을 지우지 마십시오 — 지우면 회사가 «가입 결과»를
+                보증하는 문서가 됩니다(국문판 같은 자리 주석). -->
         <div class="table-wrap">
           <table>
             <thead>
@@ -356,7 +363,117 @@
             </thead>
             <tbody>
               <tr>
-                <th scope="row">We didn’t deliver your summary the same day we received it</th>
+                <th scope="row">We didn’t deliver the materials within the turnaround time we quoted</th>
+                <td>Full refund</td>
+              </tr>
+              <tr>
+                <th scope="row">Some of the documents on the list we gave you were missing from the materials</th>
+                <td>Full refund</td>
+              </tr>
+              <tr>
+                <th scope="row">We sent you materials for a different deal by mistake</th>
+                <td>Full refund</td>
+              </tr>
+              <tr>
+                <th scope="row">You received a notice from the Korea Trade Insurance Corporation (K-SURE) returning your filing because of deficiencies in documents we prepared</th>
+                <td>We’ll redo the documents, or give you a full refund if you prefer</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          This does not include outcomes that stem from the deal itself or from the institution’s review, such as a declined application or an insufficient coverage limit.
+        </p>
+      </section>
+
+      <section>
+        <h2><span class="doc-num" aria-hidden="true">06</span><span>Requesting and processing a refund</span></h2>
+        <p>
+          To request a refund, email <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>.
+          Please do so <strong>within 14 days of receiving the materials</strong>,
+          or, for a returned filing under 05, <strong>within 14 days of receiving the return notice</strong>.
+        </p>
+        <p>
+          <strong>The request window and the processing time are two different things.</strong>
+          You just need to request within 14 days; processing time is counted separately, starting from the day we confirm your request.
+        </p>
+        <p>
+          We refund to your original payment method within 3–5 business days of confirming your request.
+          For card payments, it may take a few more days to show up in your account, depending on your card issuer.
+          If we issued a tax invoice, we also issue an amended tax invoice.
+          We don’t charge a refund fee.
+        </p>
+      </section>
+
+      <section>
+        <h2><span class="doc-num" aria-hidden="true">07</span><span>Transitional provisions for the former service</span></h2>
+        <p>
+          Sections 08 through 12 below apply only to <strong>Document pre-check submissions received on or before August 20, 2026</strong>.
+          Intake and payment for that service ended on August 20, 2026,
+          but the refund and deletion rights attached to submissions already received remain in force.
+        </p>
+      </section>
+
+      <section>
+        <h2><span class="doc-num" aria-hidden="true">08</span><span>Scope</span></h2>
+        <!-- 대조 항목 수는 site.config.json 의 precheck.itemCount 한 곳이 원본입니다.
+             ⚠️ 이 페이지의 두 자리(여기 · 10 표)는 **환불 사유**의 근거입니다. 숫자를 직접 적지
+                마십시오 — test/item-count.test.js 가 막습니다.
+             🔴 금액 숫자를 적지 마십시오(2026-08-17 · 국문판과 같은 이유). 적용 대상을
+                「one-time paid submission」으로만 말합니다.
+             ⚠️ 이 주석에 옛 금액·비교 수식어를 문자 그대로 적지 마십시오 — 확인이 원문을 셉니다
+                (scripts/verify-deployment.js 「R1-비교표기」). -->
+        <p class="lead">
+          This service reviewed the {{precheck.itemCount}} items in a document your buyer sent, compared them against a standard, and delivered a same-day summary.
+          This policy applies to one-time paid submissions. Intake and payment closed on August 20, 2026.
+        </p>
+        <p>
+          Free (₩0) submissions didn’t involve payment, so refunds don’t apply.
+          For those, you could cancel at any time before delivery, at no cost.
+        </p>
+      </section>
+
+      <section>
+        <h2><span class="doc-num" aria-hidden="true">09</span><span>Refund criteria</span></h2>
+        <p>
+          This service produced and delivered an intangible summary.
+          The reference point is <strong>when we delivered your summary</strong>, and we handle refunds differently before and after that point, as shown below.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <caption>Refunds by delivery timing, counted from the payment date</caption>
+            <thead>
+              <tr><th scope="col">Timing</th><th scope="col">Refund</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">After payment, before summary delivery</th>
+                <td>Full refund, even if the review had already started.</td>
+              </tr>
+              <tr>
+                <th scope="row">After summary delivery</th>
+                <td>Given the nature of the service, refunds generally aren’t available. However, if one of the cases in 10 applies, you get a full refund even after delivery.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Summaries were delivered via a link sent by email.
+          The time we sent that link counts as the delivery time.
+        </p>
+      </section>
+
+      <section>
+        <h2><span class="doc-num" aria-hidden="true">10</span><span>Full refund even after delivery</span></h2>
+        <p>These are cases where we didn’t keep our end of the deal. You don’t need to prove anything.</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th scope="col">Reason</th><th scope="col">Outcome</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">We didn’t deliver your summary on the day we received your submission</th>
                 <td>Full refund</td>
               </tr>
               <tr>
@@ -364,12 +481,12 @@
                 <td>Full refund</td>
               </tr>
               <tr>
-                <th scope="row">We compared a different document than the one you sent</th>
+                <th scope="row">We reviewed a different document than the one you sent</th>
                 <td>Full refund</td>
               </tr>
               <tr>
                 <th scope="row">The link didn’t open and you couldn’t get your summary</th>
-                <td>We’ll resend it, or a full refund if you prefer</td>
+                <td>We’ll resend it, or give you a full refund if you prefer</td>
               </tr>
             </tbody>
           </table>
@@ -377,90 +494,104 @@
       </section>
 
       <section>
-        <h2><span class="doc-num" aria-hidden="true">04</span><span>Requesting and processing a refund</span></h2>
+        <h2><span class="doc-num" aria-hidden="true">11</span><span>Requesting and processing a refund</span></h2>
         <p>
           Email contact@theo-ne.com with the email address you paid with and your submission number.
-          You’ll find your submission number in the link from your confirmation email. There’s no separate form.
+          You’ll find your submission number via the link in your confirmation email. There’s no separate form.
         </p>
-
-        <!-- 신청 기한 14일 (2026-08-09 승인).
-             기산점은 02 가 정의한 전달 시점 — "링크를 보내드린 시점" 입니다.
-             그 시각은 intake.delivered_at 에 실제로 기록됩니다(scripts/deliver.js).
-
-             ⚠️ 14일은 접수일 +30일 삭제 정책보다 짧아야 합니다.
-                기한이 30일을 넘으면, 신청은 받을 수 있는데 접수 기록(delivered_at ·
-                금액 · 주문번호)은 이미 지워진 구간이 생깁니다. 그때는 회사가
-                "언제 보냈다" 를 제시할 수 없습니다.
-                30일 삭제나 이 기한을 바꾸실 때는 반드시 함께 보십시오. -->
+        <!-- 신청 기한 14일 (2026-08-09 승인). 기산점은 09 가 정의한 전달 시점 — 링크를 보낸 시점입니다.
+             ⚠️ 14일은 접수일 +30일 삭제 정책보다 짧아야 합니다. 둘 중 하나를 바꾸실 때는 함께 보십시오. -->
         <p>
-          Please request a refund <strong>within 14 days of receiving your summary</strong>.
-          “Received” means the day we sent the summary link, as defined in 02.
-          The same applies to cases under 03.
+          Please request a refund <strong>within 14 days of the day your summary was delivered</strong>.
+          As defined in 09, that means the day we sent you the summary link.
+          The same applies to cases under 10.
         </p>
         <p>
           If you haven’t received your summary yet, this deadline doesn’t apply.
-          You can cancel anytime before delivery for a full refund.
+          You can cancel at any time before delivery for a full refund.
         </p>
 
         <div class="note">
-          <p><strong>The request window and processing time are different things</strong></p>
+          <p><strong>The request window and the processing time are two different things</strong></p>
           <p>
             <strong>The 14-day window</strong> is how long you have to request a refund.
             <strong>The 3–5 business day processing time</strong> is how long it takes us to complete the refund once we’ve confirmed your request.
-            Just request within 14 days. Processing time is counted separately from there.
+            You just need to request within 14 days; processing time is counted separately from there.
           </p>
         </div>
 
         <!-- ⚠️ "영업일 기준 3~5일" 은 임시값 — Toss 실제 정산주기 확인 후 교체 필요.
-             2026-08-08 승인 시 임시값으로 확정했습니다. 실제 Toss 정산 계약·약관에서
-             환불 정산 주기를 확인하기 전까지 이 값을 유지하십시오.
              교체 전까지 이 주석을 지우지 마십시오. -->
         <p>
-          We refund to your original payment method. We process it within 3–5 business days of confirming your request;
-          depending on your card issuer, it may take a few more days to show up in your account.
+          We refund to your original payment method within 3–5 business days of confirming your request.
+          Depending on your card issuer, it may take a few more days to show up in your account.
           We don’t charge a refund fee.
         </p>
       </section>
 
       <section>
-        <h2><span class="doc-num" aria-hidden="true">05</span><span>Refunds and file deletion</span></h2>
+        <h2><span class="doc-num" aria-hidden="true">12</span><span>Refunds and file deletion</span></h2>
         <p>
-          The rule was that files you send are deleted 30 days after submission, regardless of refund status,
-          and that a refund does not by itself mean immediate deletion.
-          <strong>On 9 September 2026 every remaining file and intake record was deleted and the database holding them was decommissioned.</strong>
-          We hold no intake data now.
+          Our rule was to delete the files you sent 30 days after submission, regardless of refund status.
+          <strong>On September 9, 2026, we deleted every remaining file and intake record and decommissioned the database that held them.</strong>
+          We no longer hold any intake data.
         </p>
         <div class="note">
           <p><strong>If you want immediate deletion</strong></p>
-          <!-- 🔴 **창구가 바뀌었습니다** 〔2026-08-30 · 대표 승인〕 — 사유·실측 전문은
-               국문 refund.html 의 같은 자리 주석이 갖습니다. ⛔ 한쪽만 고치지 마십시오.
-               ⛔ 삭제 권리·재발급 불가 조건은 그대로입니다. 바뀐 것은 창구뿐입니다. -->
+          <!-- 🔴 **창구가 바뀌었습니다 — 권리가 아니라 경로입니다** 〔2026-08-30 · 대표 승인〕.
+               사유·실측 전문은 국문 refund.html 의 같은 자리에 있습니다.
+               ⛔ 삭제 «권리»를 걷지 마십시오. 바뀐 것은 요청을 받는 창구(아래 메일 주소)뿐입니다. -->
           <p>
             Write to <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>.
-            If you agree that the file can’t be regenerated and request it, we confirm your request and delete your file and submission record without delay.
-            You can request this independently of a refund, at any time. If you’re also requesting a refund, deletion still goes ahead.
+            If you agree that the summary can’t be regenerated and make the request, we’ll confirm it and promptly delete the files you sent, along with your submission record.
+            You can request this at any time, separately from a refund, and if you also request a refund, the deletion still goes ahead.
           </p>
           <p>
             <strong>Once deleted, we can’t regenerate a summary for that submission.</strong>
-            If you haven’t received your summary yet, requesting deletion stops that submission’s progress.
-            You can also delete after receiving your summary.
+            If you haven’t received your summary yet, requesting deletion stops that submission.
+            You can also wait to receive your summary and delete it afterward.
           </p>
           <p>
-            If you did not request deletion, it happened automatically 30 days after submission, regardless of payment or refund status; everything remaining was deleted on 9 September 2026.
-            Payment records needed for refund processing are retained by our payment processor (Toss Payments) for the period required by law.
+            If you don’t request deletion, files are deleted 30 days after submission, regardless of payment or refund status.
+            Payment records needed to process refunds are kept by our payment processor (Toss Payments) for the period required by law.
           </p>
         </div>
       </section>
 
       <section>
-        <h2><span class="doc-num" aria-hidden="true">06</span><span>See also</span></h2>
+        <h2><span class="doc-num" aria-hidden="true">13</span><span>Other terms</span></h2>
         <p>
-          TROPS is not a legal advisory service. What we deliver is a reference document marking the differences in your document, item by item,
-          and it carries no legal effect on its own. The final decision is yours, together with any professional you choose to consult.
+          TROPS is not a legal advisory service. The materials we deliver are reference materials to help you make your own decisions and filings,
+          and they carry no legal effect on their own. The final decision rests with you and any professional you engage.
+        </p>
+        <!-- ⚠️ 국문판은 여기서 이용약관(app.trops.kr/terms)에 링크합니다. 그 문서가 국문뿐이라
+                영문판은 링크하지 않고 이름만 적습니다(en.html 푸터 주석과 같은 판단). -->
+        <p>
+          What the Company does not do is also set out on our home page and in our Terms of Service (currently available in Korean only).
+          Where this policy and the Terms of Service differ, this policy prevails.
         </p>
         <p>
-          Anything not covered in this policy follows relevant law, including the Act on Consumer Protection in Electronic Commerce.
-          If we change this policy, we’ll post the changes and effective date here in advance.
+          Anything not covered here is governed by applicable law, including Korea’s Act on Consumer Protection in Electronic Commerce.
+          If we change this policy, we’ll post the changes and the effective date on this page in advance.
+        </p>
+        <p>
+          The Company has applied for e-commerce business registration and is awaiting approval.
+          Once the registration number is issued, we’ll add it to the business information at the bottom of this page.
+        </p>
+      </section>
+
+      <!-- 🔴 **초안 고지** 〔2026-09-05 · 대표 지시〕 — 국문판과 같습니다. ⛔ 법률 검토를 마치기 전에
+           이 안내를 지우지 마십시오. 검토가 끝나면 국문·영문을 함께 걷고 시행일을 그날로 옮기십시오. -->
+      <section class="doc-note">
+        <p>
+          <strong>This policy is a draft.</strong>
+          We revised it in full on September 5, 2026 for the Trade Insurance Prep Package, and it will be finalized after legal review.
+          Provisions may change during that review; we’ll post any changes and their effective date on this page.
+        </p>
+        <p>
+          Even before the review is complete, <strong>the Company will honor the cancellation and refund terms set out here</strong>,
+          and they will never be applied to your disadvantage. Questions? Email
+          <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>.
         </p>
       </section>
     </div>

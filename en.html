@@ -1,8 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <!-- 🔴 **Google tag (gtag.js) — GA4** 〔2026-09-12〕. 구글이 주는 스니펫 그대로이고
      **측정 ID 만 토큰**입니다(`site.config.json` 의 `analytics.gaId` 한 곳이 원본).
@@ -26,421 +24,649 @@
   gtag('js', new Date());
   gtag('config', '{{analytics.gaId}}', { allow_google_signals: false, allow_ad_personalization_signals: false });
 </script>
-<title>TROPS · A one-minute check of the export steps your product needs</title>
-<meta name="description" content="From buyer verification and contracts to payment terms, trade insurance, customs and shipping, TROPS walks the required steps in order and lays out what to check now and what comes next.">
+<!-- 🔴 **국문 index.html 을 그대로 옮긴 영문판입니다** 〔2026-09-19 · 대표 지시 「라이브 국문 기준으로」〕.
+     2026-08-29 판(「A one-minute check of the export steps…」)이 9월 5일 국문 개편을 따라가지
+     못해, 두 장이 서로 다른 제품을 소개하고 있었습니다. 구조 · 선택자 · CSS · 영역 이름이
+     국문과 같습니다 — test/landing-invariants.test.js 가 두 장을 같은 선택자로 잽니다.
+     ⛔ 한쪽만 고치지 마십시오. 문구를 바꾸면 다른 쪽도 같은 배치에서 바꾸십시오.
+     ⚠️ **영문판만 다른 곳 셋** — 이유가 있습니다:
+        ① 상담 문의 · 출시 알림이 `/contact` 가 아니라 **mailto** 입니다(그 폼이 국문뿐입니다).
+        ② 푸터에 이용약관이 없습니다(국문 문서뿐 — index.html 푸터 주석 참조).
+        ③ em dash 를 쓰지 않습니다(test/i18n-parity.test.js).
+     ④ 무료 진단 버튼이 `/precheck` 가 아니라 **app.trops.kr/export-precheck/new** 입니다 —
+        `/precheck` 는 국문 전용 페이지라 영문 페이지가 거기로 가면 안 됩니다(test/i18n-parity ④).
+        `/precheck` 가 결과 뒤에 넘기는 곳이 바로 이 주소이고, `/en-precheck` 리다이렉트
+        (vercel.json)와 구판 en.html 도 여기로 보냈습니다.
+     ⚠️ app.trops.kr 화면은 아직 **국문**입니다. 영문 앱이 서기 전까지는 알고 받아들인 값입니다. -->
+<link rel="preconnect" href="https://app.trops.kr">
+<link rel="dns-prefetch" href="https://app.trops.kr">
+<title>Trade Insurance Paperwork and Export Receivables Management · TROPS</title>
+<meta name="description" content="Get the documents a trade insurance claim requires in place before you ship, and track payment due dates and loss-notice deadlines in case a buyer doesn’t pay. The export pre-check is free, with no sign-up required.">
 <!-- ⚠️ `/en` 입니다 — `.html` 이 아닙니다. vercel.json `cleanUrls:true` 라 정본은
-     확장자 없는 쪽이고, 바로 아래 hreflang 도 `/en` 을 가리킵니다. 한 문서가 자기
-     주소를 두 가지로 부르면 스크레이퍼가 어느 쪽을 담을지 갈립니다(2026-09-08 수정). -->
+     확장자 없는 쪽이고, 바로 아래 hreflang 도 `/en` 을 가리킵니다. -->
 <link rel="canonical" href="https://trops.kr/en">
-<!-- 🔴 **hreflang 3줄을 되살렸습니다** 〔2026-08-30〕 — 2026-08-29 랜딩 전면교체가
-     이 세 줄을 걷어냈습니다(개편 «전» index/en 에 3줄씩 있었고 지금은 0 · 실측).
-     양쪽이 서로를 가리켜야 검색엔진이 인정합니다 — 한쪽만 있으면 무시됩니다.
-     index.html <head> 에도 같은 3줄이 있습니다. ⛔ 한쪽만 고치지 마십시오.
-     ⚠️ 영문 경로는 `/en/` 이 아니라 `/en` 입니다 — 형제 파일 구조입니다. -->
+<!-- 🔴 hreflang 은 **양쪽이 서로를 가리켜야** 검색엔진이 인정합니다. index.html <head> 에도
+     같은 3줄이 있습니다. ⛔ 한쪽만 고치지 마십시오. -->
 <link rel="alternate" hreflang="ko" href="https://trops.kr/">
 <link rel="alternate" hreflang="en" href="https://trops.kr/en">
 <link rel="alternate" hreflang="x-default" href="https://trops.kr/">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="TROPS">
 <meta property="og:url" content="https://trops.kr/en">
-<!-- 국문 index.html 의 같은 자리와 같은 판단입니다 — 그 주석을 보십시오. -->
-<meta property="og:title" content="Export operations software for small exporters">
-<meta property="og:description" content="Buyer verification, contracts, payment terms, trade insurance, customs and shipping — checked in order.">
+<meta property="og:site_name" content="TROPS">
 <meta property="og:locale" content="en_US">
+<!-- 국문 index.html 의 같은 자리와 같은 판단입니다(og:title 은 <title> 과 «일부러» 다릅니다). -->
+<meta property="og:title" content="Export operations software for small and midsize businesses">
+<meta property="og:description" content="Get the documents a trade insurance claim requires in place before you ship, and track payment due dates and loss-notice deadlines in case a buyer doesn’t pay.">
 <meta name="twitter:card" content="summary_large_image">
-<!-- 🔴 **og:image 는 «있어야» 합니다** 〔2026-09-08 · 카카오톡 공유 실측〕.
-     없으면 카카오톡이 og 를 못 읽었을 때 **본문 첫 글자를 설명으로 긁어** 갑니다 —
-     실제로 「본문으로 건너뛰기 TROPS 로그인 1분 무료 진단 …」이 카드에 실렸습니다.
-     ⚠️ **절대 URL 이어야** 합니다(`/img/…` 상대경로는 카카오·페이스북 모두 무시).
-     🔴 **호스트가 `www.` 입니다 — 이 자리만 그렇습니다.** apex(`trops.kr`)는 www 로
-        **308 리다이렉트**되는데, 카카오는 이미지 URL 의 리다이렉트를 따라가지 않는
-        경우가 있어 썸네일이 통째로 빕니다(실측 2026-09-08: apex → 308 15바이트,
-        www → 200 image/png). og:url·canonical·hreflang 은 apex 그대로 두십시오 —
-        그건 «문서의 이름»이고 이건 «자산의 주소»라 판단이 다릅니다.
-     ⚠️ SVG 는 렌더되지 않습니다 — PNG/JPG 1200×630 입니다. `img/icon_primary.svg`
-        를 여기 쓰지 마십시오.
+<!-- 🔴 og:image 는 절대 URL · `www.` 호스트입니다 — 이유는 index.html 의 같은 자리 주석을 보십시오.
      ⚠️ 배포한 뒤 **카카오 캐시를 손으로 비워야** 새 카드가 보입니다 —
-        developers.kakao.com/tool/debugger/sharing 에서 URL 을 넣고 「초기화」.
-        비우지 않으면 며칠 동안 옛 카드가 그대로 나옵니다. -->
+        developers.kakao.com/tool/debugger/sharing 에서 URL 을 넣고 「초기화」. -->
 <meta property="og:image" content="https://www.trops.kr/img/og-en.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="TROPS — a one-minute check of the export steps your product needs">
+<meta property="og:image:alt" content="TROPS: export operations software that helps small and midsize businesses protect their export receivables">
 <meta name="twitter:image" content="https://www.trops.kr/img/og-en.png">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://trops.kr/#org",
+      "name": "{{biz.companyName}}",
+      "alternateName": "TROPS",
+      "url": "https://trops.kr/",
+      "email": "contact@theo-ne.com",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "B269-11, 524 Bongeunsa-ro",
+        "addressLocality": "Gangnam-gu",
+        "addressRegion": "Seoul",
+        "addressCountry": "KR"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://trops.kr/en#site",
+      "url": "https://trops.kr/en",
+      "name": "TROPS",
+      "inLanguage": "en",
+      "publisher": {
+        "@id": "https://trops.kr/#org"
+      }
+    },
+    {
+      "@type": "Service",
+      "name": "Trade Insurance Prep Package",
+      "serviceType": "Trade insurance paperwork preparation",
+      "provider": {
+        "@id": "https://trops.kr/#org"
+      },
+      "areaServed": {
+        "@type": "Country",
+        "name": "South Korea"
+      },
+      "audience": {
+        "@type": "BusinessAudience",
+        "name": "Small and midsize exporters"
+      },
+      "description": "A per-deal service that gets the documents needed to apply for trade insurance, such as Short-term Export Insurance, and to file a claim in place before shipment. It covers choosing the right coverage, checking the destination country's underwriting policy and buyer rating requirements, matching documents at the application, shipment and claim stages, and a calendar of export notice and loss notice deadlines.",
+      "offers": {
+        "@type": "Offer",
+        "priceCurrency": "KRW",
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "Service",
+      "name": "Export Pre-Check Report",
+      "serviceType": "Export deal diagnostic",
+      "provider": {
+        "@id": "https://trops.kr/#org"
+      },
+      "url": "https://trops.kr/precheck",
+      "areaServed": {
+        "@type": "Country",
+        "name": "South Korea"
+      },
+      "description": "Scores the risk of not getting paid on an export deal out of 100, across five factors: payment method, payment terms, destination, buyer history and trade insurance. Free, with no sign-up required.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      }
+    },
+    {
+      "@type": "Service",
+      "name": "Export Receivables Management",
+      "serviceType": "Export receivables and trade insurance policy schedule management",
+      "provider": {
+        "@id": "https://trops.kr/#org"
+      },
+      "areaServed": {
+        "@type": "Country",
+        "name": "South Korea"
+      },
+      "description": "Tracks payment due dates, outstanding receivables, trade insurance loss-notice deadlines and policy expirations deal by deal. In development."
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is trade insurance?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Trade insurance protects exporters against risks such as not getting paid on an overseas sale. Short-term Export Insurance (post-shipment) from the Korea Trade Insurance Corporation (K-SURE) covers the loss when, after goods ship under an export contract with payment terms of two years or less, the exporter can’t collect payment from the buyer, or from the issuing bank in a letter of credit (L/C) transaction. It covers commercial risks, such as a buyer’s insolvency or payment default, and political risks that can arise in cross-border trade, such as war or restrictions on remittances."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What percentage of a loss does trade insurance cover?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Under K-SURE Short-term Export Insurance (post-shipment), the coverage ratio for standard exports and consignment processing trade is 100% for small and midsize companies, 97.5% for mid-market companies, and 95% for large companies. The ratio that actually applies can vary with K-SURE’s country underwriting policy and the terms set out in your policy. And a 100% coverage ratio doesn’t mean every unpaid amount is always paid in full. The actual claim payment reflects the amount of the loss, any excluded losses, and amounts received under other insurance or financing arrangements. To know what’s actually covered on a given deal, check your policy and its terms and conditions."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What documents do I need to file a trade insurance claim?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Short-term Export Insurance calls for different documents and procedures at each stage, from taking out a policy to filing a claim. When you apply, you go through a credit investigation of the buyer, a request for a coverage limit, and issuance of the policy. After shipment, you have to file an export notice within the required deadline. If the buyer doesn’t pay, you file a notice of loss and then submit your claim along with the supporting documents K-SURE requires. The exact documents can vary by type of coverage, deal structure and the nature of the loss, so check your policy terms and K-SURE’s guidance on loss notices and claims. The TROPS Trade Insurance Prep Package organizes the steps and documents you need to apply for trade insurance, deal by deal."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When is the deadline to file a notice of loss under Short-term Export Insurance?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Under K-SURE Short-term Export Insurance (post-shipment), if payment isn’t received, you generally have to notify K-SURE of the loss in writing within one month of the payment due date. If you learn before the due date that something has happened that could lead to a loss, you also need to give notice within the required period. The export notice deadline after shipment matters too. Under an individual policy, you have to file the export notice within 10 business days of the export date; blanket policies use a different notice method and deadline. If you miss the deadline, as a rule that shipment isn’t covered, unless there is good cause for the delay. Procedures can vary by product and contract terms, so on an actual deal, check your policy terms and K-SURE’s guidance."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Where can I find export insurance premium subsidy programs?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "K-SURE publishes information on trade insurance and guarantee fee subsidy programs run with local governments, related agencies and banks. Some are group policies in which the local government is the policyholder; in others, a company takes out an individual policy and receives a premium subsidy. Eligible regions, eligible companies, covered insurance types and subsidy amounts vary by program, and a program may close once its budget runs out. It’s best to check K-SURE’s premium subsidy page for programs currently open and their terms. TROPS also points you to the subsidy announcements and application channels for where your company is based."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is the TROPS export pre-check free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. With no sign-up and just a few quick selections, you can see what to check first on this export. Based on what you enter, we show your results along with the basis for each item. If you’re preparing to apply for trade insurance, the separate Trade Insurance Prep Package is available. It works on a per-deal basis."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is TROPS?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "TROPS is software that supports export operations for small and midsize businesses. It handles each export deal in three stages. Before shipment, the export pre-check shows what to verify first on the deal. At the contract and shipment stage, the Trade Insurance Prep Package organizes the steps and documents needed to apply, deal by deal. Post-shipment receivables management is in development. It’s built for companies that handle everything from contract to collection themselves, without a dedicated department."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does TROPS apply for trade insurance on my behalf?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. TROPS doesn’t underwrite insurance, review claims or apply for coverage on your behalf, and it doesn’t recommend specific products. Eligibility and terms are decided by the relevant institution, such as K-SURE, under its policy terms and review criteria. What TROPS does is get you ready to apply. For each deal, we check the eligibility requirements and prepare your deal information in application-ready form, a list of the documents a claim requires, and materials for internal approval. We also don’t provide legal advice or legal review of contracts, and we don’t guarantee that receivables will be collected."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How much does the Trade Insurance Prep Package cost?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Pricing depends on how many documents we prepare, so there’s no fixed price up front. It’s priced per deal. Send us a request and we’ll quote the price and turnaround time within one business day. You pay once you’ve reviewed them. The export pre-check is free either way."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 <style>
+/* 라이브 trops.kr 디자인 시스템 토큰 — index.html 과 같은 값입니다. 한쪽만 고치지 마십시오. */
 :root{
-    --ink:          #0F172A;
-    --ink-70:       rgba(15, 23, 42, .7);
-    --ink-64:       rgba(15, 23, 42, .64);
-    --ink-62:       rgba(15, 23, 42, .62);
-    --accent:       #1D4ED8;
-    --accent-press: #1E40AF;
-    --accent-soft:  #EFF6FF;
-    --muted:        #94A3B8;
-    --line:         #E2E8F0;
-    --surface:      #E6ECF3;
-    --line-on-surface: #CBD5E1;
-    --surface-dark: #0F172A;
-    --bg:           #FFFFFF;
-    --warning:      #DC2626;
-    --d-ink-primary:   #FFFFFF;
-    --d-ink-secondary: rgba(255, 255, 255, .72);
-    --d-ink-tertiary:  rgba(255, 255, 255, .50);
-    --d-line:          rgba(255, 255, 255, .28);
+  --accent:#1D4ED8; --accent-deep:#1739A8; --accent-soft:#EFF4FE;
+  --ink:#0F172A; --ink-2:#475569; --ink-3:#94A3B8;
+  --line:#E2E8F0; --line-soft:#F1F5F9;
+  --surface:#F8FAFC; --white:#FFFFFF;
+  --danger:#DC2626;
+  --r-card:12px; --r-control:6px;
+  --f:"Pretendard Variable","Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
 }
-*,*::before,*::after{box-sizing:border-box}
+*{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{
-    margin:0;
-    background:var(--bg);
-    color:var(--ink);
-    font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
-    font-size:16.5px;
-    line-height:1.76;
-        text-wrap:pretty;
-    -webkit-font-smoothing:antialiased;
-    text-rendering:optimizeLegibility;
-}
-a{color:var(--accent);text-decoration:none}
-a:hover{color:var(--accent-press)}
-::selection{background:rgba(15,23,42,.14)}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-p{margin:0}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{font-family:var(--f);background:var(--white);color:var(--ink);
+  font-size:16.5px;line-height:1.76;word-break:keep-all;
+  -webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+a{color:inherit}:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:3px}
+.w{max-width:1040px;margin:0 auto;padding:0 28px}
+section{padding:96px 0}
+.band{background:var(--surface);border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft)}
+.center{text-align:center}
+/* 한국어 줄바꿈. 제목은 줄 길이를 고르게, 본문은 마지막 줄 한 단어 방지 */
+h1,h2,h3,.claim,.nm .t,.dcard .gn,.demolabel,.who-badge{text-wrap:balance}
+p,li,.sp .p,.nm .desc,.faq .a,.dr .rs,.dcard .gd,.demofoot p,.sec-sub,.lead{text-wrap:pretty}
 
-.container{max-width:1200px;margin:0 auto;padding-inline:clamp(24px,5vw,48px)}
-.body-w{max-width:860px}
-.sec-surface{background:var(--surface);--line:var(--line-on-surface)}
-section{padding-block:clamp(60px,8vw,96px);scroll-margin-top:64px}
-.hero{padding-block:clamp(72px,9vw,112px) clamp(52px,7vw,78px)}
-.report{padding-top:clamp(36px,4vw,52px)}
-
-h1,h2,h3{margin:0}
-h1{font-size:clamp(2.25rem,4.5vw,3.5rem);font-weight:700;line-height:1.30;letter-spacing:-.035em}
-h2{max-width:18em;font-size:clamp(1.75rem,3vw,2.5rem);font-weight:700;line-height:1.28;letter-spacing:-.030em}
-.h3{font-size:28px;font-weight:600;line-height:1.35;letter-spacing:-.025em}
-
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:12px 22px;border-radius:6px;border:1px solid transparent;font:inherit;font-size:15.5px;font-weight:600;line-height:1;cursor:pointer;white-space:nowrap;transition:background-color .14s ease,border-color .14s ease,color .14s ease}
-.btn-full{padding-inline:32px}
-.btn-primary{background:var(--accent);color:#FFFFFF}
-.btn-primary:hover{background:var(--accent-press);color:#FFFFFF}
-.btn-secondary{background:transparent;border-color:var(--line);color:var(--ink)}
-.btn-secondary:hover{border-color:var(--muted);color:var(--ink)}
-.btn-light{background:#FFFFFF;color:var(--ink)}
-.btn-light:hover{background:#E8EEF3;color:var(--ink)}
-
-/* nav */
-.skip{position:absolute;left:-9999px;top:8px;padding:10px 16px;border-radius:6px;background:var(--ink);color:#fff;font-size:14px;z-index:10}
-.skip:focus{left:16px;color:#fff}
-.nav{border-bottom:1px solid var(--line)}
-.nav .container{display:flex;align-items:center;justify-content:space-between;height:64px}
-.nav-right{margin-left:auto;display:flex;align-items:center;gap:12px}
-.nav-login{font-size:14px;font-weight:600;color:var(--ink-64);text-decoration:none}
+nav{border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);z-index:10}
+nav .w{display:flex;justify-content:space-between;align-items:center;height:64px}
+.nav-right{display:flex;align-items:center;gap:18px}
+.nav-login{font-size:14px;font-weight:600;color:var(--ink-2);text-decoration:none}
 .nav-login:hover{color:var(--ink)}
-.logo{display:inline-flex;align-items:center;gap:9px;font-size:18px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
-.logo:hover{color:var(--ink)}
+/* 🔴 **skip 링크** 〔2026-09-01 복원 · 대표 지시〕. 구판 index.html·en.html 과 **같은 값**입니다
+   (`.skip` 두 줄 · 문구 「본문으로 건너뛰기」). v11 원본에 이 요소가 없어 접근성 요소가
+   조용히 빠져 있었습니다 — 새로 지은 문구가 아니라 라이브에 있던 것을 되돌린 것입니다.
+   ⚠️ **`z-index` 만 구판(10)에서 20 으로 올렸습니다.** v11 의 `nav` 는 `position:sticky`
+      에 `z-index:10` 이라, 같은 10 이면 포커스된 skip 이 **나중에 그려지는 nav 뒤로
+      숨습니다**(구판 nav 에는 z-index 가 없어 문제가 없었습니다).
+      ⛔ 10 으로 되돌리지 마십시오 — 눌러도 보이지 않는 링크가 됩니다. */
+.skip{position:absolute;left:-9999px;top:8px;padding:10px 16px;border-radius:6px;background:var(--ink);color:#fff;font-size:14px;z-index:20}
+.skip:focus{left:16px;color:#fff}
+.logo{display:inline-flex;align-items:center;gap:9px;font-size:17px;font-weight:700;letter-spacing:-.01em;text-decoration:none;color:var(--ink)}
 .logo i{width:18px;height:18px;background:url(/img/icon_primary.svg) center/contain no-repeat;display:block}
 
-/* hero */
-.hero h1{max-width:15em}
-.hero-lead{margin-top:20px;max-width:38em;font-size:17.5px;font-weight:500;line-height:1.72;color:var(--ink-64)}
-.hero-lead b{font-weight:600;color:var(--ink)}
-.cta{margin-top:30px}
-.fine{margin-top:14px;font-size:14.5px;line-height:1.6;color:var(--ink-62)}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;
+  background:var(--accent);color:#fff;text-decoration:none;border:0;cursor:pointer;
+  font-family:inherit;font-size:15.5px;font-weight:700;letter-spacing:-.01em;
+  padding:0 24px;border-radius:var(--r-control);transition:all .2s ease}
+.btn:hover{background:var(--accent-deep);transform:translateY(-1px);box-shadow:0 6px 16px rgba(29,78,216,.2)}
+.btn-2{display:inline-flex;align-items:center;justify-content:center;min-height:44px;
+  background:var(--white);color:var(--accent);text-decoration:none;cursor:pointer;
+  font-family:inherit;font-size:15.5px;font-weight:700;padding:0 22px;
+  border:1px solid var(--line);border-radius:var(--r-control);transition:all .2s ease}
+.btn-2:hover{border-color:var(--accent);background:var(--accent-soft)}
+.btn-s{min-height:38px;font-size:14px;padding:0 16px}
+@media(prefers-reduced-motion:reduce){.btn,.btn-2{transition:background .15s}.btn:hover{transform:none;box-shadow:none}}
 
-/* stat */
-.stat-sec{padding-block:clamp(38px,5vw,60px)}
-.stat-quote{position:relative;margin:24px 0 0;padding:26px 0 0 clamp(34px,4.5vw,56px);border-top:1px solid var(--line)}
-.stat-quote::before{content:"\201C";position:absolute;left:-2px;top:clamp(10px,1vw,18px);font-size:clamp(64px,9vw,104px);line-height:1;color:var(--accent);opacity:.22}
-.stat-quote p{max-width:22em;font-size:clamp(20px,2.5vw,28px);font-weight:700;line-height:1.5;letter-spacing:-.03em}
-.stat-quote em{font-style:normal;color:var(--accent)}
-@media(max-width:768px){.hero-lead br,.stat-quote p br,.stat-src br,.report .sub br,.ext .item .d br,.ext h2 br{display:none}
-  .close-cta{flex-direction:column;align-items:flex-start;gap:20px}}
-.stat{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
-.stat-n{font-size:clamp(30px,4vw,38px);font-weight:700;line-height:1;letter-spacing:-.035em;color:var(--ink)}
-.stat-t{font-size:15.5px;font-weight:500;line-height:1.5;color:var(--ink-64)}
-.stat-quote .stat-src{margin-top:18px;max-width:44em;font-size:14.5px;font-weight:400;letter-spacing:normal;line-height:1.6;color:var(--ink-62)}
+h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;letter-spacing:-.035em;line-height:1.32}
+h2.sec{font-size:clamp(24px,3vw,32px);font-weight:700;letter-spacing:-.03em;line-height:1.35;margin-bottom:12px}
+.sec-sub{font-size:16.5px;color:var(--ink-2);line-height:1.65;margin-bottom:44px}
+/* 🔴 섹션 아래 여백은 위 `.sec-sub` 에 붙어 있습니다 — 부제를 걷은 섹션은 그 44px 을
+   함께 잃습니다(3단계 섹션에서 12px 로 주저앉았습니다). 부제가 없는 제목이 그 몫을
+   스스로 집니다 — 부제를 다시 넣으면 이 규칙은 저절로 빠집니다.
+   ⛔ 이 여백을 영역 이름(추적용 속성) 선택자로 걸지 마십시오 — test/track-section.test.js 가
+      원문을 훑어 그 속성을 세기 때문에 「이름이 두 번 붙었다」로 읽힙니다. 주석에 그 속성을
+      리터럴로 적어도 같은 검사에 걸립니다 — 2026-09-05 에 둘 다 실제로 걸렸습니다. */
+.center h2.sec:last-child{margin-bottom:56px}
 
-/* steps */
-.steps{margin-top:32px}
-.st{display:grid;grid-template-columns:44px 1fr;gap:20px;padding:22px 0;border-top:1px solid var(--line)}
-.st:last-child{border-bottom:1px solid var(--line)}
-.st .n{font-size:13.5px;font-weight:700;letter-spacing:.02em;color:var(--muted);padding-top:6px}
-.st .t{font-size:19px;font-weight:600;line-height:1.45;letter-spacing:-.02em}
-.st .d{margin-top:7px;font-size:16px;line-height:1.7;color:var(--ink-64)}
-@media(max-width:640px){.st{grid-template-columns:1fr;gap:6px}.st .n{padding-top:0}}
+/* 히어로 */
+.hero{padding:96px 0 88px;text-align:center;border-bottom:1px solid var(--line)}
+.eyebrow{display:table;margin:0 auto 20px;font-size:14px;font-weight:700;color:var(--accent);
+  background:var(--accent-soft);padding:7px 14px;border-radius:var(--r-control)}
+.hero h1{max-width:22ch;margin:0 auto}
+.hero .lead{max-width:42ch;margin:22px auto 0;font-size:18px;color:var(--ink-2);line-height:1.72}
+.hero .act{margin-top:36px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.hero .badge{margin-top:16px;font-size:14px;color:var(--ink-3)}
 
-/* report */
-.report .sub{margin-top:16px;max-width:36em;font-size:17.5px;font-weight:500;line-height:1.7;color:var(--ink-64)}
-.shot{margin:32px 0 0;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);box-shadow:0 10px 28px rgba(15,23,42,.10)}
-.cap{margin-top:12px;font-size:12.5px;line-height:1.6;color:var(--ink-62)}
+/* 문제 */
+.problem-head{text-align:center;max-width:72ch;margin:0 auto 44px}
+.claim{font-size:clamp(22px,2.8vw,30px);font-weight:700;letter-spacing:-.03em;line-height:1.48}
+.claim em{font-style:normal;color:var(--accent)}
+.qb-stat{display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;padding-bottom:26px;border-bottom:1px solid var(--line)}
+.qb-stat .n{font-size:clamp(38px,5vw,52px);font-weight:700;letter-spacing:-.045em;color:var(--ink);line-height:1}
+.qb-stat .l{font-size:16px;color:var(--ink-2)}
+.qb-quote{margin-top:34px;display:grid;grid-template-columns:56px 1fr;gap:6px}
+.qb-quote .mark{font-size:56px;font-weight:700;color:#C7D5F5;line-height:.9;letter-spacing:-.04em}
+.qb-quote p{font-size:clamp(21px,2.9vw,30px);font-weight:700;letter-spacing:-.03em;line-height:1.5}
+.qb-quote em{font-style:normal;color:var(--accent)}
+.qb-src{margin-top:26px;padding-left:62px;font-size:13px;color:var(--ink-3);line-height:1.7}
+.nums{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.nm{background:var(--white);border:1px solid var(--line);border-radius:var(--r-card);padding:30px 26px}
+.nm .n{font-size:clamp(32px,4.2vw,42px);font-weight:700;letter-spacing:-.04em;color:var(--accent);line-height:1.05}
+.nm .t{margin-top:16px;font-size:16px;font-weight:700;color:var(--ink);line-height:1.6}
+.nm .desc{margin-top:8px;font-size:14.5px;color:var(--ink-2);line-height:1.68}
+.nm .s{margin-top:16px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:12.5px;color:var(--ink-3);line-height:1.55}
 
-/* mock */
-.mk{background:#fff;border-radius:6px;padding:22px 24px}
-.mk-head{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding-bottom:18px;border-bottom:1px solid var(--line)}
-.mk-title{font-size:19px;font-weight:700;letter-spacing:-.025em;line-height:1.35}
-.mk-meta{margin-top:4px;font-size:13.5px;color:var(--ink-62)}
-.mk-date{flex:none;font-size:12.5px;color:var(--ink-62);white-space:nowrap}
-.mk-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px;align-items:stretch}
-.mk-box{border:1px solid var(--line);border-radius:8px;padding:18px 20px;display:flex;flex-direction:column}
-.mk-lab{font-size:13.5px;color:var(--ink-64)}
-.mk-amt{margin-top:6px;font-size:clamp(28px,3.6vw,34px);font-weight:700;letter-spacing:-.03em;line-height:1.15;color:var(--accent)}
-.mk-amt span{font-size:.5em;font-weight:600;color:var(--ink-64);margin-left:3px}
-.mk-3{display:flex;flex-wrap:wrap;gap:22px;margin-top:auto;padding-top:16px}
-.mk-3 span{display:block;font-size:12.5px;color:var(--ink-62)}
-.mk-3 b{display:block;margin-top:3px;font-size:14.5px;font-weight:600}
-.mk-h{font-size:16px;font-weight:700;letter-spacing:-.02em}
-.mk-boxhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
-.mk-go{flex:none;font-size:13px;font-weight:600;color:var(--accent)}
-.mk-todo{display:grid;grid-template-columns:22px 1fr;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
-.mk-todo:first-of-type{margin-top:10px}
-.mk-todo i{font-style:normal;display:flex;align-items:center;justify-content:center;width:22px;height:22px;margin-top:2px;border:1px solid var(--line);border-radius:999px;font-size:11.5px;font-weight:600;color:var(--ink-62)}
-.mk-todo b{display:block;font-size:14.5px;font-weight:600;line-height:1.5}
-.mk-todo span{display:block;margin-top:1px;font-size:12.5px;line-height:1.55;color:var(--ink-62)}
-.mk-stage{margin-top:16px;border:1px solid var(--line);border-radius:8px;padding:18px 20px}
-.mk-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px}
-.mk-step{padding-top:12px;border-top:2px solid var(--ink)}
-.mk-step.rest{border-top-color:var(--line)}
-.mk-step b{display:block;font-size:13.5px;font-weight:600}
-.mk-step span{display:inline-flex;align-items:center;margin-top:7px;padding:4px 10px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-size:12px;font-weight:600;line-height:1.5;color:var(--ink-62)}
-@media(max-width:768px){
-  .mk{padding:18px}
-  .mk-head{flex-direction:column;align-items:flex-start;gap:6px}
-  .mk-grid{grid-template-columns:1fr}
-  .mk-steps{grid-template-columns:repeat(2,1fr);gap:14px 10px}
+/* 3단계 */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.sp{border:1px solid var(--line);border-radius:var(--r-card);padding:30px 24px;display:flex;flex-direction:column;background:var(--white)}
+.sp.mid{border:2px solid var(--accent);box-shadow:0 12px 28px -6px rgba(29,78,216,.12)}
+.sp .no{font-size:13px;font-weight:700;color:var(--ink-3);letter-spacing:.02em}
+.sp.mid .no{color:var(--accent)}
+.sp h3{margin-top:12px;font-size:20px;font-weight:700;letter-spacing:-.02em}
+.sp .p{margin-top:10px;font-size:15px;color:var(--ink-2);line-height:1.68;min-height:76px}
+.sp .outs{margin-top:14px;list-style:none;flex:1}
+.sp .outs li{font-size:14px;color:var(--ink-2);padding:10px 0;border-top:1px solid var(--line-soft);
+  display:flex;align-items:flex-start;gap:8px;line-height:1.55}
+.sp .outs li::before{content:"✓";color:var(--accent);font-weight:700;font-size:13px;line-height:1.6}
+.sp .tag{margin-top:20px;font-size:13.5px;font-weight:700;color:var(--ink-3)}
+.sp.mid .tag{color:var(--accent)}
+.sp .go{margin-top:16px}
+.sp .go a{width:100%}
+
+/* 데모 */
+.demo{margin-top:88px;scroll-margin-top:88px;background:var(--surface);
+  border:1px solid var(--line-soft);border-radius:var(--r-card);padding:36px}
+.demohead{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.demolabel{font-size:14.5px;font-weight:700;color:var(--accent)}
+.demohead .hint{font-size:13px;color:var(--ink-3)}
+.dgrid{display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:start}
+.dcard{border:1px solid var(--line);border-radius:var(--r-card);padding:28px 24px;background:var(--white)}
+.dcard .sc{font-size:60px;font-weight:700;letter-spacing:-.045em;line-height:1;color:var(--ink)}
+.dcard .pts{margin-top:6px;font-size:14px;color:var(--ink-3)}
+.dcard .gn{margin-top:20px;padding-top:18px;border-top:1px solid var(--line-soft);font-size:16px;font-weight:700;line-height:1.5}
+.dcard .gd{margin-top:8px;font-size:14px;color:var(--ink-2);line-height:1.65}
+.dtab{border:1px solid var(--line);border-radius:var(--r-card);overflow:hidden;background:var(--white)}
+.dh,.dr{display:grid;grid-template-columns:88px 116px 1fr;gap:16px;align-items:start}
+.dh{padding:14px 20px;border-bottom:1px solid var(--line);font-size:13px;color:var(--ink-3);font-weight:700;background:var(--white);align-items:center}
+.dr{padding:16px 20px;border-bottom:1px solid var(--line-soft);font-size:14.5px}
+.dr:last-child{border-bottom:0}
+.dr .v{font-size:16.5px;font-weight:700;letter-spacing:-.02em}
+.dr .v small{font-size:12.5px;color:var(--ink-3)}
+.dr .bar{margin-top:6px;height:4px;background:var(--line-soft);border-radius:2px;overflow:hidden}
+.dr .bar i{display:block;height:100%;border-radius:2px}
+.dr .nm2{font-weight:700;font-size:15px}
+.dr .nm2 span{display:block;margin-top:2px;font-size:12.5px;font-weight:400;color:var(--ink-3)}
+.dr .rs{font-size:14px;color:var(--ink-2);line-height:1.6}
+.dr .rs span{display:block;margin-top:5px;font-size:12.5px;color:var(--ink-3);line-height:1.55}
+.hi{color:var(--accent)} .mi{color:var(--ink-2)} .lo{color:var(--danger)}
+.bg-hi{background:var(--accent)} .bg-mi{background:var(--ink-3)} .bg-lo{background:var(--danger)}
+.demofoot{margin-top:20px;padding:22px;background:var(--white);border:1px solid var(--line);
+  border-radius:var(--r-card);display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.demofoot p{font-size:13px;color:var(--ink-2);line-height:1.7}
+.demofoot p b{display:block;color:var(--ink);font-weight:700;margin-bottom:4px}
+
+/* 대상 */
+.who{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.who-card{border:1px solid var(--line);border-radius:var(--r-card);padding:30px 26px;background:var(--white)}
+.who-card.fit{border-color:var(--accent)}
+.who-badge{display:inline-block;font-size:13.5px;font-weight:700;padding:5px 12px;border-radius:var(--r-control);margin-bottom:18px}
+.who-badge.yes{background:var(--accent-soft);color:var(--accent)}
+.who-badge.no{background:var(--line-soft);color:var(--ink-2)}
+.who-list{list-style:none}
+.who-list li{font-size:15px;color:var(--ink-2);line-height:1.68;margin-bottom:14px;display:flex;align-items:flex-start;gap:10px}
+.who-list li:last-child{margin-bottom:0}
+.who-list .ico{font-weight:700;font-size:15px;line-height:1.6;flex:none}
+.who-list .ico.yes{color:var(--accent)}
+.who-list .ico.no{color:var(--ink-3)}
+
+/* FAQ */
+.faq{border-top:1px solid var(--line)}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{padding:20px 0;font-size:16.5px;font-weight:700;letter-spacing:-.02em;cursor:pointer;
+  list-style:none;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--ink-3);font-weight:700;font-size:18px;line-height:1}
+.faq details[open] summary::after{content:"–"}
+.faq .a{padding:0 0 22px;font-size:15.5px;color:var(--ink-2);line-height:1.78;max-width:68ch}
+/* ⚠️ 답변이 여러 문단이라 문단 사이 간격이 필요합니다 [2026-09-01 원고 교체].
+   전역 *{margin:0} 때문에 <p> 가 붙어 한 덩어리로 읽힙니다. 이 한 줄이 없으면
+   나눠 주신 문단 구분이 화면에서 사라집니다. 다른 스타일은 손대지 않았습니다. */
+.faq .a p+p{margin-top:12px}
+
+.fin{text-align:center;padding:100px 0}
+.fin h2.sec{margin:0 auto 12px}
+
+footer{background:var(--ink);color:#CBD5E1;padding:48px 0 54px;font-size:13.5px;line-height:1.82}
+footer .nd{max-width:68ch;margin-bottom:24px;color:#94A3B8}
+footer .nd b{display:block;color:#F1F5F9;font-size:14px;font-weight:700;margin-bottom:6px}
+footer a{color:#CBD5E1}
+footer .fl{margin-top:16px;display:flex;gap:20px;flex-wrap:wrap;color:#94A3B8}
+footer .cp{margin-top:18px;color:#64748B}
+
+@media(max-width:860px){
+  .pc-br{display:none}
+  section{padding:68px 0}
+  .hero{padding:68px 0 60px}
+  .fin{padding:72px 0}
+  .w{padding:0 20px}
+  .nums{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr}
+  .sp .p{min-height:0}
+  .who{grid-template-columns:1fr}
+  .dgrid{grid-template-columns:1fr}
+  .demofoot{grid-template-columns:1fr;gap:18px}
+  .dh{display:none}
+  .dr{grid-template-columns:1fr;gap:10px;padding:20px 18px;border-bottom:1px solid var(--line)}
+  .dr:last-child{border-bottom:0}
+  .qb-quote{grid-template-columns:34px 1fr}
+  .qb-quote .mark{font-size:38px}
+  .qb-src{padding-left:0}
+  .demo{margin-top:56px;padding:20px}
 }
-
-/* who */
-.who-grid{display:grid;grid-template-columns:minmax(190px,1fr) 2fr;gap:44px;align-items:start}
-.who-list p{padding:15px 0;border-top:1px solid var(--line);font-size:16.5px;line-height:1.7;color:var(--ink-64)}
-.who-list p:last-child{border-bottom:1px solid var(--line)}
-.who-list b{font-weight:600;color:var(--ink)}
-@media(max-width:768px){.who-grid{grid-template-columns:1fr;gap:24px}}
-
-/* ext */
-.ext .item{margin-top:32px;padding-top:24px;border-top:1px solid var(--line)}
-.ext .item .t{max-width:28em;font-size:19.5px;font-weight:600;line-height:1.5;letter-spacing:-.02em}
-.ext .item .d{margin-top:10px;max-width:38em;font-size:16px;line-height:1.7;color:var(--ink-64)}
-
-/* notice + footer */
-.notice{background:var(--surface-dark);color:var(--d-ink-secondary);padding-block:clamp(48px,6vw,72px) clamp(40px,5vw,64px)}
-.close-cta{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;padding-bottom:clamp(34px,4vw,48px);margin-bottom:clamp(30px,4vw,44px);border-bottom:1px solid var(--d-line)}
-.cc-t{max-width:16em;font-size:clamp(22px,2.8vw,30px);font-weight:700;line-height:1.35;letter-spacing:-.03em;color:var(--d-ink-primary)}
-.notice p{max-width:60em;font-size:14px;line-height:1.8}
-.notice p + p{margin-top:14px;color:var(--d-ink-tertiary)}
-.footer{background:var(--surface-dark);color:var(--d-ink-tertiary);padding-block:0 clamp(40px,5vw,56px);font-size:14px}
-.footer .inner{padding-top:26px;border-top:1px solid var(--d-line)}
-.f1{display:flex;flex-wrap:wrap;gap:8px 24px;color:var(--d-ink-secondary)}
-.footer a{color:var(--d-ink-secondary);text-decoration:underline}
-.footer a:hover{color:var(--d-ink-primary)}
-.f2{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:12px}
-.copy{margin-top:16px}
-@media(prefers-reduced-motion:reduce){*{transition:none!important}html{scroll-behavior:auto}}
-</style>
-</head>
-<body>
+</style></head><body>
 
 <a class="skip" href="#main">Skip to content</a>
 
-<nav class="nav">
-  <div class="container">
-    <a class="logo" href="/"><i></i>TROPS</a>
-    <!-- 🔴 **기존 고객 자리** 〔2026-09-05 · 대표 지시〕 — 네 장의 헤더가 같은 진입로를 갖습니다.
-         ⚠️ **라벨만 영어입니다** — 이 장은 영문 랜딩입니다. 국문 세 장은 「로그인」입니다.
-         ⚠️ 조용한 링크입니다 — 버튼으로 만들지 마십시오. -->
-    <div class="nav-right"><a class="nav-login" href="https://app.trops.kr/login" data-track="nav-login">Log in</a></div>
+<nav data-section="nav"><div class="w">
+  <a class="logo" href="/en"><i></i>TROPS</a>
+  <!-- 🔴 **기존 고객 자리** 〔2026-09-05 · 대표 지시〕 — 조용한 링크입니다. 버튼으로 만들지 마십시오. -->
+  <div class="nav-right">
+    <a class="nav-login" href="https://app.trops.kr/login" data-track="nav-login">Log in</a>
+    <a class="btn-2 btn-s" href="https://app.trops.kr/export-precheck/new" data-track="nav-precheck">Free 1-minute check</a>
   </div>
-</nav>
+</div></nav>
 
 <main id="main">
-<section class="hero">
-  <div class="container">
-    <h1>A one-minute check of the<br>export steps your product needs</h1>
-    <p class="hero-lead">From buyer verification and contracts to payment terms, trade insurance, customs and shipping, we walk <b>the required steps in order</b><br> and lay out what to check now and what comes next.</p>
-    <div class="cta"><a class="btn btn-primary btn-full" href="https://app.trops.kr/export-precheck/new">Run a one-minute check</a></div>
-    <p class="fine">You can start before the export contract is signed</p>
-  </div>
-</section>
 
-<section class="sec-surface stat-sec">
-  <div class="container">
-    <div class="stat">
-      <p class="stat-n">77%</p>
-      <p class="stat-t">Share of document and customs enquiries that ask about “export procedure”</p>
+<header class="hero" data-section="hero"><div class="w">
+  <span class="eyebrow">Export operations software for small and midsize businesses</span>
+  <h1>Protect your export receivables<br>with TROPS.</h1>
+  <p class="lead">For companies that run every export themselves, from contract to collection, without a dedicated export team. We manage the risks that matter, one deal at a time.</p>
+  <div class="act">
+    <a class="btn" href="https://app.trops.kr/export-precheck/new" data-track="hero-precheck">Start your free 1-minute check</a>
+    <a class="btn-2" href="mailto:contact@theo-ne.com?subject=TROPS%20inquiry" data-track="hero-consult">Talk to us</a>
+  </div>
+  <p class="badge">Free · 1 minute · No sign-up required</p>
+</div></header>
+
+<section data-section="problem"><div class="w">
+  <div class="problem-head">
+    <p class="claim">Get the right documents in order before you ship, <br class="pc-br"><em>and you can act fast if a buyer doesn’t pay.</em></p>
+  </div>
+  <div class="nums">
+    <div class="nm">
+      <div class="n">KRW 1.46 trillion</div>
+      <div class="t">in unrecovered export receivables (as of December 2025)</div>
+      <div class="desc">Only 1.9% of those receivables have a better-than-even chance of being collected. <br class="pc-br">Once a payment goes bad, the money rarely comes back.</div>
     </div>
-    <blockquote class="stat-quote">
-      <p>In exporting, what matters is not more information<br> but knowing the <em>“steps and sequence”</em> your product requires.</p>
-      <p class="stat-src">Analysis of 500 advisory cases published by the Business Support Group, Ministry of SMEs and Startups<br> 158 of 206 document and customs cases were questions about export procedure</p>
-    </blockquote>
-  </div>
-</section>
-
-<section>
-  <div class="container">
-    <h2>How the one-minute check works</h2>
-
-    <div class="steps body-w">
-      <div class="st">
-        <div class="n">01</div>
-        <div>
-          <p class="t">Enter what you already know</p>
-          <!-- ⚠️ em dash(—) 를 쓰지 않습니다 〔2026-08-17 대표 지시〕 — 국문에만 허용됩니다.
-                 문장 안 삽입은 마침표로 끊거나 쉼표로 잇습니다. 2026-08-29 교체가 이 자리에
-                 다시 들여왔고 검사가 죽어 있어 못 잡았습니다. -->
-          <p class="d">Product, destination, buyer, payment terms: whatever you have at hand. A signed contract is not required.</p>
-        </div>
-      </div>
-      <div class="st">
-        <div class="n">02</div>
-        <div>
-          <p class="t">We check the export steps for your product and terms</p>
-          <p class="d">From buyer verification through contracts, payment, trade insurance, customs and shipping, in the order they arise.</p>
-        </div>
-      </div>
-      <div class="st">
-        <div class="n">03</div>
-        <div>
-          <p class="t">We lay out what to prepare</p>
-          <p class="d">Documents to prepare, trade insurance points to review, government support programmes you may qualify for, and what to do next.</p>
-        </div>
-      </div>
+    <div class="nm">
+      <div class="n">44%</div>
+      <div class="t">of short-term export insurance loss notices were sent back over the past two years</div>
+      <div class="desc">Even with a policy in place and the notice filed, <br class="pc-br">gaps in procedure or paperwork can leave you without coverage.</div>
     </div>
   </div>
-</section>
+</div></section>
 
-<section class="report">
-  <div class="container">
-    <h2>Your export pre-check result</h2>
-    <p class="sub">Once the check is done, you can see at a glance what needs verifying<br> and what needs preparing for this export.</p>
+<section class="band" data-section="voice"><div class="w">
+  <div class="qb-stat">
+    <span class="n">77%</span>
+    <span class="l">of document and customs inquiries were about “export procedures”</span>
+  </div>
+  <blockquote class="qb-quote">
+    <span class="mark">“</span>
+    <p>What if we ship and the buyer never pays? <br class="pc-br">What exporters struggle with most is <em>the export process itself.</em></p>
+  </blockquote>
+  <p class="qb-src">Our analysis of 500 featured advisory cases from the Business Support Group, Ministry of SMEs and Startups. <br class="pc-br">Of 206 cases involving documents or customs, 158 were questions about export procedures.</p>
+</div></section>
 
-    <figure class="shot">
-      <div class="mk" aria-label="수출 사전점검 결과 예시 화면">
-        <div class="mk-head">
-          <div>
-            <p class="mk-title">Electric vehicles to the US · Shipment 1</p>
-            <p class="mk-meta">United States · Electric vehicles</p>
-          </div>
-          <p class="mk-date">Checked 2026-08-28</p>
-        </div>
+<section data-section="steps"><div class="w">
+  <div class="center">
+    <h2 class="sec">TROPS manages each export deal in three stages</h2>
+  </div>
+  <div class="steps">
+    <div class="sp">
+      <div class="no">Stage 1 · Before shipment</div>
+      <h3>Export Pre-Check Report</h3>
+      <div class="p">Shows what to check first on this export.</div>
+      <ul class="outs">
+        <li>Export readiness score, with an explanation</li>
+        <li>What to address first</li>
+        <li>Readiness checklist</li>
+      </ul>
+      <div class="tag">Free · No account needed</div>
+      <div class="go"><a class="btn-2" href="https://app.trops.kr/export-precheck/new" data-track="step1-precheck">Start your pre-check</a></div>
+    </div>
+    <div class="sp mid">
+      <div class="no">Stage 2 · Contract and shipment</div>
+      <h3>Trade Insurance Prep Package</h3>
+      <div class="p">We line up the application steps and paperwork for your trade insurance.</div>
+      <ul class="outs">
+        <li>List of documents needed to apply</li>
+        <li>One-page summary for internal approval and reporting</li>
+        <li>Review of national and local premium subsidy programs</li>
+      </ul>
+      <div class="tag">Paid</div>
+      <!-- 🔴 `?from=landing` 은 도메인을 넘는 유일한 출처 단서입니다 — index.html 의 같은 자리 주석을 보십시오.
+           ⚠️ 국문과 **같은 값**입니다. 영문을 따로 세려면 앱이 새 값을 받는지 먼저 확인하십시오. -->
+      <div class="go"><a class="btn" href="https://app.trops.kr/insurance/quick?from=landing" data-track="step2-quote">Learn more</a></div>
+    </div>
+    <div class="sp">
+      <div class="no">Stage 3 · After shipment</div>
+      <h3>Export Receivables Management</h3>
+      <div class="p">Tracks payment due dates, loss-notice deadlines and policy expiration dates.</div>
+      <ul class="outs">
+        <li>Payment due date and notice deadline alerts</li>
+        <li>Outstanding receivables and insurance coverage at a glance</li>
+        <li>Policy expiration tracking</li>
+      </ul>
+      <div class="tag">Coming soon</div>
+      <div class="go"><a class="btn-2" href="mailto:contact@theo-ne.com?subject=Notify%20me%20when%20TROPS%20receivables%20management%20launches" data-track="step3-notify">Get notified at launch</a></div>
+    </div>
+  </div>
 
-        <div class="mk-grid">
-          <div class="mk-box">
-            <p class="mk-lab">Amount due after shipment and delivery</p>
-            <p class="mk-amt">72,400 <span>USD</span></p>
-            <div class="mk-3">
-              <div><span>Contract amount</span><b>100,000 USD</b></div>
-              <div><span>Advance payment</span><b>27,600 USD</b></div>
-              <div><span>Expected receipt</span><b>2026-10-13</b></div>
-            </div>
-          </div>
-
-          <div class="mk-box">
-            <div class="mk-boxhead">
-              <p class="mk-h">First things to do · 2</p>
-              <span class="mk-go">Go to check →</span>
-            </div>
-            <div class="mk-todo"><i>1</i><div><b>Confirm trade insurance</b><span>There is an amount due after shipment and delivery</span></div></div>
-            <div class="mk-todo"><i>2</i><div><b>Confirm HS classification</b><span>Current code 8703.10 · 1 candidate to review</span></div></div>
-          </div>
-        </div>
-
-        <div class="mk-stage">
-          <p class="mk-h">Export pre-check</p>
-          <div class="mk-steps">
-            <div class="mk-step"><b>Buyer</b><span>6 of 8 checked</span></div>
-            <div class="mk-step"><b>Contract</b><span>4 of 5 present</span></div>
-            <div class="mk-step rest"><b>Payment</b><span>Needs review</span></div>
-            <div class="mk-step"><b>Customs</b><span>5 of 6 checked</span></div>
-            <div class="mk-step rest"><b>Shipping</b><span>Needs review</span></div>
-          </div>
-        </div>
-
+  <div class="demo" id="demo" data-section="demo">
+    <div class="demohead">
+      <div class="demolabel">Export Pre-Check Report (sample)</div>
+    </div>
+    <div class="dgrid">
+      <div class="dcard">
+        <div class="sc">55</div>
+        <div class="pts">out of 100</div>
       </div>
-    </figure>
-    <p class="cap">Example result screen · demo data</p>
-  </div>
-</section>
-
-<section class="sec-surface who">
-  <div class="container">
-    <div class="who-grid">
-      <h2>Who this is for</h2>
-      <div class="who-list">
-        <p>Companies <b>exporting for the first time</b>, or preparing for a new destination market</p>
-        <p>Companies with <b>no dedicated export staff or department</b></p>
-        <p>Companies losing time checking and tracking everything <b>by search, phone calls and spreadsheets</b></p>
+      <div class="dtab">
+        <div class="dh"><div>Score</div><div>Factor</div><div>Why</div></div>
+        <div class="dr">
+          <div><div class="v mi">11<small>/20</small></div><div class="bar"><i class="bg-mi" style="width:55%"></i></div></div>
+          <div class="nm2">Destination<span>United Arab Emirates</span></div>
+          <div class="rs">The country sits in a higher-risk region.</div>
+        </div>
+        <div class="dr">
+          <div><div class="v mi">6<small>/15</small></div><div class="bar"><i class="bg-mi" style="width:40%"></i></div></div>
+          <div class="nm2">Buyer history</div>
+          <div class="rs">Not enough verifiable trading history.</div>
+        </div>
+        <div class="dr">
+          <div><div class="v hi">25<small>/30</small></div><div class="bar"><i class="bg-hi" style="width:83%"></i></div></div>
+          <div class="nm2">Payment method</div>
+          <div class="rs">A relatively secure way to get paid.</div>
+        </div>
+        <div class="dr">
+          <div><div class="v mi">8<small>/20</small></div><div class="bar"><i class="bg-mi" style="width:40%"></i></div></div>
+          <div class="nm2">Payment terms</div>
+          <div class="rs">The collection period runs long.</div>
+        </div>
+        <div class="dr">
+          <div><div class="v lo">5<small>/15</small></div><div class="bar"><i class="bg-lo" style="width:33%"></i></div></div>
+          <div class="nm2">Trade insurance</div>
+          <div class="rs">Needs to be set up before shipment.</div>
+        </div>
       </div>
     </div>
   </div>
-</section>
+</div></section>
 
-<section class="ext" id="contact">
-  <div class="container">
-    <h2>Keep managing the work<br> after the check</h2>
-
-    <div class="item">
-      <p class="t">We organise the documents and information your export steps call for</p>
-      <p class="d">Prepare what a customs broker or forwarder will ask for in advance,<br> so you spend less time repeating explanations and chasing document requests.</p>
-    </div>
-
-    <div class="item">
-      <p class="t">You can also keep track of contracts, receivables and insurance schedules for existing exports</p>
-      <p class="d">Payment terms, outstanding amounts, due dates and trade insurance schedules<br> for contracts already in progress.</p>
-    </div>
-
-    <div class="cta"><a class="btn btn-secondary btn-full" href="mailto:contact@theo-ne.com?subject=TROPS%20enquiry">Ask about export management</a></div>
+<section class="band" data-section="fit"><div class="w">
+  <div class="center">
+    <h2 class="sec">Who it’s for</h2>
+    <p class="sec-sub">See whether TROPS is the right fit for your company</p>
   </div>
-</section>
+  <div class="who">
+    <div class="who-card fit">
+      <span class="who-badge yes">A good fit</span>
+      <ul class="who-list">
+        <li><span class="ico yes">✓</span> Companies in the early or growth stage of exporting</li>
+        <li><span class="ico yes">✓</span> One or two people handle all the export work</li>
+        <li><span class="ico yes">✓</span> Selling on credit terms to new buyers or in new markets</li>
+      </ul>
+    </div>
+    <div class="who-card">
+      <span class="who-badge no">Not the right fit yet</span>
+      <ul class="who-list">
+        <li><span class="ico no">✕</span> You have a dedicated export team and a trade insurance specialist</li>
+        <li><span class="ico no">✕</span> Your ERP already tracks export receivables and deadlines</li>
+        <li><span class="ico no">✕</span> You’re only looking for a consultation</li>
+      </ul>
+    </div>
+  </div>
+</div></section>
+
+<section data-section="faq"><div class="w">
+  <div class="center">
+    <h2 class="sec">Frequently asked questions</h2>
+    <p class="sec-sub">Common questions about the export pre-check, trade insurance prep, and the deadlines that follow shipment</p>
+  </div>
+  <!-- 🔴 아래 문항은 <head> JSON-LD `FAQPage` 에 **같은 순서·같은 글자**로 있어야 합니다 —
+       test/faq-structured-data.test.js 가 국문·영문 두 장을 잽니다.
+       ⚠️ 근거 주석(약관 조항 · 보험료 지원 게시판 · 되살리지 말 것)은 index.html 의 같은 문항에
+          있습니다. 영문은 그 문장을 옮긴 것이라 **더 세게 말하지 않습니다**
+          (「as a rule」·「unless」를 빼면 약관보다 센 말이 됩니다). -->
+  <div class="faq">
+    <details><summary>What is trade insurance?</summary>
+      <div class="a"><p>Trade insurance protects exporters against risks such as not getting paid on an overseas sale.</p><p>Short-term Export Insurance (post-shipment) from the Korea Trade Insurance Corporation (K-SURE) covers the loss when, after goods ship under an export contract with payment terms of two years or less, the exporter can’t collect payment from the buyer, or from the issuing bank in a letter of credit (L/C) transaction.</p><p>It covers commercial risks, such as a buyer’s insolvency or payment default, and political risks that can arise in cross-border trade, such as war or restrictions on remittances.</p></div>
+    </details>
+    <details><summary>What percentage of a loss does trade insurance cover?</summary>
+      <div class="a"><p>Under K-SURE Short-term Export Insurance (post-shipment), the coverage ratio for standard exports and consignment processing trade is 100% for small and midsize companies, 97.5% for mid-market companies, and 95% for large companies.</p><p>The ratio that actually applies can vary with K-SURE’s country underwriting policy and the terms set out in your policy. And a 100% coverage ratio doesn’t mean every unpaid amount is always paid in full. The actual claim payment reflects the amount of the loss, any excluded losses, and amounts received under other insurance or financing arrangements.</p><p>To know what’s actually covered on a given deal, check your policy and its terms and conditions.</p></div>
+    </details>
+    <details><summary>What documents do I need to file a trade insurance claim?</summary>
+      <div class="a"><p>Short-term Export Insurance calls for different documents and procedures at each stage, from taking out a policy to filing a claim.</p><p>When you apply, you go through a credit investigation of the buyer, a request for a coverage limit, and issuance of the policy. After shipment, you have to file an export notice within the required deadline. If the buyer doesn’t pay, you file a notice of loss and then submit your claim along with the supporting documents K-SURE requires.</p><p>The exact documents can vary by type of coverage, deal structure and the nature of the loss, so check your policy terms and K-SURE’s guidance on loss notices and claims.</p><p>The TROPS Trade Insurance Prep Package organizes the steps and documents you need to apply for trade insurance, deal by deal.</p></div>
+    </details>
+    <details><summary>When is the deadline to file a notice of loss under Short-term Export Insurance?</summary>
+      <div class="a"><p>Under K-SURE Short-term Export Insurance (post-shipment), if payment isn’t received, you generally have to notify K-SURE of the loss in writing within one month of the payment due date. If you learn before the due date that something has happened that could lead to a loss, you also need to give notice within the required period.</p><p>The export notice deadline after shipment matters too. Under an individual policy, you have to file the export notice within 10 business days of the export date; blanket policies use a different notice method and deadline. If you miss the deadline, as a rule that shipment isn’t covered, unless there is good cause for the delay.</p><p>Procedures can vary by product and contract terms, so on an actual deal, check your policy terms and K-SURE’s guidance.</p></div>
+    </details>
+    <details><summary>Where can I find export insurance premium subsidy programs?</summary>
+      <div class="a"><p>K-SURE publishes information on trade insurance and guarantee fee subsidy programs run with local governments, related agencies and banks. Some are group policies in which the local government is the policyholder; in others, a company takes out an individual policy and receives a premium subsidy.</p><p>Eligible regions, eligible companies, covered insurance types and subsidy amounts vary by program, and a program may close once its budget runs out. It’s best to check K-SURE’s premium subsidy page for programs currently open and their terms.</p><p>TROPS also points you to the subsidy announcements and application channels for where your company is based.</p></div>
+    </details>
+    <details><summary>Is the TROPS export pre-check free?</summary>
+      <div class="a"><p>Yes. With no sign-up and just a few quick selections, you can see what to check first on this export.</p><p>Based on what you enter, we show your results along with the basis for each item.</p><p>If you’re preparing to apply for trade insurance, the separate Trade Insurance Prep Package is available. It works on a per-deal basis.</p></div>
+    </details>
+    <details><summary>What is TROPS?</summary>
+      <div class="a"><p>TROPS is software that supports export operations for small and midsize businesses. It handles each export deal in three stages.</p><p>Before shipment, the export pre-check shows what to verify first on the deal. At the contract and shipment stage, the Trade Insurance Prep Package organizes the steps and documents needed to apply, deal by deal. Post-shipment receivables management is in development.</p><p>It’s built for companies that handle everything from contract to collection themselves, without a dedicated department.</p></div>
+    </details>
+    <details><summary>Does TROPS apply for trade insurance on my behalf?</summary>
+      <div class="a"><p>No. TROPS doesn’t underwrite insurance, review claims or apply for coverage on your behalf, and it doesn’t recommend specific products. Eligibility and terms are decided by the relevant institution, such as K-SURE, under its policy terms and review criteria.</p><p>What TROPS does is get you ready to apply. For each deal, we check the eligibility requirements and prepare your deal information in application-ready form, a list of the documents a claim requires, and materials for internal approval.</p><p>We also don’t provide legal advice or legal review of contracts, and we don’t guarantee that receivables will be collected.</p></div>
+    </details>
+    <details><summary>How much does the Trade Insurance Prep Package cost?</summary>
+      <div class="a"><p>Pricing depends on how many documents we prepare, so there’s no fixed price up front. It’s priced per deal.</p><p>Send us a request and we’ll quote the price and turnaround time within one business day. You pay once you’ve reviewed them.</p><p>The export pre-check is free either way.</p></div>
+    </details>
+  </div>
+</div></section>
+
+<section class="fin band" data-section="final"><div class="w">
+  <h2 class="sec">Export with confidence. Start with TROPS.</h2>
+  <div style="margin-top:32px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+    <a class="btn" href="https://app.trops.kr/export-precheck/new" data-track="final-precheck">Start your free 1-minute check</a>
+    <a class="btn-2" href="mailto:contact@theo-ne.com?subject=TROPS%20inquiry" data-track="final-consult">Talk to us</a>
+  </div>
+</div></section>
+
 </main>
 
-<div class="notice">
-  <div class="container">
-    <div class="close-cta">
-      <p class="cc-t">Check your export steps now</p>
-      <a class="btn btn-light btn-full" href="https://app.trops.kr/export-precheck/new">Run a one-minute check</a>
-    </div>
-    <p>TROPS is a service that helps small and medium-sized exporters organise the steps and tasks an export requires, and manage schedules relating to export contracts, receivables and trade insurance.</p>
-    <p>TROPS does not provide legal advice or legal review of contracts under the Attorney-at-Law Act or the Foreign Legal Consultant Act, and does not underwrite insurance or adjudicate insurance claims. Information on eligibility, coverage and premiums is provided for reference only; approval and specific terms are determined by the relevant institution under its policy terms and review criteria.</p>
-  </div>
-</div>
-
-<footer class="footer">
-  <div class="container">
-    <div class="inner">
-      <!-- 🔴 **상호가 «이미 갈려 있었습니다**〔2026-08-30 복구〕. 이 자리에 손으로 적힌
-           「Theo-ne Inc.」 는 단일 출처(site.config.json `biz.en.companyName`)의
-           「THÉONÉ Co., Ltd.」 와 다른 이름입니다 — 등록된 영문 상호가 아닙니다.
-           단일소스 검사(test/site-config.test.js)가 정확히 이것을 막는 검사인데
-           2026-08-29 랜딩 교체가 그 검사를 red 로 둔 채 값을 박아 넣었습니다.
-           ⛔ 여기에 값을 다시 적지 마십시오 — 토큰만 씁니다. -->
-      <div class="f1">
-        <span>{{biz.companyName}} · CEO {{biz.ceo}} · {{biz.registrationNo}}</span>
-        <span>{{biz.address}}</span>
-        <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>
-      </div>
-      <div class="f2">
-        <!-- 🔴 **영문 페이지가 «국문» 정책 페이지로 가고 있었습니다** 〔2026-08-30 복구〕.
-             2026-08-29 교체가 `/privacy.html`·`/refund.html` 로 박아 두어, 영문 방문자가
-             푸터에서 국문 문서로 떨어졌습니다. `en-privacy`·`en-refund` 는 배포되고 있는데
-             **유입 링크가 0건**이었습니다(실측).
-             🔴 언어 전환 링크에는 `hreflang="ko"` 를 답니다 — 「이것은 이 페이지의 국문판」
-                이라는 선언이며, 검사가 **그 선언으로** 의도된 교차 링크를 가립니다
-                (⛔ 클래스로 가리면 그 클래스를 입은 아무 링크나 빠져나갑니다). -->
-        <!-- 🔴 라벨은 그 문서가 스스로 부르는 이름입니다 〔2026-09-05 · 대표 결정〕 —
-             en-privacy.html 의 <title> 은 「Privacy Notice (draft)」, en-refund.html 은
-             「Refund Policy」 입니다. 국문 「환불규정」을 맞춘 것과 같은 축입니다.
-             ⚠️ 여기는 「Privacy policy」·「Refund policy」였습니다 — 이름이 다르고
-                (Notice ≠ policy) 대소문자도 en-privacy.html 푸터와 갈렸습니다.
-             ⛔ 소문자 policy 로 되돌리지 마십시오 — test/page-essentials.test.js 가
-                국·영문 둘 다 잽니다. -->
-        <a href="/en-privacy">Privacy Notice</a>
-        <a href="/en-refund">Refund Policy</a>
-        <a href="/" hreflang="ko" lang="ko">한국어</a>
-      </div>
-      <p class="copy">© 2026 TROPS. All rights reserved.</p>
-    </div>
-  </div>
-</footer>
-
-</body>
-</html>
+<footer data-section="footer"><div class="w">
+<div class="nd"><b>What TROPS doesn’t do</b>We don’t provide legal advice or legal review of contracts (under Korea’s Attorney-at-Law Act and Foreign Legal Consultant Act). We don’t underwrite insurance, review claims, apply for coverage on your behalf or recommend specific products; eligibility and terms are decided by the relevant institution under its policy terms and review criteria. We don’t guarantee that receivables will be collected.</div>
+<!-- 🔴 사업자정보는 site.config.json 이 원본입니다 — 토큰만 씁니다(test/site-config.test.js).
+     ⚠️ 통신판매업신고번호 줄은 **의도적으로 없습니다** — 국문 랜딩과 같은 판단입니다. -->
+<div>{{biz.companyName}} · CEO {{biz.ceo}} · Business Registration No. {{biz.registrationNo}} · {{biz.address}}</div>
+<div><a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a></div>
+<!-- 🔴 라벨은 그 문서가 스스로 부르는 이름입니다(Privacy Notice · Refund Policy — test/page-essentials.test.js).
+     ⚠️ 이용약관은 넣지 않았습니다 — 그 문서가 국문뿐입니다(index.html 푸터 주석).
+     🔴 언어 전환 링크에는 `hreflang="ko"` 를 답니다 — assets/lang-switch.js 가 그 선언을 보고
+        누를 때 `lang=ko` 쿠키를 심습니다. ⛔ 떼지 마십시오: 떼면 `lang=en` 쿠키를 가진 방문자가
+        「한국어」를 눌러도 middleware.js 가 다시 /en 으로 돌려보냅니다(2026-09-19 실측 · 모바일 신고). -->
+<div class="fl"><a href="/en-privacy">Privacy Notice</a><a href="/en-refund">Refund Policy</a><a href="/" hreflang="ko" lang="ko">한국어</a></div>
+<div class="cp">© 2026 TROPS. All rights reserved.</div>
+</div></footer>
+<!-- 🔴 익명 집계 〔2026-09-01〕 — 개인 식별값 없음(en-privacy.html §01). -->
+<script defer src="/assets/track.js"></script>
+<!-- 🔴 언어 전환 〔2026-09-19 복구〕 — 2026-08-29 랜딩 교체가 이 줄을 걷어, 「한국어」 링크가 쿠키를
+     심지 못했습니다. ⛔ 지우지 마십시오(위 푸터 주석). -->
+<script defer src="/assets/lang-switch.js"></script>
+</body></html>

@@ -47,7 +47,7 @@
   gtag('config', '{{analytics.gaId}}', { allow_google_signals: false, allow_ad_personalization_signals: false });
 </script>
 <title>Privacy Notice (draft) · TROPS</title>
-<meta name="description" content="Where TROPS receives your information, what we use it for and when we delete it. Draft, pending legal review.">
+<meta name="description" content="Where TROPS collects your information, what we use it for, and when we delete it. Draft, pending legal review.">
 <link rel="canonical" href="https://trops.kr/en-privacy">
 <!-- 🔴 hreflang 은 **양쪽이 서로를 가리켜야** 검색엔진이 인정합니다 — 한쪽만 있으면
      무시됩니다. privacy.html <head> 에도 같은 3줄이 있습니다. ⛔ 한쪽만 고치지 마십시오.
@@ -280,51 +280,54 @@
       <p class="eyebrow">For users</p>
       <h1>Privacy Notice</h1>
       <p class="head-meta">
-        Draft &middot; pending legal review &middot; written 11 August 2026 &middot; effective 20 August 2026<br>
-        <strong>Amended and effective 12 September 2026</strong> &mdash; see §07 for what changes.<br>
-        Applies to services {{biz.companyName}} provides at trops.kr.
+        Draft &middot; pending legal review &middot; written August 11, 2026 &middot; effective August 20, 2026<br>
+        <strong>Amended and effective September 12, 2026.</strong> See §07 for the changes.<br>
+        Applies to the services {{biz.companyName}} provides at trops.kr.
       </p>
     </div>
 
     <div class="container narrow doc">
       <div class="draft" role="note">
         <p><strong>This is a draft. It has not been through legal review.</strong></p>
-        <p>Until the final version replaces it, read this as a plain account of what we actually do today. Anything not yet settled is left blank and listed in §08 &mdash; we have not written unsettled matters as though they were settled.</p>
+        <p>Until the final version replaces it, treat this as a plain account of what we actually do today. Anything not yet settled is left blank and listed in §08. We have not presented open questions as if they were settled.</p>
       </div>
 
       <section>
         <h2><span class="doc-num" aria-hidden="true">01</span><span>What this notice covers</span></h2>
-        <p class="lead">This notice explains where TROPS received personal information on trops.kr, what we use it for, and when we delete it.</p>
-        <p>We no longer receive any new personal information on trops.kr. Enquiries reach us by email at <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>, and we delete those messages once we have answered them.</p>
-        <p>Documents from pre-check intakes made on trops.kr up to 20 August 2026 are still held. We no longer accept them, but what remains is kept and deleted exactly as §02 and §03 below set out.</p>
-        <p>Pre-check intake has moved to app.trops.kr. Processing that happens there is covered by that site's own privacy notice.</p>
-        <p>We run no advertising identifiers or behavioural tracking on this site. We set no advertising cookies, we do not put you into advertising audiences, and we pass no personal information to advertising companies. <strong>We do, however, use Google Analytics to see visit statistics, and its cookies do tie several visits from the same browser together</strong> (12 September 2026 &mdash; the third exception below).</p>
-        <p>One of three exceptions: a functional cookie, <code>lang</code>, remembers which language (Korean/English) you're reading in (2026-08-21). Its value is only <code>ko</code> or <code>en</code> &mdash; it is never used for advertising or analytics, and never linked across visits to identify who you are.</p>
+        <p class="lead">This notice explains where TROPS collects personal information on trops.kr, what we use it for, and when we delete it.</p>
+        <!-- 🔴 **2026-09-19 — 국문 §01 에 맞췄습니다.** 「We no longer receive any new personal
+             information」은 2026-09-01 `/contact` 접수 폼이 서면서 거짓이 됐는데 영문만 남아
+             있었습니다(국문 95d2edb). ⚠️ `/contact` 는 국문 전용 페이지라 **링크를 걸지
+             않습니다** — test/i18n-parity.test.js ④ 가 영문 → 국문 링크를 막습니다. 주소만 적습니다. -->
+        <p>On trops.kr, we collect personal information in one place only: our contact form for inquiries, quote requests, and launch notifications (trops.kr/contact). §02 and §03 below explain what we collect, what we use it for, and when we delete it. You can also email us directly at <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>; we delete those emails once we have finished responding.</p>
+        <p>Through August 20, 2026, trops.kr also accepted export pre-check submissions. <strong>On September 9, 2026, we deleted all of those submission records and uploaded files, and decommissioned the database that held them.</strong> trops.kr no longer holds any pre-check data.</p>
+        <p>Export pre-check submissions have moved to app.trops.kr. Processing there is covered by that site's own privacy notice.</p>
+        <p>We do not use advertising identifiers or behavioral tracking tools on this site. We set no advertising cookies, we do not place you in advertising audiences, and we do not share personal information with advertising companies. <strong>We do, however, use Google Analytics for visit statistics, and its cookies link multiple visits from the same browser</strong> (September 12, 2026; see the third exception below).</p>
+        <p>The first of three exceptions is a functional cookie, <code>lang</code>, which remembers whether you chose Korean or English (August 21, 2026). Its value is only ever <code>ko</code> or <code>en</code>. It is not used for advertising or analytics, and it is not used to link visits in order to identify you.</p>
         <!-- 🔴 **2026-09-04 — added with section measurement.** The Korean page (privacy.html §01)
              is the source; this had **no equivalent of the 2026-08-18 aggregation paragraph at all**,
              which is a gap that predates this change. Both paragraphs are added here so the two
              languages say the same thing.
              ⛔ Do not extend measurement without editing both pages. -->
-        <p>A second exception is a <strong>temporary key that groups one visit</strong> (2026-09-04).
-        To count which parts of a page you saw and how long you stayed <strong>per visit</strong>, the
-        events of that visit have to be recognisable as one visit. The key is a random value, it
-        <strong>disappears when you close the tab</strong> (<code>sessionStorage</code>), and it is not
-        connected to anything else we hold. Alongside it we send whether you have visited before as a
-        <strong>single true/false</strong> &mdash; the marker behind that (<code>trops_seen</code>) only
-        ever holds the value <code>1</code> and is <strong>never sent to our servers</strong>. So our
-        records alone <strong>cannot join two visits to the same person</strong>.</p>
-        <p>We count how often each page is opened and how often the main buttons are pressed
-        (2026-08-18). From 4 September 2026 we also count <strong>which sections of a page you saw,
-        how long you stayed on each, how far down you scrolled, and which next step you chose</strong>.
-        For how you arrived we keep only <strong>one of five buckets</strong> (search, direct,
-        referral, social, AI) and the <strong>domain</strong> of the site that sent you &mdash; the rest
-        of that address is discarded.</p>
-        <p>The counting <strong>we do ourselves</strong>, described above, records no
-        <strong>cookies, device identifiers, IP addresses, or browser
-        details</strong>. Because the temporary key lives only inside that visit and disappears when the
-        tab closes, <strong>we cannot tell who you are</strong>. We know whether you have been here
-        before only as true or false &mdash; <strong>not how many times</strong>. The Google Analytics
-        counting described next is <strong>separate</strong>, and that one does use cookies.</p>
+        <p>The second exception is a <strong>temporary visit key</strong> (September 4, 2026).
+        To measure which sections you viewed and how long you stayed <strong>within a single
+        visit</strong>, we need to know which events belong to the same visit. The key is a random
+        value, it <strong>disappears when you close the tab</strong> (<code>sessionStorage</code>), and
+        it is not connected to any other information we hold. With it, we send a <strong>single
+        true/false value</strong> showing whether you have visited before. The marker behind that value
+        (<code>trops_seen</code>) only ever holds <code>1</code> and is <strong>never sent to our servers</strong>. As a result, our records alone <strong>cannot join two visits to the same person</strong>.</p>
+        <p>We count how many times each page is opened and how many times the main buttons are clicked
+        (August 18, 2026). Since September 4, 2026, we also measure <strong>which sections of a page you
+        viewed, how long you stayed on each, how far down you scrolled, and where you went next</strong>.
+        For how you arrived, we keep only <strong>one of five categories</strong> (search, direct,
+        referral, social, AI) and the <strong>domain</strong> of the referring site, and we discard the
+        rest of the address.</p>
+        <p>The <strong>measurement we run ourselves</strong>, described above, does not record
+        <strong>cookies, device identifiers, IP addresses, or browser type</strong>. Because the
+        temporary key exists only for that visit and disappears when you close the tab, <strong>even we
+        cannot tell who visited</strong>. We know whether you have been here before only as true or
+        false; <strong>we cannot count how many times</strong>. The Google Analytics measurement
+        described below is <strong>separate</strong>, and it does use cookies.</p>
         <!-- 🔴 **2026-09-12 — added with Google Analytics 4.** The Korean page
              (privacy.html §01) is the source; these two paragraphs correspond to it 1:1.
              ⛔ If the tag is removed, remove these two paragraphs, the two rows in §04
@@ -333,119 +336,138 @@
              ⚠️ "Not used for advertising" depends on property settings (Google signals,
                 ad personalisation). Turning either on makes this paragraph false: change
                 the wording first. -->
-        <p>A third exception is <strong>Google Analytics 4</strong>, a visit-statistics tool
-        (12 September 2026). We use it to see how often each page is opened and where people leave.
-        It sets the cookies <code>_ga</code> and <code>_ga_RQ1NWGK0KM</code> in your browser (up to
-        two years) and uses them to <strong>tie several visits from the same browser into one</strong>
-        count. Sent with them are <strong>the address of the page you opened, your device and browser
+        <p>The third exception is <strong>Google Analytics 4</strong>, a visit-statistics tool
+        (September 12, 2026). We use it to see how often each page is viewed and where visitors leave.
+        It sets the cookies <code>_ga</code> and <code>_ga_RQ1NWGK0KM</code> in your browser (for up to
+        two years) and uses them to <strong>connect multiple visits from the same browser</strong>.
+        Along with them, it sends <strong>the address of the page you opened, your device and browser
         type, your screen size, your approximate location (city level), and how you arrived</strong>.
-        Nothing that identifies you personally, such as a name or contact details, is sent. Google uses
-        your IP address to estimate location and <strong>does not store it</strong>.</p>
-        <p>We <strong>do not use these counts for advertising</strong> &mdash; the advertising features
-        (Google signals, ad personalisation) are switched off, we do not put you into advertising
-        audiences, and we pass nothing to other companies. The counts are processed by
-        <strong>Google LLC</strong> in the United States; §04 records that cross-border transfer. If you
-        would rather not be counted, block cookies in your browser settings or install Google's
+        Nothing that identifies you personally, such as your name or contact details, is sent. Google
+        uses your IP address to estimate your location and <strong>does not store it</strong>.</p>
+        <p>We <strong>do not use this data for advertising</strong>. The advertising features (Google
+        signals and ad personalization) are turned off, we do not place you in advertising audiences,
+        and we do not share the data with other companies. The data is processed by
+        <strong>Google LLC</strong> in the United States; §04 lists that cross-border transfer. To opt
+        out, block cookies in your browser settings or install Google's
         <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer">Google
-        Analytics opt-out add-on</a>. Blocking it restricts nothing on this site.</p>
+        Analytics opt-out add-on</a>. Blocking it does not limit your use of this site in any way.</p>
       </section>
       <section>
-        <h2><span class="doc-num" aria-hidden="true">02</span><span>What we receive and why</span></h2>
-        <p>We receive nothing new. What follows is <strong>what we already received and have not yet deleted</strong>, and the table below is the whole of it.</p>
+        <h2><span class="doc-num" aria-hidden="true">02</span><span>What we collect and why</span></h2>
+        <p>Below is what we collect today, along with <strong>what we collected earlier and have not yet deleted</strong>. We collect nothing beyond what this table lists.</p>
         <div class="table-wrap">
         <table>
-          <caption>Items, purpose and retention for what remains</caption>
+          <caption>Items, purpose, and retention by collection point</caption>
           <thead>
-            <tr><th scope="col">Where it came from</th><th scope="col">Items</th><th scope="col">Purpose</th><th scope="col">Retention</th></tr>
+            <tr><th scope="col">Where we collect it</th><th scope="col">Items</th><th scope="col">Purpose</th><th scope="col">Retention</th></tr>
           </thead>
           <tbody>
+            <!-- 🔴 **지금 받는 유일한 자리** — 국문 privacy.html §02 첫 행과 1:1 입니다
+                 〔2026-09-19 영문 반영〕. 보관 기간의 정본은 api/_cleanup.js
+                 `LEADS_RETENTION_DAYS` 이고, 국문 그 행 주석의 「네 곳」 목록에 이 칸과
+                 아래 §03 문단이 **영문으로 하나씩 더** 따라옵니다. ⛔ 한쪽만 고치지 마십시오. -->
             <tr>
-              <th scope="row">Document pre-check intake<br><span class="lead">(intake closed 20 Aug 2026)</span></th>
-              <td>Email<br>The buyer documents you uploaded<br>Your own form (optional)<br>Counterparty country and HS code (optional)<br>Two consents and when<br>Payment details for paid intakes (order number, payment status)</td>
-              <td>Running the comparison you asked for<br>Delivering the summary<br>Handling payment and refunds</td>
-              <td><strong>All deleted on 9 September 2026 &mdash; nothing is held.</strong><br>The database that held it was decommissioned as well. This row stays so the record of what was collected remains.</td>
+              <th scope="row">Inquiries, quote requests, and launch notifications<br><span class="lead">(trops.kr/contact)</span></th>
+              <td>Email<br>Contact name (optional)<br>Company name (optional)<br>Message (optional)<br>For quote requests, a deal summary: contract amount, destination country, payment terms, and whether you hold a trade insurance policy (optional)<br>Required consents and when you gave them</td>
+              <td>Responding to your inquiry<br>Preparing a quote for the scope you requested<br>Sending launch notifications</td>
+              <td>Inquiries and quote requests: deleted 6 months (183 days) after submission<br>Launch notifications: deleted 1 year (365 days) after submission<br>We delete them sooner if you ask.<br>Submissions are stored in a Supabase database, and an automated cleanup job deletes them once these periods end.<br>When you submit, two emails go out: a notification to our staff and a confirmation to you. These two emails are <strong>not covered by the automated deletion above</strong>. They stay in our staff mailbox and are deleted once we have finished responding.</td>
             </tr>
             <tr>
-              <th scope="row">Email enquiry</th>
-              <td>Whatever you wrote in your message</td>
-              <td>Answering your enquiry</td>
-              <td>Deleted once we have answered, or sooner if you ask.</td>
+              <th scope="row">Document pre-check submissions<br><span class="lead">(closed August 20, 2026)</span></th>
+              <td>Email<br>The buyer documents you uploaded<br>Your own template (optional)<br>Counterparty country and HS code (optional)<br>Two consents and when you gave them<br>Payment details for paid submissions (order number, payment status)</td>
+              <td>Running the comparison you requested<br>Delivering the results<br>Handling payments and refunds</td>
+              <td><strong>All deleted on September 9, 2026. Nothing is held.</strong><br>The database that held it was decommissioned as well. This row remains as a record of what was collected.</td>
+            </tr>
+            <tr>
+              <th scope="row">Email inquiries</th>
+              <td>Whatever you wrote in your email</td>
+              <td>Responding to your inquiry</td>
+              <td>Deleted without delay once we have finished responding, or immediately if you ask sooner.</td>
             </tr>
           </tbody>
         </table>
         </div>
-        <p>We never asked for national identification numbers or sensitive categories of data anywhere on this site. Documents you uploaded may contain such details; what remains is deleted on the schedule above regardless.</p>
+        <p>We do not collect national ID numbers (such as Korean resident registration numbers), other unique identifiers, or sensitive information anywhere. Documents you uploaded may have contained such information, so any remaining material is deleted on the schedule above regardless.</p>
       </section>
       <section>
         <h2><span class="doc-num" aria-hidden="true">03</span><span>How long we keep it</span></h2>
-        <p><strong>Document pre-check intake</strong> &mdash; the rule was that thirty days after intake we delete the files you uploaded and the intake record. <strong>On 9 September 2026 everything that remained was deleted and the database holding it was decommissioned, so nothing is held under this heading.</strong> It is also why the confirmation email carried a link rather than an attachment: a deletion policy cannot reach an attached file.</p>
+        <p><strong>Document pre-check submissions.</strong> Our rule was to delete the files you uploaded and the submission record 30 days after submission. <strong>On September 9, 2026, we deleted everything that remained and decommissioned the database that held it, so we hold nothing under this heading.</strong> This is also why our confirmation emails contained a link rather than an attachment: a deletion policy cannot reach an attached file.</p>
         <!-- 🔴 **창구가 바뀌었습니다 — 권리가 아니라 경로입니다** 〔2026-08-30〕.
              사유·실측 전문은 국문 privacy.html 의 같은 자리 주석이 갖습니다(1:1 대응).
              ⛔ 삭제 «권리» 를 걷지 마십시오 — 바뀐 것은 요청을 받는 창구뿐입니다. -->
-        <p>If you would rather not wait, write to <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>. We confirm your request and delete them without delay. Once deleted, the same material cannot be sent to you again.</p>
-        <p><strong>Email enquiry</strong> &mdash; your message exists only in our staff mailbox. We delete it once we have answered, or sooner if you ask.</p>
-        <p>Where Korean law requires records to be kept &mdash; contract, payment and consumer complaint records under the Act on Consumer Protection in Electronic Commerce, for example &mdash; we keep those for the period that law sets. Payment records are kept for five years, as set out in that Act's Enforcement Decree.</p>
+        <p>If you would rather not wait, email <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>. We will confirm your request and act on it without delay. Once deleted, the same material cannot be sent to you again.</p>
+        <!-- 🔴 §02 표의 contact 행과 **같은 값**입니다. 정본은 api/_cleanup.js
+             `LEADS_RETENTION_DAYS`(inquiry 183일 · notify 365일 · 매일 06:20 KST). -->
+        <p><strong>Inquiries, quote requests, and launch notifications.</strong> Inquiries and quote requests are deleted 6 months (183 days) after submission, and launch notifications 1 year (365 days) after submission. An automated cleanup job runs <strong>once a day</strong> (6:20 a.m. KST) and deletes records that have passed their deadline.</p>
+        <p>If you would rather not wait, email <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>. Requests to access, correct, delete, or stop processing your personal information go to the same address, and we act on them without delay once we have confirmed them.</p>
+        <p>The two emails sent when you submit (the staff notification and your confirmation) <strong>are not covered by the automated cleanup above</strong>. They stay in our staff mailbox and are deleted once we have finished responding.</p>
+        <p><strong>Email inquiries.</strong> Your message stays only in our staff mailbox. We delete it without delay once we have finished responding, or immediately if you ask sooner.</p>
+        <p>Records that Korean law requires us to keep (such as contract, payment, and consumer complaint records under the Act on Consumer Protection in Electronic Commerce) are kept separately for the period that law sets. Payment records are kept for five years, as required by that Act's Enforcement Decree.</p>
         <p>Personal information stored as an electronic file is deleted using a technical method that makes recovery or reconstruction impossible. Personal information recorded or stored on paper is destroyed by shredding or incineration.</p>
       </section>
       <section>
         <h2><span class="doc-num" aria-hidden="true">04</span><span>Who processes it for us</span></h2>
-        <p>Providers process data on our behalf, only as far as running the service requires, and none may use it for anything outside that.</p>
+        <p>We engage the processors below only to the extent needed to run the service. They may not use the data for any purpose outside their contract.</p>
         <div class="table-wrap">
         <table>
           <caption>Processors and what they do</caption>
           <thead><tr><th scope="col">Processor</th><th scope="col">What they do</th></tr></thead>
           <tbody>
-            <tr><th scope="row">Resend</th><td>Sending notification and confirmation email</td></tr>
-            <tr><th scope="row">Supabase<br><span class="lead">(Seoul region)</span></th><td>Storing anonymous page-view and button-click counts<br><span class="lead">from 8 September 2026</span></td></tr>
-            <tr><th scope="row">Supabase<br><span class="lead">(Mumbai region &mdash; ended 9 Sep 2026)</span></th><td><strong>This processing has ended.</strong> It held the pre-check intake records and uploaded files, and until 8 September 2026 the page-view and click counts as well. Everything was deleted and <strong>the project itself decommissioned</strong>.</td></tr>
-            <tr><th scope="row">Vercel</th><td>Hosting the site and serving requests</td></tr>
+            <tr><th scope="row">Resend</th><td>Sending notification and confirmation emails</td></tr>
+            <tr><th scope="row">Supabase<br><span class="lead">(Seoul, Republic of Korea region)</span></th><td>Storing inquiry, quote request, and launch notification records, and anonymous page-view and button-click counts<br><span class="lead">Since September 8, 2026</span></td></tr>
+            <tr><th scope="row">Supabase<br><span class="lead">(Mumbai, India region; ended September 9, 2026)</span></th><td><strong>This engagement has ended.</strong> It held pre-check submission records and uploaded files, and until September 8, 2026, it also held inquiry, quote request, and launch notification records and the page-view counts. We deleted everything and <strong>decommissioned the project itself</strong>.</td></tr>
+            <tr><th scope="row">Vercel</th><td>Hosting the website and handling requests</td></tr>
             <tr><th scope="row">Anthropic</th><td>OCR and AI analysis of uploaded documents</td></tr>
             <!-- 🔴 Paired with the Google LLC row in the cross-border table below
                  〔2026-09-12〕. ⛔ Never add or remove only one of the two. -->
-            <tr><th scope="row">Google LLC<br><span class="lead">(Google Analytics 4)</span></th><td>Collecting and storing visit statistics<br><span class="lead">from 12 September 2026</span></td></tr>
+            <tr><th scope="row">Google LLC<br><span class="lead">(Google Analytics 4)</span></th><td>Collecting and storing visit statistics<br><span class="lead">Since September 12, 2026</span></td></tr>
           </tbody>
         </table>
         </div>
-        <p>Payments are taken in the Toss Payments window. Card numbers and other payment credentials go to the payment provider; we neither receive nor store them.</p>
-        <p class="lead">Some of these providers process personal information abroad, as set out below.</p>
+        <p>Payments are made in the Toss Payments checkout window. Card numbers and other payment details go to the payment provider; we neither receive nor store them.</p>
+        <p class="lead">Some of these processors handle personal information outside Korea, as set out below.</p>
         <div class="table-wrap">
         <table>
-          <caption>Subcontracting and cross-border transfer details</caption>
+          <caption>Processing and cross-border transfers</caption>
           <thead>
-            <tr><th scope="col">Recipient</th><th scope="col">Items transferred</th><th scope="col">Country</th><th scope="col">Timing and method</th><th scope="col">Purpose</th><th scope="col">Retention</th></tr>
+            <tr><th scope="col">Recipient</th><th scope="col">Data transferred</th><th scope="col">Country</th><th scope="col">When and how</th><th scope="col">Purpose</th><th scope="col">Retention</th></tr>
           </thead>
           <tbody>
+            <!-- 🔴 **서울 행 — 범위가 넓어졌습니다** 〔2026-09-08 · 국문 0acea5f · 8f82800〕.
+                 사유·순서·금지 사항 전문은 국문 privacy.html 의 같은 자리 주석이 갖습니다.
+                 ⛔ 이 행을 지우고 앱 방침으로 링크만 하지 마십시오 — 어느 방침에도 그
+                    국외이전 고지가 없게 됩니다. -->
             <tr>
               <th scope="row">Supabase, Inc.<br><span class="lead">(infrastructure: AWS)</span></th>
-              <td>Email, company information, uploaded documents, payment-related identifiers</td>
+              <td>Email, company information, uploaded documents, payment-related identifiers<br>Inquiry messages and contact names <span class="lead">(since September 8, 2026)</span></td>
               <td>Republic of Korea (Seoul, ap-northeast-2)</td>
               <td>Transmitted in real time as you use the service</td>
-              <td>Database storage, running the service</td>
-              <td>Until you close your account or the purpose is met</td>
+              <td>Database storage and service operation<br><strong>Since September 8, 2026, inquiry, quote request, and launch notification records from trops.kr are stored in this project.</strong> Before that date, they were stored in the Mumbai project below.</td>
+              <td>Until you close your account or the purpose is fulfilled<br><span class="lead">Inquiries and quote requests: 6 months; launch notifications: 1 year (since September 8, 2026; see §02 and §03)</span></td>
             </tr>
             <tr>
               <th scope="row">Supabase, Inc.<br><span class="lead">(infrastructure: AWS)</span></th>
-              <td>Pre-check intake details, email, uploaded documents</td>
-              <td>India (Mumbai, ap-south-1)<br><strong>Ended 9 September 2026</strong></td>
-              <td>Transmitted in real time as you use the service<br><span class="lead">No transfer takes place now</span></td>
-              <td>Running the pre-check service</td>
-              <td><strong>All deleted on 9 September 2026 &mdash; nothing remains in this region.</strong><br><span class="lead">The row stays to record that a cross-border transfer once took place.</span></td>
+              <td>Pre-check submission details, email, uploaded documents<br>Inquiry messages and contact names <span class="lead">(until September 8, 2026)</span></td>
+              <td>India (Mumbai, ap-south-1)<br><strong>Ended September 9, 2026</strong></td>
+              <td>Transmitted in real time as you use the service<br><span class="lead">No transfers take place now</span></td>
+              <td>Operating the pre-check service</td>
+              <td><strong>All deleted on September 9, 2026. Nothing remains in this region.</strong><br><span class="lead">This row remains as a record that a cross-border transfer took place.</span></td>
             </tr>
             <tr>
               <th scope="row">Vercel Inc.</th>
-              <td>Access logs, general service usage data</td>
+              <td>Access logs and general service usage data</td>
               <td>United States</td>
               <td>Transmitted in real time (hosting)</td>
               <td>Website hosting</td>
-              <td>For the duration of the service</td>
+              <td>For as long as the service is provided</td>
             </tr>
             <tr>
               <th scope="row">Anthropic, PBC</th>
-              <td>Content of uploaded documents subject to OCR and analysis</td>
+              <td>Content of uploaded documents submitted for OCR and analysis</td>
               <td>United States</td>
               <td>Transmitted in real time when analysis is requested</td>
               <td>AI-based document analysis</td>
-              <td>Automatically deleted within 30 days by default, never used for model training (whether a separate Zero Data Retention agreement applies is <strong>to be confirmed</strong>)</td>
+              <td>Automatically deleted within 30 days by default and never used for model training (whether a separate Zero Data Retention agreement applies is <strong>to be confirmed</strong>)</td>
             </tr>
             <tr>
               <th scope="row">Google LLC</th>
@@ -453,73 +475,77 @@
               <td>United States</td>
               <td>Transmitted in real time when a page is opened</td>
               <td>Visit statistics (§01)</td>
-              <td>Cookies up to two years<br>The counts are kept for as long as the Google Analytics property's data-retention setting says (default two months, up to 14 months &mdash; the current setting is <strong>to be confirmed</strong>, §08)</td>
+              <td>Cookies: up to two years<br>The statistics are kept according to the Google Analytics property's data retention setting (two months by default, up to 14 months; the current setting is <strong>to be confirmed</strong>, see §08)</td>
             </tr>
             <tr>
               <th scope="row">Toss Payments Corp.</th>
               <td>Payment-related information</td>
               <td>Republic of Korea</td>
-              <td>At the time payment is requested</td>
-              <td>Processing payments and settlement</td>
+              <td>When payment is requested</td>
+              <td>Payment processing and settlement</td>
               <td>5 years (under the Enforcement Decree of the Act on Consumer Protection in Electronic Commerce)</td>
             </tr>
           </tbody>
         </table>
         </div>
-        <p>The table above records where data is held today. <strong>The transfer to India (Mumbai) ended on 9 September 2026</strong> &mdash; that row stays to record the past fact. trops.kr accepts no new pre-check intakes, so no new intake data is transferred; the anonymous page-view and click counts described in §01 are transmitted as you browse. You have the right to refuse a cross-border transfer, and if you refuse you may ask us to delete what is held (§05).</p>
+        <p>The table above shows where data is held today. <strong>The transfer to India (Mumbai) ended on September 9, 2026</strong>; that row remains as a record of the past. trops.kr no longer accepts new pre-check submissions, but we continue to accept inquiries, quote requests, and launch notifications, and those records are stored as shown above. You have the right to refuse a cross-border transfer. If you refuse, you can choose not to submit, and you can ask us to delete any data we hold (§05).</p>
       </section>
       <section>
         <h2><span class="doc-num" aria-hidden="true">05</span><span>What you can ask us to do</span></h2>
-        <p>You may ask to see, correct or delete your personal information, or to stop us processing it. You may withdraw an optional consent at any time, and doing so does not affect the service you have already requested.</p>
+        <p>You may ask to access, correct, or delete your personal information, or ask us to stop processing it. You may withdraw an optional consent at any time; doing so does not affect services you have already requested.</p>
         <!-- 🔴 **국문 §05 와 «함께» 고쳤습니다** 〔2026-08-30〕 — 방침이 약속하던
              「confirmation email 링크의 즉시 삭제」 버튼이 화면에 없습니다(실측).
              사유·근거·금지 사항 전문은 국문 privacy.html §05 주석이 갖습니다.
              ⛔ 한쪽만 고치지 마십시오(이 파일 머리주석). -->
-        <p>The link in your confirmation email shows the status of your intake. To have your files deleted, write to <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>. We confirm your request and act on it without delay. Any other request reaches us at the same address.</p>
+        <p>The link in your confirmation email shows the status of your submission. To request deletion, email <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>. We will confirm your request and act on it without delay. Send any other request to the same address.</p>
         <!-- 🔴 이름을 손으로 적지 않습니다 〔2026-08-21〕 — 값은 site.config.json
              `biz.en.ceo` 하나입니다(국문 privacy.html 의 같은 문장과 같은 처리).
              ⚠️ "Hana Beom" 은 "범하나"의 잠정 로마자 표기입니다 — 공식 영문 표기가
                 생기면 **그 파일 한 줄**만 고치십시오. -->
-        <p>Our privacy officer is {{biz.ceo}}, reachable at the email address above.</p>
-        <p>If matters are not resolved with us directly, you may also contact the following bodies.</p>
+        <p>Our privacy officer is {{biz.ceo}}, who can be reached at the email address above.</p>
+        <p>If you cannot resolve a matter with us, or need further help, you can also contact the following agencies.</p>
         <ul>
-          <li>Personal Information Protection Commission &mdash; 02-2100-3025</li>
-          <li>Personal Information Dispute Mediation Committee &mdash; 1833-6972 (<a href="https://www.kopico.go.kr">kopico.go.kr</a>, Government Complex Seoul, 209 Sejong-daero, Jongno-gu, Seoul)</li>
-          <li>Personal Information Infringement Report Center, Korea Internet and Security Agency (KISA) &mdash; 118, no area code needed (<a href="https://privacy.kisa.or.kr">privacy.kisa.or.kr</a>)</li>
+          <li>Personal Information Protection Commission: 02-2100-3025</li>
+          <li>Personal Information Dispute Mediation Committee: 1833-6972 (<a href="https://www.kopico.go.kr">kopico.go.kr</a>, Government Complex Seoul, 209 Sejong-daero, Jongno-gu, Seoul)</li>
+          <li>Personal Information Infringement Report Center, Korea Internet &amp; Security Agency (KISA): dial 118, no area code needed (<a href="https://privacy.kisa.or.kr">privacy.kisa.or.kr</a>)</li>
         </ul>
-        <p>This notice is governed by the laws of the Republic of Korea. If a dispute is brought to court, jurisdiction follows the Civil Procedure Act.</p>
+        <p>This notice is governed by the laws of the Republic of Korea. If a dispute goes to court, jurisdiction is determined under the Civil Procedure Act.</p>
       </section>
       <section>
         <h2><span class="doc-num" aria-hidden="true">06</span><span>How we keep it safe</span></h2>
-        <p>Storage keys are used on the server only and are never sent to the browser. Intake tables have row level security enabled, so nothing reads them outside the server path.</p>
-        <p>Confirmation emails carry a link, never an attachment &mdash; we avoid creating copies we cannot recall and cannot delete on schedule.</p>
-        <p>Material past its retention period is removed by a cleanup job.</p>
+        <p>Storage access keys are used only on the server and are never sent to the browser. Row-level security is enabled on the submission tables, so they cannot be read except through the server.</p>
+        <p>Confirmation emails contain a link, never an attachment, so that we do not create copies we cannot recall and our deletion policy cannot reach.</p>
+        <p>Data past its retention period is deleted by a cleanup job.</p>
       </section>
       <section>
         <h2><span class="doc-num" aria-hidden="true">07</span><span>When this notice changes</span></h2>
-        <p>If the content changes we post the change and the date it takes effect on this page. Where a change is to your disadvantage we tell you before it takes effect.</p>
-        <h3>Effective 12 September 2026 &mdash; we use a visit-statistics tool</h3>
-        <p>We have added <strong>Google Analytics 4</strong> to every page on trops.kr. Two cookies
-        (<code>_ga</code> and <code>_ga_RQ1NWGK0KM</code>) are now set in your browser, and the counts are
-        transferred to <strong>Google LLC in the United States</strong> &mdash; §01 sets out what is sent
-        and §04 records the transfer. <strong>We do not use it for advertising.</strong> Nothing changed
-        about the personal information we receive (§02) or how long we keep it (§03). §01 also explains
-        how to opt out of this counting.</p>
-        <h3>Effective 9 September 2026 &mdash; the India (Mumbai) storage has ended</h3>
-        <p>Everything from the document pre-check intake that closed on 20 August 2026 was <strong>deleted, and the Supabase project (India, Mumbai region) that held it was decommissioned</strong>. §01, §02 and §03 no longer describe data as remaining, and the Mumbai rows in §04 record the processing as ended. <strong>Nothing changed about what we collect or how long we keep it</strong> &mdash; what was held simply no longer exists.</p>
-        <h3>Effective 8 September 2026 &mdash; where the data is held changes</h3>
-        <p>The anonymous page-view and button-click counts move from Supabase's India (Mumbai) region to its <strong>Republic of Korea (Seoul)</strong> region. The processor table in §04 sets out the detail. These counts identify no one (§01), so they are not listed in the cross-border transfer table, which covers personal information.</p>
-        <p>This amendment <strong>takes effect on 8 September 2026, the day it is posted</strong>. An earlier notice the same day gave 15 September; the move finished within the day, so the date was brought forward. The data moves <strong>from abroad (India) into Korea</strong>, and neither what we collect nor how long we keep it changes, so this is not a change to your disadvantage.</p>
-        <p><strong>What we collect and how long we keep it do not change</strong> &mdash; neither the items in §02 nor the retention in §03. The processor is the same company (Supabase, Inc.). Only the country the data sits in changes, and it moves from abroad into Korea.</p>
+        <p>When we change this notice, we post the changes and their effective date on this page. If a change is to your disadvantage, we will tell you before it takes effect.</p>
+        <h3>Effective September 12, 2026: we use a visit-statistics tool</h3>
+        <p>We have added <strong>Google Analytics 4</strong> to every page on trops.kr. As a result, two new
+        cookies (<code>_ga</code> and <code>_ga_RQ1NWGK0KM</code>) are set in your browser, and the
+        statistics are transferred to <strong>Google LLC in the United States</strong>. §01 explains what
+        is sent, and §04 lists the cross-border transfer. <strong>We do not use it for advertising.</strong>
+        The personal information we collect (§02) and how long we keep it (§03) are unchanged. §01 also
+        explains how to opt out.</p>
+        <h3>Effective September 9, 2026: storage in India (Mumbai) has ended</h3>
+        <p>We <strong>deleted all export pre-check data submitted through August 20, 2026, and decommissioned the Supabase project (Mumbai, India region) that held it</strong>. We updated the descriptions of remaining data in §01, §02, and §03, and the Mumbai rows in §04, to reflect this. <strong>What we collect and how long we keep it are unchanged.</strong> The data we held simply no longer exists.</p>
+        <!-- 🔴 **2026-09-19 — 국문과 맞췄습니다.** 종전 영문은 옮겨 가는 것을 «조회 집계»만으로
+             적고 「그래서 국외이전 표에 없다」를 덧붙였는데, 국문(8f82800)은 문의·견적·출시 알림
+             기록도 함께 옮겨 가고 그 기록은 §04 국외이전 표 서울 행에 있습니다. 국문에 없는
+             그 문장을 걷었습니다. -->
+        <h3>Effective September 8, 2026: storage location changes</h3>
+        <p>The <strong>storage location</strong> of inquiry, quote request, and launch notification records, and of anonymous page-view and click counts, moves from Supabase's Mumbai, India region to its <strong>Seoul, Republic of Korea</strong> region. Both tables in §04 have the details.</p>
+        <p>This amendment <strong>takes effect on September 8, 2026, the day it was posted</strong>. An earlier notice posted the same day gave an effective date of September 15; the move was completed within the day, so we moved the date up. Because the data is moving <strong>from outside Korea (India) into Korea</strong>, and what we collect and how long we keep it stay the same, this change is not to your disadvantage.</p>
+        <p><strong>What we collect and how long we keep it do not change.</strong> Neither the items in §02 nor the retention periods (6 months for inquiries and quote requests, 1 year for launch notifications; §02 and §03) change. The processor is the same company (Supabase, Inc.). The only change is the country where the data is stored, and it is moving into Korea.</p>
       </section>
       <section>
         <h2><span class="doc-num" aria-hidden="true">08</span><span>Not settled yet</span></h2>
-        <p class="lead">The following are for legal review to settle. <strong>We have left them blank rather than invent them.</strong></p>
+        <p class="lead">The following items will be settled in legal review. <strong>We have left them blank rather than make something up.</strong></p>
         <ul>
-          <li>Whether a Zero Data Retention agreement applies to our data processing arrangement with Anthropic, PBC</li>
-          <li>Which data-retention setting the Google Analytics property should use &mdash; the default of two months or the maximum of 14 (once settled, it goes in the retention column of §04)</li>
+          <li>Whether Zero Data Retention (ZDR) applies under our data processing agreement with Anthropic, PBC</li>
+          <li>Which data retention setting to use for the Google Analytics property: two months (the default) or up to 14 months. Once decided, it will go in the retention column in §04.</li>
         </ul>
-        <p>If you need certainty on any of these, write to <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>. Until the document is settled, what we actually do is exactly what is written above.</p>
+        <p>If you need clarification on any of these, email <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>. Until this document is finalized, our current practices are exactly as described above.</p>
       </section>
 
     </div>

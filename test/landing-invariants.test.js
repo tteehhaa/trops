@@ -44,32 +44,23 @@ const read = (f) => fs.readFileSync(path.join(ROOT, f), 'utf8');
 
 /**
  * 🔴 랜딩 두 장을 **함께** 잽니다 — 한쪽만 고치는 것이 이 저장소의 반복 사고입니다.
- * ⚠️ **부재 단정에만** 씁니다(문구가 되살아나지 않는가). 구조 검사는 아래 `KO_LANDING`.
+ * 부재 단정과 구조 검사가 **둘 다** 이 목록을 돕니다 〔2026-09-19〕.
  */
 const LANDINGS = ['index.html', 'en.html'];
 
-/**
- * 🔴 **구조 검사는 국문 한 장만 봅니다** 〔2026-09-01 · v11 교체로 두 장이 갈렸습니다〕.
- *
- * 국문은 v11(`.fin` · `.qb-*`), 영문은 구판(`.close-cta` · `.stat-*`)입니다. 같은 선택자로
- * 두 장을 재면 영문이 **없는 자리를 못 찾아** 거짓 red 가 납니다.
- * ⛔ 이 갈림을 「두 장 다 검사 안 함」으로 덮지 마십시오 — 아래 [메타] 검사가 갈림 자체를
- *    들고 있다가, 영문이 교체되는 날 red 로 알려 줍니다. 그때 이 상수를 지우고
- *    구조 검사를 `LANDINGS` 로 되돌리십시오.
+/*
+ * 🔄 **구조 검사를 두 장으로 되돌렸습니다** 〔2026-09-19 · 영문 랜딩을 v11 로 교체〕.
+ *    2026-09-01 부터 국문은 v11(`.fin` · `.qb-*`), 영문은 구판(`.close-cta` · `.stat-*`)이라
+ *    구조 검사가 국문 한 장만 봤고, [메타] 검사가 그 갈림을 들고 있었습니다. 영문을
+ *    교체하면서 그 검사가 예고한 대로 red 가 됐고, 예고대로 정리했습니다.
+ * 🔴 [메타] 검사는 **반대 방향**으로 남깁니다 — 이제 「두 장이 같은 구조다」를 단정합니다.
+ *    한쪽만 개편하면 여기서 먼저 red 가 납니다.
  */
-const KO_LANDING = 'index.html';
-
-test('🔴 [메타] 국·영문 랜딩 구조가 갈려 있다 — 영문을 교체하면 이 검사가 red 로 알린다', () => {
-  /*
-   * 지금은 **사실을 적은 검사**입니다. 영문 랜딩을 v11 로 교체하면 아래 둘째 단정이 깨지고,
-   * 그것이 「구조 검사를 두 장으로 되돌릴 때가 됐다」는 신호입니다.
-   * ⚠️ 이 검사가 red 인 것은 고장이 아니라 **할 일이 생겼다**는 뜻입니다.
-   */
-  assert.ok(read('index.html').includes('class="fin'), '국문 랜딩이 v11(.fin) 이 아닙니다');
-  assert.ok(
-    read('en.html').includes('class="close-cta"'),
-    '영문 랜딩이 교체됐습니다 — KO_LANDING 을 지우고 구조 검사를 LANDINGS 로 되돌리십시오'
-  );
+test('🔴 [메타] 국·영문 랜딩이 같은 구조다 — 한쪽만 개편하면 여기서 먼저 red 가 난다', () => {
+  for (const f of LANDINGS) {
+    assert.ok(read(f).includes('class="fin'), f + ' 가 v11(.fin) 구조가 아닙니다');
+    assert.ok(!read(f).includes('class="close-cta"'), f + ' 에 구판(.close-cta) 구조가 남아 있습니다');
+  }
 });
 
 /** 주석·스타일·스크립트를 뺀 «보이는» 마크업. */
@@ -179,9 +170,19 @@ test('🔴 무료 경로 CTA 가 랜딩에 살아 있다 — 「유료 아니면
    * B2 가 되돌아간 것」이라 적어 둔 자리입니다). URL 이 아니라 **무료 경로의 존재**로
    * 축을 좁혔습니다 — 그것이 B2 가 실제로 세운 것입니다.
    */
-  const t = body(KO_LANDING);
-  const free = (t.match(/href="\/precheck"/g) || []).length;
-  assert.ok(free > 0, '랜딩에 무료 경로(/precheck) CTA 가 0개입니다 — 유료·문의만 남았습니다');
+  /*
+   * ⚠️ 무료 경로가 **두 장에서 다른 주소**입니다 〔2026-09-19〕 — 국문은 `/precheck`, 영문은
+   *    그 페이지가 넘기는 앱 진단(`app.trops.kr/export-precheck/new`)입니다. `/precheck` 가
+   *    국문 전용이라 영문 페이지가 거기로 가면 test/i18n-parity ④ 가 막습니다.
+   */
+  const FREE = {
+    'index.html': /href="\/precheck"/g,
+    'en.html': /href="https:\/\/app\.trops\.kr\/export-precheck\/new"/g,
+  };
+  for (const f of LANDINGS) {
+    const free = (body(f).match(FREE[f]) || []).length;
+    assert.ok(free > 0, f + ' 에 무료 경로 CTA 가 0개입니다 — 유료·문의만 남았습니다');
+  }
 });
 
 /* ══ ② 마감 CTA ═══════════════════════════════════════════════════════════ */
@@ -195,10 +196,12 @@ test('마감 CTA 에 «주» 버튼이 정확히 하나다', () => {
    *    그래서 주 버튼(`.btn`)만 셉니다. 보조는 몇 개든 이 검사의 대상이 아닙니다.
    * ⚠️ `class="btn "`·`class="btn"` 만 셉니다 — `btn-2`·`btn-s` 는 접미사가 붙어 안 걸립니다.
    */
-  const close = closeCta(KO_LANDING);
-  assert.ok(close, KO_LANDING + ' 에 마감 CTA 블록이 없습니다');
-  const primary = (close.match(/class="btn"|class="btn /g) || []).length;
-  assert.strictEqual(primary, 1, KO_LANDING + ' 의 마감 CTA 주 버튼이 ' + primary + '개입니다');
+  for (const f of LANDINGS) {
+    const close = closeCta(f);
+    assert.ok(close, f + ' 에 마감 CTA 블록이 없습니다');
+    const primary = (close.match(/class="btn"|class="btn /g) || []).length;
+    assert.strictEqual(primary, 1, f + ' 의 마감 CTA 주 버튼이 ' + primary + '개입니다');
+  }
 });
 
 /*
@@ -222,11 +225,13 @@ test('🔴 인용 출처가 본문보다 작다 — 출처가 본문만큼 크�
    *    출처 표기 자리는 그대로 있고 이름만 바뀌었습니다. 축도 그대로 「본문보다 작다」입니다.
    * ⚠️ 실측 기준값: `.qb-src` 13px · 본문 16.5px.
    */
-  const css = read(KO_LANDING);
-  const src = Number((css.match(/\.qb-src\{[^}]*font-size:([\d.]+)px/) || [])[1]);
-  const bodySize = Number((css.match(/body\{[^}]*font-size:([\d.]+)px/) || [])[1]);
-  assert.ok(src > 0 && bodySize > 0, '크기 값을 읽지 못했습니다 (src=' + src + ' body=' + bodySize + ')');
-  assert.ok(src < bodySize, '인용 출처(' + src + 'px)가 본문(' + bodySize + 'px)보다 작지 않습니다');
+  for (const f of LANDINGS) {
+    const css = read(f);
+    const src = Number((css.match(/\.qb-src\{[^}]*font-size:([\d.]+)px/) || [])[1]);
+    const bodySize = Number((css.match(/body\{[^}]*font-size:([\d.]+)px/) || [])[1]);
+    assert.ok(src > 0 && bodySize > 0, f + ': 크기 값을 읽지 못했습니다 (src=' + src + ' body=' + bodySize + ')');
+    assert.ok(src < bodySize, f + ': 인용 출처(' + src + 'px)가 본문(' + bodySize + 'px)보다 작지 않습니다');
+  }
 });
 
 test('🔴 통계 숫자가 그 설명보다 크다 — 「제일 중요한 한마디」가 작게 나간 사고 이력', () => {
@@ -236,12 +241,14 @@ test('🔴 통계 숫자가 그 설명보다 크다 — 「제일 중요한 한�
    *    그것은 **개편이 내린 결정**이지 결함이 아닙니다. 그래서 축을 같은 블록 «안»의
    *    위계로 좁혔습니다 — 숫자(`.stat-n`)가 라벨(`.stat-t`)보다 크다.
    */
-  const css = read(KO_LANDING);
   /* 🔄 `.stat-n`/`.stat-t` → `.qb-stat .n`/`.qb-stat .l` 〔2026-09-01 · v11〕. 자리는 같습니다. */
-  const n = Number((css.match(/\.qb-stat \.n\{font-size:clamp\([\d.]+px,[^,]+,([\d.]+)px\)/) || [])[1]);
-  const t = Number((css.match(/\.qb-stat \.l\{font-size:([\d.]+)px/) || [])[1]);
-  assert.ok(n > 0 && t > 0, '크기 값을 읽지 못했습니다 (n=' + n + ' t=' + t + ')');
-  assert.ok(n > t, '통계 숫자(' + n + 'px)가 설명(' + t + 'px)보다 크지 않습니다');
+  for (const f of LANDINGS) {
+    const css = read(f);
+    const n = Number((css.match(/\.qb-stat \.n\{font-size:clamp\([\d.]+px,[^,]+,([\d.]+)px\)/) || [])[1]);
+    const t = Number((css.match(/\.qb-stat \.l\{font-size:([\d.]+)px/) || [])[1]);
+    assert.ok(n > 0 && t > 0, f + ': 크기 값을 읽지 못했습니다 (n=' + n + ' t=' + t + ')');
+    assert.ok(n > t, f + ': 통계 숫자(' + n + 'px)가 설명(' + t + 'px)보다 크지 않습니다');
+  }
 });
 
 /* ══ ④ 샘플 2종 — **내렸습니다** ═════════════════════════════════════════
@@ -270,7 +277,7 @@ test('표면 배경 토큰이 살아 있다 — 섹션 교차의 값이 흩어�
    */
   const PAIRS = {
     'index.html': ['--surface', '--line-soft'],
-    'en.html': ['--surface', '--line-on-surface'],
+    'en.html': ['--surface', '--line-soft'],
   };
   for (const f of LANDINGS) {
     const css = read(f);

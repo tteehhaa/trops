@@ -16,17 +16,24 @@
  * ⚠️ 접기 규약: 본문의 `<p>` 여럿을 **공백 하나로 이어** JSON-LD `text` 한 줄과 견준다.
  *    (지금 6문항이 이미 그 규약을 지키고 있어서, 새 문항도 그 꼴로 적으면 된다.)
  * ⛔ 이 검사를 「이름만 같은지」로 약하게 만들지 마십시오 — 갈리는 것은 대개 **답**이다.
+ *
+ * 🔄 **랜딩 두 장을 잽니다** 〔2026-09-19 · 영문 랜딩을 v11 로 교체〕 — en.html 도 같은
+ *    FAQ 와 같은 `FAQPage` 를 갖습니다. 한쪽만 재면 다른 쪽이 조용히 갈립니다.
  */
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const LANDING = path.join(__dirname, '..', 'index.html');
-const html = fs.readFileSync(LANDING, 'utf8');
+/** 환불을 약속하는 낱말 — 페이지 언어별로 봅니다. */
+const LANDINGS = [
+  { file: 'index.html', refund: /환불/ },
+  { file: 'en.html', refund: /refund/i },
+];
+const read = (f) => fs.readFileSync(path.join(__dirname, '..', f), 'utf8');
 
 /** 사람이 읽는 쪽 — `<details><summary>질문</summary><div class="a"><p>…</p></div>`. */
-function fromBody() {
+function fromBody(html) {
   const out = [];
   const re = /<details><summary>([\s\S]*?)<\/summary>\s*<div class="a">([\s\S]*?)<\/div>/g;
   for (const m of html.matchAll(re)) {
@@ -41,7 +48,7 @@ function fromBody() {
 }
 
 /** 기계가 읽는 쪽 — `@graph` 안의 `FAQPage`. */
-function fromJsonLd() {
+function fromJsonLd(html) {
   const blocks = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
   assert.equal(blocks.length, 1, 'ld+json 블록이 하나가 아닙니다 — 어느 쪽이 정본인지 알 수 없습니다');
   const data = JSON.parse(blocks[0][1]);
@@ -54,44 +61,46 @@ function fromJsonLd() {
   }));
 }
 
-test('🔴 FAQ 문항 수가 본문과 구조화 데이터에서 같다', () => {
-  assert.equal(fromBody().length, fromJsonLd().length,
-    '한쪽에만 문항을 더했습니다 — 두 자리를 함께 고쳐야 합니다');
-});
+for (const { file, refund } of LANDINGS) {
+  const html = read(file);
 
-test('🔴 질문이 같은 순서로 같은 글자다', () => {
-  assert.deepEqual(fromJsonLd().map((q) => q.name), fromBody().map((q) => q.name));
-});
+  test(`🔴 ${file}: FAQ 문항 수가 본문과 구조화 데이터에서 같다`, () => {
+    assert.ok(fromBody(html).length > 0, '본문에서 FAQ 를 하나도 못 읽었습니다 — 검사가 헛돕니다');
+    assert.equal(fromBody(html).length, fromJsonLd(html).length,
+      '한쪽에만 문항을 더했습니다 — 두 자리를 함께 고쳐야 합니다');
+  });
 
-test('🔴 답이 글자까지 같다 — 갈리면 화면에 없는 말이 기계에만 남는다', () => {
-  const [body, ld] = [fromBody(), fromJsonLd()];
-  for (let i = 0; i < body.length; i += 1) {
-    assert.equal(ld[i].text, body[i].text,
-      `「${body[i].name}」의 답이 본문과 구조화 데이터에서 다릅니다`);
-  }
-});
+  test(`🔴 ${file}: 질문이 같은 순서로 같은 글자다`, () => {
+    assert.deepEqual(fromJsonLd(html).map((q) => q.name), fromBody(html).map((q) => q.name));
+  });
 
-test('⚠️ 빈 문항이 없다 — 질문만 있고 답이 비면 두 소비처가 다 헛돈다', () => {
-  for (const q of fromBody()) {
-    assert.ok(q.name.length > 0, '질문이 비어 있습니다');
-    assert.ok(q.text.length > 0, `「${q.name}」의 답이 비어 있습니다`);
-  }
-});
+  test(`🔴 ${file}: 답이 글자까지 같다 — 갈리면 화면에 없는 말이 기계에만 남는다`, () => {
+    const [body, ld] = [fromBody(html), fromJsonLd(html)];
+    for (let i = 0; i < body.length; i += 1) {
+      assert.equal(ld[i].text, body[i].text,
+        `「${body[i].name}」의 답이 본문과 구조화 데이터에서 다릅니다`);
+    }
+  });
 
-/*
- * 🔴 **랜딩이 규정보다 앞서 약속하지 않는다** 〔2026-09-05〕.
- *
- * app.trops.kr `/insurance/quick` 의 요금 안내에는 「서류가 반송되면 다시 작성해 드리거나
- * 전액 환불합니다」가 있다. 그러나 `refund.html` 환불규정은 **종료된 「서류 사전 확인」**
- * (2026-08-20 접수분까지)만 다룬다 — 준비 패키지의 환불 조건을 담은 방침이 아직 없다.
- *
- * FAQ 는 LLM 이 통째로 인용하는 자리라, 여기 적힌 약속이 가장 널리 퍼진다. 규정이 서기
- * 전에 랜딩이 먼저 환불을 약속하면 근거 없는 약속이 된다.
- * ⚠️ 규정이 생기면 이 검사를 **함께** 풀어 주십시오 — 그때는 막을 이유가 사라진다.
- */
-test('🔴 환불 약속을 FAQ 에 적지 않는다 — 준비 패키지를 다루는 환불규정이 아직 없다', () => {
-  for (const q of fromBody()) {
-    assert.ok(!/환불/.test(q.text),
-      `「${q.name}」이 환불을 약속합니다 — refund.html 이 준비 패키지를 다루기 전에는 적지 마십시오`);
-  }
-});
+  test(`⚠️ ${file}: 빈 문항이 없다 — 질문만 있고 답이 비면 두 소비처가 다 헛돈다`, () => {
+    for (const q of fromBody(html)) {
+      assert.ok(q.name.length > 0, '질문이 비어 있습니다');
+      assert.ok(q.text.length > 0, `「${q.name}」의 답이 비어 있습니다`);
+    }
+  });
+
+  /*
+   * 🔴 **랜딩이 규정보다 앞서 약속하지 않는다** 〔2026-09-05〕.
+   *
+   * app.trops.kr `/insurance/quick` 의 요금 안내에는 「서류가 반송되면 다시 작성해 드리거나
+   * 전액 환불합니다」가 있다. FAQ 는 LLM 이 통째로 인용하는 자리라, 여기 적힌 약속이 가장
+   * 널리 퍼진다. 환불 조건은 환불규정 한 곳이 말한다.
+   * ⚠️ 이 검사를 풀려면 환불규정(refund.html · en-refund.html)과 문면을 먼저 맞추십시오.
+   */
+  test(`🔴 ${file}: 환불 약속을 FAQ 에 적지 않는다 — 환불 조건은 환불규정이 말한다`, () => {
+    for (const q of fromBody(html)) {
+      assert.ok(!refund.test(q.text),
+        `「${q.name}」이 환불을 약속합니다 — 환불 조건은 환불규정 한 곳에 두십시오`);
+    }
+  });
+}

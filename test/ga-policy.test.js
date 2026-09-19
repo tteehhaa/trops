@@ -208,7 +208,7 @@ test('🔴 두 방침이 같은 개정 시행일을 싣는다 — 한쪽만 고�
     'privacy.html 의 개정 시행일이 2026-09-12 가 아닙니다'
   );
   assert.ok(
-    noComments('en-privacy.html').includes('Amended and effective 12 September 2026'),
+    noComments('en-privacy.html').includes('Amended and effective September 12, 2026'),
     'en-privacy.html 의 개정 시행일이 2026-09-12 가 아닙니다'
   );
 });
