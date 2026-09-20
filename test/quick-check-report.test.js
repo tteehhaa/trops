@@ -1,5 +1,5 @@
 /**
- * quick-check-report.test.js — 1분 진단 «응답 전송»이 꺼져 있다 〔축 뒤집음 2026-09-21〕
+ * quick-check-report.test.js — 1분 진단이 «앱으로 옮겨간» 상태를 잠근다 〔축 뒤집음 2026-09-21〕
  *
  * ══════════════════════════════════════════════════════════════════════════════
  * 🔴 **이 파일은 «있다»를 재다가 «없다»를 재는 쪽으로 뒤집혔습니다.**
@@ -152,4 +152,50 @@ test('🔴 `assets/track.js` 는 그대로 산다 — 전송을 껐다고 계측
     t.includes("url.searchParams.set('from'"),
     'track.js 가 앱 링크에 유입원을 붙이지 않습니다 — 랜딩 방문과 앱에서 한 일이 끊깁니다'
   );
+});
+
+/* ══ ⑥ 주소 처분 — /precheck 는 앱으로 넘어간다 ═════════════════════════════ */
+
+const VERCEL = JSON.parse(read('vercel.json'));
+const APP_QUICK = 'https://app.trops.kr/quick-check';
+
+test('🔴 `/precheck` 가 앱으로 «영구» 이동한다 — 색인을 옮기는 것이 목적이다', () => {
+  /*
+   * 🔴 **`permanent: true` 가 이 파일에서 이 규칙뿐이다**(나머지는 `false`).
+   *    같은 배치에서 `llms.txt`·JSON-LD 두 장의 주소도 함께 옮겼으므로, 검색·AI 가
+   *    옛 주소를 계속 물어 오지 않게 «영구»가 맞습니다.
+   * ⚠️ 영구는 브라우저가 캐시합니다 — 되돌리려면 `false` 판을 한 번 배포해야 합니다.
+   */
+  const r = (VERCEL.redirects || []).find((x) => x.source === '/precheck');
+  assert.ok(r, 'vercel.json 에 /precheck 리다이렉트가 없습니다 — 옛 페이지가 다시 뜹니다');
+  assert.strictEqual(r.destination, APP_QUICK, '/precheck 의 목적지가 앱 1분 진단이 아닙니다');
+  assert.strictEqual(r.permanent, true, '/precheck 는 영구 이동이어야 합니다(색인을 옮깁니다)');
+
+  const c = (VERCEL.redirects || []).find((x) => x.source === '/check');
+  assert.ok(c && c.destination === APP_QUICK,
+    '/check 가 여전히 /precheck 를 가리킵니다 — 이중 리다이렉트가 됩니다');
+});
+
+test('🔴 `precheck.html` 은 배포에서 내려가고 «파일은 남는다» — 앱 대조가 그것을 읽는다', () => {
+  /*
+   * 🔴 **둘을 함께 잽니다.** 배포에 남으면 같은 제품이 두 주소에 서고, 파일을 지우면
+   *    앱 저장소의 배점표 대조가 `existsSync` 에서 **조용히 꺼집니다** — 앱 점수가
+   *    랜딩 원본과 갈려도 아무도 모릅니다. 사유는 build-static.js 의 두 주석이 갖습니다.
+   */
+  const { STATIC, NOT_DEPLOYED } = require('../scripts/build-static.js');
+  assert.ok(!STATIC.html.some((e) => e.file === 'precheck.html'),
+    'precheck.html 이 배포 목록에 되살아났습니다 — 같은 제품이 두 주소에 섭니다');
+  assert.ok(NOT_DEPLOYED.has('precheck.html'),
+    'precheck.html 이 NOT_DEPLOYED 에 없습니다 — 빌드가 「분류되지 않은 항목」으로 멈춥니다');
+  assert.ok(fs.existsSync(path.join(ROOT, 'precheck.html')),
+    'precheck.html 파일이 사라졌습니다 — 앱의 배점표 대조가 조용히 꺼집니다');
+});
+
+test('🔴 검색·AI 가 보는 주소도 함께 옮겼다 — 한쪽만 고치면 옛 주소가 계속 인용된다', () => {
+  for (const [f, what] of [['llms.txt', 'AI 인용 목록'], ['index.html', '국문 JSON-LD'], ['en.html', '영문 JSON-LD']]) {
+    const s = read(f);
+    assert.ok(!s.includes('https://trops.kr/precheck'),
+      `${f}(${what})이 아직 옛 주소를 가리킵니다`);
+    assert.ok(s.includes(APP_QUICK), `${f}(${what})에 앱 1분 진단 주소가 없습니다`);
+  }
 });

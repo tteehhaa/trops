@@ -27,8 +27,13 @@
     },
     {
       "source": "/check",
-      "destination": "/precheck",
+      "destination": "https://app.trops.kr/quick-check",
       "permanent": false
+    },
+    {
+      "source": "/precheck",
+      "destination": "https://app.trops.kr/quick-check",
+      "permanent": true
     },
     {
       "source": "/en-check",

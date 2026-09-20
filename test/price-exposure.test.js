@@ -59,8 +59,20 @@ const strip = (s) => s.replace(/<!--[\s\S]*?-->/g, '').replace(/\/\*[\s\S]*?\*\/
  * 🔴 **살아 있는 페이지 — 빌드 분류표에서 읽습니다**(사본 0).
  * ⛔ 여기에 파일 이름을 적지 마십시오. 이 파일이 2026-08-30 에 죽은 원인이 그것입니다.
  */
-const { STATIC } = require('../scripts/build-static.js');
+const { STATIC, NOT_DEPLOYED } = require('../scripts/build-static.js');
 const LIVE_PAGES = STATIC.html.map((e) => e.file);
+
+/**
+ * 🔴 **배포는 안 하지만 저장소에 «남아 있는» 한 장짜리 페이지** 〔신설 2026-09-21〕.
+ *    `precheck.html` 이 배치 6 에서 배포에서 내려갔습니다(`/precheck` → 앱 영구 이동).
+ *    파일은 남습니다 — 앱 저장소의 배점표 대조가 그것을 읽기 때문입니다(그쪽 사유는
+ *    `scripts/build-static.js` 의 NOT_DEPLOYED 등재 주석).
+ * 🔴 **그래서 아래 표면 검사는 «배포분 + 남은 장»을 함께 봅니다.** 배포에서 뺐다고
+ *    결제 표면이 되살아나도 되는 것은 아닙니다 — 그 파일은 되돌리면 그대로 나갑니다.
+ * ⛔ 여기에도 이름을 손으로 적지 않습니다(위 ⛔ 와 같은 사유) — 분류표에서 읽습니다.
+ */
+const RETAINED_PAGES = [...NOT_DEPLOYED].filter((f) => f.endsWith('.html') && !f.includes('/'));
+const SCANNED_PAGES = [...LIVE_PAGES, ...RETAINED_PAGES];
 
 /**
  * 흐름 md §4 가 확정한 1차 테스트가 — **VAT 포함 총액**〔2026-08-17 · 300,000 → 330,000〕.
@@ -132,10 +144,10 @@ test('🔴 대상 페이지를 빌드 분류표에서 읽는다 — 목록을 �
  *    「되살릴 조건」대로 결제 노출 검사 넷을 함께 되살리십시오
  *    (원본: `git show ca47218:test/price-exposure.test.js`).
  */
-test('🔴 살아 있는 어느 페이지에도 결제 표면이 없다 — 결제 폼은 이 저장소에 없다', () => {
+test('🔴 배포분·남은 장 어디에도 결제 표면이 없다 — 결제 폼은 이 저장소에 없다', () => {
   const PAYMENT_MARKS = ['TossPayments', 'tosspayments', 'requestPayment', 'payment-config'];
   const offenders = [];
-  for (const f of LIVE_PAGES) {
+  for (const f of SCANNED_PAGES) {
     const s = strip(read(f));
     for (const mark of PAYMENT_MARKS) if (s.includes(mark)) offenders.push(f + ': ' + mark);
   }
@@ -175,8 +187,9 @@ test('[대조] 결제 표면 검출기가 실제로 문다 — 0건 통과 금�
     assert.ok(s.includes(mark), '옛 결제 폼에서 ' + mark + ' 를 못 찾습니다 — 검출기 기준이 틀렸습니다');
   }
   // 그리고 «지금» 그 이름을 쓰는 페이지에는 없어야 합니다.
-  assert.ok(LIVE_PAGES.includes('precheck.html'),
-    'precheck.html 이 분류표에 없습니다 — 이 대조가 재려는 대상이 사라졌습니다');
+  assert.ok(SCANNED_PAGES.includes('precheck.html'),
+    'precheck.html 이 분류표에 없습니다 — 이 대조가 재려는 대상이 사라졌습니다 ' +
+    '(배포분이든 남은 장이든 한쪽에는 있어야 합니다)');
   assert.ok(!strip(read('precheck.html')).includes('TossPayments'),
     '새 precheck.html 에 결제 폼이 있습니다');
 });
@@ -206,9 +219,9 @@ test('[대조] 결제 표면 검출기가 실제로 문다 — 0건 통과 금�
  *    가격 정보를 새지 않습니다. 0 이 아닌 금액만 봅니다.
  */
 
-test('🔴 살아 있는 어느 페이지에도 원화 금액이 없다 — 파는 상품이 없다', () => {
+test('🔴 배포분·남은 장 어디에도 원화 금액이 없다 — 파는 상품이 없다', () => {
   const offenders = [];
-  for (const f of LIVE_PAGES) {
+  for (const f of SCANNED_PAGES) {
     const hit = AMOUNT_RE.exec(strip(read(f)));
     if (hit) offenders.push(f + ': ' + hit[0]);
   }
@@ -219,7 +232,7 @@ test('🔴 살아 있는 어느 페이지에도 원화 금액이 없다 — 파�
 
 test('🔴 폐기된 금액 표기(₩99,000 · ₩300,000)가 화면 어디에도 없다', () => {
   const offenders = [];
-  for (const f of LIVE_PAGES) {
+  for (const f of SCANNED_PAGES) {
     const s = strip(read(f));
     for (const dead of [RETIRED_TEXT, RETIRED_PRE_VAT_TEXT, '99,000']) {
       if (s.indexOf(dead) !== -1) offenders.push(f + ': ' + dead);
