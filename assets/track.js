@@ -176,6 +176,24 @@
   seedFrom();
 
   /*
+   * 🔴 **이 방문의 열쇠를 «한 곳»에서만 내줍니다** 〔2026-09-20 · 대표 지시〕.
+   *    `precheck.html` 의 1분 진단 응답 전송이 같은 열쇠를 실어야 「랜딩에서 본 점수」와
+   *    「앱에서 한 일」이 한 방문으로 이어집니다.
+   * ⛔ 그 파일이 저장소 키 이름(`trops_vs`·`trops_vs_f`)을 **다시 적게 두지 마십시오** —
+   *    이름이 바뀌는 날 한쪽만 고쳐지고 두 계측이 «조용히» 갈라집니다. 이름은 이 파일의
+   *    것이고, 밖으로 나가는 것은 이 손잡이 하나입니다.
+   * ⛔ 칸을 늘리지 마십시오. 내주는 것은 「한 방문짜리 난수」와 「채널 코드 원문」 둘뿐이고,
+   *    둘 다 개인 식별자가 아닙니다(`privacy.html` §01).
+   * ⚠️ `from` 은 주소에 `?from=` 이 **있었을 때의 원문**입니다 — 아래 `currentFrom()` 의
+   *    지면 기본값(`landing`·`precheck`)을 섞지 않습니다. 그 기본값은 «링크에 붙이는» 값이고
+   *    이쪽은 «제휴 귀속» 축이라, 없으면 없는 대로 두어야 제휴가 아닌 방문이 제휴로 세어지지
+   *    않습니다.
+   */
+  window.tropsVisit = function () {
+    return { sessionKey: ID.sessionKey, from: ssGet(SS_FROM) };
+  };
+
+  /*
    * 🔴 **앱으로는 `text/plain;charset=UTF-8` 입니다.** CORS 안전 목록이라 preflight 가
    *    붙지 않습니다. `application/json` 이면 preflight 가 필요해지고 `sendBeacon` 은
    *    preflight 를 못 해 **조용히** 실패합니다.

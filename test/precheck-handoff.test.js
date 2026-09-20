@@ -46,8 +46,18 @@ function harness() {
   for (const id of ['sc', 'gn', 'gd', 'rows', 'f3', 'f3b', 'h3b', 'h1b', 'h4', 'nt', 'ns', 'paths',
                     'f1', 'f1b', 'f2', 'f4', 'f5']) node(id);
 
-  const document = { getElementById: (id) => nodes.get(id) || node(id) };
-  new Function('document', body[1])(document);
+  /*
+   * 🔴 **DOM 흉내를 늘렸습니다** 〔2026-09-20〕 — 스크립트가 1분 진단 응답을 앱으로 보내기
+   *    시작하면서 `window`·`navigator` 를 만집니다. 위 머리주석이 적어 둔 그대로입니다:
+   *    「스크립트가 새 DOM 기능을 쓰기 시작하면 여기도 함께 늘려야 합니다」.
+   * ⚠️ `sendBeacon` 이 **참**을 돌려줘야 `fetch` 폴백으로 내려가지 않습니다 —
+   *    이 검사는 주소 계약을 재는 자리라 망을 타면 안 됩니다.
+   *    보내는 몸통 자체는 `test/quick-check-report.test.js` 가 봅니다.
+   */
+  const document = { getElementById: (id) => nodes.get(id) || node(id), addEventListener() {} };
+  const window = { addEventListener() {}, tropsVisit: () => ({ sessionKey: null, from: null }) };
+  const navigator = { sendBeacon: () => true };
+  new Function('document', 'window', 'navigator', body[1])(document, window, navigator);
 
   return {
     /** 답을 채우고 한 번 다시 그린다. `f3b`(국가)는 권역이 정해진 뒤라야 채울 수 있다. */
