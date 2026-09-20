@@ -44,6 +44,13 @@
   var SS_RET = 'trops_vs_r';
   var SS_SRC = 'trops_vs_s';
   var SS_REF = 'trops_vs_h';
+  /*
+   * 🔴 **유입원 원문** 〔2026-09-20〕 — `?from=` 으로 들어온 값을 그 방문 내내 이어 씁니다.
+   *    같은 오리진을 옮겨 다니면 쿼리가 사라지므로 방문 열쇠와 «같은 그릇·같은 수명»에 둡니다.
+   *    ⚠️ 채널 코드입니다 — 이름·연락처·기기 정보가 아닙니다(개인 식별자 0).
+   *       `privacy.html` §01 이 이 칸을 적고 있습니다. 이름을 바꾸면 그 문장도 함께 고치십시오.
+   */
+  var SS_FROM = 'trops_vs_f';
   var LS_SEEN = 'trops_seen';
 
   var DWELL_MAX_MS = 30 * 60 * 1000;
@@ -109,8 +116,64 @@
     return { bucket: bucket, referrer: ref };
   }
 
+  /*
+   * ── 유입원(`from`) ─────────────────────────────────────────────────────
+   *
+   * 🔴 **무엇인가** — 「어느 지면 · 어느 제휴에서 왔는가」입니다. 앱이 이 값을
+   *    `export_precheck_run.from_source_raw` 에 **접지 않고 원문 그대로** 적습니다(0075).
+   *
+   * ⛔ **목록으로 거르지 마십시오.** 모르는 값을 버리면 이 장치가 없애려던 손실이 랜딩에서
+   *    그대로 재발합니다 — 앱이 접지 않고 저장하는 것이 그 칸의 존재 이유입니다.
+   * ⛔ **`source=one_minute_check` 를 대신하지 마십시오.** 그것은 Handoff Contract v2 의
+   *    canonical 키로 「1분 체크 답을 갖고 왔다」를 뜻하고(앱에서 불리언 하나로 쓰입니다),
+   *    이 값은 「어디서 왔는가」입니다. 둘은 다른 축이고 한 값으로 합치면 둘 다 잃습니다.
+   *    ⚠️ 그 키는 `precheck.html` 의 `query()` 가 만듭니다 — 여기서 만들지 않습니다.
+   * ⛔ **`utm_*` 를 건드리지 마십시오.** 위 `source()` 가 `utm_medium` 을 유입 «갈래» 판정에
+   *    씁니다. 그 축은 방문 계측이고 이 축은 실행 행에 남는 값입니다.
+   * ⚠️ **100자에서 자릅니다** — 앱도 자릅니다. 잘린 값이 두 곳에서 같아야 합니다.
+   *    ⚠️ 여기는 UTF-16 단위로 자릅니다. 제휴 코드는 ASCII 라 실제로는 같지만, 서로게이트
+   *       쌍이 든 값이 오면 앱의 글자 수 기준과 어긋날 수 있습니다.
+   */
+
+  /** 진입 쿼리의 `from` 을 한 방문에 «한 번만» 담습니다 — 첫 값이 그 방문의 값입니다. */
+  function seedFrom() {
+    /*
+     * 🔴 **첫 값 우선**입니다 〔2026-09-20 · 대표 확인〕 — 위 `source()` 와 같은 방식이고,
+     *    「그 방문 내내 이어 쓴다」가 그 뜻입니다.
+     *    ⚠️ 나중 값으로 바꾸려면 이 이른 반환을 걷으면 됩니다. 그때 한 방문 안에서 제휴
+     *       귀속이 옮겨 다닌다는 것을 알고 바꾸십시오 — 정산이 걸린 축입니다.
+     */
+    if (ssGet(SS_FROM)) return;
+    var v;
+    try { v = new URLSearchParams(location.search).get('from') || ''; } catch (e) { return; }
+    v = v.replace(/^\s+|\s+$/g, '');
+    if (v) ssSet(SS_FROM, v.slice(0, 100));
+  }
+
+  /**
+   * 지금 이 클릭에 실을 값.
+   * 🔴 **지면 기본값은 경로에서 «파생»합니다** — 파일마다 상수를 심으면 페이지가 늘 때
+   *    한쪽만 붙습니다. ⛔ 여기 페이지 이름을 늘어놓지 마십시오.
+   * ⚠️ 저장소가 막힌 브라우저에서는 제휴 코드를 못 잇고 지면 기본값으로 떨어집니다 —
+   *    그래도 「어느 지면에서 왔는가」는 남습니다.
+   */
+  function currentFrom() {
+    var v = ssGet(SS_FROM);
+    /*
+     * ⚠️ **`.html` 까지 받습니다** 〔2026-09-20 실측〕. 프로덕션은 `cleanUrls:true` 라
+     *    주소가 `/precheck` 이지만, 로컬 `dist/` 와 `.html` 을 직접 연 경우는
+     *    `/precheck.html` 입니다. 처음에 그 꼴을 빼 두었더니 **지면이 `landing` 으로
+     *    떨어졌습니다** — 브라우저로 눌러 보고서야 나왔습니다.
+     * ⚠️ 꼬리를 `(\/|$)` 로 닫아 둡니다 — 없으면 `/precheckers` 같은 주소가
+     *    사전점검으로 잡힙니다.
+     */
+    if (!v) v = /^\/precheck(\.html)?(\/|$)/.test(location.pathname) ? 'precheck' : 'landing';
+    return v.slice(0, 100);
+  }
+
   var ID = identity();
   var SRC = source();
+  seedFrom();
 
   /*
    * 🔴 **앱으로는 `text/plain;charset=UTF-8` 입니다.** CORS 안전 목록이라 preflight 가
@@ -305,9 +368,23 @@
     var url;
     try { url = new URL(a.getAttribute('href'), location.href); } catch (err) { return; }
     if (url.origin !== APP_ORIGIN) return;
+
+    /*
+     * 🔴 **이미 `from` 이 있으면 손대지 않습니다** 〔2026-09-20〕 — `/insurance/quick` 의
+     *    `from=landing` · `from=precheck` 두 링크가 그렇습니다. 그 칸(0053)은 **닫힌 5값**
+     *    집계 축이라, 제휴 코드가 들어가면 그 축이 깨집니다.
+     *    ⛔ `set` 으로 바꾸지 마십시오 — 이 `if` 가 두 축을 갈라 놓는 전부입니다.
+     */
+    if (!url.searchParams.get('from')) url.searchParams.set('from', currentFrom());
+
+    /*
+     * ⚠️ **열쇠 검사보다 `from` 이 «먼저»입니다.** 종전에는 여기서 곧바로 `return` 했고,
+     *    그래서 사생활 보호 모드처럼 저장소가 막힌 브라우저에서는 **아무것도 붙지 않았습니다.**
+     *    열쇠는 못 이어도 유입원은 실어 보냅니다. ⛔ 이 둘의 순서를 되돌리지 마십시오.
+     */
     var key = ID.sessionKey;
-    if (!key) return;
-    url.searchParams.set('vs', key);
+    if (key) url.searchParams.set('vs', key);
+
     a.setAttribute('href', url.toString());
   }, true);
 })();

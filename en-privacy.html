@@ -316,6 +316,14 @@
         it is not connected to any other information we hold. With it, we send a <strong>single
         true/false value</strong> showing whether you have visited before. The marker behind that value
         (<code>trops_seen</code>) only ever holds <code>1</code> and is <strong>never sent to our servers</strong>. As a result, our records alone <strong>cannot join two visits to the same person</strong>.</p>
+        <!-- 🔴 September 20, 2026 — one more slot (the channel code) was added; see the Korean
+             page for the full note. ⚠️ Unlike the visit key and <code>trops_seen</code>, this one
+             **is sent**. Do not fold it into the "never sent" sentence. -->
+        <p>The same container holds one more slot: a <strong>channel code</strong>
+        (<code>trops_vs_f</code>, September 20, 2026). If the address carries <code>?from=</code>, we keep
+        that value and <strong>send it along</strong> when you start an export pre-check. It tells us which
+        page or partner you came through, and it is <strong>not a name, a contact detail or device
+        information</strong>. This slot also <strong>disappears when you close the tab</strong>.</p>
         <p>We count how many times each page is opened and how many times the main buttons are clicked
         (August 18, 2026). Since September 4, 2026, we also measure <strong>which sections of a page you
         viewed, how long you stayed on each, how far down you scrolled, and where you went next</strong>.
