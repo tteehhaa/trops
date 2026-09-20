@@ -44,40 +44,102 @@
 <meta property="og:image:alt" content="TROPS 로고">
 <meta name="twitter:image" content="https://www.trops.kr/img/og.png">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<!-- 🔴 **구조화 데이터** 〔2026-09-20〕 — 이 장은 「회사가 누구인가」를 답하는 자리라
+     검색엔진·LLM 이 그 답을 **기계로** 읽을 수 있어야 합니다. `@id` 로 랜딩의 노드를
+     가리킵니다(`#org` · `#site`) — 같은 회사를 두 벌로 선언하지 않기 위해서입니다.
+     ⛔ 여기에 `Organization` 의 «다른» 이름·주소를 적지 마십시오. 랜딩 <head> 의 같은
+        노드와 글자가 갈리면 검색엔진이 어느 쪽이 정본인지 판단하지 못합니다.
+     ⚠️ 상호·대표는 **토큰**입니다 — `test/site-config.test.js` 가 하드코딩을 막습니다.
+        주소는 랜딩 JSON-LD 와 같은 방식으로 «조각»을 적습니다(전체 값이 아니므로 통과).
+     ⚠️ `foundingDate` 는 본문 05 연혁의 첫 줄과 **같아야** 합니다. 한쪽만 고치면
+        화면과 기계가 다른 설립일을 말합니다 — 이를 막는 검사는 아직 없습니다.
+     ⛔ `FAQPage` 를 여기 더하지 마십시오 — 그 노드는 랜딩 두 장의 것이고
+        `test/faq-structured-data.test.js` 가 본문↔구조화 데이터 일치를 그쪽에서 봅니다. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://trops.kr/#org",
+      "name": "{{biz.companyName}}",
+      "alternateName": "TROPS",
+      "url": "https://trops.kr/",
+      "email": "contact@theo-ne.com",
+      "foundingDate": "2026-06",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "봉은사로 524, B층 269-11호",
+        "addressLocality": "강남구",
+        "addressRegion": "서울특별시",
+        "addressCountry": "KR"
+      },
+      "founder": { "@id": "https://trops.kr/about#founder" }
+    },
+    {
+      "@type": "Person",
+      "@id": "https://trops.kr/about#founder",
+      "name": "{{biz.ceo}}",
+      "jobTitle": "대표",
+      "worksFor": { "@id": "https://trops.kr/#org" }
+    },
+    {
+      "@type": "AboutPage",
+      "@id": "https://trops.kr/about#page",
+      "url": "https://trops.kr/about",
+      "name": "회사 소개 — TROPS",
+      "inLanguage": "ko-KR",
+      "isPartOf": { "@id": "https://trops.kr/#site" },
+      "about": { "@id": "https://trops.kr/#org" },
+      "publisher": { "@id": "https://trops.kr/#org" }
+    }
+  ]
+}
+</script>
 <style>
 /*
- * 회사 소개 한 장 〔2026-09-20 · 대표 지시 「회사 소개 만들어서 푸터에」〕.
+ * 회사 소개 한 장 〔2026-09-20 신설 · 대표 지시 「회사 소개 만들어서 푸터에」〕.
+ * 🔄 **시각 설계 고도화** 〔2026-09-20 · 대표 지시〕 — 문구는 확정된 것을 한 글자도
+ *    바꾸지 않고 구조·타이포·리듬만 다시 세웁니다.
  *
- * 🔴 **이 페이지가 서는 이유** — 랜딩은 「이 서비스가 당신 거래에 쓸모가 있는가」에만
- *    답하는 자리라, 수상 이력·연혁·지표처럼 «회사 자신에 대한 말»이 들어가면 앞의
- *    사실 문장들이 함께 가벼워집니다. 그 말들의 집이 없어서 랜딩이 자꾸 후보가 됐고,
- *    그래서 집을 먼저 세웁니다. ⛔ 랜딩 본문으로 되돌리지 마십시오.
+ * 🔴 **이 페이지가 서는 이유** — 수상 이력·연혁·지표처럼 «회사 자신에 대한 말»이 갈
+ *    곳이 없어서 랜딩이 자꾸 후보가 됐습니다. 랜딩은 출처 붙은 사실만 싣는 자리라
+ *    자기 소개가 섞이면 앞의 문장들이 함께 가벼워집니다. ⛔ 랜딩으로 되돌리지 마십시오.
  *
- * 🔴 **디자인은 랜딩 :root 를 그대로 씁니다.** index.html · precheck.html · contact.html ·
- *    refund.html · privacy.html 이 같은 표를 씁니다. ⛔ 여기서 색이나 반경을 새로
- *    만들지 마십시오 — 한 페이지만 다른 값을 쓰면 페이지를 오갈 때 그 자리만 튑니다.
+ * 🔴 **디자인 토큰은 랜딩 :root 를 그대로 씁니다.** index · precheck · contact ·
+ *    refund · privacy 가 같은 표를 씁니다. ⛔ 여기서 색이나 반경을 «새로» 만들지
+ *    마십시오 — 한 장만 다른 값을 쓰면 페이지를 오갈 때 그 자리만 튑니다.
+ *    ⚠️ 아래 --r-pill · --gut 둘은 색이 아니라 이 페이지 안의 반복 치수입니다.
+ *       토큰표를 늘린 것이 아니라, 같은 값을 여러 규칙이 쓰기에 이름을 준 것입니다.
  *
- * ⚠️ **숫자를 다시 적지 않았습니다.** 랜딩의 세 숫자(미회수 규모 · 반송 비율 · 절차 문의
- *    비중)는 출처가 붙은 인용이고, 같은 숫자를 두 장에 두면 반드시 갈립니다 — 이 저장소가
- *    사업자정보 6곳 · 대조 항목수 5곳에서 이미 겪은 형태입니다. 그래서 이 페이지는 그
- *    숫자들을 **가리키기만** 합니다(「근거로 삼은 숫자는 홈에 함께 적어 두었습니다」).
- *    ⛔ 여기에 숫자를 옮겨 적지 마십시오. 옮기려면 그 전에 두 장을 묶는 검사부터입니다.
+ * ⚠️ **숫자를 다시 적지 않았습니다.** 랜딩의 세 숫자(미회수 규모 · 반송 비율 · 절차
+ *    문의 비중)는 출처가 붙은 인용이고, 같은 숫자를 두 장에 두면 반드시 갈립니다 —
+ *    이 저장소가 사업자정보 6곳 · 대조 항목수 5곳에서 이미 겪은 형태입니다.
+ *    ⛔ 여기에 옮겨 적지 마십시오. 옮기려면 그 전에 두 장을 묶는 검사부터입니다.
+ *
+ * ⚠️ **바깥 요청이 0건입니다** — 글꼴(랜딩과 같은 CDN 한 줄)과 계측 말고는 아무것도
+ *    부르지 않습니다. 아이콘은 전부 CSS 도형입니다. ⛔ 아이콘 폰트·SVG 스프라이트를
+ *    들이지 마십시오, 한 장을 위해 왕복이 늘어납니다.
  */
 :root{
   --accent:#1D4ED8; --accent-deep:#1739A8; --accent-soft:#EFF4FE;
   --ink:#0F172A; --ink-2:#475569; --ink-3:#94A3B8;
   --line:#E2E8F0; --line-soft:#F1F5F9;
   --surface:#F8FAFC; --white:#FFFFFF;
-  --r-card:12px; --r-control:6px;
+  --r-card:12px; --r-control:6px; --r-pill:999px;
+  --gut:28px;
   --f:"Pretendard Variable","Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
 body{font-family:var(--f);background:var(--white);color:var(--ink);
   font-size:16.5px;line-height:1.76;word-break:keep-all;
   -webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
-a{color:inherit}:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:3px}
-.w{max-width:1040px;margin:0 auto;padding:0 28px}
-section{padding:80px 0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:3px}
+.w{max-width:1040px;margin:0 auto;padding:0 var(--gut)}
+section{padding:92px 0}
 .band{background:var(--surface);border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft)}
 h1,h2,h3{text-wrap:balance}
 p,li,dd{text-wrap:pretty}
@@ -85,91 +147,164 @@ p,li,dd{text-wrap:pretty}
 nav{border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);z-index:10}
 nav .w{display:flex;justify-content:space-between;align-items:center;height:64px}
 .nav-right{display:flex;align-items:center;gap:18px}
-.nav-login{font-size:14px;font-weight:600;color:var(--ink-2);text-decoration:none}
+.nav-login{font-size:14px;font-weight:600;color:var(--ink-2);text-decoration:none;transition:color .15s}
 .nav-login:hover{color:var(--ink)}
 .logo{display:flex;align-items:center;gap:9px;font-size:19px;font-weight:800;letter-spacing:-.02em;text-decoration:none}
 .logo i{width:9px;height:9px;border-radius:2px;background:var(--accent);display:block}
 
 /* 🔴 **skip 링크** — `test/page-essentials.test.js` 가 전 페이지에 이 둘을 함께 잽니다.
-   ⚠️ `display:none`·`visibility:hidden` 으로 숨기면 **포커스가 아예 닿지 않아** 링크가
-      있으나 없으나 같아집니다. 화면 밖으로 밀어내고 `:focus` 가 되돌려 놓는 방식이어야 합니다.
-   ⚠️ `z-index` 가 nav(10)보다 높아야 합니다 — 같으면 포커스된 링크가 nav 뒤로 숨습니다. */
+   ⚠️ display:none · visibility:hidden 으로 숨기면 **포커스가 아예 닿지 않아** 링크가
+      있으나 없으나 같아집니다. 밖으로 밀어내고 :focus 가 되돌려 놓는 방식이어야 합니다.
+   ⚠️ z-index 가 nav(10)보다 높아야 합니다 — 같으면 포커스된 링크가 nav 뒤로 숨습니다. */
 .skip{position:absolute;left:-9999px;top:8px;padding:10px 16px;border-radius:6px;background:var(--ink);color:#fff;font-size:14px;z-index:20}
 .skip:focus{left:16px}
 
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;
-  padding:0 22px;border-radius:var(--r-control);background:var(--accent);color:#fff;
-  font-size:15px;font-weight:700;text-decoration:none;border:1px solid var(--accent)}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;
+  padding:0 24px;border-radius:var(--r-control);background:var(--accent);color:#fff;
+  font-size:15px;font-weight:700;text-decoration:none;border:1px solid var(--accent);transition:background .15s,border-color .15s}
 .btn:hover{background:var(--accent-deep);border-color:var(--accent-deep)}
-.btn-2{display:inline-flex;align-items:center;justify-content:center;min-height:44px;
-  padding:0 22px;border-radius:var(--r-control);background:var(--white);color:var(--ink);
-  font-size:15px;font-weight:700;text-decoration:none;border:1px solid var(--line)}
+.btn-2{display:inline-flex;align-items:center;justify-content:center;min-height:46px;
+  padding:0 24px;border-radius:var(--r-control);background:var(--white);color:var(--ink);
+  font-size:15px;font-weight:700;text-decoration:none;border:1px solid var(--line);transition:border-color .15s}
 .btn-2:hover{border-color:var(--ink-3)}
 .btn-s{min-height:38px;font-size:14px;padding:0 16px}
 
-.hero{padding:76px 0 64px;border-bottom:1px solid var(--line-soft)}
-.eyebrow{display:block;font-size:14px;font-weight:700;color:var(--accent);letter-spacing:.02em;margin-bottom:16px}
-.hero h1{font-size:clamp(28px,4vw,40px);font-weight:800;letter-spacing:-.035em;line-height:1.32;max-width:24ch}
-.hero .lead{max-width:56ch;margin-top:20px;font-size:18px;color:var(--ink-2);line-height:1.72}
-.hero .lead-2{max-width:60ch;margin-top:16px;font-size:16.5px;color:var(--ink-2);line-height:1.76}
+/* ── 히어로 ─────────────────────────────────────────────────────────────
+   🔴 왼쪽 강조선은 «읽는 자리»를 잡아 줍니다. 랜딩 히어로는 가운데 정렬이고 이 장은
+      왼쪽 정렬입니다 — 랜딩은 «부르는» 자리, 여기는 «읽는» 자리라 정렬이 다릅니다.
+      ⛔ 가운데로 맞추지 마십시오. 긴 문단이 가운데 정렬이면 줄 시작점이 매번 달라집니다. */
+.hero{padding:96px 0 76px;border-bottom:1px solid var(--line-soft)}
+.hero .rule{width:46px;height:4px;border-radius:2px;background:var(--accent);margin-bottom:26px}
+.eyebrow{display:block;font-size:13.5px;font-weight:700;color:var(--accent);letter-spacing:.06em;margin-bottom:14px}
+.hero h1{font-size:clamp(30px,4.4vw,46px);font-weight:800;letter-spacing:-.04em;line-height:1.26;max-width:20ch}
+.hero .lead{max-width:44ch;margin-top:24px;font-size:19px;font-weight:600;color:var(--ink);line-height:1.66}
+.hero .lead-2{max-width:60ch;margin-top:16px;font-size:16.5px;color:var(--ink-2);line-height:1.78}
 
-h2.sec{font-size:clamp(22px,2.7vw,28px);font-weight:700;letter-spacing:-.03em;line-height:1.35;margin-bottom:28px}
+/* ── 섹션 머리 — 번호가 리듬을 만듭니다 ──────────────────────────────── */
+.shead{display:flex;align-items:baseline;gap:14px;margin-bottom:34px;
+  padding-bottom:18px;border-bottom:1px solid var(--line)}
+.shead .n{font-size:13px;font-weight:800;color:var(--accent);letter-spacing:.08em;flex:none}
+h2.sec{font-size:clamp(22px,2.8vw,30px);font-weight:700;letter-spacing:-.03em;line-height:1.35}
+
 .prose{max-width:64ch}
-.prose p{margin-bottom:18px;color:var(--ink-2)}
+.prose p{margin-bottom:20px;color:var(--ink-2)}
 .prose p:last-child{margin-bottom:0}
 .prose em{font-style:normal;font-weight:700;color:var(--ink)}
-.prose a{color:var(--accent);font-weight:600}
+.prose a{color:var(--accent);font-weight:600;text-underline-offset:3px}
 
-.stages{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.st{border:1px solid var(--line);border-radius:var(--r-card);padding:24px 22px;background:var(--white)}
-.st .no{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:10px}
-.st h3{font-size:17px;font-weight:700;letter-spacing:-.02em;margin-bottom:8px}
-.st p{font-size:14.5px;color:var(--ink-2);line-height:1.7}
-.st .tag{margin-top:14px;display:inline-block;font-size:12.5px;font-weight:700;color:var(--ink-2);
-  background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px 11px}
+/* ── 3단계 흐름 ─────────────────────────────────────────────────────────
+   🔴 카드 셋이 아니라 «흐름»입니다 — 한 건의 거래가 지나가는 순서라, 번호와 잇는 선이
+      그 사실을 말합니다. ⚠️ 잇는 선은 마지막 칸에서 끊깁니다(`:last-child` 규칙).
+      끊지 않으면 3단계 다음에 무엇이 더 있는 것처럼 읽힙니다. */
+.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line);border-radius:var(--r-card);overflow:hidden;background:var(--white)}
+.fs{position:relative;padding:30px 26px 28px;border-right:1px solid var(--line)}
+.fs:last-child{border-right:0}
+.fs .mk{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.fs .dot{width:26px;height:26px;border-radius:var(--r-pill);background:var(--accent-soft);color:var(--accent);
+  font-size:12.5px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none}
+.fs .ph{font-size:12.5px;font-weight:700;color:var(--ink-3);letter-spacing:.02em}
+.fs h3{font-size:17.5px;font-weight:700;letter-spacing:-.02em;margin-bottom:10px}
+.fs p{font-size:14.5px;color:var(--ink-2);line-height:1.72}
+.fs .tag{margin-top:18px;display:inline-block;font-size:12.5px;font-weight:700;color:var(--ink-2);
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-pill);padding:4px 12px}
+.fs.now .dot{background:var(--accent);color:#fff}
+.fs.soon .dot{background:var(--line-soft);color:var(--ink-3)}
+.fs.soon h3{color:var(--ink-2)}
 
-/* 🔴 「선을 긋는 영역」 — 면책입니다. 눈에 덜 띄게 만들지 마십시오: 이 사이트가
-   신뢰를 얻는 방식이 «먼저 밝히는 것»이라 흐리면 그 방식이 깨집니다.
-   ⚠️ 같은 세 가지를 랜딩 푸터와 FAQ 가 «다른 문장»으로 들고 있습니다. 셋 중 하나를
-      고칠 때는 나머지 둘을 함께 보십시오 — 이를 막는 검사는 아직 없습니다. */
-.callout{margin-top:32px;max-width:64ch;border:1px solid var(--line);border-left:3px solid var(--accent);
-  border-radius:var(--r-card);background:var(--surface);padding:22px 24px}
-.callout b{display:block;font-size:15.5px;font-weight:700;margin-bottom:8px}
-.callout p{font-size:15px;color:var(--ink-2);line-height:1.74}
+/* ── 면책 ───────────────────────────────────────────────────────────────
+   🔴 **셋을 «각각 한 줄»로 나눠 둔 것은 의도입니다** — 한 문장에 묶여 있으면 셋 중
+      하나가 빠져도 눈에 띄지 않습니다. 나누면 빠진 줄이 보입니다.
+   ⛔ 접히는 요소로 만들거나 글씨를 더 줄이지 마십시오 — 먼저 밝히는 것이 이 사이트가
+      신뢰를 얻는 방식이고, 흐리면 그 방식이 깨집니다.
+   ⚠️ 같은 셋을 랜딩 푸터와 FAQ 가 «다른 문장»으로 들고 있습니다. 하나를 고칠 때
+      나머지 둘을 함께 보십시오. */
+.deny{max-width:66ch;border:1px solid var(--line);border-left:3px solid var(--accent);
+  border-radius:var(--r-card);background:var(--surface);padding:26px 28px}
+.deny b{display:block;font-size:15.5px;font-weight:700;margin-bottom:14px}
+.deny ul{list-style:none;margin-bottom:14px}
+.deny li{position:relative;padding-left:26px;font-size:15px;color:var(--ink-2);line-height:1.7;margin-bottom:7px}
+.deny li:last-child{margin-bottom:0}
+.deny li::before{content:"";position:absolute;left:4px;top:11px;width:9px;height:1.5px;background:var(--ink-3);border-radius:1px}
+.deny p{font-size:14.5px;color:var(--ink-2);line-height:1.72;padding-top:14px;border-top:1px solid var(--line)}
+.deny a{color:var(--accent);font-weight:600;text-underline-offset:3px}
 
-.person{max-width:64ch;border:1px solid var(--line);border-radius:var(--r-card);padding:26px 24px}
-.person .nm{font-size:18px;font-weight:700;letter-spacing:-.02em}
-.person .rl{display:inline-block;margin-left:8px;font-size:13px;font-weight:700;color:var(--accent);
-  background:var(--accent-soft);border-radius:999px;padding:2px 10px;vertical-align:2px}
-.person p{margin-top:14px;font-size:15.5px;color:var(--ink-2);line-height:1.76}
+/* ── 인용 — 창업 질문 한 줄 ───────────────────────────────────────────── */
+.pull{max-width:56ch;margin:34px 0;padding-left:26px;border-left:3px solid var(--accent);
+  font-size:clamp(19px,2.2vw,23px);font-weight:700;letter-spacing:-.025em;line-height:1.5;color:var(--ink)}
+.pull small{display:block;margin-top:12px;font-size:14.5px;font-weight:600;color:var(--ink-2);letter-spacing:0;line-height:1.7}
 
-/* 연혁 — 날짜가 왼쪽 기둥입니다. ⚠️ 항목을 더할 때 «날짜 없는 줄»을 넣지 마십시오:
-   시점이 없는 이력은 언제 일어난 일인지 묻게 만들고, 그 물음이 남으면 목록 전체가
-   흐려집니다. 「준비 중」처럼 시점이 없는 것은 3단계 카드가 이미 말합니다. */
-.hist{max-width:64ch;border-top:1px solid var(--line)}
-.hist>div{display:grid;grid-template-columns:132px 1fr;gap:18px;padding:16px 2px;border-bottom:1px solid var(--line-soft)}
-.hist dt{font-size:14.5px;font-weight:700;color:var(--accent)}
-.hist dd{font-size:15.5px;color:var(--ink)}
-.hist dd em{font-style:normal;font-weight:700}
+/* ── 만든 사람 ──────────────────────────────────────────────────────────
+   ⚠️ 칩은 아래 문단의 «요약»입니다. 문단을 고치면 칩도 함께 보십시오 — 한 블록 안이라
+      눈에 띄지만, 갈리면 같은 사람을 두 번 다르게 소개하게 됩니다. */
+.person{max-width:66ch;border:1px solid var(--line);border-radius:var(--r-card);padding:30px 28px;background:var(--white)}
+.person .top{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.person .mark{width:44px;height:44px;border-radius:var(--r-card);background:var(--accent-soft);
+  display:flex;align-items:center;justify-content:center;flex:none}
+.person .mark i{width:13px;height:13px;border-radius:3px;background:var(--accent);display:block}
+.person .nm{font-size:19px;font-weight:800;letter-spacing:-.02em}
+.person .rl{font-size:13px;font-weight:700;color:var(--accent);background:var(--accent-soft);
+  border-radius:var(--r-pill);padding:3px 11px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.chips span{font-size:13px;font-weight:600;color:var(--ink-2);background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--r-pill);padding:5px 13px}
+.person p{margin-top:20px;font-size:15.5px;color:var(--ink-2);line-height:1.8}
 
-.biz{max-width:64ch;border:1px solid var(--line);border-radius:var(--r-card);overflow:hidden}
-.biz div{display:grid;grid-template-columns:150px 1fr;gap:16px;padding:14px 20px;border-bottom:1px solid var(--line-soft);font-size:15px}
+/* ── 연혁 — 왼쪽 기둥과 점 ──────────────────────────────────────────────
+   🔴 **날짜 없는 줄을 넣지 마십시오** — 시점이 없는 이력은 「언제 일인가」를 묻게 만들고,
+      그 물음이 남으면 목록 전체가 흐려집니다. 「준비 중」인 3단계는 위 흐름이 말합니다. */
+.tl{max-width:66ch;position:relative;padding-left:2px}
+.tl>div{position:relative;display:grid;grid-template-columns:118px 1fr;gap:22px;
+  padding:0 0 30px 30px;border-left:2px solid var(--line-soft)}
+.tl>div:last-child{padding-bottom:0;border-left-color:transparent}
+.tl>div::before{content:"";position:absolute;left:-7px;top:7px;width:12px;height:12px;border-radius:var(--r-pill);
+  background:var(--white);border:2px solid var(--line)}
+.tl>div.hi::before{background:var(--accent);border-color:var(--accent)}
+.tl dt{font-size:14px;font-weight:800;color:var(--accent);letter-spacing:.01em;padding-top:2px}
+.tl dd{font-size:16px;color:var(--ink);line-height:1.66}
+.tl dd em{font-style:normal;font-weight:800}
+
+/* ── 회사 정보 ─────────────────────────────────────────────────────────── */
+.biz{max-width:66ch;border:1px solid var(--line);border-radius:var(--r-card);overflow:hidden;background:var(--white)}
+.biz div{display:grid;grid-template-columns:160px 1fr;gap:16px;padding:15px 22px;border-bottom:1px solid var(--line-soft);font-size:15px}
 .biz div:last-child{border-bottom:0}
 .biz dt{color:var(--ink-2);font-weight:600}
 .biz dd{color:var(--ink)}
-.after{margin-top:26px;display:flex;gap:12px;flex-wrap:wrap}
+.biz a{color:var(--accent);font-weight:600;text-underline-offset:3px}
+
+/* ── 마감 ───────────────────────────────────────────────────────────────
+   ⚠️ **주 버튼은 하나입니다** — 랜딩 마감이 지키는 규칙과 같습니다
+      (test/landing-invariants.test.js 「마감 CTA 에 «주» 버튼이 정확히 하나다」).
+      그 검사는 랜딩 두 장만 보지만, 규칙을 달리할 이유가 없습니다. */
+.fin{text-align:center}
+.fin h2{font-size:clamp(22px,2.8vw,30px);font-weight:700;letter-spacing:-.03em;line-height:1.4}
+.fin p{margin-top:12px;font-size:16px;color:var(--ink-2)}
+.fin .act{margin-top:30px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 
 footer{background:var(--ink);color:#CBD5E1;padding:48px 0 54px;font-size:13.5px;line-height:1.82}
 footer a{color:#CBD5E1}
 footer .fl{margin-top:16px;display:flex;gap:20px;flex-wrap:wrap;color:#94A3B8}
 footer .cp{margin-top:18px;color:#64748B}
 
-@media(max-width:860px){
-  .stages{grid-template-columns:1fr}
-  .hist>div{grid-template-columns:1fr;gap:4px}
-  section{padding:60px 0}
-  .hero{padding:56px 0 48px}
+@media(max-width:900px){
+  :root{--gut:22px}
+  section{padding:64px 0}
+  .hero{padding:64px 0 54px}
+  .flow{grid-template-columns:1fr}
+  .fs{border-right:0;border-bottom:1px solid var(--line)}
+  .fs:last-child{border-bottom:0}
+  .tl>div{grid-template-columns:1fr;gap:6px}
   .biz div{grid-template-columns:1fr;gap:4px;padding:14px 18px}
+  .shead{margin-bottom:26px}
+}
+/* 인쇄 — 회사 소개는 «출력해서 들고 가는» 장입니다(기관 제출·사내 보고).
+   ⚠️ 배경을 지우면 면책 블록의 테두리만 남습니다 — 그래서 왼쪽 강조선을 검정으로 남깁니다. */
+@media print{
+  nav,.skip,.fin,footer .fl{display:none}
+  body{font-size:11pt}
+  section{padding:24px 0;break-inside:avoid}
+  .band{background:none}
+  .deny{background:none;border-left-color:#000}
+  a{text-decoration:none}
 }
 </style></head><body>
 
@@ -188,6 +323,7 @@ footer .cp{margin-top:18px;color:#64748B}
 <main id="main">
 
 <header class="hero"><div class="w">
+  <div class="rule"></div>
   <span class="eyebrow">회사 소개</span>
   <h1>사고가 터진 뒤의 수습보다,<br>선적 전에 차단하는 인프라를 만듭니다.</h1>
   <p class="lead">수출 현장의 복잡한 리스크, 미리 갖추지 못해 생기는 손해를 줄입니다.</p>
@@ -196,9 +332,9 @@ footer .cp{margin-top:18px;color:#64748B}
   <p class="lead-2">TROPS는 {{biz.companyName}}가 만드는 중소기업 수출 업무 지원 소프트웨어입니다. 전담 컴플라이언스 부서 없이 계약부터 수금까지 오직 대표자의 역량으로 챙겨야 하는 기업들을 위해, 수출 거래 한 건을 기준으로 실효성 있는 리스크 관리 체계를 제공합니다.</p>
 </div></header>
 
-<section><div class="w">
-  <h2 class="sec">무엇을 하는 회사인가</h2>
-  <!-- 🔴 **세 카드의 «상태»는 랜딩 3단계와 같아야 합니다** — 1단계 무료 · 2단계 유료 ·
+<section aria-labelledby="h-what"><div class="w">
+  <div class="shead"><span class="n">01</span><h2 class="sec" id="h-what">무엇을 하는 회사인가</h2></div>
+  <!-- 🔴 **세 칸의 «상태»는 랜딩 3단계와 같아야 합니다** — 1단계 무료 · 2단계 유료 ·
        3단계 준비 중. 설명 문장은 페이지마다 달라도 되지만 상태가 갈리면 같은 회사의
        두 페이지가 다른 상품을 팝니다.
        ⚠️ 2026-09-20 초안이 아래 연혁에서 2단계를 「출시 예정」으로 적고 있었습니다 —
@@ -206,86 +342,104 @@ footer .cp{margin-top:18px;color:#64748B}
           살아 있습니다. 상태 표기를 고칠 때는 랜딩 3단계 카드를 함께 보십시오.
        ⛔ 여기에 **요금을 적지 마십시오** — `test/price-exposure.test.js` 가 살아 있는
           어느 페이지에도 원화 금액이 없어야 한다고 단정합니다. -->
-  <div class="stages">
-    <div class="st">
-      <div class="no">1단계 · 선적 전</div>
+  <div class="flow">
+    <div class="fs now">
+      <div class="mk"><span class="dot">1</span><span class="ph">선적 전</span></div>
       <h3>수출 사전점검 리포트</h3>
       <p>이번 수출에서 최우선으로 확인해야 할 규제와 절차적 요건을 점검하고, 항목별 명확한 판단 근거를 함께 제시해 드립니다.</p>
       <div class="tag">무료 · 계정 불필요</div>
     </div>
-    <div class="st">
-      <div class="no">2단계 · 계약 및 선적</div>
+    <div class="fs now">
+      <div class="mk"><span class="dot">2</span><span class="ph">계약 및 선적</span></div>
       <h3>무역보험 준비 패키지</h3>
       <p>무역보험 가입과 실행에 필요한 까다로운 절차 및 구비 서류를 거래 한 건의 기준으로 체계적으로 정리해 드립니다.</p>
       <div class="tag">유료 · 거래 건 기준</div>
     </div>
-    <div class="st">
-      <div class="no">3단계 · 선적 후</div>
+    <div class="fs soon">
+      <div class="mk"><span class="dot">3</span><span class="ph">선적 후</span></div>
       <h3>수출대금 관리</h3>
       <p>결제 기일, 사고 통지 기한, 증권 만료일 등 놓치기 쉬운 사후 관리 일정을 한자리에서 안전하게 관리합니다.</p>
       <div class="tag">준비 중</div>
     </div>
   </div>
-  <!-- 🔴 **면책 셋을 이 페이지가 «자기 문장»으로 들게 됐습니다** 〔2026-09-20 · 대표 지시〕.
-       랜딩 푸터와 FAQ 가 같은 셋을 다른 문장으로 들고 있습니다 — 셋 중 하나를 고칠 때는
-       나머지 둘을 함께 보십시오. ⚠️ 이를 막는 검사는 아직 없습니다.
-       ⛔ 이 블록을 접히는 요소나 작은 글씨로 내리지 마십시오 — 먼저 밝히는 것이
-          이 사이트가 신뢰를 얻는 방식입니다. -->
-  <div class="callout">
-    <b>TROPS가 명확히 선을 긋는 영역</b>
-    <p>TROPS는 법률 자문 및 개별 계약서 검토, 보험 인수·지급 심사 및 가입 대행, 특정 상품 추천을 제공하지 않으며 미수금 회수를 보장하지 않습니다. 본 서비스는 기술·실무·법제의 유기적 연결을 바탕으로 한 예방적 가이드를 지향합니다. 상세한 내용은 <a href="/">홈</a>의 자주 묻는 질문과 푸터를 참고해 주시기 바랍니다.</p>
+</div></section>
+
+<section class="band" aria-labelledby="h-deny"><div class="w">
+  <div class="shead"><span class="n">02</span><h2 class="sec" id="h-deny">TROPS가 명확히 선을 긋는 영역</h2></div>
+  <!-- 🔴 **면책 셋을 이 페이지가 «자기 문장»으로 듭니다** 〔2026-09-20 · 대표 지시〕.
+       랜딩 푸터(`.nd`)와 랜딩 FAQ 「TROPS가 무역보험 가입을 대신해 줍니까?」가 같은
+       셋을 다른 문장으로 들고 있습니다 — 하나를 고칠 때 나머지 둘을 함께 보십시오.
+       🔴 셋을 «각각 한 줄»로 나눈 것은 의도입니다 — 한 문장에 묶이면 하나가 빠져도
+          눈에 띄지 않습니다. ⛔ 다시 한 문장으로 합치지 마십시오. -->
+  <div class="deny">
+    <b>TROPS는 다음을 하지 않습니다</b>
+    <ul>
+      <li>법률 자문 및 개별 계약서 검토를 제공하지 않습니다.</li>
+      <li>보험 인수·지급 심사 및 가입 대행, 특정 상품 추천을 하지 않습니다.</li>
+      <li>미수금 회수를 보장하지 않습니다.</li>
+    </ul>
+    <p>본 서비스는 기술·실무·법제의 유기적 연결을 바탕으로 한 예방적 가이드를 지향합니다. 상세한 내용은 <a href="/">홈</a>의 자주 묻는 질문과 푸터를 참고해 주시기 바랍니다.</p>
   </div>
 </div></section>
 
-<section class="band"><div class="w">
-  <h2 class="sec">왜 이걸 만들었나</h2>
+<section aria-labelledby="h-why"><div class="w">
+  <div class="shead"><span class="n">03</span><h2 class="sec" id="h-why">왜 이걸 만들었나</h2></div>
   <!-- 🔴 **이 절에는 인용 통계를 들이지 않았습니다.** 랜딩이 출처와 함께 들고 있는 세
        숫자(미회수 규모 · 반송 비율 · 절차 문의 비중)를 여기서 다시 적으면 두 장이 갈릴
        자리가 생깁니다. ⛔ 옮겨 적지 마십시오 — 옮기려면 두 장을 묶는 검사부터입니다.
        ⚠️ 「500건」은 랜딩이 «자체 분석»으로 밝힌 표본 크기라 이 회사가 한 일 자체입니다.
           비율·금액은 적지 않습니다.
-       ⚠️ **「뉴욕주 변호사」는 이력 기술입니다.** 바로 위 면책이 「법률 자문과 계약서
-          검토를 제공하지 않습니다(변호사법·외국법자문사법)」를 단정하므로, 이 낱말이
-          «서비스 설명» 쪽으로 넘어가면 두 문장이 서로를 무너뜨립니다.
+       ⚠️ **「뉴욕주 변호사」는 이력 기술입니다.** 바로 위 02 가 「법률 자문과 계약서
+          검토를 제공하지 않습니다」를 단정하므로, 이 낱말이 «서비스 설명» 쪽으로 넘어가면
+          두 문장이 서로를 무너뜨립니다.
           ⛔ 「법률 검토를 받으실 수 있습니다」 류로 바꾸지 마십시오. -->
   <div class="prose">
     <p>글로벌 컴플라이언스 현장에서 수많은 기업을 마주하며, 단 한 번의 BEC(이메일 무역사기) 공격이나 사소한 절차 누락이 중소기업의 존립을 얼마나 치명적으로 흔들 수 있는지 생생하게 목격해 왔습니다. 안타깝게도 피해 발생 이후의 사후 구제 방식에는 구조적인 한계가 분명했습니다.</p>
-    <p>“어떻게 하면 사전에 사고를 차단하는 인프라를 구축할 수 있을까?” 이 본질적인 질문에서 TROPS가 시작되었습니다.</p>
+  </div>
+  <blockquote class="pull">“어떻게 하면 사전에 사고를 차단하는 인프라를 구축할 수 있을까?”<small>이 본질적인 질문에서 TROPS가 시작되었습니다.</small></blockquote>
+  <div class="prose">
     <p>중소벤처기업부 비즈니스 지원단의 우수 상담 사례 500건을 직접 분석한 결과 역시 이와 맞닿아 있었습니다. 서류와 통관에서 막히는 상담 중 상당수가 기초적인 수출 절차 자체를 혼동하는 데서 비롯되었고, 무역보험에 가입하고도 절차와 구비 서류의 미비로 보상을 받지 못하는 경우가 적지 않았습니다. 즉, 진짜 손해는 보험의 부재가 아니라 <em>선적 전에 미리 갖추어야 할 요소를 놓친 것</em>이었습니다.</p>
     <p>소프트웨어 엔지니어로서의 기술적 통찰과 뉴욕주 변호사로서 글로벌 규제를 다뤄온 경험을 담아, TROPS는 사고가 난 뒤에 돕는 것이 아니라 사고가 나기 전에 무엇을 갖추어야 하는지 거래 건별로 정확히 짚어드립니다. 본문에 인용한 데이터와 통계의 출처는 <a href="/">홈</a>에 투명하게 공개되어 있습니다.</p>
   </div>
 </div></section>
 
-<section><div class="w">
-  <h2 class="sec">만든 사람</h2>
+<section class="band" aria-labelledby="h-who"><div class="w">
+  <div class="shead"><span class="n">04</span><h2 class="sec" id="h-who">만든 사람</h2></div>
   <!-- 🔴 대표 이름도 **토큰**입니다({{biz.ceo}}) — 리터럴로 적으면
-       `test/site-config.test.js` 가 red 를 냅니다. 값은 site.config.json 한 곳입니다. -->
+       `test/site-config.test.js` 가 red 를 냅니다. 값은 site.config.json 한 곳입니다.
+       ⚠️ 칩 셋은 아래 문단의 «요약»입니다. 문단을 고치면 칩도 함께 보십시오. -->
   <div class="person">
-    <div><span class="nm">{{biz.ceo}}</span><span class="rl">대표</span></div>
+    <div class="top">
+      <span class="mark"><i></i></span>
+      <span class="nm">{{biz.ceo}}</span>
+      <span class="rl">대표</span>
+    </div>
+    <div class="chips">
+      <span>모토로라 임베디드 SW 엔지니어</span>
+      <span>Attorney-at-Law (NY)</span>
+      <span>글로벌 컴플라이언스</span>
+    </div>
     <p>모토로라 임베디드 소프트웨어 엔지니어로 커리어를 시작해, 뉴욕주 변호사(Attorney-at-Law, NY) 자격과 글로벌 컴플라이언스 전문성을 쌓았습니다. 기술(Tech)·실무(Ops)·법제(Law)를 아우르는 융합적 시각으로 중소기업을 위한 실효성 있는 수출·보안 인프라를 구축하고 있습니다.</p>
   </div>
 </div></section>
 
-<section class="band"><div class="w">
-  <h2 class="sec">연혁 및 선정 이력</h2>
-  <!-- 🔴 **날짜 없는 줄을 넣지 마십시오** — 시점이 없는 이력은 「언제 일인가」를 묻게
-       만들고, 그 물음이 남으면 목록 전체가 흐려집니다. 「준비 중」인 3단계는 위 카드가
-       이미 말하고 있어 여기 다시 적지 않았습니다(2026-09-20 초안이 그것을 적고 있었고,
-       같은 줄이 2단계를 「출시 예정」으로 잘못 적고 있었습니다 — 2단계는 라이브입니다).
-       🔴 **100인(06월)과 50인(09월)은 «다른 줄»입니다** 〔2026-09-20 · 대표 확인〕 —
-          한 줄에 묶으면 세 달 걸린 두 단계가 한 사건으로 읽힙니다.
+<section aria-labelledby="h-hist"><div class="w">
+  <div class="shead"><span class="n">05</span><h2 class="sec" id="h-hist">연혁 및 선정 이력</h2></div>
+  <!-- 🔴 **100인(06월)과 50인(09월)은 «다른 줄»입니다** 〔2026-09-20 · 대표 확인〕 —
+       한 줄에 묶으면 세 달 걸린 두 단계가 한 사건으로 읽힙니다.
        ⚠️ 25인 선발 결과가 나오면 **50인 줄을 고치는 것이 아니라** 그 아래 한 줄을
-          더하십시오 — 선정 과정은 지워 쓰는 것이 아니라 쌓이는 것입니다. -->
-  <dl class="hist">
+          더하십시오 — 선정 과정은 지워 쓰는 것이 아니라 쌓이는 것입니다.
+          그때 `hi`(채운 점)를 새 줄로 옮기십시오. 지금은 가장 최근 줄에 있습니다. -->
+  <dl class="tl">
     <div><dt>2026년 06월</dt><dd>{{biz.companyName}}(THÉONÉ) 법인 설립</dd></div>
     <div><dt>2026년 06월</dt><dd>KAIST AI 1인 창업 프로그램 <em>‘KAIST OverEdge(오엣)’</em> 100인 선정</dd></div>
     <div><dt>2026년 09월</dt><dd>TROPS 수출 사전점검 리포트(1단계) 출시</dd></div>
-    <div><dt>2026년 09월</dt><dd>KAIST OverEdge(오엣) <em>50인</em> 최종 선발</dd></div>
+    <div class="hi"><dt>2026년 09월</dt><dd>KAIST OverEdge(오엣) <em>50인</em> 최종 선발</dd></div>
   </dl>
 </div></section>
 
-<section><div class="w">
-  <h2 class="sec">회사 정보</h2>
+<section class="band" aria-labelledby="h-biz"><div class="w">
+  <div class="shead"><span class="n">06</span><h2 class="sec" id="h-biz">회사 정보</h2></div>
   <!-- 🔴 여섯 항목 전부 **토큰**입니다 — `site.config.json` 한 곳이 원본입니다.
        ⚠️ **통신판매업신고번호를 여기 넣지 마십시오** — 신고 전입니다〔2026-09-01 대표 확인〕.
           그 항목은 정책 페이지 푸터(`full` 티어)만 듭니다. 이 페이지의 푸터 티어는
@@ -299,7 +453,12 @@ footer .cp{margin-top:18px;color:#64748B}
     <div><dt>대표전화</dt><dd>{{biz.phone}}</dd></div>
     <div><dt>이메일</dt><dd><a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a></dd></div>
   </dl>
-  <div class="after">
+</div></section>
+
+<section class="fin"><div class="w">
+  <h2>먼저 이번 거래부터 점검해 보세요.</h2>
+  <p>회원가입 없이 1분이면 됩니다.</p>
+  <div class="act">
     <a class="btn" href="/precheck" data-track="about-precheck">1분 무료 진단 시작</a>
     <a class="btn-2" href="/contact?type=consult" data-track="about-consult">상담 문의</a>
   </div>
