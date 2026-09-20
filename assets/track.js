@@ -289,4 +289,25 @@
     var step = nextStepOf(el.getAttribute('href'));
     if (step) sendApp({ kind: 'click', label: 'next:' + step, section: section });
   });
+
+  /*
+   * 🔴 앱으로 가는 링크에 «이 방문의 익명 열쇠»를 실어 보냅니다 〔2026-09-20 · 대표 지시〕.
+   *    trops.kr 과 app.trops.kr 은 도메인이 달라 같은 탭이어도 방문 열쇠가 따로 생겼고, 그래서
+   *    「랜딩 버튼 클릭 → 앱에서 무엇을 했나」가 이어지지 않았습니다. 앱은 이 값(`vs`)을 받아 같은
+   *    열쇠로 이어 쓰고 주소창에서 곧바로 지웁니다(공유된 링크가 다른 사람의 방문을 섞지 않게).
+   *    ⚠️ 열쇠는 한 방문짜리 난수입니다 — 이름·연락처·기기 정보가 아닙니다(개인 식별자 0).
+   *    누르는 순간(`click` · 캡처 단계)에 붙이므로 data-track 이 없는 링크도 이어집니다.
+   */
+  var APP_ORIGIN = 'https://app.trops.kr';
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href]');
+    if (!a) return;
+    var url;
+    try { url = new URL(a.getAttribute('href'), location.href); } catch (err) { return; }
+    if (url.origin !== APP_ORIGIN) return;
+    var key = ID.sessionKey;
+    if (!key) return;
+    url.searchParams.set('vs', key);
+    a.setAttribute('href', url.toString());
+  }, true);
 })();
