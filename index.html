@@ -471,7 +471,16 @@ footer .cp{margin-top:18px;color:#64748B}
           사람에게 로그인을 먼저 내미는 화면이 됩니다. 그 순서를 바꾸지 마십시오. -->
   <div class="nav-right">
     <a class="nav-login" href="https://app.trops.kr/login" data-track="nav-login">로그인</a>
-    <a class="btn-2 btn-s" href="/precheck" data-track="nav-precheck">1분 무료 진단</a>
+  <!-- 🔴 **1분 진단의 자리가 앱으로 옮겼습니다** 〔2026-09-21 · 대표 결정〕 — 이 저장소의
+       `/precheck` 가 아니라 `app.trops.kr/quick-check` 입니다. 같은 6문항에 회사명·수출
+       상품·선적 시기가 더해지고, 점수·표·설명은 **같은 값**입니다(앱 `lib/quick-check/score.ts`
+       가 이 저장소의 `precheck.html` 에서 이식된 사본이며 앱 검사가 두 판을 맞댑니다).
+       🔴 **`data-track` 네 값은 그대로입니다** — 버튼 시계열이 끊기지 않게 합니다.
+       ⛔ **`?from=` 을 손으로 붙이지 마십시오.** `/insurance/quick` 과 «반대»입니다 —
+          그쪽은 닫힌 5값 축(0053)이라 `from=landing` 을 박아 두지만, `/quick-check` 는
+          **제휴 코드 원문**을 담는 열린 축(0075)이라 track.js 가 클릭 순간에 채워야 합니다.
+          박아 두면 `assets/track.js` 의 `if (!…get('from'))` 가 **채널 코드를 영영 막습니다**. -->
+    <a class="btn-2 btn-s" href="https://app.trops.kr/quick-check" data-track="nav-precheck">1분 무료 진단</a>
   </div>
 </div></nav>
 
@@ -482,7 +491,7 @@ footer .cp{margin-top:18px;color:#64748B}
   <h1>중소기업의 수출대금,<br>TROPS에서 안전하게 관리하세요.</h1>
   <p class="lead">전담 부서 없이 계약부터 수금까지 직접 챙기는 기업을 위해, <br class="pc-br">수출 거래 기준으로 필요한 리스크를 관리해 드립니다.</p>
   <div class="act">
-    <a class="btn" href="/precheck" data-track="hero-precheck">1분 무료 진단 시작</a>
+    <a class="btn" href="https://app.trops.kr/quick-check" data-track="hero-precheck">1분 무료 진단 시작</a>
     <a class="btn-2" href="/contact?type=consult" data-track="hero-consult">상담 문의</a>
   </div>
   <p class="badge">무료 · 1분 · 회원가입 없이 진단</p>
@@ -533,7 +542,7 @@ footer .cp{margin-top:18px;color:#64748B}
         <li>준비 현황 체크리스트</li>
       </ul>
       <div class="tag">무료 · 계정 불필요</div>
-      <div class="go"><a class="btn-2" href="/precheck" data-track="step1-precheck">사전점검 시작하기</a></div>
+      <div class="go"><a class="btn-2" href="https://app.trops.kr/quick-check" data-track="step1-precheck">사전점검 시작하기</a></div>
     </div>
     <div class="sp mid">
       <div class="no">2단계 · 계약 및 선적</div>
@@ -717,7 +726,7 @@ footer .cp{margin-top:18px;color:#64748B}
 <section class="fin band" data-section="final"><div class="w">
   <h2 class="sec">TROPS와 함께 안전하게 수출하세요.</h2>
   <div style="margin-top:32px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-    <a class="btn" href="/precheck" data-track="final-precheck">1분 무료 진단 시작</a>
+    <a class="btn" href="https://app.trops.kr/quick-check" data-track="final-precheck">1분 무료 진단 시작</a>
     <a class="btn-2" href="/contact?type=consult" data-track="final-consult">상담 문의</a>
   </div>
 </div></section>

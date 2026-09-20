@@ -171,12 +171,15 @@ test('🔴 무료 경로 CTA 가 랜딩에 살아 있다 — 「유료 아니면
    * 축을 좁혔습니다 — 그것이 B2 가 실제로 세운 것입니다.
    */
   /*
-   * ⚠️ 무료 경로가 **두 장에서 다른 주소**입니다 〔2026-09-19〕 — 국문은 `/precheck`, 영문은
-   *    그 페이지가 넘기는 앱 진단(`app.trops.kr/export-precheck/new`)입니다. `/precheck` 가
-   *    국문 전용이라 영문 페이지가 거기로 가면 test/i18n-parity ④ 가 막습니다.
+   * ⚠️ 무료 경로가 **두 장에서 다른 주소**입니다 — 둘 다 이제 **앱**이지만 화면이 다릅니다.
+   * 🔄 **국문이 `/precheck` → `app.trops.kr/quick-check` 로 옮겼습니다** 〔2026-09-21 ·
+   *    대표 결정〕. 이 검사가 지키는 것은 **무료 경로의 존재**이지 특정 주소가 아니며
+   *    (바로 위 머리말이 그 축을 적었습니다), 그 존재는 그대로입니다 — 옮긴 것은 주소입니다.
+   * ⚠️ 영문은 **그대로** `export-precheck/new` 입니다 — `/quick-check` 는 국문 전용이라
+   *    영문 페이지가 거기로 가면 안 됩니다(`/precheck` 가 그랬던 것과 같은 사유).
    */
   const FREE = {
-    'index.html': /href="\/precheck"/g,
+    'index.html': /href="https:\/\/app\.trops\.kr\/quick-check"/g,
     'en.html': /href="https:\/\/app\.trops\.kr\/export-precheck\/new"/g,
   };
   for (const f of LANDINGS) {

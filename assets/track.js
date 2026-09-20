@@ -353,6 +353,18 @@
   function nextStepOf(href) {
     if (!href) return null;
     if (href.indexOf('/insurance/quick') !== -1) return 'prep-pack';
+    /*
+     * 🔴 **`/quick-check` 는 «앱» 1분 진단입니다** 〔2026-09-21 · 랜딩 CTA 6개가 옮겨감〕.
+     *    `'/precheck'` 가 이 주소를 **잡지 못합니다**(부분 문자열이 아닙니다). 이 줄이
+     *    없으면 `nextStepOf` 가 `null` 을 돌려주고 **「다음 걸음」 이벤트 자체가 사라집니다** —
+     *    화면에는 「아무도 진단으로 안 간다」로 보이고 오류는 나지 않습니다.
+     * 🔴 **`'precheck'` 로 합치지 않았습니다.** 이 값은 「어디로 갔는가」이고 목적지가 실제로
+     *    바뀌었습니다(랜딩 페이지 → 앱 화면). 합치면 앱의 `movedToApp`(앱으로 간 방문)이
+     *    가장 큰 CTA 를 빠뜨린 채 **거짓이 됩니다**. 그 대신 `next:precheck` 시계열이 여기서
+     *    끊기고 `next:quick-check` 로 이어집니다 — ⚠️ 끊긴 날이 이 줄이 선 날입니다.
+     *    ⛔ 버튼 이름(`data-track`)은 그대로라 그쪽 시계열은 끊기지 않습니다.
+     */
+    if (href.indexOf('/quick-check') !== -1) return 'quick-check';
     if (href.indexOf('/export-precheck') !== -1) return 'export-precheck';
     if (href.indexOf('/precheck') !== -1) return 'precheck';
     if (href.indexOf('/contact') !== -1) return 'contact';
