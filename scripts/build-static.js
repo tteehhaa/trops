@@ -169,6 +169,27 @@ const STATIC = {
      *       늦으면 페이지 푸터가 «자기와 어긋나는 방침»을 가리킵니다.
      */
     { file: 'contact.html', locale: 'ko', footer: 'summary' },
+    /*
+     * 회사 소개 한 장 〔2026-09-20 · 대표 지시 「회사 소개 만들어서 푸터에」〕.
+     *
+     * 🔴 **이 페이지가 선 이유** — 수상 이력·연혁·지표처럼 «회사 자신에 대한 말»이 갈
+     *    곳이 없어서 랜딩이 자꾸 후보가 됐습니다. 랜딩은 출처 붙은 사실만 싣는 자리라
+     *    자기 소개가 섞이면 앞의 문장들이 함께 가벼워집니다 — 집을 따로 세웁니다.
+     *    ⛔ 이 페이지의 내용을 랜딩 본문으로 되돌리지 마십시오.
+     *
+     * ⚠️ 영문 짝이 «없습니다» — precheck·contact 와 같은 판단입니다. hreflang 을 넣지
+     *    마십시오(`test/i18n-parity.test.js` ③ 은 짝이 서로를 가리킬 때만 인정합니다).
+     *    영문판을 세우는 날 `en-about.html` 과 함께 3줄씩 넣으십시오.
+     *
+     * 🔴 **들어오는 길은 푸터뿐입니다** — index·precheck·contact 국문 3장의 푸터가
+     *    `/about` 을 가리킵니다. nav 에는 넣지 않았습니다: 헤더는 「1분 무료 진단」
+     *    하나로 좁혀 둔 자리라, 회사 소개가 그 버튼과 다툽니다.
+     *    ⚠️ 정책 2장(privacy·refund)에는 넣지 않았습니다 — 그 두 장의 푸터는 이미
+     *       사업자정보 여섯을 전부 싣고 있어(`full` 티어) 회사를 확인할 길이 있습니다.
+     *    ⚠️ 이 페이지를 내릴 때는 **그 3장의 링크를 먼저** 걷으십시오. 페이지만 빼면
+     *       배포에서 404 로 가는 링크 셋이 남습니다(사이트맵은 저절로 따라옵니다).
+     */
+    { file: 'about.html', locale: 'ko', footer: 'summary' },
     { file: 'refund.html', locale: 'ko', footer: 'full' },
     { file: 'privacy.html', locale: 'ko', footer: 'full' },
     { file: 'en-privacy.html', locale: 'en', footer: 'full' },

@@ -387,7 +387,11 @@ form{padding-block:clamp(8px,1.5vw,16px) clamp(48px,6vw,72px)}
            ⚠️ 그래서 **절대 주소**입니다. 상대 경로로 바꾸지 마십시오.
            ⚠️ 영문 페이지에는 넣지 않았습니다 — 그 문서가 국문뿐이라, 「Terms of
               Service」로 걸면 영문 독자를 국문 문서로 보냅니다. 번역이 서면 그때 겁니다. -->
-    <nav class="footer-links" aria-label="정책">
+    <!-- ⚠️ `aria-label` 을 「정책」에서 「사이트 정보」로 넓혔습니다 〔2026-09-20〕 —
+         「회사 소개」가 들어와 이 묶음이 정책 문서만 담지 않게 됐습니다. 라벨을 그대로
+         두면 보조기술 사용자에게 그 줄이 «정책 넷»으로 읽힙니다. -->
+    <nav class="footer-links" aria-label="사이트 정보">
+      <a href="/about">회사 소개</a>
       <a href="https://app.trops.kr/terms">이용약관</a>
       <a href="/privacy">개인정보처리방침</a>
       <a href="/refund">환불규정</a>
