@@ -65,10 +65,16 @@ test('🔴 랜딩이 심어 둔 `from` 두 값이 소스에 살아 있다 — �
    * 🔴 **보호 «대상»이 실재하는지 함께 잽니다.** 위 ① 은 「덮지 않는가」만 보는데,
    *    지켜야 할 링크가 사라지면 그 검사는 아무것도 지키지 않으면서 초록입니다.
    */
+  /*
+   * 🔄 **`precheck.html`(`&from=precheck`) 이 내려갔습니다** 〔2026-09-21 · 그 파일이 삭제됐습니다〕.
+   * 🔴 **딸림을 알고 적습니다 — 이제 `from=precheck` 를 만드는 자리가 저장소에 0 입니다.**
+   *    앱의 유입원 어휘(`normalizePrepPackSource`)에 그 값은 남아 있으나 **발생원이 없어**
+   *    앞으로 그 갈래의 새 주문은 0 건입니다(이미 쌓인 값은 그대로 사실입니다).
+   *    ⛔ 앱에서 그 값을 지우지 마십시오 — 지우면 옛 주문의 유입원이 `unknown` 으로 접힙니다.
+   */
   const pairs = [
     ['index.html', 'from=landing'],
     ['en.html', 'from=landing'],
-    ['precheck.html', "&from=precheck"],
   ];
   for (const [file, must] of pairs) {
     assert.ok(
@@ -120,12 +126,15 @@ test('🔴 `source=one_minute_check` 를 track.js 가 만들지 않는다 — �
    * 🔴 그 키는 Handoff Contract v2 의 canonical 키로 「1분 체크 답을 갖고 왔다」를 뜻하고,
    *    앱에서 **불리언 하나**로 쓰입니다. `from` 은 「어디서 왔는가」이고 DB 에 남는 값입니다.
    *    한 값으로 합치면 둘 다 잃습니다.
-   * ⚠️ 그 키를 만드는 곳은 `precheck.html` 의 `query()` 하나여야 합니다.
+   * 🔄 **2026-09-21 — 이 저장소에 그 키를 만드는 곳이 «0» 이 됐습니다.** 종전에는
+   *    `precheck.html` 의 `query()` 하나였고 그 파일이 삭제됐습니다. 지금 그 키를 만드는
+   *    곳은 **앱의 1분 진단 화면**이며, 랜딩은 답을 실어 나르지 않고 맨 링크로만 보냅니다.
+   * 🔴 **그래서 남은 단정은 «음의 방향» 하나뿐입니다** — track.js 가 그 키를 집으면
+   *    「어디서 왔는가(`from`)」와 「답을 갖고 왔는가(`source`)」가 한 값으로 뭉갭니다.
+   *    ⛔ 그 음의 단정을 지우지 마십시오(양의 짝이 사라졌다고 이것까지 걷으면 축이 열립니다).
    */
   assert.ok(!code(TRACK).includes('one_minute_check'),
-    'track.js 가 canonical 키를 만집니다 — 그 키는 precheck.html 의 query() 몫입니다');
-  assert.ok(read('precheck.html').includes("q.push('source=one_minute_check')"),
-    'precheck.html 이 canonical 키를 더는 만들지 않습니다 — 축이 사라졌습니까?');
+    'track.js 가 canonical 키를 만집니다 — 그 키는 앱 1분 진단의 몫입니다');
 });
 
 test('🔴 유입원 함수가 `utm_*` 를 건드리지 않는다 — 방문 계측 축과 다르다', () => {

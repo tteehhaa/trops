@@ -64,11 +64,11 @@ const LIVE_PAGES = STATIC.html.map((e) => e.file);
 
 /**
  * 🔴 **배포는 안 하지만 저장소에 «남아 있는» 한 장짜리 페이지** 〔신설 2026-09-21〕.
- *    `precheck.html` 이 배치 6 에서 배포에서 내려갔습니다(`/precheck` → 앱 영구 이동).
- *    파일은 남습니다 — 앱 저장소의 배점표 대조가 그것을 읽기 때문입니다(그쪽 사유는
- *    `scripts/build-static.js` 의 NOT_DEPLOYED 등재 주석).
- * 🔴 **그래서 아래 표면 검사는 «배포분 + 남은 장»을 함께 봅니다.** 배포에서 뺐다고
- *    결제 표면이 되살아나도 되는 것은 아닙니다 — 그 파일은 되돌리면 그대로 나갑니다.
+ *    ⚠️ **지금 이 목록은 비어 있습니다** — 유일한 항목이던 `precheck.html` 이 같은 날
+ *       파일째 삭제됐습니다(사유는 `scripts/build-static.js` 의 그 자리 주석).
+ * 🔴 **그래도 이 배선을 걷지 않습니다.** 배포에서만 빼고 파일을 남기는 일이 또 생기면,
+ *    그 장의 결제 표면은 **되돌리면 그대로 나갑니다** — 그때 이 줄이 자동으로 받습니다.
+ *    ⛔ 목록이 비었다고 `SCANNED_PAGES` 를 `LIVE_PAGES` 로 바꿔 적지 마십시오.
  * ⛔ 여기에도 이름을 손으로 적지 않습니다(위 ⛔ 와 같은 사유) — 분류표에서 읽습니다.
  */
 const RETAINED_PAGES = [...NOT_DEPLOYED].filter((f) => f.endsWith('.html') && !f.includes('/'));
@@ -186,12 +186,15 @@ test('[대조] 결제 표면 검출기가 실제로 문다 — 0건 통과 금�
   for (const mark of ['TossPayments', 'requestPayment', 'payment-config']) {
     assert.ok(s.includes(mark), '옛 결제 폼에서 ' + mark + ' 를 못 찾습니다 — 검출기 기준이 틀렸습니다');
   }
-  // 그리고 «지금» 그 이름을 쓰는 페이지에는 없어야 합니다.
-  assert.ok(SCANNED_PAGES.includes('precheck.html'),
-    'precheck.html 이 분류표에 없습니다 — 이 대조가 재려는 대상이 사라졌습니다 ' +
-    '(배포분이든 남은 장이든 한쪽에는 있어야 합니다)');
-  assert.ok(!strip(read('precheck.html')).includes('TossPayments'),
-    '새 precheck.html 에 결제 폼이 있습니다');
+  /*
+   * 🔄 **종전에는 여기서 「그리고 지금의 `precheck.html` 에는 없다」를 이어 쟀습니다**
+   *    〔내림 2026-09-21 · 그 파일이 삭제됐습니다〕. 이 절이 맡은 일은 **검출기가 실제로
+   *    무는가**이고 그것은 위 fixture 가 이미 답합니다.
+   * 🔴 **「지금 어느 장에도 없다」는 사라지지 않았습니다** — 위 노출 검사가 `SCANNED_PAGES`
+   *    전부를 훑으며 같은 이름들을 0건으로 잠급니다. ⛔ 그 검사를 지우지 마십시오,
+   *    지우면 이 대조만 남아 「검출기는 물지만 아무도 검사받지 않는」 상태가 됩니다.
+   */
+  assert.ok(SCANNED_PAGES.length > 0, '훑을 페이지가 0장입니다 — 노출 검사가 빈 목록을 돕니다');
 });
 
 /* ══ 1. 값 ═══════════════════════════════════════════════════════════════════

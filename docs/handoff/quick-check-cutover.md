@@ -148,7 +148,31 @@ if (href.indexOf('/quick-check') !== -1) return 'quick-check';
 **색인을 옮기는 것이 목적**이라 영구가 맞다. ⚠️ 영구는 브라우저가 캐시한다 — 되돌리려면
 `false` 판을 **한 번 배포**해야 한다.
 
-### 🔴 파일은 «지우지 않았다» — 이 저장소의 유일한 예외다
+### 🔄 **그 파일은 같은 날 오후에 지웠다** 〔2026-09-21 · 대표 결정 「이제 필요 없으면 지우자」〕
+
+아래 「지우지 않았다」는 **오전의 기록**이며 그 사유는 **해소됐다** — 앱이 원본을 자기 안으로
+**동결해 들였다**(`trops_a@11d3699f` · `tests/fixtures/quick-check/landing-score-source.js`).
+그래서 아래 문단이 스스로 적어 둔 조건 「지워도 되는 날 = 앱이 랜딩 원본과의 대조를 그만두는
+날」이 충족됐다.
+
+**함께 내려간 것 셋** — `scripts/build-static.js` 의 NOT_DEPLOYED 등재 ·
+`test/precheck-handoff.test.js`(**Handoff Sender 검사 전량** — 보내는 지면이 없다) ·
+`test/quick-check-report.test.js` 의 소스 읽는 절 셋(① 전송 코드 · ② `<form action>` ·
+③ `.disc` 문안). 🔴 **나머지 guard 는 남았다** — 방침 두 장 · `assets/track.js` 실재 ·
+`/precheck` 영구 리다이렉트 · llms/JSON-LD 주소. 그리고 「파일은 남는다」 단정은
+**「배포에서도 저장소에서도 사라졌다」로 뒤집어** 그대로 잠근다.
+
+🔴 **딸림 하나를 알고 남긴다** — 이제 이 저장소에서 `from=precheck` 와
+`source=one_minute_check` 를 만드는 자리가 **0** 이다. 앱 유입원 어휘에 `precheck` 는
+남아 있으나 발생원이 없어 새 주문은 0 건이다(이미 쌓인 값은 그대로 사실이며 ⛔ 앱에서
+그 값을 지우면 옛 주문이 `unknown` 으로 접힌다).
+
+⛔ **되살리는 순서** — 페이지를 다시 세우기 전에 앱 `/quick-check` 를 먼저 끈다.
+전송을 다시 켤 때는 앱 `tests/quick-check/landing-contract.test.ts` 를 먼저 읽는다.
+
+<details><summary>⛔ 아래는 «오전의» 기록이다 — 정본으로 읽지 않는다</summary>
+
+#### 파일은 «지우지 않았다» — 이 저장소의 유일한 예외다
 
 2026-08-30 에 같은 일을 할 때는 「여기서 빼면 배포만 안 되고 파일은 남는 조용한 실패가
 되므로 **파일도 함께 지웠다**」였다. 이번엔 반대다 — **앱 저장소의 검사 다섯이 이 파일을
@@ -158,6 +182,9 @@ if (href.indexOf('/quick-check') !== -1) return 'quick-check';
 ⛔ 「배포 안 하는 파일이 남아 있다」를 조용한 실패로 읽지 말 것 — 사유는
 `build-static.js` 의 **두 주석**(STATIC.html 자리 · NOT_DEPLOYED 등재)이 갖는다.
 🔄 지워도 되는 날 = 앱이 랜딩 원본과의 대조를 그만두는 날이다.
+
+
+</details>
 
 ### 딸림 — 이미 나간 메일 링크
 
