@@ -601,7 +601,7 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
     {id:'f4',key:'ins',send:true,max:15,nm:'무역보험',fc:'payment',
      cd:{15:'insured',9:'applying',5:'checking',0:'not_insured'},
      ms:{15:'미회수 시 청구할 수 있습니다',9:'심사 결과를 기다리는 중입니다',
-         5:'선적 전에 결론이 나야 하는 항목입니다',0:'미회수 시 청구할 곳이 없습니다'}}
+         5:'계약 전에 준비하시는 것이 좋습니다',0:'미회수 시 청구할 곳이 없습니다'}}
   ];
   var G=[[85,'조건은 갖춰져 있습니다','계약 조건에서는 빠진 것이 없습니다. 다만 조건을 갖추는 것과 대금이 들어오는 것은 다릅니다. 남은 것은 선적 후의 서류와 통지기한, 결제기일입니다.'],
          [65,'대체로 갖춰져 있습니다','낮은 항목 하나가 약점으로 남습니다.'],
@@ -856,7 +856,7 @@ h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;line-height:1.26;letter-spac
     }else{
       nt.textContent='가장 낮은 항목은 '+worst.nm+'입니다';
       ns.textContent=insWorst
-        ? '선적 후에 받을 대금이 남아 있습니다. 무역보험은 선적 전에 결론이 나야 하는 항목입니다.'
+        ? '선적 후에 받을 대금이 남아 있습니다. 무역보험은 계약 전에 준비하시는 것이 좋습니다.'
         : '';
     }
 
