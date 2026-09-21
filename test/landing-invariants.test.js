@@ -175,12 +175,18 @@ test('🔴 무료 경로 CTA 가 랜딩에 살아 있다 — 「유료 아니면
    * 🔄 **국문이 `/precheck` → `app.trops.kr/quick-check` 로 옮겼습니다** 〔2026-09-21 ·
    *    대표 결정〕. 이 검사가 지키는 것은 **무료 경로의 존재**이지 특정 주소가 아니며
    *    (바로 위 머리말이 그 축을 적었습니다), 그 존재는 그대로입니다 — 옮긴 것은 주소입니다.
-   * ⚠️ 영문은 **그대로** `export-precheck/new` 입니다 — `/quick-check` 는 국문 전용이라
-   *    영문 페이지가 거기로 가면 안 됩니다(`/precheck` 가 그랬던 것과 같은 사유).
+   * 🔄 **영문도 `/quick-check` 로 옮겼습니다** 〔2026-09-21 · 대표 결정〕. 종전 이 자리는
+   *    「영문은 그대로 `export-precheck/new` — `/quick-check` 는 국문 전용이라 영문이 거기로
+   *    가면 안 된다」였습니다. 🔴 **그 사유는 둘을 갈라 세우지 못합니다** — 실측하면
+   *    `export-precheck/new` **도 한국어 화면**입니다. 갈리는 것은 언어가 아니라 **무엇이
+   *    열리는가**였고, 영문 버튼이 "Free 1-minute check"라 적힌 채 **14항목·로그인 필요**
+   *    화면을 열고 있었습니다. 지금은 두 지면이 같은 화면을 가리킵니다.
+   * ⚠️ **도착 화면이 한국어인 것은 그대로입니다** — 영문 화면은 앱에 아직 없습니다.
+   *    알고 고른 결과이며, 적어도 「1-minute」이 거짓이 되지는 않습니다.
    */
   const FREE = {
     'index.html': /href="https:\/\/app\.trops\.kr\/quick-check"/g,
-    'en.html': /href="https:\/\/app\.trops\.kr\/export-precheck\/new"/g,
+    'en.html': /href="https:\/\/app\.trops\.kr\/quick-check"/g,
   };
   for (const f of LANDINGS) {
     const free = (body(f).match(FREE[f]) || []).length;

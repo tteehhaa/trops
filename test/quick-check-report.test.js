@@ -42,7 +42,7 @@ const strip = (h) => h.replace(/<!--[\s\S]*?-->/g, '');
 test('🔴 방침이 「지금은 보내지 않는다」와 「그때는 보냈다」를 함께 적는다', () => {
   const ko = strip(read('privacy.html'));
   for (const must of [
-    '1분 진단',
+    '1분 수출 준비 진단',
     '이 브라우저에서만 계산하며 회사로 보내지 않습니다',
     '2026년 9월 20일부터 21일까지',
     'app.trops.kr 의 개인정보처리방침',
@@ -59,7 +59,7 @@ test('🔴 방침이 「지금은 보내지 않는다」와 「그때는 보냈�
 test('🔴 영어 방침도 같은 말을 한다', () => {
   const en = strip(read('en-privacy.html'));
   for (const must of [
-    'one-minute check',
+    '1-minute export readiness check',
     'calculated in your browser only and are not sent to us',
     'Between <strong>September 20 and 21, 2026</strong>',
     'privacy notice of app.trops.kr',

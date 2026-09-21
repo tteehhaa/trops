@@ -191,8 +191,8 @@ test('[대조] 검출기가 실제로 문다 — 0건 통과 금지', () => {
  *    2026-09-03 에 따로 움직였습니다 — ⛔ 두 목록을 같은 것으로 보고 맞추지 마십시오.
  */
 const FOOTER_SERVICES = {
-  ko: '수출 사전점검 · 수출 거래관리 · 수출 채권관리',
-  en: 'Export pre-check · Export transaction management · Export receivables management',
+  ko: '1분 수출 준비 진단 · 수출 거래관리 · 수출 채권관리',
+  en: '1-minute export readiness check · Export transaction management · Export receivables management',
 };
 
 const FOOTER_PAGES = STATIC_PAGES.filter((p) => read(p.file).includes('class="footer-meta"'));

@@ -45,7 +45,7 @@
 - [TROPS 소개](https://trops.kr/): 무역보험 서류 준비와 수출대금 관리
 - [TROPS overview (English)](https://trops.kr/en): The required export steps in order, and what to check now
 - [회사 소개](https://trops.kr/about): TROPS를 만드는 회사와, 세 단계를 이 순서로 만들고 있는 이유
-- [수출 사전점검](https://app.trops.kr/quick-check): 권역·거래 횟수·결제 방식을 고르면 지금 챙길 서류와 기한을 1분 안에 짚어 드립니다. 회원가입 없이 무료입니다
+- [1분 수출 준비 진단](https://app.trops.kr/quick-check): 권역·거래 횟수·결제 방식을 고르면 지금 챙길 서류와 기한을 1분 안에 짚어 드립니다. 회원가입 없이 무료입니다
 
 ## 정책
 
