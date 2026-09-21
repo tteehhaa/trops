@@ -170,12 +170,17 @@ if (href.indexOf('/quick-check') !== -1) return 'quick-check';
 낸다. 영구 이동인 것은 같고, 308 은 **메서드를 보존**한다는 점만 다르다. ⛔ 「301 이 아니라
 잘못됐다」로 읽지 말 것.
 
-### ⏳ 아직 남은 것 — 앱 `app/api/quick-check`
+### ✅ 앱 `app/api/quick-check` 도 내렸다 〔대표 결정 2026-09-21〕
 
-**부르는 곳이 0** 이다(랜딩 전송이 꺼졌고 `/precheck` 도 닫혔다). ⛔ 이 배치에서 지우지
-않았다 — 지우면 앱의 `tests/quick-check/landing-contract.test.ts` 가 재는 수신 계약
-(CORS 목록 · `text/plain` 수용 · 언제나 202)이 함께 사라지고, 되살릴 때 그것을 다시
-지어내야 한다. **다음 결정 사안이다.**
+**부르는 곳이 0** 이 됐고(랜딩 전송 중단 + `/precheck` 이동), 남기면 **부르는 이가 없는
+공개 쓰기 문**이 된다 — `Origin` 이 랜딩일 때만 받았지만 그 헤더는 브라우저 밖에서
+위조되고, 그 표는 앱 화면 74 오디션 지표로 읽힌다.
+🔴 **수신 계약은 지우지 않고 «기록»으로 옮겼다** — 앱
+`tests/quick-check/landing-contract.test.ts` ① 이 「없다」를 재고, 머리주석의 되살릴 셋
+(⛔ Content-Type 으로 거르지 않는다 · `await req.json()` 하나 · `OPTIONS` 실재)을
+**검사가 실재까지 단정한다.** 그러니 랜딩이 다시 보내기로 하면 **그 문서부터 읽을 것.**
+⚠️ 앱 저장층의 `recordQuickCheck` 도 함께 내려갔다(랜딩 전용 writer) — 앱 화면 76 의
+`recordAppQuickCheck` 는 그대로다.
 
 ### ⛔ §07 개정 고지 — 적지 않는다 〔대표 결정 2026-09-21〕
 
