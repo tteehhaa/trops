@@ -281,7 +281,7 @@
       <h1>Privacy Notice</h1>
       <p class="head-meta">
         Draft &middot; pending legal review &middot; written August 11, 2026 &middot; effective August 20, 2026<br>
-        <strong>Amended and effective September 12, 2026.</strong> See §07 for the changes.<br>
+        <strong>Amended and effective September 29, 2026.</strong> See §07 for the changes.<br>
         Applies to the services {{biz.companyName}} provides at trops.kr.
       </p>
     </div>
@@ -390,14 +390,14 @@
           </thead>
           <tbody>
             <!-- 🔴 **지금 받는 유일한 자리** — 국문 privacy.html §02 첫 행과 1:1 입니다
-                 〔2026-09-19 영문 반영〕. 보관 기간의 정본은 api/_cleanup.js
-                 `LEADS_RETENTION_DAYS` 이고, 국문 그 행 주석의 「네 곳」 목록에 이 칸과
+                 〔2026-09-19 영문 반영〕. 보관 기간의 정본은 trops_a `lib/track/lead-retention.ts`
+                 `LEAD_RETENTION_DAYS` 이고, 국문 그 행 주석의 「네 곳」 목록에 이 칸과
                  아래 §03 문단이 **영문으로 하나씩 더** 따라옵니다. ⛔ 한쪽만 고치지 마십시오. -->
             <tr>
               <th scope="row">Inquiries, quote requests, and launch notifications<br><span class="lead">(trops.kr/contact)</span></th>
               <td>Email<br>Contact name (optional)<br>Company name (optional)<br>Message (optional)<br>For quote requests, a deal summary: contract amount, destination country, payment terms, and whether you hold a trade insurance policy (optional)<br>Required consents and when you gave them</td>
               <td>Responding to your inquiry<br>Preparing a quote for the scope you requested<br>Sending launch notifications</td>
-              <td>Inquiries and quote requests: deleted 6 months (183 days) after submission<br>Launch notifications: deleted 1 year (365 days) after submission<br>We delete them sooner if you ask.<br>Submissions are stored in a Supabase database, and an automated cleanup job deletes them once these periods end.<br>When you submit, two emails go out: a notification to our staff and a confirmation to you. These two emails are <strong>not covered by the automated deletion above</strong>. They stay in our staff mailbox and are deleted once we have finished responding.</td>
+              <td>Inquiries and quote requests: deleted 6 months (183 days) after submission<br>Launch notifications: deleted 1 year (365 days) after submission<br>We delete them sooner if you ask.<br>Submissions are stored in a Supabase database, and an automated cleanup job deletes them once these periods end.<br>No emails are sent when you submit. The replies our staff send you are <strong>not covered by the automated deletion above</strong>. They stay in our staff mailbox and are deleted once we have finished responding.</td>
             </tr>
             <tr>
               <th scope="row">Document pre-check submissions<br><span class="lead">(closed August 20, 2026)</span></th>
@@ -423,11 +423,13 @@
              사유·실측 전문은 국문 privacy.html 의 같은 자리 주석이 갖습니다(1:1 대응).
              ⛔ 삭제 «권리» 를 걷지 마십시오 — 바뀐 것은 요청을 받는 창구뿐입니다. -->
         <p>If you would rather not wait, email <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>. We will confirm your request and act on it without delay. Once deleted, the same material cannot be sent to you again.</p>
-        <!-- 🔴 §02 표의 contact 행과 **같은 값**입니다. 정본은 api/_cleanup.js
-             `LEADS_RETENTION_DAYS`(inquiry 183일 · notify 365일 · 매일 06:20 KST). -->
-        <p><strong>Inquiries, quote requests, and launch notifications.</strong> Inquiries and quote requests are deleted 6 months (183 days) after submission, and launch notifications 1 year (365 days) after submission. An automated cleanup job runs <strong>once a day</strong> (6:20 a.m. KST) and deletes records that have passed their deadline.</p>
+        <!-- 🔴 §02 표의 contact 행과 **같은 값**입니다. 정본은 trops_a `lib/track/lead-retention.ts`
+             `LEAD_RETENTION_DAYS`(inquiry 183일 · notify 365일). 지우는 배치는
+             `/api/cron/l1-retention`(trops_a `vercel.json` `30 0 * * *` UTC = 매일 09:30 KST).
+             🔄 2026-09-29 — 6:20 a.m. → 9:30 a.m. 로 고쳤습니다(국문 §03 과 같은 배치). -->
+        <p><strong>Inquiries, quote requests, and launch notifications.</strong> Inquiries and quote requests are deleted 6 months (183 days) after submission, and launch notifications 1 year (365 days) after submission. An automated cleanup job runs <strong>once a day</strong> (9:30 a.m. KST) and deletes records that have passed their deadline.</p>
         <p>If you would rather not wait, email <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>. Requests to access, correct, delete, or stop processing your personal information go to the same address, and we act on them without delay once we have confirmed them.</p>
-        <p>The two emails sent when you submit (the staff notification and your confirmation) <strong>are not covered by the automated cleanup above</strong>. They stay in our staff mailbox and are deleted once we have finished responding.</p>
+        <p>No emails are sent when you submit. The replies our staff send you <strong>are not covered by the automated cleanup above</strong>. They stay in our staff mailbox and are deleted once we have finished responding.</p>
         <p><strong>Email inquiries.</strong> Your message stays only in our staff mailbox. We delete it without delay once we have finished responding, or immediately if you ask sooner.</p>
         <p>Records that Korean law requires us to keep (such as contract, payment, and consumer complaint records under the Act on Consumer Protection in Electronic Commerce) are kept separately for the period that law sets. Payment records are kept for five years, as required by that Act's Enforcement Decree.</p>
         <p>Personal information stored as an electronic file is deleted using a technical method that makes recovery or reconstruction impossible. Personal information recorded or stored on paper is destroyed by shredding or incineration.</p>
@@ -523,8 +525,9 @@
         <!-- 🔴 **국문 §05 와 «함께» 고쳤습니다** 〔2026-08-30〕 — 방침이 약속하던
              「confirmation email 링크의 즉시 삭제」 버튼이 화면에 없습니다(실측).
              사유·근거·금지 사항 전문은 국문 privacy.html §05 주석이 갖습니다.
-             ⛔ 한쪽만 고치지 마십시오(이 파일 머리주석). -->
-        <p>The link in your confirmation email shows the status of your submission. To request deletion, email <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>. We will confirm your request and act on it without delay. Send any other request to the same address.</p>
+             ⛔ 한쪽만 고치지 마십시오(이 파일 머리주석).
+             🔄 2026-09-29 — 아래 문단의 첫 문장(confirmation email 의 링크)을 국문과 함께 지웠습니다. -->
+        <p>To request deletion, email <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>. We will confirm your request and act on it without delay. Send any other request to the same address.</p>
         <!-- 🔴 이름을 손으로 적지 않습니다 〔2026-08-21〕 — 값은 site.config.json
              `biz.en.ceo` 하나입니다(국문 privacy.html 의 같은 문장과 같은 처리).
              ⚠️ "Hana Beom" 은 "범하나"의 잠정 로마자 표기입니다 — 공식 영문 표기가
@@ -547,6 +550,9 @@
       <section>
         <h2><span class="doc-num" aria-hidden="true">07</span><span>When this notice changes</span></h2>
         <p>When we change this notice, we post the changes and their effective date on this page. If a change is to your disadvantage, we will tell you before it takes effect.</p>
+        <!-- 🔴 시행일 = 배포일, 국문 privacy.html §07 · 머리 줄과 같은 날짜입니다 〔2026-09-29〕. -->
+        <h3>Effective September 29, 2026: corrections on submission emails and the cleanup time</h3>
+        <p><strong>No emails are sent</strong> when you submit an inquiry, quote request, or launch notification request, but this notice said that two emails go out: a notification to our staff and a confirmation to you. It also gave 6:20 a.m. as the time the automated cleanup job runs; it actually runs at 9:30 a.m. KST. We corrected §02 and §03 to match how we actually operate, and removed the sentence in §05 about a link in your confirmation email, which belonged to the closed document pre-check flow. <strong>What we collect and how long we keep it are unchanged.</strong></p>
         <h3>Effective September 12, 2026: we use a visit-statistics tool</h3>
         <p>We have added <strong>Google Analytics 4</strong> to every page on trops.kr. As a result, two new
         cookies (<code>_ga</code> and <code>_ga_RQ1NWGK0KM</code>) are set in your browser, and the

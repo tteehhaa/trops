@@ -202,13 +202,51 @@ test('🔴 영문 방침도 같은 말을 한다', () => {
   );
 });
 
+/*
+ * 🔄 **날짜를 박지 않고 «두 장이 같은가»를 잽니다** 〔2026-09-29 · 접수 메일·배치 시각 정정 개정〕.
+ *    종전에는 머리 줄이 2026-09-12(GA 개정)인지를 글자로 단정해서, 개정이 하나 더 생기자
+ *    이 검사가 «같은 날짜로 함께 고친» 두 장을 red 로 막았습니다. 지키려던 것은 날짜가 아니라
+ *    「한쪽만 고치면 갈린다」입니다.
+ * 🔴 머리 줄은 **가장 최근 개정**을 가리킵니다 — §07 의 첫 소제목과 같은 날이어야 합니다.
+ * ⚠️ GA 개정 자체는 §07 이력으로 남아 있어야 합니다(아래 마지막 단정).
+ */
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'];
+const iso = (y, m, d) => `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+const koDate = (s) => {
+  const m = s && s.match(/(\d{4})년 (\d{1,2})월 (\d{1,2})일/);
+  return m ? iso(m[1], m[2], m[3]) : null;
+};
+const enDate = (s) => {
+  const m = s && s.match(new RegExp('(' + MONTHS.join('|') + ') (\\d{1,2}), (\\d{4})'));
+  return m ? iso(m[3], MONTHS.indexOf(m[1]) + 1, m[2]) : null;
+};
+/** §07 의 첫 소제목 — 이 문서에서 h3 는 §07 에만 있습니다(두 장의 CSS 주석 참조). */
+const firstH3 = (html) => (html.match(/<h3>([^<]*)<\/h3>/) || [])[1];
+
 test('🔴 두 방침이 같은 개정 시행일을 싣는다 — 한쪽만 고치면 갈린다', () => {
-  assert.ok(
-    noComments('privacy.html').includes('개정 &middot; 시행 2026년 9월 12일'),
-    'privacy.html 의 개정 시행일이 2026-09-12 가 아닙니다'
-  );
-  assert.ok(
-    noComments('en-privacy.html').includes('Amended and effective September 12, 2026'),
-    'en-privacy.html 의 개정 시행일이 2026-09-12 가 아닙니다'
-  );
+  const ko = noComments('privacy.html');
+  const en = noComments('en-privacy.html');
+  const koHead = koDate((ko.match(/개정 &middot; 시행 [^<]*/) || [])[0]);
+  const enHead = enDate((en.match(/Amended and effective [^<]*/) || [])[0]);
+  assert.ok(koHead, 'privacy.html 머리의 「개정 · 시행」 날짜를 읽지 못했습니다');
+  assert.ok(enHead, 'en-privacy.html 머리의 「Amended and effective」 날짜를 읽지 못했습니다');
+  assert.strictEqual(enHead, koHead, '두 방침의 개정 시행일이 다릅니다 — 함께 고치십시오');
+
+  assert.strictEqual(koDate(firstH3(ko)), koHead,
+    'privacy.html §07 의 첫 개정 고지가 머리 줄의 날짜와 다릅니다');
+  assert.strictEqual(enDate(firstH3(en)), enHead,
+    'en-privacy.html §07 의 첫 개정 고지가 머리 줄의 날짜와 다릅니다');
+
+  assert.ok(ko.includes('<h3>2026년 9월 12일 시행 &mdash; 방문 통계 도구를 씁니다</h3>'),
+    'privacy.html §07 에서 GA 개정(2026-09-12) 고지가 사라졌습니다');
+  assert.ok(en.includes('<h3>Effective September 12, 2026: we use a visit-statistics tool</h3>'),
+    'en-privacy.html §07 에서 GA 개정(2026-09-12) 고지가 사라졌습니다');
+});
+
+test('[대조] 개정일 판독기가 실제로 읽는다 — 못 읽으면 위 비교가 null 끼리 같다', () => {
+  assert.strictEqual(koDate('개정 &middot; 시행 2026년 9월 29일'), '2026-09-29');
+  assert.strictEqual(enDate('Amended and effective September 29, 2026.'), '2026-09-29');
+  assert.notStrictEqual(koDate('2026년 9월 29일'), koDate('2026년 9월 12일'));
+  assert.strictEqual(koDate('날짜 없음'), null);
 });
