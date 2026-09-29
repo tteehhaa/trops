@@ -155,16 +155,16 @@ test('🔴 폼의 동의 블록과 방침 §02 시범 신청 행이 같은 항�
     assert.ok(row.includes(piece), '방침 시범 신청 행에 없습니다: ' + piece);
   }
   /*
-   * 🔴 메일을 보내면 이메일 주소 · 회사명이 미국의 Resend 로 넘어갑니다 — 국외이전 표에 그 행이 있어야 합니다
+   * 🔴 메일을 보내면 이메일 주소 · 회사명 · 담당자 이름 · 문의·요청 내용이 미국의 Resend 로 넘어갑니다 — 국외이전 표에 그 행이 있어야 합니다
    *    〔2026-09-30 · 대표 결정 · 수탁 표에만 있고 국외이전 표에 없던 빈칸〕.
    */
-  assert.match(ko, /<th scope="row">Resend, Inc\.<\/th>\s*<td>이메일, 회사명<\/td>\s*<td>미국<\/td>/,
+  assert.match(ko, /<th scope="row">Resend, Inc\.<\/th>\s*<td>이메일, 회사명, 담당자 이름, 문의·요청 내용<\/td>\s*<td>미국<\/td>/,
     'privacy.html §04 국외이전 표에 Resend(미국) 행이 없습니다');
   /* 영문 방침도 같은 자리를 갖는다 — 「one place only」 는 더는 사실이 아니다. */
   const en = read('en-privacy.html').replace(/<!--[\s\S]*?-->/g, '');
   assert.ok(en.includes('<th scope="row">Early access application'), 'en-privacy.html §02 에 시범 신청 행이 없습니다');
   assert.ok(!en.includes('in one place only'), 'en-privacy.html §01 이 아직 「one place only」입니다');
-  assert.match(en, /<th scope="row">Resend, Inc\.<\/th>\s*<td>Email address, company name<\/td>\s*<td>United States<\/td>/,
+  assert.match(en, /<th scope="row">Resend, Inc\.<\/th>\s*<td>Email address, company name, contact name, and the content of your inquiry or request<\/td>\s*<td>United States<\/td>/,
     'en-privacy.html §04 cross-border 표에 Resend 행이 없습니다');
   assert.ok(!ko.includes('출시 알림 신청</a> 한 자리입니다'), 'privacy.html §01 이 아직 「한 자리」입니다');
 });
