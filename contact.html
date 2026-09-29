@@ -624,10 +624,10 @@ form{padding-block:clamp(8px,1.5vw,16px) clamp(48px,6vw,72px)}
         note.textContent = '';
         /*
          * 🔄 **「확인 메일도 함께 보내 드렸습니다」를 걷었습니다** 〔2026-09-29 · 대표 지시〕 —
-         *    앱 `/api/leads`(trops_a `app/api/leads/route.ts`)는 **저장만 하고 메일을 보내지
-         *    않습니다.** 오지 않는 메일을 약속하고 있었습니다.
-         * ⚠️ 앱에서 운영자 알림·접수 확인 메일을 되살리면 이 문구와 privacy.html ·
-         *    en-privacy.html §02 · §03 을 **함께** 고치십시오.
+         *    앱 `/api/leads`(trops_a `app/api/leads/route.ts`)는 저장하고 **담당자 알림 한 통**만 보낸다
+         *    (앱 PR #340 · 접수한 분에게 가는 확인 메일은 없다). 오지 않는 메일을 약속하고 있었습니다.
+         * ⚠️ 앱에서 접수 확인 메일을 보내게 되면 이 문구와 privacy.html · en-privacy.html §02 · §03 · §07 을
+         *    **함께** 고치십시오.
          */
         say('ok', kind.notifyOnly
           ? '등록되었습니다. 준비되는 대로 적어 주신 주소로 안내해 드리겠습니다.'
