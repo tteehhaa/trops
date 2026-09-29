@@ -281,7 +281,7 @@
       <h1>Privacy Notice</h1>
       <p class="head-meta">
         Draft &middot; pending legal review &middot; written August 11, 2026 &middot; effective August 20, 2026<br>
-        <strong>Amended and effective September 30, 2026.</strong> See §07 for the changes.<br>
+        <strong>Amended and effective October 1, 2026.</strong> See §07 for the changes.<br>
         Applies to the services {{biz.companyName}} provides at trops.kr.
       </p>
     </div>
@@ -327,11 +327,11 @@
              **is sent**. Do not fold it into the "never sent" sentence. -->
         <p>The same container holds one more slot: a <strong>channel code</strong>
         (<code>trops_vs_f</code>, September 20, 2026). If the address carries <code>?from=</code>, we keep
-        that value and <strong>send it along</strong> when you start the 1-minute export readiness check. It tells us which
+        that value and <strong>send it along</strong> when you start the 1-minute export readiness check or send an early access application. It tells us which
         page or partner you came through, and it is <strong>not a name, a contact detail or device
         information</strong>. This slot also <strong>disappears when you close the tab</strong>.</p>
         <p>We count how many times each page is opened and how many times the main buttons are clicked
-        (August 18, 2026). Since September 4, 2026, we also measure <strong>which sections of a page you
+        (August 18, 2026), and in the same way how many early access applications are received. Since September 4, 2026, we also measure <strong>which sections of a page you
         viewed, how long you stayed on each, how far down you scrolled, and where you went next</strong>.
         For how you arrived, we keep only <strong>one of five categories</strong> (search, direct,
         referral, social, AI) and the <strong>domain</strong> of the referring site, and we discard the
@@ -403,8 +403,8 @@
                  ⚠️ 영문 화면에 한글을 쓰지 않습니다(test/i18n-parity.test.js) · em dash 도 쓰지 않습니다. -->
             <tr>
               <th scope="row">Early access application<br><span class="lead">(trops.kr home page)</span></th>
-              <td>Company name<br>Email<br>Industry and region (grouped)<br>The work you would like to start with (optional)<br>A referral code you received (optional)<br>Required consent, when you gave it, and the version of the consent text<br>A hash of your IP address (to limit repeated requests)</td>
-              <td>Selecting pilot participants and contacting you about your invitation<br>Pre-filling your company ledger<br>Placing the work you asked for on your first screen after you sign up<br>Counting referrals (for our staff&rsquo;s reference)<br>Blocking bursts of requests from one place (IP hash)</td>
+              <td>Company name<br>Email<br>Industry and region (grouped)<br>The work you would like to start with (optional)<br>A referral code you received (optional)<br>How you reached us: channel code (<code>?from=</code>), campaign tags (<code>utm_*</code>), and the page path you opened (when present)<br>Required consent, when you gave it, and the version of the consent text<br>A hash of your IP address (to limit repeated requests)</td>
+              <td>Selecting pilot participants and contacting you about your invitation<br>Pre-filling your company ledger<br>Placing the work you asked for on your first screen after you sign up<br>Counting referrals (for our staff&rsquo;s reference)<br>Counting which channels applications come from<br>Blocking bursts of requests from one place (IP hash)</td>
               <td>Deleted 1 year (365 days) after you apply<br>If you sign up, the application moves into your account information and follows its retention rules.<br>If you withdraw your consent, we delete it right away (<a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>).<br>The IP hash is deleted after two days.<br>Applications are stored in the Supabase database behind app.trops.kr (Seoul), and an automated cleanup job deletes them once these periods end.<br>When you apply, a <strong>receipt email</strong> (your place in the queue, your referral code, and a short list of what to check first) goes to the address you gave, and a notification goes to our staff. If we invite you, a separate invitation email follows. The staff notification is <strong>not covered by the automated deletion above</strong>; it stays in our staff mailbox and is deleted within 1 year of the day you applied, the same as the application record.</td>
             </tr>
             <tr>
@@ -570,6 +570,9 @@
       <section>
         <h2><span class="doc-num" aria-hidden="true">07</span><span>When this notice changes</span></h2>
         <p>When we change this notice, we post the changes and their effective date on this page. If a change is to your disadvantage, we will tell you before it takes effect.</p>
+        <!-- 🔴 국문 §07 첫 고지와 1:1 · 같은 날짜 〔2026-09-30 준비〕 — scripts/set-release-date.js 가 함께 바꿉니다. -->
+        <h3>Effective October 1, 2026: early access applications now include how you reached us</h3>
+        <p>When you send an early access application, we now also receive <strong>how you reached us</strong>: the channel code (<code>?from=</code>), campaign tags (<code>utm_*</code>), and the page path you opened. It tells us which channels applications come from, and it is not a name, a contact detail or device information. §02 lists the item and its purpose, and §01 notes where the channel code is sent. We also count <strong>how many applications are received</strong>, as part of the same anonymous counts as page views and button clicks (§01). <strong>Retention periods and all other items are unchanged.</strong> This amendment <strong>takes effect on the day it is posted</strong>.</p>
         <!-- 🔴 국문 §07 첫 고지와 1:1 · 같은 날짜입니다 〔2026-09-30 준비〕 — scripts/set-release-date.js 가 함께 바꿉니다. -->
         <h3>Effective September 30, 2026: we now accept early access applications on the home page</h3>
         <p>We are starting to accept <strong>early access applications</strong> through the home page. §02 and §03 list what we collect (company name, email, industry, region, the work you would like to start with, and any referral code you received), what we use it for, and how long we keep it; §04 lists where it is stored. When you apply, a receipt email goes to the address you gave and a notification goes to our staff. We also updated the email-sending entry for Resend in §04 and the email paragraph in §06 to match the emails we actually send, and added to the cross-border table in §04 that sending email passes your email address, company name, contact name, and the content of your inquiry or request to <strong>Resend in the United States</strong>. <strong>What we already hold and how long we keep it are unchanged</strong>; the new entries apply only to the new application. This amendment <strong>takes effect on the day it is posted</strong>.</p>

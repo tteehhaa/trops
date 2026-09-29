@@ -1025,7 +1025,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
         <!-- 🔴 동의 문구의 판 이름 = `pilot-apply-<처리방침 시행일>` 〔확정 2026-09-30〕 — 앱이 동의 기록에 그대로 적습니다
                 (계약 0-2). 문구를 고치면 판 이름도 바꿉니다. ⚠️ 날짜는 `node scripts/set-release-date.js YYYY-MM-DD` 가
                 방침 네 자리와 함께 바꿉니다 — test/pilot-apply-form.test.js 가 방침 머리 줄의 날짜와 대조합니다. -->
-        <input type="hidden" name="notice_version" value="pilot-apply-2026-09-30">
+        <input type="hidden" name="notice_version" value="pilot-apply-2026-10-01">
         <div class="hp" aria-hidden="true"><label>웹사이트<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
         <fieldset class="fs" id="applyFields" disabled>
           <legend class="sr">시범 참여 신청</legend>
@@ -1042,8 +1042,8 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
                ⛔ 한쪽만 고치지 마십시오 — 고치면 위 notice_version 의 판 이름도 바꿉니다. -->
           <div class="fld cons">
             <dl>
-              <dt>받는 항목</dt><dd>회사명 · 이메일 · 업종 · 지역, 요청하신 업무와 받으신 소개 코드(있을 때)</dd>
-              <dt>쓰는 곳</dt><dd>시범 참여 선정과 초대 안내·연락, 회사 장부 미리 채움, 가입 뒤 첫 화면에 요청하신 업무 채움, 소개 수 집계</dd>
+              <dt>받는 항목</dt><dd>회사명 · 이메일 · 업종 · 지역, 요청하신 업무와 받으신 소개 코드(있을 때), 들어오신 경로(채널 코드 · 광고 표지)</dd>
+              <dt>쓰는 곳</dt><dd>시범 참여 선정과 초대 안내·연락, 회사 장부 미리 채움, 가입 뒤 첫 화면에 요청하신 업무 채움, 소개 수 집계, 신청 경로 집계</dd>
               <dt>보관</dt><dd>신청일부터 1년 뒤 삭제합니다. 가입하시면 회원 정보로 옮겨지고, 동의를 철회하시면 바로 삭제합니다.</dd>
               <dt>메일</dt><dd>이 주소로 접수 메일(대기 순번 · 소개 코드 · 먼저 챙길 것 요약)을 보내고, 회사 담당자에게 알림 메일이 갑니다.</dd>
             </dl>
@@ -1151,7 +1151,8 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
     </div>
     <div><b>제품</b><ul><li><a href="#product">어시스턴트</a></li><li><a href="#product">장부 · 서류 · 기한</a></li><li><a href="#service">무역보험 준비 패키지</a></li><li><a href="#check">1분 수출 준비 진단</a></li><li><a href="#calc">업무 시간 계산기</a></li><li><a href="mailto:contact@theo-ne.com?subject=TROPS%20교육%20문의">수출 실무 교육</a></li></ul></div>
     <div><b>자료</b><ul><li><a href="https://app.trops.kr/guide">수출절차 안내</a></li><li><a href="https://app.trops.kr/guide/support">보험료 지원사업</a></li><li><a href="https://app.trops.kr/guide/glossary">무역 용어</a></li></ul></div>
-    <div><b>회사</b><ul><li><a href="/about">회사 소개</a></li><li><a href="#security">보안</a></li><li><a href="mailto:contact@theo-ne.com">문의 · 교육 · 파트너</a></li></ul></div>
+    <!-- 🔄 「문의 · 교육 · 파트너」를 /contact 로 되돌렸습니다 〔2026-09-30 · 대표 결정〕 — v3 에서 랜딩 → /contact 길이 0 이었습니다. -->
+    <div><b>회사</b><ul><li><a href="/about">회사 소개</a></li><li><a href="#security">보안</a></li><li><a href="/contact" data-track="footer-contact">문의 · 교육 · 파트너</a></li></ul></div>
   </div>
   <!-- 🔴 사업자정보는 site.config.json 이 원본이고 이 푸터는 `summary` 티어 넷입니다(scripts/build-static.js).
        ⚠️ 통신판매업신고번호·전화는 **의도적으로 없습니다** — 그 토큰 이름을 이 주석에도 적지 마십시오
@@ -1433,6 +1434,8 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
     form.hidden = true;
     $('done').hidden = false;
     $('doneTitle').focus();
+    /* 🔴 신청 접수 계측 — 응답 201 에서만 한 번(assets/track.js `tropsEvent` · 라벨 apply-success). */
+    if (window.tropsEvent) window.tropsEvent('apply-success');
   }
 
   function payload(){
@@ -1449,7 +1452,35 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
     };
     if (v('requested_work')) body.requested_work = v('requested_work');
     if (v('referral_code')) body.referral_code = v('referral_code');
+    var acq = acquisition();
+    if (acq) body.acquisition = acq;
     return body;
+  }
+
+  /*
+   * 🔴 **들어오신 경로** 〔2026-09-30 · 대표 결정 「어느 채널로 와서 신청했는지」〕 — 앱 계약 2-1 `acquisition`.
+   *    ref          = 채널 코드 `?from=` — 그 방문의 첫 값(assets/track.js `tropsVisit().from`)
+   *    utm_*        = 지금 주소의 광고 표지(`?utm_source=` …)
+   *    landing_path = 이 페이지 경로
+   * ⚠️ 소개 코드(`?ref=TR-…`)는 여기가 아니라 `referral_code` 입니다 — 앱의 `acquisition.ref` 는 «채널» 칸이라
+   *    이름만 같습니다. ⛔ 둘을 섞지 마십시오.
+   * ⚠️ utm 은 **지금 주소에서만** 읽습니다 — 저장해 두지 않습니다(새 저장 칸은 방침이 적어야 합니다).
+   *    다른 페이지를 거쳐 돌아오면 utm 은 빠지고 채널 코드는 남습니다.
+   * ⚠️ 앱은 일곱 키 밖을 버리고 값마다 200자에서 자릅니다 — 여기서도 200자에서 자릅니다. 경로 정보가 하나도 없으면
+   *    `acquisition` 을 싣지 않습니다.
+   */
+  function acquisition(){
+    var out = {}, any = false, q = null;
+    try { q = new URLSearchParams(location.search); } catch (e) { q = null; }
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(function(k){
+      var val = q ? String(q.get(k) || '').trim() : '';
+      if (val) { out[k] = val.slice(0, 200); any = true; }
+    });
+    var from = (window.tropsVisit && window.tropsVisit().from) || '';
+    if (from) { out.ref = String(from).slice(0, 200); any = true; }
+    if (!any) return null;
+    out.landing_path = location.pathname.slice(0, 200);
+    return out;
   }
 
   function send(){

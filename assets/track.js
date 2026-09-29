@@ -194,6 +194,18 @@
   };
 
   /*
+   * 🔴 **페이지가 부르는 사건 — 시범 참여 신청 접수** 〔2026-09-30 · 대표 결정 「201 응답 때만 apply-success」〕.
+   *    버튼 클릭이 아니라 «앱이 신청을 받았다»는 사건이라 `data-track` 으로 셀 수 없습니다 — index.html 완료 화면
+   *    (응답 201)이 이 손잡이를 부릅니다. 보내는 모양은 클릭과 같고(`kind` 는 두 값 그대로) 영역은 `apply` 입니다.
+   * ⛔ 라벨을 늘리지 마십시오 — 받는 라벨은 아래 표 하나입니다. 늘리려면 방침 §01(집계 문단)부터 고칩니다.
+   */
+  var PAGE_EVENTS = { 'apply-success': 'apply' };
+  window.tropsEvent = function (label) {
+    if (!Object.prototype.hasOwnProperty.call(PAGE_EVENTS, label)) return;
+    sendApp({ kind: 'click', label: label, section: PAGE_EVENTS[label] });
+  };
+
+  /*
    * 🔴 **앱으로는 `text/plain;charset=UTF-8` 입니다.** CORS 안전 목록이라 preflight 가
    *    붙지 않습니다. `application/json` 이면 preflight 가 필요해지고 `sendBeacon` 은
    *    preflight 를 못 해 **조용히** 실패합니다.

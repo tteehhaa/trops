@@ -155,7 +155,7 @@ test('🔴 폼의 동의 블록과 방침 §02 시범 신청 행이 같은 항�
   assert.ok(row, 'privacy.html §02 에 시범 참여 신청 행이 없습니다 — 폼을 켜기 전에 방침이 먼저입니다(계약 0-1)');
   for (const piece of ['요청하신 업무', '소개 코드', '시범 참여 선정과 초대 안내·연락', '회사 장부 미리 채움',
     '가입 뒤 첫 화면에 요청하신 업무 채움', '소개 수 집계', '신청일부터 1년', '회원 정보로 옮겨', '동의를 철회하시면 바로 삭제',
-    '접수 메일', '먼저 챙길 것 요약', '회사 담당자에게 알림 메일']) {
+    '접수 메일', '먼저 챙길 것 요약', '회사 담당자에게 알림 메일', '들어오신 경로', '신청 경로 집계']) {
     assert.ok(cons.includes(piece), '폼 동의 블록에 없습니다: ' + piece);
     assert.ok(row.includes(piece), '방침 시범 신청 행에 없습니다: ' + piece);
   }
@@ -188,6 +188,46 @@ test('🔴 동의 문구의 판 이름이 처리방침 시행일과 같은 날�
   assert.ok(head, 'privacy.html 머리의 개정 시행일을 읽지 못했습니다');
   assert.deepStrictEqual([+m[1], +m[2], +m[3]], [+head[1], +head[2], +head[3]],
     '판 이름의 날짜(' + v + ')가 방침 시행일과 다릅니다 — scripts/set-release-date.js 로 함께 맞추십시오');
+});
+
+/* ══ ②-c 들어오신 경로 · 신청 접수 계측 · /contact ══════════════════ */
+
+test('🔴 신청에 들어오신 경로(acquisition)를 계약의 키로만 싣는다 — 채널 코드는 ref, 소개 코드와 섞지 않는다', () => {
+  /*
+   * 〔2026-09-30 · 대표 결정 「어느 채널(?from=, utm, ref)로 와서 신청했는지」〕 — 앱 계약 2-1 `acquisition` 은
+   * utm_source · utm_medium · utm_campaign · utm_term · utm_content · ref · landing_path 일곱 키만 받습니다.
+   */
+  const fn = (script.match(/function acquisition\(\)\{[\s\S]*?\n  \}/) || [])[0] || '';
+  assert.ok(fn, 'acquisition() 을 찾지 못했습니다');
+  for (const k of ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content']) {
+    assert.ok(fn.includes("'" + k + "'"), k + ' 를 싣지 않습니다');
+  }
+  assert.match(fn, /out\.ref = /, '채널 코드를 acquisition.ref 로 싣지 않습니다');
+  assert.match(fn, /tropsVisit\(\)\.from/, '채널 코드를 track.js 의 방문 값에서 읽지 않습니다');
+  assert.match(fn, /out\.landing_path = /, 'landing_path 를 싣지 않습니다');
+  assert.ok(!/referral_code|fRef/.test(fn), '소개 코드를 acquisition 에 섞었습니다 — 그 값은 referral_code 입니다');
+  const keys = [...fn.matchAll(/out(?:\.([a-z_]+)|\[k\])/g)].map((m) => m[1]).filter(Boolean);
+  for (const k of keys) {
+    assert.ok(['ref', 'landing_path'].includes(k), '계약에 없는 키를 싣습니다: ' + k);
+  }
+  assert.match(script, /if \(acq\) body\.acquisition = acq;/, '본문에 acquisition 을 싣지 않습니다');
+});
+
+test('🔴 신청 접수 계측(apply-success)은 완료 화면(201)에서만 한 번 부른다', () => {
+  const calls = script.match(/tropsEvent\('apply-success'\)/g) || [];
+  assert.strictEqual(calls.length, 1, 'apply-success 를 부르는 자리가 ' + calls.length + '곳입니다');
+  const done = (script.match(/function showDone\(data\)\{[\s\S]*?\n  \}/) || [])[0] || '';
+  assert.ok(done.includes("tropsEvent('apply-success')"), 'apply-success 가 완료 화면(showDone) 밖에 있습니다');
+  const track = read('assets/track.js');
+  assert.match(track, /var PAGE_EVENTS = \{ 'apply-success': 'apply' \};/, 'track.js 가 받는 페이지 사건 표가 바뀌었습니다');
+  assert.match(track, /sendApp\(\{ kind: 'click', label: label, section: PAGE_EVENTS\[label\] \}\)/,
+    'apply-success 를 클릭과 같은 모양으로 보내지 않습니다 — kind 는 두 값(pageview · click) 그대로여야 합니다');
+});
+
+test('⚠️ 푸터 「문의 · 교육 · 파트너」가 /contact 로 간다 — 랜딩에서 문의 폼으로 가는 길', () => {
+  const footer = (src.match(/<footer[\s\S]*?<\/footer>/) || [])[0] || '';
+  assert.match(footer, /<a href="\/contact" data-track="footer-contact">문의 · 교육 · 파트너<\/a>/,
+    '푸터에서 /contact 로 가는 링크가 없습니다');
 });
 
 /* ══ ③ 소개는 순번 약속이 아니다 ═════════════════════════════════════ */
