@@ -182,8 +182,8 @@ test('🔴 동의 문구의 판 이름이 처리방침 시행일과 같은 날�
    * ⛔ 초안 꼴(`draft`)로 되돌리지 마십시오 — 운영에서 받는 동의가 초안 판으로 기록됩니다.
    */
   const v = (formHtml.match(/name="notice_version" value="([^"]+)"/) || [])[1] || '';
-  const m = v.match(/^pilot-apply-(\d{4})-(\d{2})-(\d{2})$/);
-  assert.ok(m, 'notice_version 이 pilot-apply-YYYY-MM-DD 꼴이 아닙니다: ' + v);
+  const m = v.match(/^pilot-apply-(\d{4})-(\d{2})-(\d{2})(?:-[2-9])?$/);   // -N = 같은 날 N 번째 판(set-release-date --rev)
+  assert.ok(m, 'notice_version 이 pilot-apply-YYYY-MM-DD(-N) 꼴이 아닙니다: ' + v);
   const head = read('privacy.html').match(/개정 &middot; 시행 (\d{4})년 (\d{1,2})월 (\d{1,2})일/);
   assert.ok(head, 'privacy.html 머리의 개정 시행일을 읽지 못했습니다');
   assert.deepStrictEqual([+m[1], +m[2], +m[3]], [+head[1], +head[2], +head[3]],
