@@ -334,6 +334,9 @@ const NOT_DEPLOYED = new Set([
  *             ⚠️ 스니펫은 8장에 그대로 있고 **ID 만** 토큰입니다. 공용 .js 로
  *                빼면 구글 태그 감지기가 HTML 에서 gtag.js 를 못 찾습니다
  *                (site.config.json 의 _comment_analytics 에 실측이 있습니다).
+ *   pilotApply 언어와 무관한 한 벌입니다 — 홈 시범 참여 신청 폼의 스위치·보낼 곳 〔2026-09-29〕.
+ *             ⚠️ 값은 «문자열로» 치환됩니다 — 스크립트는 `'{{…Enabled}}' === 'true'` 꼴로
+ *                씁니다. 소스를 빌드 없이 열어도 문법이 깨지지 않고, 그때는 «꺼짐»입니다.
  *
  * ⚠️ 토큰에 언어를 박지 마십시오({{biz.ko.…}}). 파일 단위로 한 번만 정하는 것이
  *    en 파일에 ko 토큰을 붙여넣는 실수를 막습니다 (STATIC.html 주석 참조).
@@ -344,7 +347,7 @@ const NOT_DEPLOYED = new Set([
  * ────────────────────────────────────────────────────────────── */
 
 /** 아는 묶음 이름. 여기 없는 이름은 애초에 토큰으로 잡히지 않습니다(오타 = 빌드 실패). */
-const TOKEN_NAMESPACES = ['biz', 'precheck', 'analytics'];
+const TOKEN_NAMESPACES = ['biz', 'precheck', 'analytics', 'pilotApply'];
 
 const TOKEN_RE = new RegExp(
   '\\{\\{\\s*(' + TOKEN_NAMESPACES.join('|') + ')\\.([A-Za-z0-9_]+)\\s*\\}\\}',
@@ -392,12 +395,39 @@ function loadSiteConfig() {
     process.exit(1);
   }
 
+  /*
+   * 시범 참여 신청 폼 스위치 〔2026-09-29〕. 스위치가 문자열 "false" 로 들어오면 스크립트의
+   * `=== 'true'` 가 꺼짐으로 읽어 조용히 넘어가지만, "yes" · 1 같은 값은 사람이 켰다고 믿는데 꺼져
+   * 있는 상태가 됩니다. 불리언만 받습니다. 보낼 곳은 앱의 그 경로만 받습니다 — 운영은 app.trops.kr.
+   */
+  const pa = config.pilotApply;
+  const endpointOk = (u) => typeof u === 'string' && /^https:\/\/[a-z0-9.-]+\/api\/pilot-apply$/.test(u);
+  if (
+    !pa ||
+    typeof pa.productionEnabled !== 'boolean' ||
+    typeof pa.previewEnabled !== 'boolean' ||
+    pa.productionEndpoint !== 'https://app.trops.kr/api/pilot-apply' ||
+    !endpointOk(pa.previewEndpoint)
+  ) {
+    console.error(
+      '✋ site.config.json 의 pilotApply 가 모양에 맞지 않습니다: ' + JSON.stringify(pa) +
+        '\n   productionEnabled · previewEnabled 는 true/false, productionEndpoint 는' +
+        ' https://app.trops.kr/api/pilot-apply, previewEndpoint 는 https://…/api/pilot-apply 입니다.'
+    );
+    process.exit(1);
+  }
+
   return config;
 }
 
 /** 파일 하나를 채울 사전 — 묶음 이름 → 값 묶음. locale 은 biz 에만 걸립니다. */
 function tokenValues(config, locale) {
-  return { biz: config.biz[locale], precheck: config.precheck, analytics: config.analytics };
+  return {
+    biz: config.biz[locale],
+    precheck: config.precheck,
+    analytics: config.analytics,
+    pilotApply: config.pilotApply,
+  };
 }
 
 /**

@@ -95,5 +95,28 @@
   ],
   "analytics": {
     "gaId": "G-RQ1NWGK0KM"
+  },
+
+  "_comment_pilotApply": [
+    "홈 「먼저 사용해 보기」 시범 참여 신청 폼의 켜고 끄는 스위치 〔2026-09-29 신설 · 랜딩 v3〕.",
+    "index.html 스크립트가 {{pilotApply.키}} 토큰으로 이 값을 씁니다.",
+    "",
+    "🔴 **운영과 미리보기를 «접속한 주소»로 가릅니다** — trops.kr · www.trops.kr 이면 production 두 칸,",
+    "   그 밖(Vercel 미리보기 · 로컬)이면 preview 두 칸입니다. 빌드 환경변수를 읽지 않습니다 —",
+    "   미리보기 배포를 운영으로 올려도(promote) 운영 주소에서는 production 값이 쓰입니다.",
+    "",
+    "⚠️ **운영 스위치는 productionEnabled 한 줄입니다(기본 false).** 켜는 순서는",
+    "   docs/design/landing-v3/pending-app.md 「운영 순서」 — 앱 0153·0154 → 앱 배포 → 앱 스위치",
+    "   → 처리방침 시행 → 이 값 true → 합성 신청. 방침보다 먼저 켜지 마십시오(앱 계약 0-1).",
+    "⚠️ 꺼져 있으면 신청 섹션은 보이고, 칸은 잠기고, 제출 대신 안내 문구가 섭니다.",
+    "⚠️ previewEndpoint 는 앱 Preview(prd-v2-pdca) 의 브랜치 주소입니다. 앱 Preview 는",
+    "   PILOT_APPLY_ALLOWED_ORIGINS 에 랜딩 미리보기 주소가 있어야 받습니다(없으면 403 origin).",
+    "⛔ 여기에 비밀값을 두지 마십시오 — 이 값은 전부 화면 스크립트로 공개됩니다."
+  ],
+  "pilotApply": {
+    "productionEnabled": false,
+    "productionEndpoint": "https://app.trops.kr/api/pilot-apply",
+    "previewEnabled": true,
+    "previewEndpoint": "https://trops-a-git-prd-v2-pdca-teheranroai-9246s-projects.vercel.app/api/pilot-apply"
   }
 }

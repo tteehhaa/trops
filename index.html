@@ -580,6 +580,15 @@ form.f{border:1px solid var(--line);border-radius:14px;padding:30px;background:v
 .f input,.f select{width:100%;margin-top:7px;padding:12px 13px;border:1px solid var(--line);border-radius:8px;font-size:15px;font-family:inherit;background:var(--white);color:var(--ink)}
 .f input:focus,.f select:focus{outline:2px solid var(--accent);outline-offset:1px}
 .f .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fs{border:0;margin:0;padding:0;min-width:0}
+.fs:disabled input,.fs:disabled select{background:var(--surface);color:var(--mute);cursor:not-allowed}
+.f .hint{font-size:12.5px;color:var(--mute);margin-top:5px}
+.f .cons dl{margin-top:20px;display:grid;grid-template-columns:64px 1fr;gap:4px 10px;font-size:12.5px;line-height:1.6;color:var(--sub);
+  background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.f .cons dt{font-weight:600;color:var(--ink)}
+.f .cons .agree{margin-top:12px}
+.f .agree a{text-decoration:underline;text-underline-offset:2px}
+.ferr{margin-top:16px;font-size:14px;color:var(--danger);background:var(--bad-bg);border-radius:8px;padding:10px 12px}
 .f .agree{display:flex;gap:8px;font-weight:400;font-size:13.5px;color:var(--sub);margin-top:20px}
 .f .agree input{width:auto;margin-top:4px;flex:none}
 .f .btn{width:100%;margin-top:22px;padding:14px}
@@ -996,52 +1005,71 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
     </div>
     <div>
       <!--
-        🔴 **시범 참여 신청 폼 — 지금은 «화면만» 있고 제출을 막아 두었습니다** 〔2026-09-29 · 대표 지시〕.
-           받을 곳은 앱 `POST https://app.trops.kr/api/pilot-apply` 로 정해졌고(trops_a
-           doc/self15/pilot-apply-api.md · self15 28 계약), 앱이 운영 배포 전입니다. 연결은 4단계입니다 —
-           할 일은 docs/design/landing-v3/pending-app.md 에 있습니다.
+        🔴 **시범 참여 신청 폼 — 앱 `POST /api/pilot-apply` 에 보냅니다** 〔2026-09-29 · 새 계약 self15 28·29〕.
+           계약 정본은 trops_a doc/self15/pilot-apply-api.md 이고, 같은 판의 사본이 docs/pilot-apply-api.md 에 있습니다.
         ⚠️ 칸 이름(`name`)은 그 계약의 요청 키 그대로입니다 — company_name · email · industry · region ·
            consents.collection · requested_work · referral_code · website · elapsed_ms · notice_version.
            선택지 값도 계약의 키입니다(업종 6 · 지역 5 · trops_a lib/pilot/vocab.ts 의 묶음).
            ⛔ 화면 라벨은 다듬어도 되지만 `value` 는 바꾸지 마십시오 — 목록 밖 값은 400 입니다.
-        🔴 제출을 막는 것은 스크립트의 `SUBMIT_ENABLED = false` 한 줄입니다. 막혀 있는 동안 완료 화면은
-           뜨지 않습니다.
+           test/pilot-apply-form.test.js 가 칸 이름과 선택지 값을 계약 표와 맞댑니다.
+        🔴 **켜고 끄는 것은 site.config.json `pilotApply` 입니다** — 운영 주소(trops.kr · www)는 production 칸,
+           그 밖은 preview 칸. **마크업의 기본은 «꺼짐»입니다**(칸 잠김 · 제출 버튼 숨김 · 안내 문구) — 스크립트가
+           켜진 설정을 읽었을 때만 풉니다. 스크립트가 없으면 이 폼은 무엇도 보내지 않습니다
+           (action 없는 폼이 GET 으로 제출되어 개인정보가 주소창에 실리는 일을 막습니다).
       -->
       <form class="f" id="applyForm" novalidate>
         <div class="req" id="reqBox" hidden>요청하신 업무 <b id="reqText"></b><span>초대해 드릴 때 이 업무부터 시작할 수 있게 준비해 둡니다.</span></div>
         <input type="hidden" name="requested_work" id="fWork">
         <input type="hidden" name="referral_code" id="fRef">
         <input type="hidden" name="elapsed_ms" id="fElapsed">
-        <!-- ⚠️ 동의 문구의 판 이름 — 자리표시입니다. 문구가 확정되면 `pilot-apply-YYYY-MM-DD` 꼴로 바꾸고,
-                문구를 고칠 때마다 함께 바꿉니다(계약 0-2). -->
-        <input type="hidden" name="notice_version" value="pilot-apply-draft">
+        <!-- ⚠️ 동의 문구의 판 이름 — **초안 판**입니다. 처리방침이 시행되는 날 `pilot-apply-YYYY-MM-DD`(시행일)로
+                바꾸고, 문구를 고칠 때마다 함께 바꿉니다(계약 0-2 · 앱이 동의 기록에 그대로 적습니다). -->
+        <input type="hidden" name="notice_version" value="pilot-apply-draft-2026-09-29">
         <div class="hp" aria-hidden="true"><label>웹사이트<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
-        <div class="fld"><label>회사명<span class="star">*</span><input name="company_name" maxlength="120" autocomplete="organization" placeholder="주식회사 ○○"></label><div class="err">회사명을 입력해 주세요.</div></div>
-        <div class="fld"><label>담당자 이메일<span class="star">*</span><input name="email" type="email" maxlength="254" autocomplete="email" inputmode="email" placeholder="name@company.com"></label><div class="err">연락받으실 이메일을 입력해 주세요.</div></div>
-        <div class="two">
-          <div class="fld"><label>업종<span class="star">*</span><select name="industry"><option value="">선택</option><option value="machinery">기계·부품</option><option value="electronics">전기·전자</option><option value="cosmetics">화장품·생활용품</option><option value="food">식품</option><option value="chemicals">화학·소재</option><option value="other">기타</option></select></label><div class="err">업종을 선택해 주세요.</div></div>
-          <div class="fld"><label>지역<span class="star">*</span><select name="region"><option value="">선택</option><option value="capital">서울·경기·인천</option><option value="chungcheong">충청</option><option value="jeolla">전라</option><option value="gyeongsang">경상</option><option value="gangwon_jeju">강원·제주</option></select></label><div class="err">지역을 선택해 주세요.</div></div>
-        </div>
-        <!-- 🔴 **보관 기간 「신청일부터 1년」은 자리표시입니다** 〔2026-09-29 · 대표 지시〕 — 앱이 확정하면
-             이 문장 · privacy.html 시범 신청 행 · notice_version 을 **함께** 고칩니다(4단계).
-             ⚠️ 계약 0-1: 「요청하신 업무」는 동의 기록의 범위 코드에 실리지 않아 **이 문구가 글로 적어야**
-                합니다. 항목을 줄이지 마십시오. -->
-        <div class="fld"><label class="agree"><input type="checkbox" name="consents.collection" value="true"><span>개인정보 수집·이용에 동의합니다. 회사명·이메일·업종·지역과 요청하신 업무, 받으신 소개 코드를 초대 안내와 연락, 장부 사전 준비에 이용하며 신청일부터 1년 보관합니다.</span></label><div class="err">동의가 있어야 신청하실 수 있습니다.</div></div>
-        <button class="btn" type="submit" data-track="apply-submit">먼저 사용해 보기 신청</button>
+        <fieldset class="fs" id="applyFields" disabled>
+          <legend class="sr">시범 참여 신청</legend>
+          <div class="fld"><label>회사명<span class="star">*</span><input name="company_name" maxlength="120" autocomplete="organization" placeholder="주식회사 ○○"></label><div class="err" data-default="회사명을 입력해 주세요.">회사명을 입력해 주세요.</div></div>
+          <div class="fld"><label>담당자 이메일<span class="star">*</span><input name="email" type="email" maxlength="254" autocomplete="email" inputmode="email" placeholder="name@company.com"></label><div class="err" data-default="연락받으실 이메일을 입력해 주세요.">연락받으실 이메일을 입력해 주세요.</div><p class="hint">초대 메일이 이 주소로 가고, 가입하실 때도 같은 주소로 로그인하십니다.</p></div>
+          <div class="two">
+            <div class="fld"><label>업종<span class="star">*</span><select name="industry"><option value="">선택</option><option value="machinery">기계·부품</option><option value="electronics">전기·전자</option><option value="cosmetics">화장품·생활용품</option><option value="food">식품</option><option value="chemicals">화학·소재</option><option value="other">기타</option></select></label><div class="err" data-default="업종을 선택해 주세요.">업종을 선택해 주세요.</div></div>
+            <div class="fld"><label>지역<span class="star">*</span><select name="region"><option value="">선택</option><option value="capital">서울·경기·인천</option><option value="chungcheong">충청</option><option value="jeolla">전라</option><option value="gyeongsang">경상</option><option value="gangwon_jeju">강원·제주</option></select></label><div class="err" data-default="지역을 선택해 주세요.">지역을 선택해 주세요.</div></div>
+          </div>
+          <!-- 🔴 **동의 블록 — 방침 §02 「먼저 사용해 보기 · 시범 참여 신청」 행과 같은 말입니다** 〔2026-09-29 초안〕.
+               ⚠️ 계약 0-1: 「요청하신 업무」는 앱 동의 기록의 범위 코드에 실리지 않아 **이 문구가 글로 적어야** 합니다.
+               ⚠️ 보관은 앱 0154 가 집행하는 그대로입니다(신청일 1년 · 가입하면 회원 정보로 · 철회하면 즉시).
+               ⛔ 접수 메일 문장은 아직 넣지 않았습니다 — 앱 ② 결과를 받은 뒤 방침과 함께 확정합니다
+                  (docs/design/landing-v3/pending-app.md).
+               ⛔ 한쪽만 고치지 마십시오 — 고치면 위 notice_version 의 판 이름도 바꿉니다. -->
+          <div class="fld cons">
+            <dl>
+              <dt>받는 항목</dt><dd>회사명 · 이메일 · 업종 · 지역, 요청하신 업무와 받으신 소개 코드(있을 때)</dd>
+              <dt>쓰는 곳</dt><dd>시범 참여 선정과 초대 안내·연락, 회사 장부 미리 채움, 가입 뒤 첫 화면에 요청하신 업무 채움, 소개 수 집계</dd>
+              <dt>보관</dt><dd>신청일부터 1년 뒤 삭제합니다. 가입하시면 회원 정보로 옮겨지고, 동의를 철회하시면 바로 삭제합니다.</dd>
+            </dl>
+            <label class="agree"><input type="checkbox" name="consents.collection" value="true"><span>위 내용으로 개인정보 수집·이용에 동의합니다. 자세한 내용은 <a href="/privacy">개인정보처리방침</a>에 있습니다.</span></label>
+            <div class="err" data-default="동의가 있어야 신청하실 수 있습니다.">동의가 있어야 신청하실 수 있습니다.</div>
+          </div>
+        </fieldset>
+        <p class="ferr" id="formErr" role="alert" hidden></p>
+        <button class="btn" type="submit" id="applySubmit" data-track="apply-submit" hidden>먼저 사용해 보기 신청</button>
+        <p class="note" id="applyOff">지금은 신청 접수를 준비하고 있습니다. 먼저 연락을 원하시면 <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a> 으로 보내 주십시오.</p>
         <p class="after">나머지 정보는 초대 메일에서 입력하실 수 있습니다.</p>
-        <p class="note" id="applyNote" role="status" hidden>신청 접수를 준비하고 있습니다. 먼저 연락을 원하시면 <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a> 으로 보내 주십시오.</p>
       </form>
-      <!-- 🔴 완료 화면 — 순번·소개 코드는 앱 응답(`queue` · `referral`)이 채웁니다. 지금은 자리표시이고
-           제출이 막혀 있어 뜨지 않습니다. `qBasis` 에는 응답의 `queue.basis` 를 **그대로** 싣습니다
-           (계약 2-5: 순번은 초대 순서의 약속이 아니므로 그 문장을 함께 보여 줍니다). -->
+      <!-- 🔴 완료 화면 — 앱 응답 201 에서만 뜹니다. 순번은 `queue.position`, 그 아래 문장은 `queue.basis` 를
+           **그대로** 싣습니다(계약 2-5: 순번은 초대 순서의 약속이 아니므로 그 문장을 함께 보여 줍니다).
+           소개 링크는 `referral.code` 로 이 페이지가 만듭니다 — `https://trops.kr/?ref=<코드>#apply`.
+           ⚠️ 계약의 예(`/pilot?ref=`)와 경로가 다릅니다 — 랜딩에 `/pilot` 이 없어 홈의 신청 섹션으로 보냅니다.
+           ⛔ 「순서가 앞당겨집니다」 류를 쓰지 마십시오 — 앱은 소개로 순번을 자동으로 바꾸지 않습니다(계약 2-6). -->
       <div class="done" id="done" hidden>
         <div class="label">신청 완료</div>
-        <h3>신청이 접수되었습니다</h3>
-        <p class="qpos"><b id="qNum">○</b><span>번째로 신청하셨습니다</span></p>
+        <h3 id="doneTitle" tabindex="-1">신청이 접수되었습니다</h3>
+        <p class="qpos" id="qPos" hidden><b id="qNum">○</b><span>번째로 신청하셨습니다</span></p>
         <p class="fair" id="qBasis"></p>
         <p class="refn">소개해 주시면 먼저 연락드립니다.</p>
-        <div class="share"><input id="myRef" readonly value="" aria-label="소개 링크"><button type="button" id="copyRef">링크 복사</button></div>
-        <a class="kakao" id="kakaoShare" href="#">카카오톡으로 보내기</a>
+        <div id="shareBox" hidden>
+          <div class="share"><input id="myRef" readonly value="" aria-label="내 소개 링크"><button type="button" id="copyRef">링크 복사</button></div>
+          <a class="kakao" id="kakaoShare" href="#">카카오톡으로 보내기</a>
+        </div>
       </div>
     </div>
   </div>
@@ -1264,12 +1292,29 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
   });
   auto();
 
-  /* ══════════════ 먼저 사용해 보기 — 신청 폼 ══════════════ */
+  /* ══════════════ 먼저 사용해 보기 — 시범 참여 신청 ══════════════ */
 
-  /* 🔴 제출 스위치 — 앱 `/api/pilot-apply` 가 운영에 서기 전까지 false 입니다(4단계에서 켭니다). */
-  var SUBMIT_ENABLED = false;
-  var form = $('applyForm');
+  /*
+   * 🔴 **스위치와 보낼 곳은 site.config.json `pilotApply` 입니다**(빌드가 채웁니다).
+   *    운영 주소(trops.kr · www.trops.kr)에서는 production 칸, 그 밖(Vercel 미리보기 · 로컬)에서는 preview 칸.
+   * ⚠️ 토큰을 따옴표 안에 둡니다 — 빌드 없이 소스를 열면 비교가 거짓이 되어 «꺼짐»입니다.
+   * ⛔ 이 줄에 true 를 손으로 적지 마십시오 — 켜는 순서(pending-app.md 「운영 순서」)를 건너뜁니다.
+   */
+  var ON_PROD = /^(www\.)?trops\.kr$/.test(location.hostname);
+  var PILOT = ON_PROD
+    ? { enabled: '{{pilotApply.productionEnabled}}' === 'true', endpoint: '{{pilotApply.productionEndpoint}}' }
+    : { enabled: '{{pilotApply.previewEnabled}}' === 'true', endpoint: '{{pilotApply.previewEndpoint}}' };
+  var MAIL = 'contact@theo-ne.com';
+  var form = $('applyForm'), fieldsBox = $('applyFields'), submitBtn = $('applySubmit'), formErr = $('formErr');
   var openedAt = Date.now();   /* elapsed_ms(봇 방지 · 폼을 연 뒤 보낼 때까지)의 기준 */
+  var sending = false;
+
+  /* 켜져 있을 때만 칸을 풀고 버튼을 세웁니다 — 마크업의 기본이 «꺼짐»입니다. */
+  if (PILOT.enabled) {
+    fieldsBox.disabled = false;
+    submitBtn.hidden = false;
+    $('applyOff').hidden = true;
+  }
 
   /*
    * 소개 코드 — `?ref=` 로 받습니다. 계약 모양(영문·숫자·하이픈 4~32자)이 아니면 담지 않습니다
@@ -1291,7 +1336,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
     }
     $('apply').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
     var first = form.querySelector('input[name="company_name"]');
-    if (first) first.focus({ preventScroll: true });
+    if (first && !fieldsBox.disabled) first.focus({ preventScroll: true });
   }
   $('ask').addEventListener('submit', function(e){ e.preventDefault(); carry(inp.value); });
   $('askPlus').addEventListener('click', function(){ carry(inp.value); });
@@ -1303,25 +1348,153 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
     b.addEventListener('click', function(){ carry(b.dataset.q); });
   });
 
+  /* ── 칸 오류 — 화면 검사와 앱의 `fields[]` 가 같은 자리에 씁니다 ── */
+  function fieldBox(name){
+    var el = form.elements[name];
+    return el && el.closest ? el.closest('.fld') : null;
+  }
+  function markField(w, message){
+    var el = w.querySelector('input,select'), err = w.querySelector('.err');
+    if (message) err.textContent = message;
+    w.classList.add('bad');
+    el.setAttribute('aria-invalid', 'true');
+  }
+  function clearErrors(){
+    formErr.hidden = true; formErr.textContent = '';
+    [].forEach.call(form.querySelectorAll('.fld'), function(w){
+      var el = w.querySelector('input,select'), err = w.querySelector('.err');
+      w.classList.remove('bad');
+      el.setAttribute('aria-invalid', 'false');
+      if (err.dataset['default']) err.textContent = err.dataset['default'];
+    });
+  }
+  function showFormError(message){ formErr.textContent = message; formErr.hidden = false; }   /* role=alert 가 읽어 줍니다 */
+  function firstBadFocus(){
+    var bad = form.querySelector('.fld.bad input,.fld.bad select');
+    if (bad) bad.focus();
+  }
+
+  /*
+   * ── 응답 → 사용자 문구 (계약 4 · 오류 형식) ──
+   * 🔴 201 이 아니면 «접수되었습니다»로 말하지 않습니다 — 저장이 안 됐는데 받았다고 하는 것이 가장 나쁜 실패입니다.
+   * ⚠️ 칸별 오류(`invalid` · `business_closed`)는 앱의 `message` 를 그 칸 아래에 그대로 씁니다(계약 4).
+   *    409 도 앱의 `message` 를 그대로 씁니다. 나머지는 이 표의 문장입니다.
+   */
+  var MSG = {
+    closed: '지금은 신청을 받지 않고 있습니다. 먼저 연락을 원하시면 ' + MAIL + ' 으로 보내 주십시오.',
+    save: '지금 신청을 저장하지 못했습니다. 잠시 뒤 다시 보내 주세요.',
+    bot: '잠시 뒤 다시 보내 주세요.',
+    origin: '이 주소에서는 신청을 보낼 수 없습니다. ' + MAIL + ' 으로 보내 주십시오.',
+    tooLarge: '적은 내용이 너무 깁니다. 요청하신 업무를 줄여 다시 보내 주세요.',
+    locked: '이미 초대했거나 가입한 신청이라 내용을 바꿀 수 없습니다. 고치실 내용은 ' + MAIL + ' 으로 보내 주십시오.',
+    invalid: '적은 내용을 확인해 주세요.',
+    other: '보내지 못했습니다. 잠시 뒤 다시 시도해 주시거나 ' + MAIL + ' 으로 보내 주십시오.'
+  };
+  function waitText(sec){
+    var s = Number(sec);
+    if (!(s > 0)) return '잠시 뒤 다시 보내 주세요.';
+    return s < 60 ? '약 ' + Math.ceil(s) + '초 뒤 다시 보내 주세요.' : '약 ' + Math.ceil(s / 60) + '분 뒤 다시 보내 주세요.';
+  }
+  function handleError(status, data){
+    var err = (data && data.error) || {}, code = err.code || '';
+    if (status === 400 && (code === 'invalid' || code === 'business_closed')) {
+      var loose = [];
+      (err.fields || []).forEach(function(f){
+        var w = fieldBox(f.field);
+        if (w) markField(w, f.message); else if (f.message) loose.push(f.message);
+      });
+      if (loose.length || !(err.fields || []).length) showFormError(loose.join(' ') || err.message || MSG.invalid);
+      firstBadFocus();
+      return;
+    }
+    if (status === 400 && (code === 'bot' || code === 'bad_body')) return showFormError(MSG.bot);
+    if (status === 403) return showFormError(MSG.origin);
+    if (status === 409) return showFormError(err.message || MSG.locked);
+    if (status === 413) return showFormError(MSG.tooLarge);
+    if (status === 429) return showFormError('신청이 잠시 몰려 받지 못했습니다. ' + waitText(err.retry_after != null ? err.retry_after : data && data.retry_after));
+    if (status === 503 && (code === 'closed' || code === 'not_effective')) return showFormError(MSG.closed);
+    if (status === 503) return showFormError(MSG.save);
+    showFormError(MSG.other);
+  }
+
+  /* ── 완료 화면 — 순번 · 앱의 순번 설명 · 내 소개 링크 ── */
+  function showDone(data){
+    var q = data.queue || {}, ref = data.referral || {};
+    if (data.result === 'updated') $('doneTitle').textContent = '신청 내용을 고쳐 받았습니다';
+    if (q.position) { $('qNum').textContent = String(q.position); $('qPos').hidden = false; }
+    $('qBasis').textContent = q.basis || '';
+    if (ref.code) {
+      /* 운영에서는 정식 주소, 미리보기에서는 그 미리보기 주소로 — 시험한 사람이 링크를 눌러 이어 볼 수 있게 */
+      var base = ON_PROD ? 'https://trops.kr' : location.origin;
+      $('myRef').value = base + '/?ref=' + encodeURIComponent(ref.code) + '#apply';
+      $('shareBox').hidden = false;
+    }
+    form.hidden = true;
+    $('done').hidden = false;
+    $('doneTitle').focus();
+  }
+
+  function payload(){
+    var v = function(n){ return String(form.elements[n].value || '').trim(); };
+    var body = {
+      company_name: v('company_name'),
+      email: v('email'),
+      industry: v('industry'),
+      region: v('region'),
+      consents: { collection: form.elements['consents.collection'].checked },
+      notice_version: v('notice_version'),
+      website: form.elements.website.value,           /* 봇 방지 — 사람이면 빈 문자열 그대로 */
+      elapsed_ms: Number($('fElapsed').value)
+    };
+    if (v('requested_work')) body.requested_work = v('requested_work');
+    if (v('referral_code')) body.referral_code = v('referral_code');
+    return body;
+  }
+
+  function send(){
+    fetch(PILOT.endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload())
+    }).then(function(res){
+      return res.json()['catch'](function(){ return null; }).then(function(data){ return { status: res.status, data: data }; });
+    }).then(function(r){
+      if (r.status === 201 && r.data && r.data.ok) { showDone(r.data); return; }
+      handleError(r.status, r.data);
+    })['catch'](function(){
+      showFormError(MSG.other);
+    }).then(function(){
+      sending = false;
+      submitBtn.disabled = false;
+      submitBtn.textContent = '먼저 사용해 보기 신청';
+    });
+  }
+
   form.addEventListener('submit', function(e){
     e.preventDefault();
+    if (!PILOT.enabled || sending) return;
+    clearErrors();
     var ok = true;
     [].forEach.call(form.querySelectorAll('.fld'), function(w){
       var el = w.querySelector('input,select'), bad;
       if (el.type === 'checkbox') bad = !el.checked;
       else if (el.type === 'email') bad = !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(el.value.trim());
       else bad = !el.value.trim();
-      w.classList.toggle('bad', bad);
-      el.setAttribute('aria-invalid', bad ? 'true' : 'false');
-      if (bad && ok) { ok = false; el.focus(); }
+      if (bad) { markField(w); ok = false; }
     });
-    if (!ok) return;
-    $('fElapsed').value = String(Date.now() - openedAt);
-    if (!SUBMIT_ENABLED) { $('applyNote').hidden = false; return; }
-    /* 4단계: 여기서 앱으로 보내고, 성공하면 폼을 내리고 완료 화면(#done)에 순번·소개 링크를 채웁니다. */
+    if (!ok) { firstBadFocus(); return; }
+    sending = true;
+    submitBtn.disabled = true;
+    submitBtn.textContent = '보내는 중…';
+    /*
+     * ⚠️ 앱은 폼을 연 지 3초가 안 된 제출을 봇으로 봅니다(계약 2-1 `elapsed_ms` 3000 이상).
+     *    자동완성으로 빨리 누른 사람이 막히지 않도록, 모자란 만큼 기다렸다가 보냅니다.
+     */
+    var wait = Math.max(0, 3200 - (Date.now() - openedAt));
+    setTimeout(function(){ $('fElapsed').value = String(Date.now() - openedAt); send(); }, wait);
   });
 
-  /* 완료 화면의 소개 링크 — 링크가 채워진 뒤에만 뜻이 있습니다(지금은 완료 화면이 뜨지 않습니다). */
+  /* 완료 화면의 내 소개 링크 — 응답의 소개 코드로 채운 뒤에만 뜻이 있습니다. */
   var cr = $('copyRef');
   cr.addEventListener('click', function(){
     var v = $('myRef').value;
