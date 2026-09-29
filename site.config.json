@@ -114,7 +114,7 @@
     "⛔ 여기에 비밀값을 두지 마십시오 — 이 값은 전부 화면 스크립트로 공개됩니다."
   ],
   "pilotApply": {
-    "productionEnabled": false,
+    "productionEnabled": true,
     "productionEndpoint": "https://app.trops.kr/api/pilot-apply",
     "previewEnabled": true,
     "previewEndpoint": "https://trops-a-git-prd-v2-pdca-teheranroai-9246s-projects.vercel.app/api/pilot-apply"

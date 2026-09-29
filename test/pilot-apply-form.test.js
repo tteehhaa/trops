@@ -92,7 +92,7 @@ test('🔴 마크업의 기본이 «꺼짐»이다 — 스크립트가 없으면
   assert.ok(!/<p class="note" id="applyOff"[^>]*hidden/.test(formHtml), '안내 문구가 숨은 채로 옵니다');
 });
 
-test('🔴 스위치는 site.config.json 한 곳이고 운영 기본값은 false 다', () => {
+test('🔴 스위치는 site.config.json 한 곳이고 운영에서 켜져 있다 — 켜는 커밋 이후', () => {
   const pa = JSON.parse(read('site.config.json')).pilotApply;
   assert.ok(pa, 'site.config.json 에 pilotApply 가 없습니다');
   /*
@@ -100,7 +100,12 @@ test('🔴 스위치는 site.config.json 한 곳이고 운영 기본값은 false
    *    여기 true → 합성 신청(docs/design/landing-v3/pending-app.md 「운영 순서」). 방침보다 먼저 켜면
    *    적지 않은 개인정보를 받게 됩니다(계약 0-1). 켜는 날 이 단정을 **함께** 고치십시오.
    */
-  assert.strictEqual(pa.productionEnabled, false, '운영 스위치가 켜져 있습니다 — 운영 순서를 마쳤다면 이 단정을 함께 고치십시오');
+  /*
+   * 🔄 **운영에서 켰습니다** — 이 단정은 「켜는 커밋」(feat(apply): 운영에서 시범 참여 신청 폼을 켠다)과 함께 뒤집혔습니다.
+   *    ⚠️ 폼만 끄려면 **그 커밋 하나를 되돌리십시오**(git revert) — 이 단정도 함께 false 로 돌아갑니다
+   *       (docs/design/landing-v3/pending-app.md 「되돌리는 법」 A).
+   */
+  assert.strictEqual(pa.productionEnabled, true, '운영 스위치가 꺼져 있습니다 — 끈 것이면 「켜는 커밋」을 되돌렸는지 보십시오');
   assert.strictEqual(pa.productionEndpoint, 'https://app.trops.kr/api/pilot-apply');
   assert.strictEqual(typeof pa.previewEnabled, 'boolean');
 });
