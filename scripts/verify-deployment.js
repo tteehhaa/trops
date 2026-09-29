@@ -366,10 +366,17 @@ const CHECKS = [
      *    없는 속성을 요구하면 `sameRule` 이 「목록이 낡았습니다」로 red 가 됩니다.
      *    ⛔ 값을 억지로 넣으려고 랜딩 CSS 를 고치지 마십시오 — 검사가 화면을 따라갑니다.
      */
-    label: 'V5 · H3 계층이 정의돼 있다 (.sp h3 · 20/700/−0.02em)',
+    /*
+     * 🔄 **네 번째 재조준 — v3 랜딩** 〔2026-09-30〕. v3 에는 3단계 카드(`.sp h3`)가 없습니다.
+     *    제목 계층에서 H2 바로 아래 자리는 제품 탭의 제목(`.tabs button b` · 22px · −0.03em)입니다
+     *    (대금까지 타임라인의 `.st b` 도 같은 크기 · 탭이 첫 화면 가까이에 있어 그쪽을 잽니다).
+     * ⚠️ `font-weight` 를 재지 않습니다 — `<b>` 의 기본 굵기를 쓰고 규칙이 선언하지 않습니다.
+     * ⚠️ `id` 는 그대로 둡니다 — 배포 기록 문서들이 이 이름으로 가리킵니다.
+     */
+    label: 'V5 · 소제목 계층이 정의돼 있다 (.tabs button b · 22px/−0.03em)',
     page: '/',
-    check: (html) => sameRule(html, 'index.html', '.sp h3',
-      ['font-size', 'font-weight', 'letter-spacing']),
+    check: (html) => sameRule(html, 'index.html', '.tabs button b',
+      ['font-size', 'letter-spacing']),
   },
   /*
    * 🔴 **`V5-로드맵헤딩` 을 삭제했습니다** 〔2026-09-01 · 대표 지시〕.
@@ -409,8 +416,11 @@ const CHECKS = [
      * 🔴 축은 그대로입니다 — 「섹션 상하가 한 값으로 통일됐고, 소스가 정한 그 값이 그대로
      *    배포됐는가」. 문자열을 세는 대신 **규칙 자체를 소스와 대조**합니다. 값이 clamp 이든
      *    고정이든 따라가므로 다음 개편에서 또 낡지 않습니다.
-     * ⚠️ V7 이전 값(108·112·104px) 회귀 금지는 그대로 둡니다 — 한 페이지 안에서 96·104·108·
-     *    112 로 갈려 있던 상태가 실제로 있었습니다.
+     * 🔄 **옛 값 목록을 v3 기준으로 바꿨습니다** 〔2026-09-30 · 랜딩 v3〕. 종전 목록(108·112·104px)은
+     *    V7 이전 값이었는데, v3 시안이 섹션 112px · 히어로 104px 을 **새 값으로** 씁니다 — 그대로 두면
+     *    v3 배포가 이 검사에서 red 였습니다. 이제 «옛 값»은 v11 의 섹션 여백(96px · 좁은 화면 68px)입니다.
+     *    한 페이지에 두 판의 여백이 섞이는 것(개편 중 일부 섹션만 옮긴 상태)을 잡는 것이 이 목록의 뜻입니다.
+     * ⚠️ 규칙 대조(`section { padding }` 이 소스와 같다)는 그대로입니다 — 그쪽이 주된 축입니다.
      */
     label: '패딩 · 섹션 상하가 소스와 같은 한 값이다',
     page: '/',
@@ -418,9 +428,9 @@ const CHECKS = [
       const same = sameRule(html, 'index.html', 'section', ['padding']);
       if (same !== true) return same;
       const norm = html.replace(/\s+/g, '');
-      for (const stale of ['108px', '112px', '104px']) {
+      for (const stale of ['96px', '68px']) {
         if (norm.includes('padding:' + stale) || norm.includes('padding-block:' + stale)) {
-          return `V7 이전 값 ${stale} 가 남아 있습니다`;
+          return `v3 이전(v11) 값 ${stale} 가 남아 있습니다`;
         }
       }
       return true;
