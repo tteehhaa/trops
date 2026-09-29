@@ -387,30 +387,59 @@ nav .m a:hover{color:var(--ink)}
 .hero .cta{display:flex;gap:12px;margin-top:36px;flex-wrap:wrap}
 .hero .free{font-size:14px;color:var(--sub);margin-top:16px}
 
-/* 히어로 속 앱 화면 */
-.app{margin-top:64px;border:1px solid var(--line);border-radius:14px;background:var(--white);box-shadow:0 20px 50px rgba(19,27,46,.08);overflow:hidden}
+/* 히어로 속 앱 화면 — 배치·여백은 시안, 글자·구성은 앱 홈(아래 마크업 주석) */
+.appfig{margin-top:64px}
+.appfig figcaption{margin-top:10px;text-align:center;font-size:12.5px;color:var(--mute)}
+.app{border:1px solid var(--line);border-radius:14px;background:var(--white);box-shadow:0 20px 50px rgba(19,27,46,.08);overflow:hidden}
 .app .bar{display:flex;gap:6px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--surface)}
 .app .bar i{width:10px;height:10px;border-radius:50%;background:var(--line)}
 .app .body{display:grid;grid-template-columns:200px 1fr}
-.app .side{border-right:1px solid var(--line);padding:20px 16px;font-size:13.5px;color:var(--sub)}
-.app .side b{display:block;color:var(--ink);font-size:15px;margin-bottom:14px}
-.app .side div{padding:7px 10px;border-radius:6px}
-.app .side .on{background:var(--accent-soft);color:var(--ink);font-weight:600}
+.app .ic{width:17px;height:17px;flex:none}
+.app .ic.sm{width:15px;height:15px}
+.app .side{display:flex;flex-direction:column;border-right:1px solid var(--line);padding:20px 16px;font-size:13.5px;color:var(--sub)}
+.app .side .brand{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.app .side .brand .mk{width:20px;height:20px;background:url(/img/icon_primary.svg) center/contain no-repeat;flex:none}
+.app .side .brand b{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+.app .side .brand .tg{margin-left:auto;width:16px;height:16px;color:var(--mute)}
+.app .side .org{font-size:12px;color:var(--mute);margin-bottom:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.app .side .org b{font-size:13px;font-weight:600;color:var(--ink)}
+.app .side .cap{font-size:10.5px;font-weight:600;letter-spacing:.1em;color:var(--mute);padding:12px 10px 4px}
+.app .side .org+.cap{padding-top:4px}
+.app .side .it{position:relative;display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:6px;font-weight:500;line-height:1.3}
+.app .side .it.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.app .side .it.mu{color:var(--mute)}
+.app .side .add{position:absolute;right:4px;top:50%;transform:translateY(-50%);display:flex;color:var(--mute)}
+.app .side .bottom{margin-top:auto;padding-top:10px;border-top:1px solid var(--line-soft)}
 .app .main{padding:28px 36px 32px}
-.app .stat{font-size:13px;color:var(--sub)}
-.app .stat b{color:var(--ink)}
-.app .title{font-size:30px;font-weight:700;text-align:center;margin-top:18px;letter-spacing:-0.03em}
-.app form{max-width:640px;margin:18px auto 0;border:1px solid var(--line);border-radius:12px;padding:16px 16px 12px}
-.app input{width:100%;border:0;outline:0;font-size:15.5px;font-family:inherit;background:transparent;color:var(--ink)}
-.app .send{display:flex;justify-content:flex-end;margin-top:22px}
-.app .send button{background:var(--accent);color:#fff;border:0;border-radius:6px;padding:8px 18px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer}
-.app .chips{max-width:640px;margin:10px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.app .chips a{border:1px solid var(--line);border-radius:6px;padding:9px 6px;text-align:center;font-size:13px}
+.app .stat{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 6px;font-size:13px;color:var(--sub)}
+.app .stat .dt,.app .stat .sp{color:var(--mute)}
+.app .stat b{color:var(--ink);font-weight:600}
+.app .title{font-size:30px;font-weight:600;text-align:center;margin-top:18px;letter-spacing:-0.02em}
+.app form{max-width:640px;margin:18px auto 0;border:1px solid var(--line);border-radius:12px;padding:16px 16px 12px;background:var(--white)}
+.app form:focus-within{border-color:var(--accent)}
+.app textarea{display:block;width:100%;min-height:48px;border:0;outline:0;resize:none;font-size:15px;line-height:1.6;font-family:inherit;background:transparent;color:var(--ink)}
+.app textarea::placeholder{color:var(--mute)}
+.app .ctl{display:flex;align-items:center;gap:8px;margin-top:12px}
+.app .plus{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--white);color:var(--sub);cursor:pointer}
+.app .plus:hover{background:var(--surface)}
+.app .send{margin-left:auto;background:var(--accent);color:#fff;border:0;border-radius:6px;padding:8px 18px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer}
+.app .send:disabled{opacity:.5;cursor:default}
+.app .chips{max-width:640px;margin:10px auto 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) 32px;gap:8px;align-items:center}
+.app .chips button{min-width:0;border:1px solid var(--line);border-radius:6px;padding:9px 8px;background:var(--white);color:var(--ink);font-size:13px;font-family:inherit;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.app .chips button:hover{background:var(--surface)}
+.app .chips .edit{font-size:13px;color:var(--accent);text-align:right}
 .app .today{max-width:640px;margin:22px auto 0}
+.app .today .th{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
 .app .today .h{font-size:14px;font-weight:600}
-.app .today .row{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:10px;padding:11px 14px;margin-top:8px;font-size:13.5px}
-.app .today .row span{color:var(--sub)}
-.app .today .row i{font-style:normal;font-size:12.5px;border:1px solid var(--ink);border-radius:6px;padding:4px 10px}
+.app .today .h span{margin-left:8px;font-size:13px;font-weight:400;color:var(--mute)}
+.app .today .rec{font-size:13px;font-weight:600;color:var(--accent)}
+.app .today ol{list-style:none;margin-top:8px;border:1px solid var(--line);border-radius:10px;background:var(--white)}
+.app .today li{display:flex;align-items:center;gap:12px;padding:11px 14px}
+.app .today li+li{border-top:1px solid var(--line-soft)}
+.app .today li p{flex:1;min-width:0;font-size:13px;line-height:1.5;color:var(--sub)}
+.app .today li b{color:var(--ink);font-weight:600}
+.app .today li .k{color:#334155}
+.app .today .ob{flex:none;display:inline-flex;align-items:center;height:32px;padding:0 12px;border:1.5px solid var(--accent);border-radius:6px;font-size:12.5px;font-weight:600;color:var(--accent);background:var(--white)}
 
 /* 자리만 있는 블록(로고 벽 · 후기 · 영상) — hidden 으로 둡니다 */
 .sample{display:inline-block;font-size:12px;color:var(--warn-ink);background:var(--warn-bg);border-radius:999px;padding:2px 10px;margin-left:8px;vertical-align:middle}
@@ -631,13 +660,13 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
 .js .tl.in .st:nth-child(4){transition-delay:.75s}
 .js .qbar i{transform:scaleX(0);transition:transform .9s ease}
 .js .qr.in .qbar i{transform:scaleX(1)}
-.js .app .today .row{opacity:0;transform:translateY(6px);transition:opacity .4s ease,transform .4s ease}
-.js .app.in .today .row{opacity:1;transform:none}
-.js .app.in .today .row:nth-child(3){transition-delay:.35s}
+.js .app .today li{opacity:0;transform:translateY(6px);transition:opacity .4s ease,transform .4s ease}
+.js .app.in .today li{opacity:1;transform:none}
+.js .app.in .today li:nth-child(2){transition-delay:.35s}
 /* 🔴 움직임 줄이기 — 전부 멈춥니다(탭 자동 넘김 · 예시 타이핑은 스크립트가 따로 끕니다) */
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
-  .js .rv,.js .tl .st,.js .app .today .row{opacity:1!important;transform:none!important}
+  .js .rv,.js .tl .st,.js .app .today li{opacity:1!important;transform:none!important}
   .js .tl::before,.js .qbar i{transform:none!important}
 }
 
@@ -654,7 +683,11 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
   .app .side{display:none}
   .app .main{padding:22px 16px}
   .app .title{font-size:22px}
-  .app .chips{grid-template-columns:1fr 1fr}
+  .appfig{margin-top:40px}
+  .app .chips{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .app .chips .gap{display:none}
+  .app .chips .edit{grid-column:1/-1}
+  .app .today li{align-items:flex-start}
   .head,.show,.qc,.calc,.apply,.f .two,.bigq,.voices{grid-template-columns:1fr;gap:20px}
   .qc{gap:28px}
   .sec{grid-template-columns:1fr 1fr}
@@ -717,36 +750,73 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
   </div>
   <p class="free">초대 기간 무료 · 카드 등록 없음</p>
 
+  <!--
+    🔴 **히어로 속 앱 화면 — 글자와 구성은 실제 앱 홈, 배치·여백은 시안** 〔2026-09-29 · 대표 지시 · 3단계〕.
+       앱 = trops_a `app/organizations/[id]/home/page.tsx`(브랜치 prd-v2-pdca · dc30e6cc + 작업 중 트리).
+       어느 값을 어느 파일에서 옮겼는지는 docs/design/landing-v3/app-home-mapping.md 에 있습니다 —
+       ⛔ 앱이 이름·순서를 바꾸면 그 표부터 고치고 여기를 따라 고치십시오(여기가 앞서지 않습니다).
+    ⚠️ 숫자 · 거래처 · 오늘 확인 줄은 **예시**입니다(아래 「화면 예시」). 날짜 둘(요약 줄의 오늘 · 오늘 확인의
+       선적일·만기)은 스크립트가 오늘을 기준으로 채웁니다 — 스크립트가 없으면 아래 적힌 날짜가 그대로 보입니다.
+    ⚠️ 이 화면에서 움직이는 것은 입력칸 · + · 보내기 · 명령 여섯뿐이고, 모두 신청 폼으로 요청 문장을 넘깁니다.
+       메뉴 · 「기록 보기」 · 「편집」 · 줄의 버튼은 그림입니다(누를 곳처럼 보이지 않게 커서를 두지 않았습니다).
+  -->
+  <!--! 아이콘: Lucide (ISC License · https://lucide.dev/license) -->
+  <figure class="appfig">
   <div class="app rv">
     <div class="bar" aria-hidden="true"><i></i><i></i><i></i></div>
     <div class="body">
-      <div class="side">
-        <b>TROPS</b>
-        <div class="on">홈</div><div>수출 거래</div><div>서류</div><div>운송</div><div>대금·보험</div><div>바이어</div>
+      <div class="side" aria-hidden="true">
+        <div class="brand"><span class="mk"></span><b>TROPS</b><svg class="ic tg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="m16 15-3-3 3-3"/></svg></div>
+        <div class="org"><b>○○무역</b> · 소유자</div>
+        <div class="cap">업무</div>
+        <div class="it on"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>홈</span></div>
+        <div class="it"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></svg><span>수출 거래</span><span class="add"><svg class="ic sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span></div>
+        <div class="it"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg><span>서류</span></div>
+        <div class="it"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg><span>운송</span><span class="add"><svg class="ic sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span></div>
+        <div class="it"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg><span>대금·보험</span></div>
+        <div class="it"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg><span>보내기</span></div>
+        <div class="cap">기준 정보</div>
+        <div class="it"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 2v2"/><path d="M7 21v-2a2 2 0 012-2h6a2 2 0 012 2v2"/><path d="M8 2v2"/><circle cx="12" cy="10" r="3"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg><span>바이어</span><span class="add"><svg class="ic sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span></div>
+        <div class="it"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z"/><path d="m7 16.5-4.74-2.85"/><path d="m7 16.5 5-3"/><path d="M7 16.5v5.17"/><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z"/><path d="m17 16.5-5-3"/><path d="m17 16.5 4.74-2.85"/><path d="M17 16.5v5.17"/><path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z"/><path d="M12 8 7.26 5.15"/><path d="m12 8 4.74-2.85"/><path d="M12 13.5V8"/></svg><span>수출 품목</span><span class="add"><svg class="ic sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span></div>
+        <div class="cap">참고</div>
+        <div class="it mu"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v16"/><path d="M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z"/></svg><span>수출 정보</span></div>
+        <div class="bottom">
+          <div class="it"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 12h4"/><path d="M10 8h4"/><path d="M14 21v-3a2 2 0 0 0-4 0v3"/><path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2"/><path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"/></svg><span>회사</span></div>
+          <div class="it"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.925 20.056a6 6 0 0 0-11.851.001"/><circle cx="12" cy="11" r="4"/><circle cx="12" cy="12" r="10"/></svg><span>내 정보</span></div>
+        </div>
       </div>
       <div class="main">
-        <div class="stat">이달 수출 예정 <b>3</b> · 진행 <b>2</b> · 이달 들어올 돈 <b>USD 72,000</b></div>
-        <div class="title">오늘은 어떤 수출 업무를 도와 드릴까요</div>
+        <p class="stat"><span class="dt" id="mockDate">9월 29일(화)</span><span class="sp">·</span>이달 수출 예정 <b>3</b><span class="sp">·</span>진행 <b>2</b><span class="sp">·</span>받을 돈 <b>USD 108,000</b><span class="sp">·</span>이달 들어올 돈 <b>USD 72,000</b></p>
+        <div class="title">TROPS AI</div>
         <form id="ask">
-          <input name="q" id="askInput" placeholder="예) 베트남 바이어 견적서 만들어 줘" aria-label="수출 업무 요청">
-          <div class="send"><button type="submit" data-track="hero-ask">보내기</button></div>
+          <label><span class="sr">TROPS AI 에게 요청</span><textarea name="q" id="askInput" rows="2" maxlength="500" placeholder="오늘은 어떤 수출 업무를 도와 드릴까요?"></textarea></label>
+          <div class="ctl">
+            <button type="button" class="plus" id="askPlus" aria-label="자료 넣기 · 수출 건 연결 — 신청 폼으로 이동" data-track="hero-plus"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+            <button type="submit" class="send" id="askSend" disabled data-track="hero-ask">보내기</button>
+          </div>
         </form>
-        <div class="chips">
-          <a href="#apply" data-q="신규 수출 건 등록" data-track="hero-cmd-1">신규 수출 건 등록</a>
-          <a href="#apply" data-q="견적서(PI) 작성" data-track="hero-cmd-2">견적서(PI) 작성</a>
-          <a href="#apply" data-q="선적서류(CI·PL) 초안" data-track="hero-cmd-3">선적서류 초안</a>
-          <a href="#apply" data-q="운송 견적 요청" data-track="hero-cmd-4">운송 견적 요청</a>
-          <a href="#apply" data-q="선적 통보 보내기" data-track="hero-cmd-5">선적 통보 보내기</a>
-          <a href="#apply" data-q="대금 확인" data-track="hero-cmd-6">대금 확인</a>
+        <div class="chips" role="group" aria-label="자주 쓰는 명령">
+          <button type="button" data-q="신규 수출 건 등록" title="신규 수출 건 등록" data-track="hero-cmd-1">신규 수출 건 등록</button>
+          <button type="button" data-q="견적서(PI) 작성" title="견적서(PI) 작성" data-track="hero-cmd-2">견적서(PI) 작성</button>
+          <button type="button" data-q="선적서류(CI, PL) 초안 작성" title="선적서류(CI, PL) 초안 작성" data-track="hero-cmd-3">선적서류(CI, PL) 초안 작성</button>
+          <span class="gap" aria-hidden="true"></span>
+          <button type="button" data-q="운송 견적 요청" title="운송 견적 요청" data-track="hero-cmd-4">운송 견적 요청</button>
+          <button type="button" data-q="선적 통보 보내기" title="선적 통보 보내기" data-track="hero-cmd-5">선적 통보 보내기</button>
+          <button type="button" data-q="대금 확인" title="대금 확인" data-track="hero-cmd-6">대금 확인</button>
+          <span class="edit" aria-hidden="true">편집</span>
         </div>
         <div class="today">
-          <div class="h">오늘 확인 2건</div>
-          <div class="row"><div><b>수출통지</b> <span>· 베트남 건 · 선적 후 10영업일</span></div><i>D-4</i></div>
-          <div class="row"><div><b>결제기일</b> <span>· 필리핀 건 · USD 36,000</span></div><i>오늘</i></div>
+          <div class="th"><div class="h">오늘 확인<span>2건</span></div><span class="rec" aria-hidden="true">기록 보기</span></div>
+          <ol>
+            <li><p><b>Hanoi Trading</b><span class="k"> · 선적 통보</span><span> — 실제 선적 <span id="mockShip">2026-09-27</span> · 바이어에게 알릴 메일</span></p><span class="ob" aria-hidden="true">통보 준비</span></li>
+            <li><p><b>Manila Supply</b><span class="k"> · 받을 돈 USD 36,000</span><span> — 만기 <span id="mockDue">2026-10-02</span> · 3일 남음 · 장부상 잔액</span></p><span class="ob" aria-hidden="true">대금 확인</span></li>
+          </ol>
         </div>
       </div>
     </div>
   </div>
+  <figcaption>화면 예시</figcaption>
+  </figure>
 </div></header>
 
 <!-- 🔴 **자리만 있는 블록 셋(로고 벽 · 후기 · 영상)** 〔2026-09-29 · 대표 지시 「hidden 상태로 코드에만」〕.
@@ -1106,18 +1176,51 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
   cs.forEach(function(c){ c.addEventListener('input', calc); });
   calc();
 
-  /* ── 입력칸 예시 타이핑 — 움직임 줄이기면 돌지 않습니다 ── */
-  var inp = $('askInput');
+  /*
+   * ── 앱 화면의 날짜 — 오늘을 기준으로 채웁니다(Asia/Seoul) ──
+   * 요약 줄은 앱 `todayShortDateLine` 꼴(「9월 29일(화)」), 오늘 확인 줄은 앱이 쓰는 ISO 날짜입니다.
+   * 스크립트가 없으면 마크업에 적힌 날짜가 그대로 보입니다(예시라 틀려도 해가 없습니다).
+   */
+  try {
+    var seoul = function(offsetDays){
+      var d = new Date(Date.now() + offsetDays * 864e5);
+      var p = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
+      return p;
+    };
+    var today = seoul(0).split('-');
+    var wd = ['일','월','화','수','목','금','토'][new Date(Date.UTC(+today[0], +today[1] - 1, +today[2])).getUTCDay()];
+    $('mockDate').textContent = (+today[1]) + '월 ' + (+today[2]) + '일(' + wd + ')';
+    $('mockShip').textContent = seoul(-2);
+    $('mockDue').textContent = seoul(3);
+  } catch (e) { /* 날짜를 못 만들면 적힌 예시 날짜를 둡니다 */ }
+
+  /*
+   * ── 입력칸 — 안내 문구는 앱 그대로(「오늘은 어떤 수출 업무를 도와 드릴까요?」) ──
+   * 예시 타이핑은 그 안내 문구와 번갈아 나옵니다(시안의 예시 다섯). 움직임 줄이기면 안내 문구만 둡니다.
+   * 보내기는 앱처럼 비어 있으면 흐립니다 · Cmd/Ctrl+Enter 로도 보냅니다(앱 ai-console 과 같습니다).
+   */
+  var inp = $('askInput'), sendBtn = $('askSend');
+  var GREETING = inp.getAttribute('placeholder');
   var ex = ['베트남 바이어 견적서 만들어 줘', '이번 달 들어올 돈 알려 줘', '필리핀 건 선적서류 초안 만들어 줘', '수출통지 기한 언제까지야?', 'LA로 20ft 운송 견적 요청해 줘'];
-  if (inp && !reduce) {
+  inp.addEventListener('input', function(){ sendBtn.disabled = !inp.value.trim(); });
+  inp.addEventListener('keydown', function(e){
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); if (inp.value.trim()) carry(inp.value); }
+  });
+  if (!reduce) {
     var ei = 0, ci = 0, del = false;
-    (function tick(){
-      if (document.activeElement === inp || inp.value) { setTimeout(tick, 1200); return; }
+    var tick = function(){
+      if (document.activeElement === inp || inp.value) { inp.placeholder = GREETING; setTimeout(tick, 1200); return; }
       var t = ex[ei];
-      if (!del) { ci++; inp.placeholder = '예) ' + t.slice(0, ci); if (ci === t.length) { del = true; setTimeout(tick, 1600); return; } }
-      else { ci--; inp.placeholder = '예) ' + t.slice(0, ci); if (ci === 0) { del = false; ei = (ei + 1) % ex.length; } }
+      if (!del) {
+        ci++; inp.placeholder = '예) ' + t.slice(0, ci);
+        if (ci === t.length) { del = true; setTimeout(tick, 1600); return; }
+      } else {
+        ci--; inp.placeholder = '예) ' + t.slice(0, ci);
+        if (ci === 0) { del = false; ei = (ei + 1) % ex.length; inp.placeholder = GREETING; setTimeout(tick, 2600); return; }
+      }
       setTimeout(tick, del ? 28 : 70);
-    })();
+    };
+    setTimeout(tick, 2600);   /* 처음에는 앱의 안내 문구를 먼저 보여 줍니다 */
   }
 
   /*
@@ -1190,9 +1293,14 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
     var first = form.querySelector('input[name="company_name"]');
     if (first) first.focus({ preventScroll: true });
   }
-  $('ask').addEventListener('submit', function(e){ e.preventDefault(); carry(this.q.value); });
-  [].forEach.call(document.querySelectorAll('.chips a[data-q]'), function(a){
-    a.addEventListener('click', function(e){ e.preventDefault(); carry(a.dataset.q); });
+  $('ask').addEventListener('submit', function(e){ e.preventDefault(); carry(inp.value); });
+  $('askPlus').addEventListener('click', function(){ carry(inp.value); });
+  /*
+   * 명령 버튼은 **이름**을 넘깁니다. ⚠️ 앱은 누르면 입력창에 긴 요청문(`DEFAULT_AI_COMMANDS.prompt`)을
+   * 채우지만, 그 문장은 「연결한 수출 건의 …」처럼 거래가 이미 있다는 전제라 신청 단계에 맞지 않습니다.
+   */
+  [].forEach.call(document.querySelectorAll('.chips button[data-q]'), function(b){
+    b.addEventListener('click', function(){ carry(b.dataset.q); });
   });
 
   form.addEventListener('submit', function(e){
