@@ -107,11 +107,16 @@ const pickFaq = (q) => (html) => {
  */
 const SURFACES = [
   { file: 'index.html', locale: 'ko', name: '랜딩 푸터 「TROPS가 하지 않는 일」', pick: pickNd },
+  /*
+   * 🔄 질문 글자가 v3 FAQ 로 바뀌었습니다 〔2026-09-29〕 — 「…대신해 줍니까?」 → 「…대신해 주나요?」.
+   *    자리는 같습니다. ⚠️ 시안의 답은 보험 축만 들었고, 대표 결정으로 법률 자문 · 회수 보장 문장을
+   *    답 끝에 덧붙여 세 축을 채웠습니다 — 그 문장을 걷으면 여기가 red 입니다.
+   */
   {
     file: 'index.html',
     locale: 'ko',
-    name: '랜딩 FAQ 「가입을 대신해 줍니까」',
-    pick: pickFaq('TROPS가 무역보험 가입을 대신해 줍니까?'),
+    name: '랜딩 FAQ 「가입을 대신해 주나요」',
+    pick: pickFaq('TROPS가 무역보험 가입을 대신해 주나요?'),
   },
   { file: 'en.html', locale: 'en', name: '영문 랜딩 푸터 「What TROPS doesn’t do」', pick: pickNd },
   {
