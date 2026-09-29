@@ -170,9 +170,16 @@ test('🔴 「다음 걸음」과 「어느 버튼」은 다른 물음이다 —
 test('🔴 주요 영역 전부에 이름이 붙어 있다 — 하나라도 빠지면 그 영역이 영원히 안 잡힌다', () => {
   const html = read(LANDING);
   const found = (html.match(/data-section="([a-z-]+)"/g) || []).map((m) => m.split('"')[1]);
+  /*
+   * 🔄 **영역 목록이 v3 랜딩으로 바뀌었습니다** 〔2026-09-29〕 — 종전 problem · voice · steps · demo ·
+   *    fit 다섯 영역은 그 섹션째 걷혔습니다(통계 · 인용 · 3단계 카드 · 진단 예시 · 대상). 새 목록은
+   *    시안의 섹션 순서 그대로입니다. 그 다섯의 시계열은 2026-09-29 배포일에서 끝납니다.
+   * ⚠️ 진단 결과 예시는 이제 `check` 영역 안에 있습니다 — `#demo` 앵커는 아래 검사가 따로 지킵니다.
+   * ⚠️ 숨긴 자리(로고 벽 · 후기 · 영상)에는 이름을 붙이지 않았습니다 — 공개하는 날 붙이십시오.
+   */
   const want = [
-    'nav', 'hero', 'problem', 'voice', 'steps',
-    'demo', 'fit', 'faq', 'final', 'footer',
+    'nav', 'hero', 'product', 'service', 'check', 'calc',
+    'security', 'apply', 'resources', 'faq', 'final', 'footer',
   ];
   for (const w of want) assert.ok(found.includes(w), '영역이 빠졌습니다: ' + w);
   assert.strictEqual(new Set(found).size, found.length, '같은 이름이 두 번 붙었습니다');

@@ -228,13 +228,25 @@ test('마감 CTA 에 «주» 버튼이 정확히 하나다', () => {
 
 /* ══ ③ 크기 위계 ══════════════════════════════════════════════════════════ */
 
+/*
+ * 🔄 **국문 랜딩이 이 절의 대상에서 빠졌습니다** 〔2026-09-29 · 랜딩 v3〕 — v3 가 출처 붙은 통계
+ *    블록(`.qb-stat` · `.qb-quote` · `.qb-src`)을 섹션째 걷었습니다. 잴 자리가 없는 쪽을 재면
+ *    「값을 읽지 못했다」로 red 이거나, 쓰지 않는 규칙을 남겨 두어 초록을 꾸미게 됩니다.
+ * 🔴 **영문은 그대로 잽니다** — en.html 은 아직 그 블록을 싣고 있습니다(v3 는 국문만 먼저).
+ *    ⚠️ 영문도 v3 로 바꾸는 날 이 목록이 비면 두 검사를 함께 걷으십시오 — 빈 목록을 도는 검사는
+ *       아무것도 재지 않습니다(이 파일 머리주석의 「거짓 green」).
+ * ⛔ 국문에 통계를 다시 싣게 되면 이 목록에 index.html 을 되돌리십시오.
+ */
+const STAT_BLOCK_LANDINGS = ['en.html'];
+
 test('🔴 인용 출처가 본문보다 작다 — 출처가 본문만큼 크면 인용이 주장이 된다', () => {
   /*
    * 🔄 **두 번째 retarget** 〔2026-09-01 · v11〕 — `.stat-quote .stat-src` → `.qb-src`.
    *    출처 표기 자리는 그대로 있고 이름만 바뀌었습니다. 축도 그대로 「본문보다 작다」입니다.
    * ⚠️ 실측 기준값: `.qb-src` 13px · 본문 16.5px.
    */
-  for (const f of LANDINGS) {
+  assert.ok(STAT_BLOCK_LANDINGS.length > 0, '잴 랜딩이 0장입니다 — 이 검사를 걷을 때입니다');
+  for (const f of STAT_BLOCK_LANDINGS) {
     const css = read(f);
     const src = Number((css.match(/\.qb-src\{[^}]*font-size:([\d.]+)px/) || [])[1]);
     const bodySize = Number((css.match(/body\{[^}]*font-size:([\d.]+)px/) || [])[1]);
@@ -251,7 +263,8 @@ test('🔴 통계 숫자가 그 설명보다 크다 — 「제일 중요한 한�
    *    위계로 좁혔습니다 — 숫자(`.stat-n`)가 라벨(`.stat-t`)보다 크다.
    */
   /* 🔄 `.stat-n`/`.stat-t` → `.qb-stat .n`/`.qb-stat .l` 〔2026-09-01 · v11〕. 자리는 같습니다. */
-  for (const f of LANDINGS) {
+  assert.ok(STAT_BLOCK_LANDINGS.length > 0, '잴 랜딩이 0장입니다 — 이 검사를 걷을 때입니다');
+  for (const f of STAT_BLOCK_LANDINGS) {
     const css = read(f);
     const n = Number((css.match(/\.qb-stat \.n\{font-size:clamp\([\d.]+px,[^,]+,([\d.]+)px\)/) || [])[1]);
     const t = Number((css.match(/\.qb-stat \.l\{font-size:([\d.]+)px/) || [])[1]);
