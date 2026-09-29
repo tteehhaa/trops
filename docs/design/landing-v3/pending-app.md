@@ -1,5 +1,70 @@
 # 랜딩 v3 — 운영 배포와 시범 참여 신청 열기
 
+## 🔴 다음 세션용 인수인계 — 이 절만 읽고 배포까지 이어 갈 수 있게 〔2026-09-30 작성〕
+
+**한 줄 요약** — v3 랜딩 · 시범 참여 신청 폼 · 처리방침 개정(시범 신청 · Resend 국외이전 · §06 · §07 고지 한 번)이 **준비 끝**.
+**앱 운영 스위치가 켜졌다는 대표의 말**과 **「배포해」**를 받으면 아래 명령대로 배포한다. 그 전에는 배포하지 않는다.
+
+### 1) 브랜치 상태 (저장소 `/Users/hanabeom00/Projects/dev/main_web_page`)
+
+| 브랜치 | 커밋 | 뜻 |
+|---|---|---|
+| `main` | `e8d456b` | = 운영 trops.kr(2026-09-30 hotfix 배포분) · 원격과 같음 |
+| `feat/landing-v3` | `5c73e7c` | v3 전부 · 운영에서 폼 **꺼짐** |
+| `feat/landing-v3-pilot-on` | 이 문서 커밋(맨 위) · 그 아래 **폼 켜기 커밋 `f28cb3a`** | **배포할 브랜치** — `main` 에서 빨리감기 가능(확인됨) |
+
+- 폼 켜기 커밋 = `f28cb3a` 「feat(apply): 운영에서 시범 참여 신청 폼을 켠다 — pilotApply.productionEnabled true」.
+  ⚠️ 이 브랜치를 rebase 하면 번호가 바뀝니다 — `git log --oneline -4 feat/landing-v3-pilot-on` 에서 그 제목으로 찾으십시오.
+- 원격: `origin/feat/landing-v3` = `d53ec34`(그 뒤 커밋은 **로컬에만**) · `feat/landing-v3-pilot-on` 은 원격에 없음.
+  올려 두려면 `git push origin feat/landing-v3 feat/landing-v3-pilot-on`(Vercel 미리보기만 생김 · 운영과 무관).
+- 검사: `npm test` **142** 통과(두 브랜치 모두) · 형제 저장소 `../trops_a` 의 랜딩 대조 검사 통과.
+
+### 2) 배포 전에 확인할 것 (셋 다 «예»일 때만)
+1. 대표가 **앱 운영 스위치**(`SELF15_PILOT_APPLY_ENABLED=true` + 앱 다시 배포)를 켰다고 말했다.
+2. 확인 요청이 **`400` `bot`** 을 돌려준다(저장되지 않는 빈 본문 · `503 closed` 면 아직 꺼짐 → 멈추고 보고):
+   ```
+   curl -s -w "\nHTTP %{http_code}\n" -X POST -H "Origin: https://trops.kr" -H "Content-Type: application/json" --data '{}' https://app.trops.kr/api/pilot-apply
+   ```
+3. 대표가 **「배포해」**라고 했다(그 메시지에서).
+
+### 3) 배포 명령 (순서대로)
+```
+cd /Users/hanabeom00/Projects/dev/main_web_page
+git status --short                              # 비어 있어야 합니다 — 루트의 미추적 항목은 빌드를 멈춥니다
+git switch feat/landing-v3-pilot-on
+node scripts/set-release-date.js YYYY-MM-DD     # 배포일(게시일 = 시행일) · 방침 머리·§07 × 국문·영문 + notice_version 다섯 자리
+npm test                                        # 142 통과
+git commit -am "docs(privacy): 시행일을 배포일 YYYY-MM-DD 로"
+git switch main
+git merge --ff-only feat/landing-v3-pilot-on
+npm test
+ALLOW_MAIN_PUSH=1 git push origin main          # 로컬 pre-push 훅이 main 푸시를 막습니다 — main 푸시 = 운영 배포
+vercel ls trops                                 # 맨 위 Production 이 ● Ready 가 될 때까지
+```
+
+### 4) 배포 후 확인 (전부 보고)
+- [ ] `https://trops.kr/` · `https://www.trops.kr/` — 제목 「TROPS — 수출 업무를 위한 AI」 ·
+      `curl -s https://www.trops.kr/ | grep -o 'enabled:"[a-z]*"==="true",endpoint:"https://app.trops.kr/api/pilot-apply"'` 가 `"true"`
+- [ ] `/privacy` · `/en-privacy` — 머리 개정일 · §07 첫 소제목 = 배포일 · 시범 참여 신청 행 · §04 국외이전 표의 Resend 행
+- [ ] `/llms.txt` — 「TROPS 소개」 줄이 「수출 업무를 위한 AI — …」
+- [ ] `npm run verify:prod` — 16개 전부 통과(V5 · 여백 검사는 v3 기준으로 고쳐 둠)
+- [ ] (선택) 앱 대조: `cd ../trops_a && npx vitest run tests/guardrails/landing-entry-header.test.ts tests/payment/cross-repo-values.test.ts tests/guardrails/web-event-store.test.ts tests/guardrails/lead-pipeline.test.ts`
+- [ ] 카카오 공유 캐시 초기화(`og:description` 이 바뀜) — developers.kakao.com/tool/debugger/sharing 에 `https://trops.kr/`
+- [ ] **대표의 운영 시험 신청을 기다린다**(아래 「배포 체크리스트」 3) — 시험 기록은 대표가 운영 콘솔
+      `https://app.trops.kr/admin/pilot-applications` «신청 지우기(철회)»로 지우고, 메일 둘(접수 · 담당자 알림)도 지운다.
+      ⛔ 운영 DB 에 직접 접속하지 않는다 — 필요하면 명령만 드린다.
+
+### 5) 되돌리는 법 (요약 · 자세히는 아래 「되돌리는 법」)
+- **폼만 끄기**: `git revert f28cb3a` → `npm test` → `ALLOW_MAIN_PUSH=1 git push origin main`.
+  랜딩을 곧바로 못 올리면 앱 운영 스위치를 `false` 로(폼은 보이고 보내면 「지금은 신청을 받지 않고 있습니다」).
+- **전체(v11 화면)**: 급하면 Vercel 대시보드 trops → Deployments → 직전 운영 배포(`e8d456b` 판) «Instant Rollback»
+  — ⚠️ 방침도 옛 판으로 돌아가므로 같은 날 아래 B2(화면만 v11 · 방침은 이 판 유지)로 바로잡는다.
+
+### 6) 알아 둘 것
+- trops.kr 은 Vercel 프로젝트 **`trops`** 입니다(`main_web_page` 프로젝트는 도메인 없이 같은 저장소를 빌드만 합니다).
+- 앱은 `notice_version` 을 허용 목록으로 검사하지 않습니다(1~80자) — 새 판 이름을 앱에 등록할 일은 없습니다.
+- 대표의 작업 방식: 단계마다 검사 결과 보고 · 배포·푸시·운영 DB 는 그 메시지에서 명시할 때만.
+
 *갱신 2026-09-30 · 배포 준비 끝 · 브랜치 `feat/landing-v3`(v3 전부 · 폼은 꺼짐) + `feat/landing-v3-pilot-on`(그 위에 «켜는 커밋» 하나)*
 *앱 계약: `docs/pilot-apply-api.md`(= `trops_a/doc/self15/pilot-apply-api.md` · self15 28·29) · 앱 운영 `79b9b373`(PR #340 · 0153·0154 적용)*
 *영문 랜딩과 어긋나는 곳: `en-gaps.md`(이번 배포에서는 바꾸지 않음)*
