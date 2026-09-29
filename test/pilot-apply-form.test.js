@@ -118,6 +118,31 @@ test('🔴 페이지가 스위치를 «토큰으로» 읽고, 운영 주소를 t
   }
 });
 
+/* ══ ②-b 동의 블록 ↔ 처리방침 — 같은 말을 한다 ═══════════════════════ */
+
+test('🔴 폼의 동의 블록과 방침 §02 시범 신청 행이 같은 항목·목적·보관을 말한다', () => {
+  /*
+   * 🔴 계약 0-1: 「요청하신 업무」는 앱 동의 기록의 범위 코드에 실리지 않아 **동의 문구가 글로 적어야** 합니다.
+   *    그리고 contact.html 과 같은 규칙으로, 화면이 약속한 것과 방침이 적은 것이 갈리면 안 됩니다.
+   * ⚠️ 문장 전체가 아니라 «뜻의 조각»을 맞댑니다 — 동의 블록은 짧고 방침 칸은 줄바꿈으로 나뉩니다.
+   */
+  const cons = (formHtml.match(/<div class="fld cons">[\s\S]*?<\/dl>/) || [])[0] || '';
+  const ko = read('privacy.html').replace(/<!--[\s\S]*?-->/g, '');
+  const row = (ko.match(/<th scope="row">먼저 사용해 보기 &middot; 시범 참여 신청[\s\S]*?<\/tr>/) || [])[0] || '';
+  assert.ok(cons, '폼의 동의 블록을 찾지 못했습니다');
+  assert.ok(row, 'privacy.html §02 에 시범 참여 신청 행이 없습니다 — 폼을 켜기 전에 방침이 먼저입니다(계약 0-1)');
+  for (const piece of ['요청하신 업무', '소개 코드', '시범 참여 선정과 초대 안내·연락', '회사 장부 미리 채움',
+    '가입 뒤 첫 화면에 요청하신 업무 채움', '소개 수 집계', '신청일부터 1년', '회원 정보로 옮겨', '동의를 철회하시면 바로 삭제']) {
+    assert.ok(cons.includes(piece), '폼 동의 블록에 없습니다: ' + piece);
+    assert.ok(row.includes(piece), '방침 시범 신청 행에 없습니다: ' + piece);
+  }
+  /* 영문 방침도 같은 자리를 갖는다 — 「one place only」 는 더는 사실이 아니다. */
+  const en = read('en-privacy.html').replace(/<!--[\s\S]*?-->/g, '');
+  assert.ok(en.includes('<th scope="row">Early access application'), 'en-privacy.html §02 에 시범 신청 행이 없습니다');
+  assert.ok(!en.includes('in one place only'), 'en-privacy.html §01 이 아직 「one place only」입니다');
+  assert.ok(!ko.includes('출시 알림 신청</a> 한 자리입니다'), 'privacy.html §01 이 아직 「한 자리」입니다');
+});
+
 /* ══ ③ 소개는 순번 약속이 아니다 ═════════════════════════════════════ */
 
 test('🔴 소개 문구가 순번을 약속하지 않는다 — 「소개해 주시면 먼저 연락드립니다」 한 벌', () => {

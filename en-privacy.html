@@ -299,7 +299,7 @@
              information」은 2026-09-01 `/contact` 접수 폼이 서면서 거짓이 됐는데 영문만 남아
              있었습니다(국문 95d2edb). ⚠️ `/contact` 는 국문 전용 페이지라 **링크를 걸지
              않습니다** — test/i18n-parity.test.js ④ 가 영문 → 국문 링크를 막습니다. 주소만 적습니다. -->
-        <p>On trops.kr, we collect personal information in one place only: our contact form for inquiries, quote requests, and launch notifications (trops.kr/contact). §02 and §03 below explain what we collect, what we use it for, and when we delete it. You can also email us directly at <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>; we delete those emails once we have finished responding.</p>
+        <p>On trops.kr, we collect personal information in two places: our contact form for inquiries, quote requests, and launch notifications (trops.kr/contact), and the early access application on our home page (trops.kr). §02 and §03 below explain what we collect, what we use it for, and when we delete it. You can also email us directly at <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>; we delete those emails once we have finished responding.</p>
         <p>Through August 20, 2026, trops.kr also accepted export pre-check submissions. <strong>On September 9, 2026, we deleted all of those submission records and uploaded files, and decommissioned the database that held them.</strong> trops.kr no longer holds any pre-check data.</p>
         <p>Export pre-check submissions have moved to app.trops.kr. Processing there is covered by that site's own privacy notice.</p>
         <!-- 🔴 September 21, 2026 — the one-minute check moved to the app; paired with the
@@ -399,6 +399,14 @@
               <td>Responding to your inquiry<br>Preparing a quote for the scope you requested<br>Sending launch notifications</td>
               <td>Inquiries and quote requests: deleted 6 months (183 days) after submission<br>Launch notifications: deleted 1 year (365 days) after submission<br>We delete them sooner if you ask.<br>Submissions are stored in a Supabase database, and an automated cleanup job deletes them once these periods end.<br>No emails are sent when you submit. The replies our staff send you are <strong>not covered by the automated deletion above</strong>. They stay in our staff mailbox and are deleted once we have finished responding.</td>
             </tr>
+            <!-- 🔴 국문 privacy.html §02 「시범 참여 신청」 행과 1:1 입니다 〔2026-09-29 초안〕 — 사유·근거는 그 행 주석.
+                 ⚠️ 영문 화면에 한글을 쓰지 않습니다(test/i18n-parity.test.js) · em dash 도 쓰지 않습니다. -->
+            <tr>
+              <th scope="row">Early access application<br><span class="lead">(trops.kr home page)</span></th>
+              <td>Company name<br>Email<br>Industry and region (grouped)<br>The work you would like to start with (optional)<br>A referral code you received (optional)<br>Required consent, when you gave it, and the version of the consent text<br>A hash of your IP address (to limit repeated requests)</td>
+              <td>Selecting pilot participants and contacting you about your invitation<br>Pre-filling your company ledger<br>Placing the work you asked for on your first screen after you sign up<br>Counting referrals (for our staff&rsquo;s reference)<br>Blocking bursts of requests from one place (IP hash)</td>
+              <td>Deleted 1 year (365 days) after you apply<br>If you sign up, the application moves into your account information and follows its retention rules.<br>If you withdraw your consent, we delete it right away (<a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>).<br>The IP hash is deleted after two days.<br>Applications are stored in the Supabase database behind app.trops.kr (Seoul), and an automated cleanup job deletes them once these periods end.</td>
+            </tr>
             <tr>
               <th scope="row">Document pre-check submissions<br><span class="lead">(closed August 20, 2026)</span></th>
               <td>Email<br>The buyer documents you uploaded<br>Your own template (optional)<br>Counterparty country and HS code (optional)<br>Two consents and when you gave them<br>Payment details for paid submissions (order number, payment status)</td>
@@ -430,6 +438,8 @@
         <p><strong>Inquiries, quote requests, and launch notifications.</strong> Inquiries and quote requests are deleted 6 months (183 days) after submission, and launch notifications 1 year (365 days) after submission. An automated cleanup job runs <strong>once a day</strong> (9:30 a.m. KST) and deletes records that have passed their deadline.</p>
         <p>If you would rather not wait, email <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>. Requests to access, correct, delete, or stop processing your personal information go to the same address, and we act on them without delay once we have confirmed them.</p>
         <p>No emails are sent when you submit. The replies our staff send you <strong>are not covered by the automated cleanup above</strong>. They stay in our staff mailbox and are deleted once we have finished responding.</p>
+        <!-- 🔴 §02 의 early access application 행과 같은 값입니다(국문 §03 과 1:1 · 2026-09-29 초안). -->
+        <p><strong>Early access applications.</strong> An application that is 1 year (365 days) old and did not lead to a sign-up is deleted by the automated cleanup job, which runs <strong>once a day</strong> (9:30 a.m. KST). Sending the form again does not restart that clock; it runs from the day you first applied. If you sign up, your application moves into your company ledger and follows the retention rules for account information. If you withdraw your consent, we delete it right away; write to <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a>. The IP hash used to limit repeated requests is deleted after two days.</p>
         <p><strong>Email inquiries.</strong> Your message stays only in our staff mailbox. We delete it without delay once we have finished responding, or immediately if you ask sooner.</p>
         <p>Records that Korean law requires us to keep (such as contract, payment, and consumer complaint records under the Act on Consumer Protection in Electronic Commerce) are kept separately for the period that law sets. Payment records are kept for five years, as required by that Act's Enforcement Decree.</p>
         <p>Personal information stored as an electronic file is deleted using a technical method that makes recovery or reconstruction impossible. Personal information recorded or stored on paper is destroyed by shredding or incineration.</p>
@@ -443,7 +453,7 @@
           <thead><tr><th scope="col">Processor</th><th scope="col">What they do</th></tr></thead>
           <tbody>
             <tr><th scope="row">Resend</th><td>Sending notification and confirmation emails</td></tr>
-            <tr><th scope="row">Supabase<br><span class="lead">(Seoul, Republic of Korea region)</span></th><td>Storing inquiry, quote request, and launch notification records, and anonymous page-view and button-click counts<br><span class="lead">Since September 8, 2026</span></td></tr>
+            <tr><th scope="row">Supabase<br><span class="lead">(Seoul, Republic of Korea region)</span></th><td>Storing inquiry, quote request, and launch notification records, early access applications, and anonymous page-view and button-click counts<br><span class="lead">Since September 8, 2026</span></td></tr>
             <tr><th scope="row">Supabase<br><span class="lead">(Mumbai, India region; ended September 9, 2026)</span></th><td><strong>This engagement has ended.</strong> It held pre-check submission records and uploaded files, and until September 8, 2026, it also held inquiry, quote request, and launch notification records and the page-view counts. We deleted everything and <strong>decommissioned the project itself</strong>.</td></tr>
             <tr><th scope="row">Vercel</th><td>Hosting the website and handling requests</td></tr>
             <tr><th scope="row">Anthropic</th><td>OCR and AI analysis of uploaded documents</td></tr>
@@ -468,11 +478,11 @@
                     국외이전 고지가 없게 됩니다. -->
             <tr>
               <th scope="row">Supabase, Inc.<br><span class="lead">(infrastructure: AWS)</span></th>
-              <td>Email, company information, uploaded documents, payment-related identifiers<br>Inquiry messages and contact names <span class="lead">(since September 8, 2026)</span></td>
+              <td>Email, company information, uploaded documents, payment-related identifiers<br>Inquiry messages and contact names <span class="lead">(since September 8, 2026)</span><br>Early access applications: company name, email, industry, region, the work you asked for, referral code</td>
               <td>Republic of Korea (Seoul, ap-northeast-2)</td>
               <td>Transmitted in real time as you use the service</td>
-              <td>Database storage and service operation<br><strong>Since September 8, 2026, inquiry, quote request, and launch notification records from trops.kr are stored in this project.</strong> Before that date, they were stored in the Mumbai project below.</td>
-              <td>Until you close your account or the purpose is fulfilled<br><span class="lead">Inquiries and quote requests: 6 months; launch notifications: 1 year (since September 8, 2026; see §02 and §03)</span></td>
+              <td>Database storage and service operation<br><strong>Since September 8, 2026, inquiry, quote request, and launch notification records from trops.kr are stored in this project.</strong> Before that date, they were stored in the Mumbai project below. Early access applications from the home page are stored in this project as well.</td>
+              <td>Until you close your account or the purpose is fulfilled<br><span class="lead">Inquiries and quote requests: 6 months; launch notifications: 1 year (since September 8, 2026; see §02 and §03)</span><br><span class="lead">Early access applications: 1 year from the day you apply, or moved into your account if you sign up (see §02 and §03)</span></td>
             </tr>
             <tr>
               <th scope="row">Supabase, Inc.<br><span class="lead">(infrastructure: AWS)</span></th>
@@ -517,7 +527,7 @@
           </tbody>
         </table>
         </div>
-        <p>The table above shows where data is held today. <strong>The transfer to India (Mumbai) ended on September 9, 2026</strong>; that row remains as a record of the past. trops.kr no longer accepts new pre-check submissions, but we continue to accept inquiries, quote requests, and launch notifications, and those records are stored as shown above. You have the right to refuse a cross-border transfer. If you refuse, you can choose not to submit, and you can ask us to delete any data we hold (§05).</p>
+        <p>The table above shows where data is held today. <strong>The transfer to India (Mumbai) ended on September 9, 2026</strong>; that row remains as a record of the past. trops.kr no longer accepts new pre-check submissions, but we continue to accept inquiries, quote requests, launch notifications, and early access applications, and those records are stored as shown above. You have the right to refuse a cross-border transfer. If you refuse, you can choose not to submit, and you can ask us to delete any data we hold (§05).</p>
       </section>
       <section>
         <h2><span class="doc-num" aria-hidden="true">05</span><span>What you can ask us to do</span></h2>
