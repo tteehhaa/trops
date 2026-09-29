@@ -111,10 +111,27 @@ test('🔴 페이지가 스위치를 «토큰으로» 읽고, 운영 주소를 t
   }
   assert.ok(script.includes('/^(www\\.)?trops\\.kr$/.test(location.hostname)'), '운영 주소 판정이 바뀌었습니다');
   assert.ok(!/enabled:\s*true\b/.test(script), '스위치를 스크립트에 손으로 켜 두었습니다');
-  const onProd = /^(www\.)?trops\.kr$/;
-  for (const [host, want] of [['trops.kr', true], ['www.trops.kr', true], ['trops.kr.evil.com', false],
-    ['trops-git-feat-landing-v3-teheranroai-9246s-projects.vercel.app', false], ['localhost', false]]) {
-    assert.strictEqual(onProd.test(host), want, host + ' 의 판정이 틀렸습니다');
+  /*
+   * 🔴 **운영 주소 둘 — `https://trops.kr` · `https://www.trops.kr`** 〔2026-09-29 · 대표 확인〕.
+   *    페이지는 주소 전체가 아니라 `location.hostname` 을 봅니다 — 그래서 아래도 브라우저처럼 URL 을 풀어
+   *    호스트 이름을 꺼낸 뒤 잽니다. 쿼리(`?ref=`)·조각(`#apply`)·경로가 붙어도 판정이 같아야 합니다.
+   * ⚠️ `http://` 로 열어도 운영으로 잡힙니다(호스트가 같습니다) — «꺼짐» 쪽으로 기우는 것이라 안전합니다.
+   *    Vercel 은 http 를 https 로 돌립니다.
+   */
+  const onProd = (url) => /^(www\.)?trops\.kr$/.test(new URL(url).hostname);
+  for (const [url, want] of [
+    ['https://trops.kr', true],
+    ['https://www.trops.kr', true],
+    ['https://trops.kr/', true],
+    ['https://www.trops.kr/?ref=TR-3NV8QD#apply', true],
+    ['http://www.trops.kr/', true],
+    ['https://app.trops.kr/', false],
+    ['https://trops.kr.evil.com/', false],
+    ['https://trops-git-feat-landing-v3-teheranroai-9246s-projects.vercel.app/', false],
+    ['https://main-web-page-git-feat-landing-v3-teheranroai-9246s-projects.vercel.app/', false],
+    ['http://localhost:8765/index.html', false],
+  ]) {
+    assert.strictEqual(onProd(url), want, url + ' 의 운영 판정이 틀렸습니다');
   }
 });
 
