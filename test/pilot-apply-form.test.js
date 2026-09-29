@@ -149,7 +149,8 @@ test('🔴 폼의 동의 블록과 방침 §02 시범 신청 행이 같은 항�
   assert.ok(cons, '폼의 동의 블록을 찾지 못했습니다');
   assert.ok(row, 'privacy.html §02 에 시범 참여 신청 행이 없습니다 — 폼을 켜기 전에 방침이 먼저입니다(계약 0-1)');
   for (const piece of ['요청하신 업무', '소개 코드', '시범 참여 선정과 초대 안내·연락', '회사 장부 미리 채움',
-    '가입 뒤 첫 화면에 요청하신 업무 채움', '소개 수 집계', '신청일부터 1년', '회원 정보로 옮겨', '동의를 철회하시면 바로 삭제']) {
+    '가입 뒤 첫 화면에 요청하신 업무 채움', '소개 수 집계', '신청일부터 1년', '회원 정보로 옮겨', '동의를 철회하시면 바로 삭제',
+    '접수 메일', '먼저 챙길 것 요약', '회사 담당자에게 알림 메일']) {
     assert.ok(cons.includes(piece), '폼 동의 블록에 없습니다: ' + piece);
     assert.ok(row.includes(piece), '방침 시범 신청 행에 없습니다: ' + piece);
   }
@@ -158,6 +159,22 @@ test('🔴 폼의 동의 블록과 방침 §02 시범 신청 행이 같은 항�
   assert.ok(en.includes('<th scope="row">Early access application'), 'en-privacy.html §02 에 시범 신청 행이 없습니다');
   assert.ok(!en.includes('in one place only'), 'en-privacy.html §01 이 아직 「one place only」입니다');
   assert.ok(!ko.includes('출시 알림 신청</a> 한 자리입니다'), 'privacy.html §01 이 아직 「한 자리」입니다');
+});
+
+test('🔴 동의 문구의 판 이름이 처리방침 시행일과 같은 날이다 — pilot-apply-YYYY-MM-DD', () => {
+  /*
+   * 🔴 앱은 `notice_version` 을 동의 기록에 그대로 적습니다(계약 0-2). 판 이름이 방침 시행일과 다르면, 나중에
+   *    「그 사람이 동의한 문구가 어느 판이었는가」를 방침 이력(§07)에서 찾을 수 없습니다.
+   * ⚠️ 날짜는 `node scripts/set-release-date.js YYYY-MM-DD` 가 방침 네 자리와 함께 바꿉니다.
+   * ⛔ 초안 꼴(`draft`)로 되돌리지 마십시오 — 운영에서 받는 동의가 초안 판으로 기록됩니다.
+   */
+  const v = (formHtml.match(/name="notice_version" value="([^"]+)"/) || [])[1] || '';
+  const m = v.match(/^pilot-apply-(\d{4})-(\d{2})-(\d{2})$/);
+  assert.ok(m, 'notice_version 이 pilot-apply-YYYY-MM-DD 꼴이 아닙니다: ' + v);
+  const head = read('privacy.html').match(/개정 &middot; 시행 (\d{4})년 (\d{1,2})월 (\d{1,2})일/);
+  assert.ok(head, 'privacy.html 머리의 개정 시행일을 읽지 못했습니다');
+  assert.deepStrictEqual([+m[1], +m[2], +m[3]], [+head[1], +head[2], +head[3]],
+    '판 이름의 날짜(' + v + ')가 방침 시행일과 다릅니다 — scripts/set-release-date.js 로 함께 맞추십시오');
 });
 
 /* ══ ③ 소개는 순번 약속이 아니다 ═════════════════════════════════════ */

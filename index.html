@@ -1022,9 +1022,10 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
         <input type="hidden" name="requested_work" id="fWork">
         <input type="hidden" name="referral_code" id="fRef">
         <input type="hidden" name="elapsed_ms" id="fElapsed">
-        <!-- ⚠️ 동의 문구의 판 이름 — **초안 판**입니다. 처리방침이 시행되는 날 `pilot-apply-YYYY-MM-DD`(시행일)로
-                바꾸고, 문구를 고칠 때마다 함께 바꿉니다(계약 0-2 · 앱이 동의 기록에 그대로 적습니다). -->
-        <input type="hidden" name="notice_version" value="pilot-apply-draft-2026-09-29">
+        <!-- 🔴 동의 문구의 판 이름 = `pilot-apply-<처리방침 시행일>` 〔확정 2026-09-30〕 — 앱이 동의 기록에 그대로 적습니다
+                (계약 0-2). 문구를 고치면 판 이름도 바꿉니다. ⚠️ 날짜는 `node scripts/set-release-date.js YYYY-MM-DD` 가
+                방침 네 자리와 함께 바꿉니다 — test/pilot-apply-form.test.js 가 방침 머리 줄의 날짜와 대조합니다. -->
+        <input type="hidden" name="notice_version" value="pilot-apply-2026-10-01">
         <div class="hp" aria-hidden="true"><label>웹사이트<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
         <fieldset class="fs" id="applyFields" disabled>
           <legend class="sr">시범 참여 신청</legend>
@@ -1034,17 +1035,17 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
             <div class="fld"><label>업종<span class="star">*</span><select name="industry"><option value="">선택</option><option value="machinery">기계·부품</option><option value="electronics">전기·전자</option><option value="cosmetics">화장품·생활용품</option><option value="food">식품</option><option value="chemicals">화학·소재</option><option value="other">기타</option></select></label><div class="err" data-default="업종을 선택해 주세요.">업종을 선택해 주세요.</div></div>
             <div class="fld"><label>지역<span class="star">*</span><select name="region"><option value="">선택</option><option value="capital">서울·경기·인천</option><option value="chungcheong">충청</option><option value="jeolla">전라</option><option value="gyeongsang">경상</option><option value="gangwon_jeju">강원·제주</option></select></label><div class="err" data-default="지역을 선택해 주세요.">지역을 선택해 주세요.</div></div>
           </div>
-          <!-- 🔴 **동의 블록 — 방침 §02 「먼저 사용해 보기 · 시범 참여 신청」 행과 같은 말입니다** 〔2026-09-29 초안〕.
+          <!-- 🔴 **동의 블록 — 방침 §02 「먼저 사용해 보기 · 시범 참여 신청」 행과 같은 말입니다** 〔확정 2026-09-30〕.
                ⚠️ 계약 0-1: 「요청하신 업무」는 앱 동의 기록의 범위 코드에 실리지 않아 **이 문구가 글로 적어야** 합니다.
                ⚠️ 보관은 앱 0154 가 집행하는 그대로입니다(신청일 1년 · 가입하면 회원 정보로 · 철회하면 즉시).
-               ⛔ 접수 메일 문장은 아직 넣지 않았습니다 — 앱 ② 결과를 받은 뒤 방침과 함께 확정합니다
-                  (docs/design/landing-v3/pending-app.md).
+               ⚠️ 「메일」 줄은 앱 trops_a `lib/pilot/mail.ts` 가 보내는 그대로입니다(접수 메일 · 담당자 알림).
                ⛔ 한쪽만 고치지 마십시오 — 고치면 위 notice_version 의 판 이름도 바꿉니다. -->
           <div class="fld cons">
             <dl>
               <dt>받는 항목</dt><dd>회사명 · 이메일 · 업종 · 지역, 요청하신 업무와 받으신 소개 코드(있을 때)</dd>
               <dt>쓰는 곳</dt><dd>시범 참여 선정과 초대 안내·연락, 회사 장부 미리 채움, 가입 뒤 첫 화면에 요청하신 업무 채움, 소개 수 집계</dd>
               <dt>보관</dt><dd>신청일부터 1년 뒤 삭제합니다. 가입하시면 회원 정보로 옮겨지고, 동의를 철회하시면 바로 삭제합니다.</dd>
+              <dt>메일</dt><dd>이 주소로 접수 메일(대기 순번 · 소개 코드 · 먼저 챙길 것 요약)을 보내고, 회사 담당자에게 알림 메일이 갑니다.</dd>
             </dl>
             <label class="agree"><input type="checkbox" name="consents.collection" value="true"><span>위 내용으로 개인정보 수집·이용에 동의합니다. 자세한 내용은 <a href="/privacy">개인정보처리방침</a>에 있습니다.</span></label>
             <div class="err" data-default="동의가 있어야 신청하실 수 있습니다.">동의가 있어야 신청하실 수 있습니다.</div>
