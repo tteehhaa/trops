@@ -10,8 +10,5 @@
 
 운영 콘솔에서 확인하기: https://app.trops.kr/admin/pilot-applications
 
-—
-trops.kr에서 신청하신 분께 보내는 안내입니다.
-주식회사 테오네 · 사업자등록번호 625-81-04032
-서울특별시 강남구 봉은사로 524, B층 269-11호(삼성동)
-개인정보처리방침: https://trops.kr/privacy
+-
+TROPS 운영 알림

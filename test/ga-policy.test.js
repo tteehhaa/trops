@@ -238,7 +238,7 @@ test('🔴 두 방침이 같은 개정 시행일을 싣는다 — 한쪽만 고�
   assert.strictEqual(enDate(firstH3(en)), enHead,
     'en-privacy.html §07 의 첫 개정 고지가 머리 줄의 날짜와 다릅니다');
 
-  assert.ok(ko.includes('<h3>2026년 9월 12일 시행 &mdash; 방문 통계 도구를 씁니다</h3>'),
+  assert.ok(ko.includes('<h3>2026년 9월 12일 시행 · 방문 통계 도구를 씁니다</h3>'),
     'privacy.html §07 에서 GA 개정(2026-09-12) 고지가 사라졌습니다');
   assert.ok(en.includes('<h3>Effective September 12, 2026: we use a visit-statistics tool</h3>'),
     'en-privacy.html §07 에서 GA 개정(2026-09-12) 고지가 사라졌습니다');
