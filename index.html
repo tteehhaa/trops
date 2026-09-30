@@ -510,10 +510,10 @@ nav .m a:hover{color:var(--ink)}
 .svc .label{color:#A9B1C2}
 .svc h2{color:var(--dark-ink)}
 .tl{display:grid;grid-template-columns:repeat(4,1fr);margin-top:64px;position:relative}
-.tl::before{content:"";position:absolute;left:0;right:0;top:7px;height:1px;background:var(--dark-line)}
+.tl::before{content:"";position:absolute;left:7px;right:calc(25% - 7px);top:7px;height:1px;background:var(--dark-line)}
 .tl::after{content:"";position:absolute;z-index:1;left:0;top:0;width:15px;height:15px;border-radius:50%;background:var(--accent);opacity:0;pointer-events:none}
-.tl.in::after{animation:timeline-run 5s linear infinite}
-@keyframes timeline-run{0%{left:0;opacity:1}86%{left:calc(100% - 15px);opacity:1}88%,99%{left:calc(100% - 15px);opacity:0}100%{left:0;opacity:0}}
+.tl.in::after{animation:timeline-run 8s linear infinite}
+@keyframes timeline-run{0%,7%{left:0;opacity:1}19%,26%{left:25%;opacity:1}38%,45%{left:50%;opacity:1}57%,64%{left:75%;opacity:1}66%,97%{left:75%;opacity:0}100%{left:0;opacity:0}}
 .st{padding-right:24px;position:relative}
 .st .dot{width:15px;height:15px;border-radius:50%;background:var(--dark);border:2px solid var(--dark-mute);position:relative}
 .st .dot.on{background:var(--accent);border-color:var(--accent)}
@@ -909,7 +909,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
   <!-- 🔄 시안의 「알려 드립니다」 두 곳을 바꿨습니다 〔2026-09-29 · 대표 결정〕 — 「미리 보여 드립니다」 ·
        「먼저 짚어 드립니다」. 알림 발송을 약속하지 않습니다(test/landing-invariants.test.js). -->
   <div class="tl rv">
-    <div class="st"><div class="dot on"></div><span>선적 전</span><b>무역보험</b><em>가입이 필요한지, 무엇을 준비할지 안내합니다.</em></div>
+    <div class="st"><div class="dot"></div><span>선적 전</span><b>무역보험</b><em>가입이 필요한지, 무엇을 준비할지 안내합니다.</em></div>
     <div class="st"><div class="dot"></div><span>선적 직후</span><b>수출통지</b><em>통지 기한을 계산해 미리 보여 드립니다.</em></div>
     <div class="st"><div class="dot"></div><span>결제일 전</span><b>대금 확인</b><em>입금 예정일을 모아 보고, 지연을 먼저 짚어 드립니다.</em></div>
     <div class="st"><div class="dot"></div><span>늦어지면</span><b>사고 통지</b><em>보상에 필요한 서류를 미리 챙겨 둡니다.</em></div>
