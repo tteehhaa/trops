@@ -511,6 +511,9 @@ nav .m a:hover{color:var(--ink)}
 .svc h2{color:var(--dark-ink)}
 .tl{display:grid;grid-template-columns:repeat(4,1fr);margin-top:64px;position:relative}
 .tl::before{content:"";position:absolute;left:0;right:0;top:7px;height:1px;background:var(--dark-line)}
+.tl::after{content:"";position:absolute;z-index:1;left:0;top:0;width:15px;height:15px;border-radius:50%;background:var(--accent);opacity:0;pointer-events:none}
+.tl.in::after{animation:timeline-run 5s linear infinite}
+@keyframes timeline-run{0%{left:0;opacity:1}86%{left:calc(100% - 15px);opacity:1}88%,99%{left:calc(100% - 15px);opacity:0}100%{left:0;opacity:0}}
 .st{padding-right:24px;position:relative}
 .st .dot{width:15px;height:15px;border-radius:50%;background:var(--dark);border:2px solid var(--dark-mute);position:relative}
 .st .dot.on{background:var(--accent);border-color:var(--accent)}
@@ -716,7 +719,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
   .sec{grid-template-columns:1fr 1fr}
   .doc{grid-template-columns:1fr}
   .tl{grid-template-columns:1fr;gap:28px}
-  .tl::before{display:none}
+  .tl::before,.tl::after{display:none}
   .opt{flex-direction:column;align-items:flex-start}
   .qrow{grid-template-columns:90px 1fr 46px}
   .res{grid-template-columns:1fr}
