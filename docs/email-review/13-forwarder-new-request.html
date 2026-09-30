@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>13 새 운송 견적 요청(포워더에게)</title><style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#16181d;--mute:#5b6270;--line:#e3e6eb;--soft:#eef1f5;--accent:#1D4ED8;--warn:#9a3412;--warnbg:#fff7ed;--mail:#fff;--mailink:#202124}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1115;--card:#171a20;--ink:#e8eaee;--mute:#9aa1ad;--line:#2a2f38;--soft:#1f232b;--accent:#8fb0ff;--warn:#fdba74;--warnbg:#2a1d12;--mail:#fff;--mailink:#202124}}
+:root[data-theme="dark"]{--bg:#0f1115;--card:#171a20;--ink:#e8eaee;--mute:#9aa1ad;--line:#2a2f38;--soft:#1f232b;--accent:#8fb0ff;--warn:#fdba74;--warnbg:#2a1d12}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR",sans-serif}
+.w{max-width:1040px;margin:0 auto;padding:28px 16px 64px}a{color:var(--accent)}code{font:12.5px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--soft);padding:1px 5px;border-radius:4px;word-break:break-all}
+h1{font-size:24px;margin:6px 0 4px;letter-spacing:-.01em}h2{font-size:17px;margin:34px 0 10px}.lead{color:var(--mute);margin:0 0 18px}
+.crumb{font-size:13px}.crumb a{text-decoration:none}
+.meta{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.meta table{width:100%;border-collapse:collapse}.meta th,.meta td{text-align:left;vertical-align:top;padding:9px 14px;border-top:1px solid var(--line);font-size:14px}
+.meta tr:first-child th,.meta tr:first-child td{border-top:0}.meta th{width:150px;color:var(--mute);font-weight:600;white-space:nowrap}
+.meta ul{margin:0;padding-left:18px}.notes{background:var(--warnbg);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-top:14px}
+.notes b{color:var(--warn)}.notes ul{margin:6px 0 0;padding-left:18px}
+.variant{margin-top:26px}.vlabel{font-size:13px;font-weight:700;color:var(--mute);margin:0 0 8px}
+.mail{background:var(--mail);color:var(--mailink);border:1px solid #dadce0;border-radius:12px;box-shadow:0 1px 2px rgba(0,0,0,.06);overflow:hidden}
+.mh{padding:16px 20px 12px;border-bottom:1px solid #e8eaed}.subj{font-size:20px;font-weight:600;margin:0 0 10px;color:#202124;word-break:keep-all;overflow-wrap:anywhere}
+.row{font-size:13px;color:#5f6368;margin:2px 0;overflow-wrap:anywhere}.row b{color:#202124;font-weight:600;display:inline-block;min-width:64px}
+.mb{padding:18px 20px 22px;font:14px/1.62 Arial,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;white-space:pre-wrap;overflow-wrap:anywhere;color:#222}
+.mb a{color:#1a73e8}.htmlmail{padding:18px 20px 22px;font:14px/1.5 Arial,Helvetica,sans-serif;color:#222}.htmlmail a{color:#1a73e8}
+details{margin-top:10px}summary{cursor:pointer;font-size:13px;color:var(--mute)}pre.src{background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:12px;white-space:pre-wrap;overflow-wrap:anywhere;font:12.5px/1.5 ui-monospace,Menlo,monospace;color:var(--ink)}
+table.inv{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:13.5px}
+table.inv th,table.inv td{padding:8px 10px;border-top:1px solid var(--line);text-align:left;vertical-align:top}table.inv thead th{background:var(--soft);border-top:0;font-size:12.5px;color:var(--mute)}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}.pill{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:999px;background:var(--soft);color:var(--mute);white-space:nowrap}
+.box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px}.box ul{margin:6px 0;padding-left:18px}.box li{margin:3px 0}
+.nav{display:flex;justify-content:space-between;gap:12px;margin-top:36px;font-size:14px}
+@media (max-width:640px){.meta th{width:auto;display:block;border-top:1px solid var(--line);padding-bottom:0}.meta td{display:block;border-top:0;padding-top:2px}.subj{font-size:18px}}
+</style></head><body><div class="w"><p class="crumb"><a href="index.html">← 메일 전체 목록</a> · 포워더에게</p>
+<h1>13. 새 운송 견적 요청(포워더에게)</h1>
+<p class="lead">예시 값으로 채운 미리보기 — 문안은 앱 운영 코드(<code>trops_a</code> <code>origin/main</code> <code>79b9b373</code>)의 함수를 그대로 돌려 뽑았습니다.</p>
+<div class="meta"><table>
+<tr><th>보내는 때</th><td>화주가 운송 견적 요청을 올리거나 보완 · 확정도를 올릴 때 — 요청 × 포워더 회사마다 한 번. 스위치 <code>SELF15_FORWARDER_ACCOUNT_ENABLED</code> · <code>SELF15_ORG_ENABLED</code> · <code>SELF15_FREIGHT_QUOTE_ENABLED</code> 가 모두 켜졌을 때만.</td></tr>
+<tr><th>받는 사람</th><td>등재된 포워더 회사의 소유자 · 담당자(한 사람에 한 통 · 30명까지) — 테스트 모드면 테스트 주소</td></tr>
+<tr><th>보내는 주소(From)</th><td>TROPS &lt;contact@theo-ne.com&gt;</td></tr>
+<tr><th>답장 주소(Reply-To)</th><td>없음 — 답장하면 contact@theo-ne.com 로 갑니다</td></tr>
+
+<tr><th>테스트 모드</th><td><code>SELF15_EMAIL_TEST_MODE=true</code> 면 테스트 주소 한 곳(배포 환경은 보지 않음)</td></tr>
+<tr><th>형식</th><td>텍스트만(Resend <code>text</code> · <code>html</code> 없음)</td></tr>
+<tr><th>공통 템플릿</th><td>없음 — 문안 함수가 줄을 이어 붙인 글 그대로</td></tr>
+<tr><th>들어가는 값</th><td><ul><li>포워더 회사 이름</li><li>출발지 · 목적지 · 인도 장소(국가 · 도시)</li><li>선적 시기</li><li>화물(분류 · 총 수량 · 중량 · 부피)</li><li>인코텀즈</li><li>운송 수단</li><li>수출 확정도</li><li>포장 · 세금 처리</li><li>견적 화면 링크</li></ul></td></tr>
+<tr><th>코드 위치</th><td><ul><li><a href="https://github.com/tteehhaa/trops_a/blob/79b9b373/lib/forwarder/notify-policy.ts#L32"><code>trops_a/lib/forwarder/notify-policy.ts:32</code></a> — 문안 <code>requestNoticeEmail</code></li><li><a href="https://github.com/tteehhaa/trops_a/blob/79b9b373/lib/forwarder/notify.ts#L22"><code>trops_a/lib/forwarder/notify.ts:22</code></a> — <code>notifyForwardersOfRequest</code></li><li><a href="https://github.com/tteehhaa/trops_a/blob/79b9b373/lib/export-case/freight-request-store.ts#L237"><code>trops_a/lib/export-case/freight-request-store.ts:237</code></a> — 부르는 자리(외 <code>freight-quote-store.ts</code> 180 · 205, <code>stage-store.ts</code> 143)</li></ul></td></tr>
+</table></div><section class="variant"><p class="vlabel">테스트 모드(지금 운영 상태)</p><div class="mail"><div class="mh"><p class="subj">[테스트] 받는 사람 2명 · 새 운송 견적 요청 — 베트남 · 호찌민</p><p class="row"><b>보낸 사람</b> TROPS &lt;contact@theo-ne.com&gt;</p><p class="row"><b>받는 사람</b> (운영 테스트 주소 SELF15_TEST_EMAIL)</p></div><div class="mb">한결물류 담당자님, TROPS 에 새 운송 견적 요청이 올라왔습니다.
+
+출발지: 한국 · 창원시
+목적지: 베트남 · 호찌민
+인도 장소: 베트남 · Binh Duong
+선적 시기: 2026년 11월
+화물: 기계류 · 총 12 PLT · 총중량 5,400 kg · 총부피 18.5 CBM
+인코텀즈: FOB
+운송 수단: 해상
+수출 확정도: PI 발행 후
+포장: 포워더 포장 필요
+세금 처리: 포워더 대행
+
+화주 회사명, 출발지·도착지 상세 주소와 담당자·연락처·이메일, 품명·부품번호·패킹 내역은 화주가 견적을 수락했을 때만 보입니다.
+견적 보내기: <a href="https://app.trops.kr/forwarder/1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d/requests/0e1f2a3b-4c5d-4e6f-8a7b-9c0d1e2f3a4b">https://app.trops.kr/forwarder/1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d/requests/0e1f2a3b-4c5d-4e6f-8a7b-9c0d1e2f3a4b</a></div></div>
+<details><summary>보내는 글 그대로(텍스트)</summary><pre class="src">한결물류 담당자님, TROPS 에 새 운송 견적 요청이 올라왔습니다.
+
+출발지: 한국 · 창원시
+목적지: 베트남 · 호찌민
+인도 장소: 베트남 · Binh Duong
+선적 시기: 2026년 11월
+화물: 기계류 · 총 12 PLT · 총중량 5,400 kg · 총부피 18.5 CBM
+인코텀즈: FOB
+운송 수단: 해상
+수출 확정도: PI 발행 후
+포장: 포워더 포장 필요
+세금 처리: 포워더 대행
+
+화주 회사명, 출발지·도착지 상세 주소와 담당자·연락처·이메일, 품명·부품번호·패킹 내역은 화주가 견적을 수락했을 때만 보입니다.
+견적 보내기: https://app.trops.kr/forwarder/1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d/requests/0e1f2a3b-4c5d-4e6f-8a7b-9c0d1e2f3a4b</pre></details></section><section class="variant"><p class="vlabel">실제 발송</p><div class="mail"><div class="mh"><p class="subj">새 운송 견적 요청 — 베트남 · 호찌민</p><p class="row"><b>보낸 사람</b> TROPS &lt;contact@theo-ne.com&gt;</p><p class="row"><b>받는 사람</b> 포워더 회사 소유자·담당자(최대 30명 · 한 명씩)</p></div><div class="mb">한결물류 담당자님, TROPS 에 새 운송 견적 요청이 올라왔습니다.
+
+출발지: 한국 · 창원시
+목적지: 베트남 · 호찌민
+인도 장소: 베트남 · Binh Duong
+선적 시기: 2026년 11월
+화물: 기계류 · 총 12 PLT · 총중량 5,400 kg · 총부피 18.5 CBM
+인코텀즈: FOB
+운송 수단: 해상
+수출 확정도: PI 발행 후
+포장: 포워더 포장 필요
+세금 처리: 포워더 대행
+
+화주 회사명, 출발지·도착지 상세 주소와 담당자·연락처·이메일, 품명·부품번호·패킹 내역은 화주가 견적을 수락했을 때만 보입니다.
+견적 보내기: <a href="https://app.trops.kr/forwarder/1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d/requests/0e1f2a3b-4c5d-4e6f-8a7b-9c0d1e2f3a4b">https://app.trops.kr/forwarder/1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d/requests/0e1f2a3b-4c5d-4e6f-8a7b-9c0d1e2f3a4b</a></div></div>
+<details><summary>보내는 글 그대로(텍스트)</summary><pre class="src">한결물류 담당자님, TROPS 에 새 운송 견적 요청이 올라왔습니다.
+
+출발지: 한국 · 창원시
+목적지: 베트남 · 호찌민
+인도 장소: 베트남 · Binh Duong
+선적 시기: 2026년 11월
+화물: 기계류 · 총 12 PLT · 총중량 5,400 kg · 총부피 18.5 CBM
+인코텀즈: FOB
+운송 수단: 해상
+수출 확정도: PI 발행 후
+포장: 포워더 포장 필요
+세금 처리: 포워더 대행
+
+화주 회사명, 출발지·도착지 상세 주소와 담당자·연락처·이메일, 품명·부품번호·패킹 내역은 화주가 견적을 수락했을 때만 보입니다.
+견적 보내기: https://app.trops.kr/forwarder/1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d/requests/0e1f2a3b-4c5d-4e6f-8a7b-9c0d1e2f3a4b</pre></details></section>
+<div class="nav"><span><a href="12-self15-support-changes.html">← 12. 지원 공고 · 조건 변화 안내(테스트 전용)</a></span><span><a href="14-forwarder-quote-accepted.html">14. 견적 수락(포워더에게) →</a></span></div></div></body></html>

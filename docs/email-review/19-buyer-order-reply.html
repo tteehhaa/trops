@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>19 주문 회신(바이어에게 · 사용자 이름으로)</title><style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#16181d;--mute:#5b6270;--line:#e3e6eb;--soft:#eef1f5;--accent:#1D4ED8;--warn:#9a3412;--warnbg:#fff7ed;--mail:#fff;--mailink:#202124}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1115;--card:#171a20;--ink:#e8eaee;--mute:#9aa1ad;--line:#2a2f38;--soft:#1f232b;--accent:#8fb0ff;--warn:#fdba74;--warnbg:#2a1d12;--mail:#fff;--mailink:#202124}}
+:root[data-theme="dark"]{--bg:#0f1115;--card:#171a20;--ink:#e8eaee;--mute:#9aa1ad;--line:#2a2f38;--soft:#1f232b;--accent:#8fb0ff;--warn:#fdba74;--warnbg:#2a1d12}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR",sans-serif}
+.w{max-width:1040px;margin:0 auto;padding:28px 16px 64px}a{color:var(--accent)}code{font:12.5px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--soft);padding:1px 5px;border-radius:4px;word-break:break-all}
+h1{font-size:24px;margin:6px 0 4px;letter-spacing:-.01em}h2{font-size:17px;margin:34px 0 10px}.lead{color:var(--mute);margin:0 0 18px}
+.crumb{font-size:13px}.crumb a{text-decoration:none}
+.meta{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.meta table{width:100%;border-collapse:collapse}.meta th,.meta td{text-align:left;vertical-align:top;padding:9px 14px;border-top:1px solid var(--line);font-size:14px}
+.meta tr:first-child th,.meta tr:first-child td{border-top:0}.meta th{width:150px;color:var(--mute);font-weight:600;white-space:nowrap}
+.meta ul{margin:0;padding-left:18px}.notes{background:var(--warnbg);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-top:14px}
+.notes b{color:var(--warn)}.notes ul{margin:6px 0 0;padding-left:18px}
+.variant{margin-top:26px}.vlabel{font-size:13px;font-weight:700;color:var(--mute);margin:0 0 8px}
+.mail{background:var(--mail);color:var(--mailink);border:1px solid #dadce0;border-radius:12px;box-shadow:0 1px 2px rgba(0,0,0,.06);overflow:hidden}
+.mh{padding:16px 20px 12px;border-bottom:1px solid #e8eaed}.subj{font-size:20px;font-weight:600;margin:0 0 10px;color:#202124;word-break:keep-all;overflow-wrap:anywhere}
+.row{font-size:13px;color:#5f6368;margin:2px 0;overflow-wrap:anywhere}.row b{color:#202124;font-weight:600;display:inline-block;min-width:64px}
+.mb{padding:18px 20px 22px;font:14px/1.62 Arial,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;white-space:pre-wrap;overflow-wrap:anywhere;color:#222}
+.mb a{color:#1a73e8}.htmlmail{padding:18px 20px 22px;font:14px/1.5 Arial,Helvetica,sans-serif;color:#222}.htmlmail a{color:#1a73e8}
+details{margin-top:10px}summary{cursor:pointer;font-size:13px;color:var(--mute)}pre.src{background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:12px;white-space:pre-wrap;overflow-wrap:anywhere;font:12.5px/1.5 ui-monospace,Menlo,monospace;color:var(--ink)}
+table.inv{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:13.5px}
+table.inv th,table.inv td{padding:8px 10px;border-top:1px solid var(--line);text-align:left;vertical-align:top}table.inv thead th{background:var(--soft);border-top:0;font-size:12.5px;color:var(--mute)}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}.pill{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:999px;background:var(--soft);color:var(--mute);white-space:nowrap}
+.box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px}.box ul{margin:6px 0;padding-left:18px}.box li{margin:3px 0}
+.nav{display:flex;justify-content:space-between;gap:12px;margin-top:36px;font-size:14px}
+@media (max-width:640px){.meta th{width:auto;display:block;border-top:1px solid var(--line);padding-bottom:0}.meta td{display:block;border-top:0;padding-top:2px}.subj{font-size:18px}}
+</style></head><body><div class="w"><p class="crumb"><a href="index.html">← 메일 전체 목록</a> · 바이어에게 — 사용자 이름으로 보내는 메일</p>
+<h1>19. 주문 회신(바이어에게 · 사용자 이름으로)</h1>
+<p class="lead">예시 값으로 채운 미리보기 — 문안은 앱 운영 코드(<code>trops_a</code> <code>origin/main</code> <code>79b9b373</code>)의 함수를 그대로 돌려 뽑았습니다.</p>
+<div class="meta"><table>
+<tr><th>보내는 때</th><td>AI 작업 «주문 회신» 결과물(PI 초안 + 회신 메일)을 확인창에서 «승인하고 보내기».</td></tr>
+<tr><th>받는 사람</th><td>견적 보내기와 같음</td></tr>
+<tr><th>보내는 주소(From)</th><td>«회사명 담당자명» &lt;contact@theo-ne.com&gt;</td></tr>
+<tr><th>답장 주소(Reply-To)</th><td>보낸 사용자의 로그인 이메일</td></tr>
+<tr><th>머리글 · 첨부</th><td>첨부 = PI(초안이면 먼저 발행)</td></tr>
+<tr><th>테스트 모드</th><td>운영(Production) 배포 + 테스트 모드 꺼짐일 때만 실제 주소 · 그 밖에는 테스트 주소 한 곳(<code>outboundMailMode</code>)</td></tr>
+<tr><th>형식</th><td>텍스트만(Resend <code>text</code> · <code>html</code> 없음)</td></tr>
+<tr><th>공통 템플릿</th><td>없음 — 문안 함수가 줄을 이어 붙인 글 그대로</td></tr>
+<tr><th>들어가는 값</th><td><ul><li>PO 번호</li><li>PI 번호</li><li>바이어 이름</li><li>결제 방식 · 조건</li><li>선적 예정일</li><li>서명</li><li>꼬리 한 줄</li></ul></td></tr>
+<tr><th>코드 위치</th><td><ul><li><a href="https://github.com/tteehhaa/trops_a/blob/79b9b373/lib/work/order-reply-plan.ts#L454"><code>trops_a/lib/work/order-reply-plan.ts:454</code></a> — 문안 <code>orderReplyMail</code></li><li><a href="https://github.com/tteehhaa/trops_a/blob/79b9b373/lib/work/flows/order-reply.ts#L222"><code>trops_a/lib/work/flows/order-reply.ts:222</code></a> — 결과물 만들기</li><li><a href="https://github.com/tteehhaa/trops_a/blob/79b9b373/app/organizations/%5Bid%5D/_work/deliverable-actions.ts#L142"><code>trops_a/app/organizations/[id]/_work/deliverable-actions.ts:142</code></a> — «승인하고 보내기»</li></ul></td></tr>
+</table></div><section class="variant"><p class="vlabel">실제 발송(결과물 확인창 «승인하고 보내기»)</p><div class="mail"><div class="mh"><p class="subj">Re: Purchase Order PO-88121 - Proforma Invoice PI-2026-031 - (주)예시정밀</p><p class="row"><b>보낸 사람</b> (주)예시정밀 홍길동 &lt;contact@theo-ne.com&gt;</p><p class="row"><b>받는 사람</b> purchasing@buyer.example</p><p class="row"><b>참조</b> hong@example.com</p><p class="row"><b>답장 주소</b> hong@example.com</p><p class="row"><b>머리글 · 첨부</b> 첨부: PI-2026-031.pdf</p></div><div class="mb">Dear Mr. Nguyen Van An,
+
+Thank you for your purchase order PO-88121.
+Please find attached our Proforma Invoice PI-2026-031 for your confirmation.
+Payment: T/T (30% deposit, 70% before shipment)
+Planned shipment: 2026-11-10
+Please let us know if you have any questions.
+
+Best regards,
+홍길동
+(주)예시정밀
+
+—
+이 메일은 TROPS를 통해 발송되었습니다</div></div>
+<details><summary>보내는 글 그대로(텍스트)</summary><pre class="src">Dear Mr. Nguyen Van An,
+
+Thank you for your purchase order PO-88121.
+Please find attached our Proforma Invoice PI-2026-031 for your confirmation.
+Payment: T/T (30% deposit, 70% before shipment)
+Planned shipment: 2026-11-10
+Please let us know if you have any questions.
+
+Best regards,
+홍길동
+(주)예시정밀
+
+—
+이 메일은 TROPS를 통해 발송되었습니다</pre></details></section>
+<div class="nav"><span><a href="18-buyer-shipping-advice.html">← 18. 선적 통보(바이어에게 · 사용자 이름으로)</a></span><span><a href="20-buyer-payment-check.html">20. 결제 확인 요청(바이어에게 · 사용자 이름으로) →</a></span></div></div></body></html>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>16 포워더 파트너 신청 결과(승인 · 거절)</title><style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#16181d;--mute:#5b6270;--line:#e3e6eb;--soft:#eef1f5;--accent:#1D4ED8;--warn:#9a3412;--warnbg:#fff7ed;--mail:#fff;--mailink:#202124}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1115;--card:#171a20;--ink:#e8eaee;--mute:#9aa1ad;--line:#2a2f38;--soft:#1f232b;--accent:#8fb0ff;--warn:#fdba74;--warnbg:#2a1d12;--mail:#fff;--mailink:#202124}}
+:root[data-theme="dark"]{--bg:#0f1115;--card:#171a20;--ink:#e8eaee;--mute:#9aa1ad;--line:#2a2f38;--soft:#1f232b;--accent:#8fb0ff;--warn:#fdba74;--warnbg:#2a1d12}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR",sans-serif}
+.w{max-width:1040px;margin:0 auto;padding:28px 16px 64px}a{color:var(--accent)}code{font:12.5px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--soft);padding:1px 5px;border-radius:4px;word-break:break-all}
+h1{font-size:24px;margin:6px 0 4px;letter-spacing:-.01em}h2{font-size:17px;margin:34px 0 10px}.lead{color:var(--mute);margin:0 0 18px}
+.crumb{font-size:13px}.crumb a{text-decoration:none}
+.meta{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.meta table{width:100%;border-collapse:collapse}.meta th,.meta td{text-align:left;vertical-align:top;padding:9px 14px;border-top:1px solid var(--line);font-size:14px}
+.meta tr:first-child th,.meta tr:first-child td{border-top:0}.meta th{width:150px;color:var(--mute);font-weight:600;white-space:nowrap}
+.meta ul{margin:0;padding-left:18px}.notes{background:var(--warnbg);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-top:14px}
+.notes b{color:var(--warn)}.notes ul{margin:6px 0 0;padding-left:18px}
+.variant{margin-top:26px}.vlabel{font-size:13px;font-weight:700;color:var(--mute);margin:0 0 8px}
+.mail{background:var(--mail);color:var(--mailink);border:1px solid #dadce0;border-radius:12px;box-shadow:0 1px 2px rgba(0,0,0,.06);overflow:hidden}
+.mh{padding:16px 20px 12px;border-bottom:1px solid #e8eaed}.subj{font-size:20px;font-weight:600;margin:0 0 10px;color:#202124;word-break:keep-all;overflow-wrap:anywhere}
+.row{font-size:13px;color:#5f6368;margin:2px 0;overflow-wrap:anywhere}.row b{color:#202124;font-weight:600;display:inline-block;min-width:64px}
+.mb{padding:18px 20px 22px;font:14px/1.62 Arial,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;white-space:pre-wrap;overflow-wrap:anywhere;color:#222}
+.mb a{color:#1a73e8}.htmlmail{padding:18px 20px 22px;font:14px/1.5 Arial,Helvetica,sans-serif;color:#222}.htmlmail a{color:#1a73e8}
+details{margin-top:10px}summary{cursor:pointer;font-size:13px;color:var(--mute)}pre.src{background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:12px;white-space:pre-wrap;overflow-wrap:anywhere;font:12.5px/1.5 ui-monospace,Menlo,monospace;color:var(--ink)}
+table.inv{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:13.5px}
+table.inv th,table.inv td{padding:8px 10px;border-top:1px solid var(--line);text-align:left;vertical-align:top}table.inv thead th{background:var(--soft);border-top:0;font-size:12.5px;color:var(--mute)}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}.pill{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:999px;background:var(--soft);color:var(--mute);white-space:nowrap}
+.box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px}.box ul{margin:6px 0;padding-left:18px}.box li{margin:3px 0}
+.nav{display:flex;justify-content:space-between;gap:12px;margin-top:36px;font-size:14px}
+@media (max-width:640px){.meta th{width:auto;display:block;border-top:1px solid var(--line);padding-bottom:0}.meta td{display:block;border-top:0;padding-top:2px}.subj{font-size:18px}}
+</style></head><body><div class="w"><p class="crumb"><a href="index.html">← 메일 전체 목록</a> · 포워더에게</p>
+<h1>16. 포워더 파트너 신청 결과(승인 · 거절)</h1>
+<p class="lead">예시 값으로 채운 미리보기 — 문안은 앱 운영 코드(<code>trops_a</code> <code>origin/main</code> <code>79b9b373</code>)의 함수를 그대로 돌려 뽑았습니다.</p>
+<div class="meta"><table>
+<tr><th>보내는 때</th><td>운영자가 포워더 파트너 신청을 승인 · 거절할 때(승인이면 초대 링크를 함께).</td></tr>
+<tr><th>받는 사람</th><td>신청한 포워더 담당자 이메일 — 테스트 모드면 테스트 주소</td></tr>
+<tr><th>보내는 주소(From)</th><td>TROPS &lt;contact@theo-ne.com&gt;</td></tr>
+<tr><th>답장 주소(Reply-To)</th><td>없음 — 답장하면 contact@theo-ne.com 로 갑니다</td></tr>
+
+<tr><th>테스트 모드</th><td><code>SELF15_EMAIL_TEST_MODE=true</code> 면 테스트 주소 한 곳(배포 환경은 보지 않음)</td></tr>
+<tr><th>형식</th><td>텍스트만(Resend <code>text</code> · <code>html</code> 없음)</td></tr>
+<tr><th>공통 템플릿</th><td>없음 — 문안 함수가 줄을 이어 붙인 글 그대로</td></tr>
+<tr><th>들어가는 값</th><td><ul><li>포워더 회사 이름</li><li>초대 링크(승인 · 한 번 만든 것) 또는 포워더 화면 링크</li><li>다시 신청 링크(거절)</li></ul></td></tr>
+<tr><th>코드 위치</th><td><ul><li><a href="https://github.com/tteehhaa/trops_a/blob/79b9b373/lib/organization/decision-notify-policy.ts#L13"><code>trops_a/lib/organization/decision-notify-policy.ts:13</code></a> — 문안 <code>partnerDecisionEmail</code></li><li><a href="https://github.com/tteehhaa/trops_a/blob/79b9b373/lib/organization/decision-notify.ts#L32"><code>trops_a/lib/organization/decision-notify.ts:32</code></a> — <code>notifyPartnerDecision</code></li><li><a href="https://github.com/tteehhaa/trops_a/blob/79b9b373/app/admin/forwarders/actions.ts#L64"><code>trops_a/app/admin/forwarders/actions.ts:64</code></a> — 부르는 자리</li></ul></td></tr>
+</table></div><div class="notes"><b>정리할 때 볼 점</b>(사실만 · 고치지 않았습니다)<ul><li>거절 메일은 사유를 적지 않습니다(«이번에는 승인되지 않았습니다» + 문의 주소 — 문안 파일의 원칙).</li></ul></div><section class="variant"><p class="vlabel">승인</p><div class="mail"><div class="mh"><p class="subj">TROPS 포워더 파트너 신청이 승인됐습니다 — 한결물류</p><p class="row"><b>보낸 사람</b> TROPS &lt;contact@theo-ne.com&gt;</p><p class="row"><b>받는 사람</b> 신청한 포워더 담당자 이메일</p></div><div class="mb">한결물류 담당자님, TROPS 포워더 파트너 신청이 승인됐습니다.
+
+아래 링크로 포워더 회사 계정에 들어오세요(신청하신 이메일로 로그인해야 합니다).
+<a href="https://app.trops.kr/invite/Yc8pQ2vX7mN4kL1sT9rB6wE3aZ0hG5jU">https://app.trops.kr/invite/Yc8pQ2vX7mN4kL1sT9rB6wE3aZ0hG5jU</a>
+
+등재되면 화주가 요청한 운송 견적을 볼 수 있습니다. 화주의 상세 주소·연락처는 견적이 수락된 뒤에 열립니다.
+문의: contact@theo-ne.com</div></div>
+<details><summary>보내는 글 그대로(텍스트)</summary><pre class="src">한결물류 담당자님, TROPS 포워더 파트너 신청이 승인됐습니다.
+
+아래 링크로 포워더 회사 계정에 들어오세요(신청하신 이메일로 로그인해야 합니다).
+https://app.trops.kr/invite/Yc8pQ2vX7mN4kL1sT9rB6wE3aZ0hG5jU
+
+등재되면 화주가 요청한 운송 견적을 볼 수 있습니다. 화주의 상세 주소·연락처는 견적이 수락된 뒤에 열립니다.
+문의: contact@theo-ne.com</pre></details></section><section class="variant"><p class="vlabel">거절</p><div class="mail"><div class="mh"><p class="subj">TROPS 포워더 파트너 신청 결과 — 한결물류</p><p class="row"><b>보낸 사람</b> TROPS &lt;contact@theo-ne.com&gt;</p><p class="row"><b>받는 사람</b> 신청한 포워더 담당자 이메일</p></div><div class="mb">한결물류 담당자님, 이번 포워더 파트너 신청은 승인되지 않았습니다.
+
+자세한 내용이 궁금하시면 아래 주소로 문의해 주세요. 내용을 보완해 다시 신청하실 수 있습니다.
+문의: contact@theo-ne.com
+다시 신청: <a href="https://app.trops.kr/start/forwarder">https://app.trops.kr/start/forwarder</a></div></div>
+<details><summary>보내는 글 그대로(텍스트)</summary><pre class="src">한결물류 담당자님, 이번 포워더 파트너 신청은 승인되지 않았습니다.
+
+자세한 내용이 궁금하시면 아래 주소로 문의해 주세요. 내용을 보완해 다시 신청하실 수 있습니다.
+문의: contact@theo-ne.com
+다시 신청: https://app.trops.kr/start/forwarder</pre></details></section><section class="variant"><p class="vlabel">테스트 모드(지금 운영 상태)</p><div class="mail"><div class="mh"><p class="subj">[테스트] 받는 사람 1명 · TROPS 포워더 파트너 신청이 승인됐습니다 — 한결물류</p><p class="row"><b>보낸 사람</b> TROPS &lt;contact@theo-ne.com&gt;</p><p class="row"><b>받는 사람</b> (운영 테스트 주소 SELF15_TEST_EMAIL)</p></div><div class="mb">한결물류 담당자님, TROPS 포워더 파트너 신청이 승인됐습니다.
+
+아래 링크로 포워더 회사 계정에 들어오세요(신청하신 이메일로 로그인해야 합니다).
+<a href="https://app.trops.kr/invite/Yc8pQ2vX7mN4kL1sT9rB6wE3aZ0hG5jU">https://app.trops.kr/invite/Yc8pQ2vX7mN4kL1sT9rB6wE3aZ0hG5jU</a>
+
+등재되면 화주가 요청한 운송 견적을 볼 수 있습니다. 화주의 상세 주소·연락처는 견적이 수락된 뒤에 열립니다.
+문의: contact@theo-ne.com</div></div>
+<details><summary>보내는 글 그대로(텍스트)</summary><pre class="src">한결물류 담당자님, TROPS 포워더 파트너 신청이 승인됐습니다.
+
+아래 링크로 포워더 회사 계정에 들어오세요(신청하신 이메일로 로그인해야 합니다).
+https://app.trops.kr/invite/Yc8pQ2vX7mN4kL1sT9rB6wE3aZ0hG5jU
+
+등재되면 화주가 요청한 운송 견적을 볼 수 있습니다. 화주의 상세 주소·연락처는 견적이 수락된 뒤에 열립니다.
+문의: contact@theo-ne.com</pre></details></section>
+<div class="nav"><span><a href="15-forwarder-delivery-changed.html">← 15. 인도 장소 바뀜(포워더에게)</a></span><span><a href="17-buyer-quote.html">17. 견적 보내기(바이어에게 · 사용자 이름으로) →</a></span></div></div></body></html>
