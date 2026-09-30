@@ -461,9 +461,10 @@ nav .m a:hover{color:var(--ink)}
 .voice .who{margin-top:24px;font-size:14px;color:var(--sub)}
 
 /* 제품 — 탭 */
-.show{display:grid;grid-template-columns:360px 1fr;gap:40px;align-items:stretch}
+.show{display:grid;grid-template-columns:360px minmax(0,1fr);gap:28px 40px;align-items:start}
+.product-nav{display:contents}
 #product .head{display:block}
-#product .tabs{margin-top:28px}
+#product .tabs{grid-column:1;grid-row:2}
 .tabs button{position:relative;display:block;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);
   padding:20px 0;font-family:inherit;cursor:pointer;color:var(--mute)}
 .tabs button:last-child{border-bottom:1px solid var(--line)}
@@ -471,15 +472,17 @@ nav .m a:hover{color:var(--ink)}
 .tabs button span{display:none;font-size:15px;color:var(--sub);margin-top:8px}
 .tabs button.on b{color:var(--ink)}
 .tabs button.on span{display:block}
+.tabs button:focus:not(:focus-visible){outline:none}
 .tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+.tabs button:focus-visible b{text-decoration:underline;text-underline-offset:6px}
 .tabs .bar{position:absolute;left:0;top:-1px;height:2px;width:0;background:var(--accent)}
 .tabs button.on .bar{animation:fill 6s linear forwards}
 .tabs.paused button.on .bar{animation-play-state:paused}
-.tabs.stopped .bar{display:none}
+.tabs.stopped button.on .bar{width:100%;animation:none}
 @keyframes fill{to{width:100%}}
-.screen{border:1px solid var(--line);border-radius:14px;background:var(--white);box-shadow:0 12px 32px rgba(19,27,46,.06);padding:28px;min-height:360px}
-.pane{display:none}
-.pane.on{display:block;animation:fadein .45s ease}
+.screen{display:grid;grid-column:2;grid-row:2;min-width:0;border:1px solid var(--line);border-radius:14px;background:var(--white);box-shadow:0 12px 32px rgba(19,27,46,.06);padding:28px}
+.pane{grid-area:1/1;min-width:0;visibility:hidden;pointer-events:none}
+.pane.on{visibility:visible;pointer-events:auto;animation:fadein .45s ease}
 @keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .pane .t{font-size:13px;color:var(--mute)}
 .pane .big{font-size:22px;font-weight:700;margin-top:4px;letter-spacing:-0.02em}
@@ -496,6 +499,10 @@ nav .m a:hover{color:var(--ink)}
 .doc{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:14px}
 .doc div{border:1px solid var(--line);border-radius:10px;padding:14px;font-size:13px}
 .doc div b{display:block;font-size:15px;margin-bottom:6px}
+.preview{margin-top:20px;padding:16px;border:1px solid var(--line);border-radius:10px;background:var(--surface);font-size:14px}
+.preview b{display:block;font-size:15px}
+.preview p{margin-top:6px;color:var(--sub)}
+.preview .btn{margin-top:12px;cursor:default}
 .src{font-size:12.5px;color:var(--mute);margin-top:16px;border-top:1px dashed var(--line);padding-top:10px}
 
 /* 대금까지 — 페이지에 하나뿐인 어두운 띠 */
@@ -700,6 +707,11 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
   .app .chips .edit{grid-column:1/-1}
   .app .today li{align-items:flex-start}
   .head,.show,.qc,.calc,.apply,.f .two,.bigq,.voices{grid-template-columns:1fr;gap:20px}
+  #product .head,#product .tabs,.screen{grid-column:1;grid-row:auto}
+  .screen{padding:20px}
+  .bubble{max-width:94%}
+  #product .tbl{font-size:12px;overflow-wrap:anywhere;word-break:normal}
+  #product .tbl th,#product .tbl td{padding:10px 4px}
   .qc{gap:28px}
   .sec{grid-template-columns:1fr 1fr}
   .doc{grid-template-columns:1fr}
@@ -858,24 +870,28 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
         <div class="t">TROPS AI</div>
         <div class="bubble me">베트남 바이어한테 보낼 견적서 만들어 줘. 지난번이랑 같은 품목으로.</div>
         <div class="bubble ai">지난 거래(TR-2026-0008)의 품목 3개와 FOB 조건으로 견적서 초안을 만들었습니다. 유효기간은 30일로 두었습니다. 확인하시면 저장합니다.<div class="pills"><span class="pill">초안 만듦</span><span class="pill warn">단가 확인 필요</span></div></div>
+        <div class="preview"><b>견적서(PI) 초안 · TR-2026-0009</b><p>품목 3개 · FOB 부산 · 합계 USD 36,000</p><span class="btn btn-s">확인하고 저장</span></div>
       </div>
-      <div class="pane" id="p2" role="tabpanel" aria-labelledby="tab2">
+      <div class="pane" id="p2" inert aria-hidden="true" role="tabpanel" aria-labelledby="tab2">
         <div class="t">이달 들어올 돈</div><div class="big">USD 72,000 · 2건</div>
         <table class="tbl"><tr><th>거래</th><th>바이어</th><th>금액</th><th>단계</th></tr>
           <tr><td>TR-0008</td><td>베트남 · Hanoi Trading</td><td>USD 36,000</td><td><span class="pill">선적 완료</span></td></tr>
           <tr><td>TR-0006</td><td>필리핀 · Manila Supply</td><td>USD 36,000</td><td><span class="pill warn">결제 대기</span></td></tr>
           <tr><td>TR-0005</td><td>미국 · Ohio Parts</td><td>USD 18,500</td><td><span class="pill">계약</span></td></tr></table>
+        <div class="preview"><b>입금 예정 요약</b><p>선적을 마친 거래와 결제 대기 거래의 받을 대금을 함께 확인합니다.</p><p>USD 72,000 · 입금 예정 2건</p></div>
       </div>
-      <div class="pane" id="p3" role="tabpanel" aria-labelledby="tab3">
+      <div class="pane" id="p3" inert aria-hidden="true" role="tabpanel" aria-labelledby="tab3">
         <div class="t">TR-2026-0008 서류</div><div class="big">품목·단가·합계가 그대로 이어집니다</div>
         <div class="doc"><div><b>PI</b>견적서<br><span class="pill">확정</span></div><div><b>CI</b>상업송장<br><span class="pill">초안</span></div><div><b>PL</b>포장명세서<br><span class="pill">초안</span></div></div>
+        <div class="preview"><b>거래 정보로 이어지는 서류 초안</b><p>품목 3개 · FOB 부산 · 합계 USD 36,000</p><p>견적서의 품목과 단가를 확인한 뒤 상업송장과 포장명세서에 이어 씁니다.</p></div>
       </div>
-      <div class="pane" id="p4" role="tabpanel" aria-labelledby="tab4">
+      <div class="pane" id="p4" inert aria-hidden="true" role="tabpanel" aria-labelledby="tab4">
         <div class="t">다가오는 기한</div><div class="big">놓치면 보상받기 어려운 기한</div>
         <table class="tbl"><tr><th>항목</th><th>거래</th><th>기한</th></tr>
           <tr><td>수출통지</td><td>베트남 건</td><td><span class="pill warn">D-4</span></td></tr>
           <tr><td>결제기일</td><td>필리핀 건</td><td><span class="pill bad">오늘</span></td></tr>
           <tr><td>증권 만료</td><td>단기수출보험</td><td><span class="pill">D-27</span></td></tr></table>
+        <div class="preview"><b>먼저 확인할 기한</b><p>오늘 결제기일인 필리핀 건의 입금 여부를 확인하고, 베트남 건의 수출통지 자료를 준비합니다.</p></div>
         <div class="src">근거: 적용 약관 기준 · 선적일부터 영업일로 계산</div>
       </div>
     </div>
@@ -1266,7 +1282,8 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
     tb.forEach(function(x, k){
       var on = k === i;
       x.classList.toggle('on', on); x.setAttribute('aria-selected', on); x.tabIndex = on ? 0 : -1;
-      $(x.dataset.t).classList.toggle('on', on);
+      var pane = $(x.dataset.t);
+      pane.classList.toggle('on', on); pane.inert = !on; pane.setAttribute('aria-hidden', !on);
     });
     var b = tb[i].querySelector('.bar');
     if (b) { b.style.animation = 'none'; void b.offsetWidth; b.style.animation = ''; }
