@@ -1,54 +1,31 @@
-<!doctype html>
-<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>02 시범 참여 신청 운영자 알림</title><style>
-:root{--bg:#f6f7f9;--card:#fff;--ink:#16181d;--mute:#5b6270;--line:#e3e6eb;--soft:#eef1f5;--accent:#1D4ED8;--warn:#9a3412;--warnbg:#fff7ed;--mail:#fff;--mailink:#202124}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1115;--card:#171a20;--ink:#e8eaee;--mute:#9aa1ad;--line:#2a2f38;--soft:#1f232b;--accent:#8fb0ff;--warn:#fdba74;--warnbg:#2a1d12;--mail:#fff;--mailink:#202124}}
-:root[data-theme="dark"]{--bg:#0f1115;--card:#171a20;--ink:#e8eaee;--mute:#9aa1ad;--line:#2a2f38;--soft:#1f232b;--accent:#8fb0ff;--warn:#fdba74;--warnbg:#2a1d12}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR",sans-serif}
-.w{max-width:1040px;margin:0 auto;padding:28px 16px 64px}a{color:var(--accent)}code{font:12.5px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--soft);padding:1px 5px;border-radius:4px;word-break:break-all}
-h1{font-size:24px;margin:6px 0 4px;letter-spacing:-.01em}h2{font-size:17px;margin:34px 0 10px}.lead{color:var(--mute);margin:0 0 18px}
-.crumb{font-size:13px}.crumb a{text-decoration:none}
-.meta{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.meta table{width:100%;border-collapse:collapse}.meta th,.meta td{text-align:left;vertical-align:top;padding:9px 14px;border-top:1px solid var(--line);font-size:14px}
-.meta tr:first-child th,.meta tr:first-child td{border-top:0}.meta th{width:150px;color:var(--mute);font-weight:600;white-space:nowrap}
-.meta ul{margin:0;padding-left:18px}.notes{background:var(--warnbg);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-top:14px}
-.notes b{color:var(--warn)}.notes ul{margin:6px 0 0;padding-left:18px}
-.variant{margin-top:26px}.vlabel{font-size:13px;font-weight:700;color:var(--mute);margin:0 0 8px}
-.mail{background:var(--mail);color:var(--mailink);border:1px solid #dadce0;border-radius:12px;box-shadow:0 1px 2px rgba(0,0,0,.06);overflow:hidden}
-.mh{padding:16px 20px 12px;border-bottom:1px solid #e8eaed}.subj{font-size:20px;font-weight:600;margin:0 0 10px;color:#202124;word-break:keep-all;overflow-wrap:anywhere}
-.row{font-size:13px;color:#5f6368;margin:2px 0;overflow-wrap:anywhere}.row b{color:#202124;font-weight:600;display:inline-block;min-width:64px}
-.mb{padding:18px 20px 22px;font:14px/1.62 Arial,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;white-space:pre-wrap;overflow-wrap:anywhere;color:#222}
-.mb a{color:#1a73e8}.htmlmail{padding:18px 20px 22px;font:14px/1.5 Arial,Helvetica,sans-serif;color:#222}.htmlmail a{color:#1a73e8}
-details{margin-top:10px}summary{cursor:pointer;font-size:13px;color:var(--mute)}pre.src{background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:12px;white-space:pre-wrap;overflow-wrap:anywhere;font:12.5px/1.5 ui-monospace,Menlo,monospace;color:var(--ink)}
-table.inv{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:13.5px}
-table.inv th,table.inv td{padding:8px 10px;border-top:1px solid var(--line);text-align:left;vertical-align:top}table.inv thead th{background:var(--soft);border-top:0;font-size:12.5px;color:var(--mute)}
-.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}.pill{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:999px;background:var(--soft);color:var(--mute);white-space:nowrap}
-.box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px}.box ul{margin:6px 0;padding-left:18px}.box li{margin:3px 0}
-.nav{display:flex;justify-content:space-between;gap:12px;margin-top:36px;font-size:14px}
-@media (max-width:640px){.meta th{width:auto;display:block;border-top:1px solid var(--line);padding-bottom:0}.meta td{display:block;border-top:0;padding-top:2px}.subj{font-size:18px}}
-</style></head><body><div class="w"><p class="crumb"><a href="index.html">← 메일 전체 목록</a> · 신청 · 문의 — 랜딩에서 시작</p>
-<h1>02. 시범 참여 신청 운영자 알림</h1>
-<p class="lead">예시 값으로 채운 미리보기 — 문안은 앱 운영 코드(<code>trops_a</code> <code>origin/main</code> <code>79b9b373</code>)의 함수를 그대로 돌려 뽑았습니다.</p>
-<div class="meta"><table>
-<tr><th>보내는 때</th><td>접수 메일과 같은 때(신청 저장 직후) — 처음이면 «접수», 다시 신청이면 «갱신».</td></tr>
-<tr><th>받는 사람</th><td>contact@theo-ne.com(고정 · 받는 사람 인자 없음)</td></tr>
-<tr><th>보내는 주소(From)</th><td>TROPS &lt;contact@theo-ne.com&gt;</td></tr>
-<tr><th>답장 주소(Reply-To)</th><td>없음 — 답장하면 contact@theo-ne.com 로 갑니다(답장해도 신청자에게 가지 않음)</td></tr>
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>02-pilot-operator-alert 전/후</title><style>body{font:15px/1.7 system-ui,sans-serif;color:#16181d;margin:24px auto;padding:0 16px;max-width:1300px}a{color:#1D4ED8}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}iframe{width:100%;height:850px;border:1px solid #ddd;background:white}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f4f6f9;padding:16px}h1{font-size:25px}h2{font-size:18px}@media(max-width:760px){.grid{grid-template-columns:1fr}}</style><body><p><a href="phase1.html">← 메일 1차 개편</a> · <a href="index.html">24종 조사</a></p><h1>02 시범 신청 운영자 알림 · 전/후</h1><p>변경 전: origin/main 79b9b373. 변경 후: 실제 문안 함수에서 생성. HTML 스위치가 꺼져 있으면 새 텍스트판만 발송합니다.</p><div class="grid"><section><h2>전</h2><iframe title="변경 전" src="before/02-pilot-operator-alert.html"></iframe></section><section><h2>후 · [시범 신청] (주)예시정밀 · 제조업 · 서울·경기·인천</h2><iframe title="변경 후" src="after/02-pilot-operator-alert.html"></iframe></section></div><details><summary>새 텍스트판</summary><pre>회사: (주)예시정밀
+이메일: hong@example.com
+업종 · 지역: 제조업 · 서울·경기·인천
+요청 업무: 수출 서류 작성과 입금 확인을 함께 관리하고 싶습니다.
+소개: PARTNER-A(포워더 파트너 A)
+유입: from=partner · utm_source=newsletter · 처음 들어온 주소 /?ref=PARTNER-A#apply
+신청 순서: 12번째
 
-<tr><th>테스트 모드</th><td>테스트 모드와 무관 — 조건이 맞으면 실제 받는 사람에게</td></tr>
-<tr><th>형식</th><td>텍스트만(Resend <code>text</code> · <code>html</code> 없음)</td></tr>
-<tr><th>공통 템플릿</th><td>없음 — 문안 함수가 줄을 이어 붙인 글 그대로</td></tr>
-<tr><th>들어가는 값</th><td><ul><li>회사명</li><li>지역 묶음</li><li>업종</li><li>적합도(참고용) 점수/10</li><li>국세청 상태(랜딩 신청은 «사업자번호 없음»)</li><li>서류 유무</li><li>소개 코드로 들어왔는지</li><li>운영 콘솔 링크</li></ul></td></tr>
-<tr><th>코드 위치</th><td><ul><li><a href="https://github.com/tteehhaa/trops_a/blob/79b9b373/lib/pilot/mail-copy.ts#L67"><code>trops_a/lib/pilot/mail-copy.ts:67</code></a> — 문안 <code>pilotOperatorAlertEmail</code></li><li><a href="https://github.com/tteehhaa/trops_a/blob/79b9b373/lib/pilot/mail.ts#L63"><code>trops_a/lib/pilot/mail.ts:63</code></a> — <code>sendPilotOperatorAlert</code></li><li><a href="https://github.com/tteehhaa/trops_a/blob/79b9b373/app/api/pilot-apply/route.ts#L141"><code>trops_a/app/api/pilot-apply/route.ts:141</code></a> — 부르는 자리</li></ul></td></tr>
-</table></div><div class="notes"><b>정리할 때 볼 점</b>(사실만 · 고치지 않았습니다)<ul><li>들어오신 경로(<code>acquisition</code>) · 요청 업무 · 받은 소개 코드 값 · 신청자 이메일은 메일에 없고 콘솔에서 봅니다.</li><li>/contact 알림과 달리 Reply-To 가 없습니다.</li></ul></div><section class="variant"><p class="vlabel">접수 · 소개 코드로 들어옴</p><div class="mail"><div class="mh"><p class="subj">[시범 신청 접수] (주)예시정밀 · 서울·경기·인천</p><p class="row"><b>보낸 사람</b> TROPS &lt;contact@theo-ne.com&gt;</p><p class="row"><b>받는 사람</b> contact@theo-ne.com</p></div><div class="mb">(주)예시정밀 · 서울·경기·인천 · 기계·부품
-적합도(참고용) 2/10 · 국세청 상태 사업자번호 없음 · 서류 없음 · 소개 코드로 들어옴
-운영 콘솔: <a href="https://app.trops.kr/admin/pilot-applications#a-3f6c1e2a-8b4d-4c1a-9e7f-2d5b6a7c8e90">https://app.trops.kr/admin/pilot-applications#a-3f6c1e2a-8b4d-4c1a-9e7f-2d5b6a7c8e90</a></div></div>
-<details><summary>보내는 글 그대로(텍스트)</summary><pre class="src">(주)예시정밀 · 서울·경기·인천 · 기계·부품
-적합도(참고용) 2/10 · 국세청 상태 사업자번호 없음 · 서류 없음 · 소개 코드로 들어옴
-운영 콘솔: https://app.trops.kr/admin/pilot-applications#a-3f6c1e2a-8b4d-4c1a-9e7f-2d5b6a7c8e90</pre></details></section><section class="variant"><p class="vlabel">갱신(같은 회사가 다시 신청)</p><div class="mail"><div class="mh"><p class="subj">[시범 신청 갱신] (주)예시정밀 · 서울·경기·인천</p><p class="row"><b>보낸 사람</b> TROPS &lt;contact@theo-ne.com&gt;</p><p class="row"><b>받는 사람</b> contact@theo-ne.com</p></div><div class="mb">(주)예시정밀 · 서울·경기·인천 · 기계·부품
-적합도(참고용) 2/10 · 국세청 상태 사업자번호 없음 · 서류 없음
-운영 콘솔: <a href="https://app.trops.kr/admin/pilot-applications#a-3f6c1e2a-8b4d-4c1a-9e7f-2d5b6a7c8e90">https://app.trops.kr/admin/pilot-applications#a-3f6c1e2a-8b4d-4c1a-9e7f-2d5b6a7c8e90</a></div></div>
-<details><summary>보내는 글 그대로(텍스트)</summary><pre class="src">(주)예시정밀 · 서울·경기·인천 · 기계·부품
-적합도(참고용) 2/10 · 국세청 상태 사업자번호 없음 · 서류 없음
-운영 콘솔: https://app.trops.kr/admin/pilot-applications#a-3f6c1e2a-8b4d-4c1a-9e7f-2d5b6a7c8e90</pre></details></section>
-<div class="nav"><span><a href="01-pilot-receipt.html">← 01. 시범 참여 신청 접수 메일</a></span><span><a href="03-pilot-invite.html">03. 시범 참여 초대 메일 →</a></span></div></div></body></html>
+운영 콘솔에서 확인하기: https://app.trops.kr/admin/pilot-applications
+
+—
+trops.kr에서 신청하신 분께 보내는 안내입니다.
+주식회사 테오네 · 사업자등록번호 625-81-04032
+서울특별시 강남구 봉은사로 524, B층 269-11호(삼성동)
+개인정보처리방침: https://trops.kr/privacy</pre></details><details><summary>테스트 표시 · [테스트] [시범 신청] (주)예시정밀 · 제조업 · 서울·경기·인천</summary><iframe title="테스트 표시" src="after/02-pilot-operator-alert-test.html"></iframe><pre>[테스트] 시험 발송한 메일입니다.
+
+회사: (주)예시정밀
+이메일: hong@example.com
+업종 · 지역: 제조업 · 서울·경기·인천
+요청 업무: 수출 서류 작성과 입금 확인을 함께 관리하고 싶습니다.
+소개: PARTNER-A(포워더 파트너 A)
+유입: from=partner · utm_source=newsletter · 처음 들어온 주소 /?ref=PARTNER-A#apply
+신청 순서: 12번째
+
+운영 콘솔에서 확인하기: https://app.trops.kr/admin/pilot-applications
+
+—
+trops.kr에서 신청하신 분께 보내는 안내입니다.
+주식회사 테오네 · 사업자등록번호 625-81-04032
+서울특별시 강남구 봉은사로 524, B층 269-11호(삼성동)
+개인정보처리방침: https://trops.kr/privacy</pre></details></body></html>

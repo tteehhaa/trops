@@ -1,0 +1,111 @@
+TROPS 메일 1차 개편 — 이어서 진행할 기록 (2026-09-30)
+
+상태
+앱: origin/main 79b9b373 기반 mail/html-frame-1, 기존 worktree에서 변경 보존.
+랜딩: docs/email-review, 기존 커밋 df29402 위에서 변경 보존.
+두 저장소 .git 쓰기 권한이 현 세션에서 거부되어 커밋·푸시·PR 미생성.
+운영 배포, 병합, Supabase 템플릿 적용, 실제 메일 발송은 실행하지 않음.
+
+앱 worktree
+/private/tmp/claude-502/-Users-hanabeom00-Projects-dev-main-web-page/7ccd9045-680a-46f4-be85-2ce3e94bcaa5/scratchpad/trops_a-mail
+Git 메타데이터는 /Users/hanabeom00/Projects/dev/trops_a/.git/worktrees/trops_a-mail 에 있음.
+쓰기 가능한 세션에서 기존 worktree를 그대로 이어서 사용한다. prd-v2-pdca 작업과 합치지 않는다.
+
+앱 변경 파일
+lib/constants/brand.ts
+lib/notify/mail-frame.ts
+lib/notify/auth-mail-copy.ts
+lib/notify/email-sender.ts
+lib/pilot/mail-copy.ts
+lib/pilot/mail.ts
+lib/track/lead-mail-copy.ts
+lib/track/lead-mail.ts
+app/api/pilot-apply/route.ts
+scripts/export-mail-review.ts
+progress.md
+ tests/notify/mail-frame.test.ts
+ tests/notify/mail-phase1.test.ts
+ tests/pilot/retention-and-mail.test.ts
+ tests/pilot/core.test.ts
+ tests/pilot/landing-contract.test.ts
+ tests/guardrails/lead-pipeline.test.ts
+ tests/guardrails/boundary-scope.test.ts
+
+수신·스위치
+SELF15_MAIL_HTML_ENABLED: 기본 꺼짐. 정확히 true일 때만 01~04 HTML+text 전송.
+꺼져 있어도 새 문안과 푸터의 텍스트판은 전송. 보낸 이름 TROPS 통일.
+01: 기존 결정대로 신청자에게 직접 발송(예약 주소 차단).
+02·04: contact@theo-ne.com. 04 Reply-To는 문의한 분.
+03: 기존 outboundMailMode 정책에 따른 내부 테스트 주소 전환 유지.
+01~04: 테스트 모드/비운영 환경이면 [테스트] 제목과 본문 한 줄 표시.
+05·06: 앱 환경변수와 무관. supabase/의 일반판과 -test 시험판을 수동 적용.
+Supabase .text.txt는 참고판이며 대시보드에서 text/plain 발송을 따로 설정하지 않음.
+
+미리보기
+phase1.html: 6종 목록 및 운영 적용 안내
+01~06 각 HTML: 전/후 나란히, 새 텍스트판, 테스트 표시
+before/: 원래 조사본 (05·06은 대시보드 미확인 기본 예시)
+after/: 문안 함수로 만든 새 HTML·텍스트 및 시험판
+supabase/: 제목 .subject.txt, 본문 .html, 텍스트 참고 .text.txt
+재생성: 앱 worktree에서
+npx vite-node --config vitest.config.ts scripts/export-mail-review.ts /Users/hanabeom00/Projects/dev/main_web_page/docs/email-review
+
+최종 검사
+앱: 647개 파일 통과 / 1개 건너뜀. 11,971개 테스트 통과 / 18개 건너뜀.
+기준선 645개 파일·11,945개 테스트 대비 통과 파일 +2, 테스트 +26.
+타입 검사 통과, 린트 통과(img 기존 경고 2), 앱 빌드 통과(unpdf 기존 경고 포함).
+랜딩: 테스트 145/145, 빌드 통과.
+HTML 16개 정적 구조, 버튼 수, 회사 정보, 처리방침, 테스트 표시, Outlook 폭 제한,
+전/후 상대 링크, 랜딩 회사 상수 일치 검사 통과.
+보호 파일 4개 변경 없음. 실제 메일 발송 없음.
+Chrome headless SIGABRT로 시각 캡처 미완료. Gmail·네이버·Outlook 실제 수신 검사는 미실행.
+
+커밋·PR 이어서
+1. 두 저장소의 Git 메타데이터 쓰기가 허용된 세션에서 상태/차이를 다시 확인한다.
+2. 앱에서는 위 파일만 stage·commit한다. 보호 파일 outbound-mail-policy.ts, outbound-mail.ts, forwarder/notify.ts, work/send.ts 수정 0.
+3. 앱 브랜치 푸시: git push -u origin mail/html-frame-1
+4. 앱 PR: gh pr create --base main --head mail/html-frame-1 (아래 제목·본문 사용)
+5. 랜딩에서는 docs/email-review/만 stage·commit한다.
+6. 랜딩 브랜치 푸시: git push -u origin docs/email-review
+7. 랜딩 PR: gh pr create --base main --head docs/email-review
+main 직접 push, 병합, 운영 배포는 하지 않는다.
+
+앱 PR 제목
+feat(mail): 신청·초대·문의 문안과 선택형 HTML 공통 틀
+앱 PR 본문
+시범 신청 접수·운영자 알림·초대·문의 알림(01~04)에 확정 문안을 적용하고,
+같은 내용에서 HTML과 텍스트를 생성합니다. SELF15_MAIL_HTML_ENABLED는 기본 꺼짐이며
+true일 때 HTML을 함께 보냅니다. From 표시를 TROPS로 통일하고 기존 수신 정책과
+문의 Reply-To를 유지합니다. Supabase 05·06 템플릿 및 전/후 미리보기 생성기도 포함합니다.
+메일 팔레트는 이메일 인라인 스타일 요구로 한 파일에서만 허용하고 색 목록을 검사합니다.
+바이어·포워더 발송 파일, DB 스키마, 운영 설정 변경은 없습니다.
+
+랜딩 PR 제목
+docs(mail): 24종 조사와 01~06 전후·Supabase 템플릿
+랜딩 PR 본문
+메일 24종 조사(df29402)에 01~06 전/후 비교와 HTML·텍스트·시험판을 추가합니다.
+Supabase 가입 확인/비밀번호 재설정의 제목·HTML은 사용자가 대시보드에 적용할 파일입니다.
+앱 문안 함수에서 생성했으며 실제 발송 코드는 이 저장소에 추가하지 않았습니다.
+
+운영 적용 (사용자 지시 때만)
+앱 PR 병합 → 앱 배포 → SELF15_MAIL_HTML_ENABLED=true → 시험 신청으로 01·02 확인.
+그 뒤 사용자가 Supabase 대시보드에 05·06 일반판을 별도 적용하고 인증 흐름을 확인.
+
+권한 변경 후 재시도
+사용자가 권한 해제 후 두 저장소 커밋 및 앱 PR 생성을 요청함.
+앱과 랜딩 git add를 각각 재시도했으나 두 곳 모두 index.lock 생성이 Operation not permitted로 거부됨.
+현 세션에는 Git 쓰기 권한 변경이 반영되지 않은 것으로 보임. 커밋·푸시·PR 미생성.
+앱 origin/main은 여전히 79b9b373이며 보호 파일 4개 diff 0, 이전 검사 로그 확인.
+최신 요청 범위는 랜딩 로컬 커밋까지, 앱은 브랜치 푸시 및 main 대상 PR까지. 병합·배포 금지.
+
+문안 재확정 반영 (2026-09-30)
+01·03·05·06을 사용자 제공 문장 그대로 교체. 02 버튼은 운영 콘솔에서 확인하기.
+틀·스위치·수신 정책·검사 범위 유지. 기존 검사는 변경된 문안 기대값만 갱신.
+phase1.html 및 after/, supabase/ 일반판·시험판 재생성. before/는 기존 조사본 보존.
+「장부」 잔존 목록: ledger-wording-inventory.html (60개 소스 위치). 목록에 있는 원문은 수정하지 않음.
+범위: 랜딩·신청·초대·가입 시작 흐름 및 관련 메뉴/참여 결과. 앱은 mail/html-frame-1 기준.
+권한 해제 안내 후 다시 두 저장소 git add 시도했으나 index.lock 생성 Operation not permitted가 계속됨.
+커밋·푸시·앱 PR 생성 미완료. 병합·배포 없음.
+
+최종 문안 재검사: 647개 파일·11,971개 테스트 통과(1파일·18테스트 건너뜀). 앱 빌드(타입·린트 포함) 통과, 기존 경고만 존재.
+사용자가 직접 두 저장소 커밋·푸시·PR을 진행하기로 함. 명령은 최종 답변으로 제공. 병합·배포 제외.

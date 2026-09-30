@@ -1,78 +1,37 @@
-<!doctype html>
-<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>03 시범 참여 초대 메일</title><style>
-:root{--bg:#f6f7f9;--card:#fff;--ink:#16181d;--mute:#5b6270;--line:#e3e6eb;--soft:#eef1f5;--accent:#1D4ED8;--warn:#9a3412;--warnbg:#fff7ed;--mail:#fff;--mailink:#202124}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1115;--card:#171a20;--ink:#e8eaee;--mute:#9aa1ad;--line:#2a2f38;--soft:#1f232b;--accent:#8fb0ff;--warn:#fdba74;--warnbg:#2a1d12;--mail:#fff;--mailink:#202124}}
-:root[data-theme="dark"]{--bg:#0f1115;--card:#171a20;--ink:#e8eaee;--mute:#9aa1ad;--line:#2a2f38;--soft:#1f232b;--accent:#8fb0ff;--warn:#fdba74;--warnbg:#2a1d12}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR",sans-serif}
-.w{max-width:1040px;margin:0 auto;padding:28px 16px 64px}a{color:var(--accent)}code{font:12.5px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--soft);padding:1px 5px;border-radius:4px;word-break:break-all}
-h1{font-size:24px;margin:6px 0 4px;letter-spacing:-.01em}h2{font-size:17px;margin:34px 0 10px}.lead{color:var(--mute);margin:0 0 18px}
-.crumb{font-size:13px}.crumb a{text-decoration:none}
-.meta{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.meta table{width:100%;border-collapse:collapse}.meta th,.meta td{text-align:left;vertical-align:top;padding:9px 14px;border-top:1px solid var(--line);font-size:14px}
-.meta tr:first-child th,.meta tr:first-child td{border-top:0}.meta th{width:150px;color:var(--mute);font-weight:600;white-space:nowrap}
-.meta ul{margin:0;padding-left:18px}.notes{background:var(--warnbg);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-top:14px}
-.notes b{color:var(--warn)}.notes ul{margin:6px 0 0;padding-left:18px}
-.variant{margin-top:26px}.vlabel{font-size:13px;font-weight:700;color:var(--mute);margin:0 0 8px}
-.mail{background:var(--mail);color:var(--mailink);border:1px solid #dadce0;border-radius:12px;box-shadow:0 1px 2px rgba(0,0,0,.06);overflow:hidden}
-.mh{padding:16px 20px 12px;border-bottom:1px solid #e8eaed}.subj{font-size:20px;font-weight:600;margin:0 0 10px;color:#202124;word-break:keep-all;overflow-wrap:anywhere}
-.row{font-size:13px;color:#5f6368;margin:2px 0;overflow-wrap:anywhere}.row b{color:#202124;font-weight:600;display:inline-block;min-width:64px}
-.mb{padding:18px 20px 22px;font:14px/1.62 Arial,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;white-space:pre-wrap;overflow-wrap:anywhere;color:#222}
-.mb a{color:#1a73e8}.htmlmail{padding:18px 20px 22px;font:14px/1.5 Arial,Helvetica,sans-serif;color:#222}.htmlmail a{color:#1a73e8}
-details{margin-top:10px}summary{cursor:pointer;font-size:13px;color:var(--mute)}pre.src{background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:12px;white-space:pre-wrap;overflow-wrap:anywhere;font:12.5px/1.5 ui-monospace,Menlo,monospace;color:var(--ink)}
-table.inv{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;font-size:13.5px}
-table.inv th,table.inv td{padding:8px 10px;border-top:1px solid var(--line);text-align:left;vertical-align:top}table.inv thead th{background:var(--soft);border-top:0;font-size:12.5px;color:var(--mute)}
-.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}.pill{display:inline-block;font-size:11.5px;padding:1px 7px;border-radius:999px;background:var(--soft);color:var(--mute);white-space:nowrap}
-.box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px}.box ul{margin:6px 0;padding-left:18px}.box li{margin:3px 0}
-.nav{display:flex;justify-content:space-between;gap:12px;margin-top:36px;font-size:14px}
-@media (max-width:640px){.meta th{width:auto;display:block;border-top:1px solid var(--line);padding-bottom:0}.meta td{display:block;border-top:0;padding-top:2px}.subj{font-size:18px}}
-</style></head><body><div class="w"><p class="crumb"><a href="index.html">← 메일 전체 목록</a> · 신청 · 문의 — 랜딩에서 시작</p>
-<h1>03. 시범 참여 초대 메일</h1>
-<p class="lead">예시 값으로 채운 미리보기 — 문안은 앱 운영 코드(<code>trops_a</code> <code>origin/main</code> <code>79b9b373</code>)의 함수를 그대로 돌려 뽑았습니다.</p>
-<div class="meta"><table>
-<tr><th>보내는 때</th><td>운영 콘솔 «시범 신청»에서 «초대»를 누를 때. 누를 때마다 새 링크가 생기고 옛 링크는 열리지 않습니다. 링크는 14일(<code>PILOT_INVITE_TTL_DAYS</code>).</td></tr>
-<tr><th>받는 사람</th><td>신청자 — 단, 테스트 모드면 운영 테스트 주소(<code>SELF15_TEST_EMAIL</code>) 한 곳</td></tr>
-<tr><th>보내는 주소(From)</th><td>TROPS &lt;contact@theo-ne.com&gt;</td></tr>
-<tr><th>답장 주소(Reply-To)</th><td>없음 — 답장하면 contact@theo-ne.com 로 갑니다</td></tr>
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>03-pilot-invite 전/후</title><style>body{font:15px/1.7 system-ui,sans-serif;color:#16181d;margin:24px auto;padding:0 16px;max-width:1300px}a{color:#1D4ED8}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}iframe{width:100%;height:850px;border:1px solid #ddd;background:white}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f4f6f9;padding:16px}h1{font-size:25px}h2{font-size:18px}@media(max-width:760px){.grid{grid-template-columns:1fr}}</style><body><p><a href="phase1.html">← 메일 1차 개편</a> · <a href="index.html">24종 조사</a></p><h1>03 초대 · 전/후</h1><p>변경 전: origin/main 79b9b373. 변경 후: 실제 문안 함수에서 생성. HTML 스위치가 꺼져 있으면 새 텍스트판만 발송합니다.</p><div class="grid"><section><h2>전</h2><iframe title="변경 전" src="before/03-pilot-invite.html"></iframe></section><section><h2>후 · [TROPS] 이용 준비가 완료되었습니다</h2><iframe title="변경 후" src="after/03-pilot-invite.html"></iframe></section></div><details><summary>새 텍스트판</summary><pre>안녕하세요, TROPS입니다.
 
-<tr><th>테스트 모드</th><td>운영(Production) 배포 + 테스트 모드 꺼짐일 때만 실제 주소 · 그 밖에는 테스트 주소 한 곳(<code>outboundMailMode</code>) — <b>운영은 지금 테스트 모드 켜짐</b>(앱 문서 <code>doc/self15/prod-env-plan.md</code> 기록)</td></tr>
-<tr><th>형식</th><td>텍스트만(Resend <code>text</code> · <code>html</code> 없음)</td></tr>
-<tr><th>공통 템플릿</th><td>없음 — 문안 함수가 줄을 이어 붙인 글 그대로</td></tr>
-<tr><th>들어가는 값</th><td><ul><li>회사명</li><li>담당자 이름(없으면 «{회사명} 담당자»)</li><li>신청 이메일</li><li>가입 링크 <code>https://app.trops.kr/pilot/join/{토큰}</code></li><li>만료일(한국 날짜)</li><li>테스트 모드면 제목 머리 «[테스트] 받는 사람 1명 · » + 본문 첫 줄</li></ul></td></tr>
-<tr><th>코드 위치</th><td><ul><li><a href="https://github.com/tteehhaa/trops_a/blob/79b9b373/lib/pilot/mail-copy.ts#L49"><code>trops_a/lib/pilot/mail-copy.ts:49</code></a> — 문안 <code>pilotInviteEmail</code></li><li><a href="https://github.com/tteehhaa/trops_a/blob/79b9b373/lib/pilot/mail.ts#L81"><code>trops_a/lib/pilot/mail.ts:81</code></a> — <code>sendPilotInvite</code></li><li><a href="https://github.com/tteehhaa/trops_a/blob/79b9b373/app/admin/pilot-applications/actions.ts#L65"><code>trops_a/app/admin/pilot-applications/actions.ts:65</code></a> — «초대» 버튼</li></ul></td></tr>
-</table></div><div class="notes"><b>정리할 때 볼 점</b>(사실만 · 고치지 않았습니다)<ul><li>초대·가입 시험 때 이 메일은 신청한 주소가 아니라 운영 테스트 주소로 갑니다(테스트 모드가 켜져 있는 동안).</li><li>«(주)예시정밀을(를)» — 조사를 괄호로 둡니다.</li><li>«수출 품목 · 기본 거래 조건이 미리 채워집니다» — 랜딩 신청에는 그 값이 없습니다.</li></ul></div><section class="variant"><p class="vlabel">테스트 모드(지금 운영 상태 — 앱 문서 기록)</p><div class="mail"><div class="mh"><p class="subj">[테스트] 받는 사람 1명 · TROPS 시범 참여 초대 — (주)예시정밀</p><p class="row"><b>보낸 사람</b> TROPS &lt;contact@theo-ne.com&gt;</p><p class="row"><b>받는 사람</b> (운영 테스트 주소 SELF15_TEST_EMAIL)</p></div><div class="mb">[테스트 모드 — 실제로는 hong@example.com 로 가지 않았습니다]
+기다려 주셔서 감사합니다. (주)예시정밀의 TROPS 이용 준비가 완료되었습니다.
+신청 때 보내 주신 회사 정보와 거래 조건은 미리 입력해 두었습니다.
 
-(주)예시정밀 담당자님, (주)예시정밀을(를) TROPS 시범 참여에 초대합니다.
+지금 시작하기: https://app.trops.kr/pilot/join/example-token
 
-아래 링크로 가입하시면 신청 때 적은 회사 정보·수출 품목·기본 거래 조건이 회사 장부에 미리 채워집니다(확인하고 고칠 수 있습니다).
-신청하신 이메일(hong@example.com)로 가입·로그인해야 합니다.
-<a href="https://app.trops.kr/pilot/join/q3Zb8Xw1rT0kLm9PvN2sYc4HdJ6uFa7QeG5iWo1ZxBk">https://app.trops.kr/pilot/join/q3Zb8Xw1rT0kLm9PvN2sYc4HdJ6uFa7QeG5iWo1ZxBk</a>
+이 링크는 발송일로부터 14일간, 신청하신 이메일 주소로만 이용하실 수 있습니다.
+처음 시작하실 때 사업자등록번호를 한 번 확인합니다.
 
-링크는 2026년 10월 14일까지 쓸 수 있습니다.
-문의: contact@theo-ne.com</div></div>
-<details><summary>보내는 글 그대로(텍스트)</summary><pre class="src">[테스트 모드 — 실제로는 hong@example.com 로 가지 않았습니다]
+감사합니다.
+TROPS 드림
 
-(주)예시정밀 담당자님, (주)예시정밀을(를) TROPS 시범 참여에 초대합니다.
+—
+trops.kr에서 신청하신 분께 보내는 안내입니다.
+주식회사 테오네 · 사업자등록번호 625-81-04032
+서울특별시 강남구 봉은사로 524, B층 269-11호(삼성동)
+개인정보처리방침: https://trops.kr/privacy</pre></details><details><summary>테스트 표시 · [테스트] [TROPS] 이용 준비가 완료되었습니다</summary><iframe title="테스트 표시" src="after/03-pilot-invite-test.html"></iframe><pre>[테스트] 시험 발송한 메일입니다.
 
-아래 링크로 가입하시면 신청 때 적은 회사 정보·수출 품목·기본 거래 조건이 회사 장부에 미리 채워집니다(확인하고 고칠 수 있습니다).
-신청하신 이메일(hong@example.com)로 가입·로그인해야 합니다.
-https://app.trops.kr/pilot/join/q3Zb8Xw1rT0kLm9PvN2sYc4HdJ6uFa7QeG5iWo1ZxBk
+안녕하세요, TROPS입니다.
 
-링크는 2026년 10월 14일까지 쓸 수 있습니다.
-문의: contact@theo-ne.com</pre></details></section><section class="variant"><p class="vlabel">실제 발송(테스트 모드를 끈 뒤)</p><div class="mail"><div class="mh"><p class="subj">TROPS 시범 참여 초대 — (주)예시정밀</p><p class="row"><b>보낸 사람</b> TROPS &lt;contact@theo-ne.com&gt;</p><p class="row"><b>받는 사람</b> hong@example.com</p></div><div class="mb">(주)예시정밀 담당자님, (주)예시정밀을(를) TROPS 시범 참여에 초대합니다.
+기다려 주셔서 감사합니다. (주)예시정밀의 TROPS 이용 준비가 완료되었습니다.
+신청 때 보내 주신 회사 정보와 거래 조건은 미리 입력해 두었습니다.
 
-아래 링크로 가입하시면 신청 때 적은 회사 정보·수출 품목·기본 거래 조건이 회사 장부에 미리 채워집니다(확인하고 고칠 수 있습니다).
-신청하신 이메일(hong@example.com)로 가입·로그인해야 합니다.
-<a href="https://app.trops.kr/pilot/join/q3Zb8Xw1rT0kLm9PvN2sYc4HdJ6uFa7QeG5iWo1ZxBk">https://app.trops.kr/pilot/join/q3Zb8Xw1rT0kLm9PvN2sYc4HdJ6uFa7QeG5iWo1ZxBk</a>
+지금 시작하기: https://app.trops.kr/pilot/join/example-token
 
-링크는 2026년 10월 14일까지 쓸 수 있습니다.
-문의: contact@theo-ne.com</div></div>
-<details><summary>보내는 글 그대로(텍스트)</summary><pre class="src">(주)예시정밀 담당자님, (주)예시정밀을(를) TROPS 시범 참여에 초대합니다.
+이 링크는 발송일로부터 14일간, 신청하신 이메일 주소로만 이용하실 수 있습니다.
+처음 시작하실 때 사업자등록번호를 한 번 확인합니다.
 
-아래 링크로 가입하시면 신청 때 적은 회사 정보·수출 품목·기본 거래 조건이 회사 장부에 미리 채워집니다(확인하고 고칠 수 있습니다).
-신청하신 이메일(hong@example.com)로 가입·로그인해야 합니다.
-https://app.trops.kr/pilot/join/q3Zb8Xw1rT0kLm9PvN2sYc4HdJ6uFa7QeG5iWo1ZxBk
+감사합니다.
+TROPS 드림
 
-링크는 2026년 10월 14일까지 쓸 수 있습니다.
-문의: contact@theo-ne.com</pre></details></section>
-<div class="nav"><span><a href="02-pilot-operator-alert.html">← 02. 시범 참여 신청 운영자 알림</a></span><span><a href="04-contact-operator-alert.html">04. /contact 담당자 알림 →</a></span></div></div></body></html>
+—
+trops.kr에서 신청하신 분께 보내는 안내입니다.
+주식회사 테오네 · 사업자등록번호 625-81-04032
+서울특별시 강남구 봉은사로 524, B층 269-11호(삼성동)
+개인정보처리방침: https://trops.kr/privacy</pre></details></body></html>

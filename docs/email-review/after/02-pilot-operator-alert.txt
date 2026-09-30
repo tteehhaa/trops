@@ -1,0 +1,17 @@
+[시범 신청] (주)예시정밀 · 제조업 · 서울·경기·인천
+
+회사: (주)예시정밀
+이메일: hong@example.com
+업종 · 지역: 제조업 · 서울·경기·인천
+요청 업무: 수출 서류 작성과 입금 확인을 함께 관리하고 싶습니다.
+소개: PARTNER-A(포워더 파트너 A)
+유입: from=partner · utm_source=newsletter · 처음 들어온 주소 /?ref=PARTNER-A#apply
+신청 순서: 12번째
+
+운영 콘솔에서 확인하기: https://app.trops.kr/admin/pilot-applications
+
+—
+trops.kr에서 신청하신 분께 보내는 안내입니다.
+주식회사 테오네 · 사업자등록번호 625-81-04032
+서울특별시 강남구 봉은사로 524, B층 269-11호(삼성동)
+개인정보처리방침: https://trops.kr/privacy
