@@ -376,9 +376,8 @@ nav .w{display:flex;justify-content:space-between;align-items:center;height:64px
 .logo i{width:18px;height:18px;background:url(/img/icon_primary.svg) center/contain no-repeat;display:block}
 nav .m{display:flex;gap:28px;font-size:14.5px;color:var(--sub)}
 nav .m a:hover{color:var(--ink)}
-.nav-right{display:flex;align-items:center;gap:14px;font-size:14.5px}
-.nav-login{color:var(--sub)}
-.nav-login:hover{color:var(--ink)}
+.nav-right{display:flex;align-items:stretch;gap:10px;font-size:14.5px}
+.nav-right .ne{margin-left:5px}
 
 /* 히어로 */
 .hero{padding:104px 0 40px}
@@ -505,7 +504,7 @@ nav .m a:hover{color:var(--ink)}
 .preview .btn{margin-top:12px;cursor:default}
 .src{font-size:12.5px;color:var(--mute);margin-top:16px;border-top:1px dashed var(--line);padding-top:10px}
 
-/* 대금까지 — 페이지에 하나뿐인 어두운 띠 */
+/* 대금 관리 — 페이지에 하나뿐인 어두운 띠 */
 .svc{background:var(--dark);color:var(--dark-ink)}
 .svc .label{color:#A9B1C2}
 .svc h2{color:var(--dark-ink)}
@@ -595,9 +594,12 @@ form.f{border:1px solid var(--line);border-radius:14px;padding:30px;background:v
 .fs{border:0;margin:0;padding:0;min-width:0}
 .fs:disabled input,.fs:disabled select{background:var(--surface);color:var(--mute);cursor:not-allowed}
 .f .hint{font-size:12.5px;color:var(--mute);margin-top:5px}
-.f .cons dl{margin-top:20px;display:grid;grid-template-columns:64px 1fr;gap:4px 10px;font-size:12.5px;line-height:1.6;color:var(--sub);
-  background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.f .cons details{margin-top:20px;font-size:13px;color:var(--sub)}
+.f .cons summary{cursor:pointer}
+.f .cons summary:hover{color:var(--ink)}
+.f .cons dl{margin-top:8px;display:grid;grid-template-columns:64px 1fr;gap:4px 10px;font-size:12.5px;line-height:1.6;color:var(--sub)}
 .f .cons dt{font-weight:600;color:var(--ink)}
+.f .cons.bad .agree{color:var(--danger)}
 .f .cons .agree{margin-top:12px}
 .f .agree a{text-decoration:underline;text-underline-offset:2px}
 .ferr{margin-top:16px;font-size:14px;color:var(--danger);background:var(--bad-bg);border-radius:8px;padding:10px 12px}
@@ -617,15 +619,7 @@ form.f{border:1px solid var(--line);border-radius:14px;padding:30px;background:v
 .note a{color:var(--ink);font-weight:600}
 .done{border:1px solid var(--line);border-radius:14px;padding:30px;background:var(--white)}
 .done h3{font-size:22px;margin-top:6px}
-.qpos{display:flex;align-items:baseline;gap:8px;margin-top:18px}
-.qpos b{font-size:56px;letter-spacing:-0.04em;line-height:1}
-.qpos span{font-size:16px;color:var(--sub)}
-.fair{font-size:12.5px;color:var(--mute);margin-top:8px}
-.refn{font-size:15px;color:var(--sub);margin-top:16px}
-.share{display:flex;gap:8px;margin-top:12px}
-.share input{flex:1;padding:11px 12px;border:1px solid var(--line);border-radius:8px;font-size:14px;font-family:inherit;background:var(--surface);color:var(--ink)}
-.share button{border:1px solid var(--ink);background:var(--white);color:var(--ink);border-radius:8px;padding:0 16px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;white-space:nowrap}
-.kakao{display:block;text-align:center;margin-top:8px;background:#FEE500;color:#191600;border-radius:8px;padding:12px;font-size:14.5px;font-weight:600}
+.done p{font-size:15px;color:var(--sub);margin-top:16px}
 
 /* 자료 */
 .res{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px}
@@ -732,7 +726,9 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
 }
 @media(max-width:640px){
   .an2{display:none}
-  .nav-login{display:none}
+  .nav-right{gap:8px}
+  .nav-right .btn-s{padding:8px 12px;font-size:13.5px}
+  .nav-right .ne{display:none}
   .sec{grid-template-columns:1fr}
 }
 </style>
@@ -750,7 +746,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
   <a class="logo" href="/"><i></i>TROPS</a>
   <div class="m">
     <a href="#product">제품</a>
-    <a href="#service">대금까지</a>
+    <a href="#service">대금 관리</a>
     <a href="#check">1분 진단</a>
     <a href="#security">보안</a>
     <a href="#resources">자료</a>
@@ -759,8 +755,12 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
        「1분 수출 준비 진단」(`nav-precheck`) 자리입니다. 1분 진단은 히어로 · 진단 섹션 · 신청 섹션의
        버튼으로 남습니다. `nav-precheck` 시계열은 여기서 끝납니다.
        ⛔ 앱 링크에 `?from=` 을 손으로 붙이지 마십시오 — `assets/track.js` 가 누르는 순간 채웁니다. -->
+  <!-- 🔄 **「로그인」 글자 링크가 「앱 열기」 버튼으로 바뀌었습니다** 〔2026-10-03〕 — 목적지도
+       `app.trops.kr/login` 에서 앱 루트로 옮겼습니다. `nav-login` 시계열은 여기서 끝나고 `nav-app` 이
+       이어받습니다. 종전에는 640px 이하에서 숨겨 모바일 상단에 앱 입구가 없었습니다 — 이제 숨기지 않습니다.
+       ⚠️ `&#xFE0E;` 는 ↗ 를 글자꼴로 고정합니다 — 떼면 iOS 가 이모지로 그립니다. -->
   <div class="nav-right">
-    <a class="nav-login" href="https://app.trops.kr/login" data-track="nav-login">로그인</a>
+    <a class="btn-2 btn-s" href="https://app.trops.kr/" data-track="nav-app">앱 열기<span class="ne" aria-hidden="true">↗&#xFE0E;</span></a>
     <a class="btn btn-s" href="#apply" data-track="nav-apply">먼저 사용해 보기</a>
   </div>
 </div></nav>
@@ -904,7 +904,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
 
 <section id="service" class="svc" data-section="service"><div class="w">
   <div class="head rv">
-    <div><div class="label">대금까지</div><h2>선적하고 끝이 아닙니다<br>대금 회수까지 챙깁니다</h2></div>
+    <div><div class="label">대금 관리</div><h2>선적하고 끝이 아닙니다<br>대금 회수까지 챙깁니다</h2></div>
   </div>
   <!-- 🔄 시안의 「알려 드립니다」 두 곳을 바꿨습니다 〔2026-09-29 · 대표 결정〕 — 「미리 보여 드립니다」 ·
        「먼저 짚어 드립니다」. 알림 발송을 약속하지 않습니다(test/landing-invariants.test.js). -->
@@ -1059,16 +1059,23 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
                ⚠️ 계약 0-1: 「요청하신 업무」는 앱 동의 기록의 범위 코드에 실리지 않아 **이 문구가 글로 적어야** 합니다.
                ⚠️ 보관은 앱 0154 가 집행하는 그대로입니다(신청일 1년 · 가입하면 회원 정보로 · 철회하면 즉시).
                ⚠️ 「메일」 줄은 앱 trops_a `lib/pilot/mail.ts` 가 보내는 그대로입니다(접수 메일 · 담당자 알림).
-               ⛔ 한쪽만 고치지 마십시오 — 고치면 위 notice_version 의 판 이름도 바꿉니다. -->
+               ⛔ 한쪽만 고치지 마십시오 — 고치면 위 notice_version 의 판 이름도 바꿉니다.
+               🔄 **고지 네 줄을 접어 두었습니다** 〔2026-10-03〕 — 회색 상자를 걷고 「수집·이용 내용 보기」 한 줄로 엽니다.
+                  문구는 한 글자도 바꾸지 않아 판 이름은 그대로입니다. ⛔ 네 줄을 지우지 마십시오 — 아래 체크박스의
+                  「위 내용」이 가리키는 것이고, test/pilot-apply-form.test.js 가 방침 §02 와 맞댑니다.
+               ⚠️ `class="cd"` 를 떼지 마십시오 — 맨 `details` 다음에 `summary` 가 붙으면 test/faq-structured-data.test.js 의
+                  정규식이 이것을 FAQ 질문으로 읽습니다. -->
           <div class="fld cons">
+            <details class="cd">
+            <summary>수집·이용 내용 보기</summary>
             <dl>
               <dt>받는 항목</dt><dd>회사명 · 이메일 · 업종 · 지역, 요청하신 업무와 받으신 소개 코드(있을 때), 들어오신 경로(채널 코드 · 광고 표지)</dd>
               <dt>쓰는 곳</dt><dd>시범 참여 선정과 초대 안내·연락, 회사 장부 미리 채움, 가입 뒤 첫 화면에 요청하신 업무 채움, 소개 수 집계, 신청 경로 집계</dd>
               <dt>보관</dt><dd>신청일부터 1년 뒤 삭제합니다. 가입하시면 회원 정보로 옮겨지고, 동의를 철회하시면 바로 삭제합니다.</dd>
               <dt>메일</dt><dd>이 주소로 접수 메일(대기 순번 · 소개 코드 · 먼저 챙길 것 요약)을 보내고, 회사 담당자에게 알림 메일이 갑니다.</dd>
             </dl>
+            </details>
             <label class="agree"><input type="checkbox" name="consents.collection" value="true"><span>위 내용으로 개인정보 수집·이용에 동의합니다. 자세한 내용은 <a href="/privacy">개인정보처리방침</a>에 있습니다.</span></label>
-            <div class="err" data-default="동의가 있어야 신청하실 수 있습니다.">동의가 있어야 신청하실 수 있습니다.</div>
           </div>
         </fieldset>
         <p class="ferr" id="formErr" role="alert" hidden></p>
@@ -1076,21 +1083,16 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
         <p class="note" id="applyOff">지금은 신청 접수를 준비하고 있습니다. 먼저 연락을 원하시면 <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a> 으로 보내 주십시오.</p>
         <p class="after">나머지 정보는 초대 메일에서 입력하실 수 있습니다.</p>
       </form>
-      <!-- 🔴 완료 화면 — 앱 응답 201 에서만 뜹니다. 순번은 `queue.position`, 그 아래 문장은 `queue.basis` 를
-           **그대로** 싣습니다(계약 2-5: 순번은 초대 순서의 약속이 아니므로 그 문장을 함께 보여 줍니다).
-           소개 링크는 `referral.code` 로 이 페이지가 만듭니다 — `https://trops.kr/?ref=<코드>#apply`.
-           ⚠️ 계약의 예(`/pilot?ref=`)와 경로가 다릅니다 — 랜딩에 `/pilot` 이 없어 홈의 신청 섹션으로 보냅니다.
-           ⛔ 「순서가 앞당겨집니다」 류를 쓰지 마십시오 — 앱은 소개로 순번을 자동으로 바꾸지 않습니다(계약 2-6). -->
+      <!-- 🔴 완료 화면 — 앱 응답 201 에서만 뜹니다.
+           🔄 **순번 · 순번 설명 · 소개 문구 · 내 소개 링크를 걷었습니다** 〔2026-10-03〕 — 신청한 사람이 그것이
+              무엇인지 알 수 없었습니다. 「접수되었다」와 「담당자가 초대 메일을 보낸다」 두 가지만 말합니다.
+           ⚠️ 메일 이름은 「초대 메일」 하나입니다 — 폼의 안내 두 줄과 같은 말입니다. 「승인 메일」로 갈라 쓰지 마십시오.
+           ⚠️ 앱 응답의 `queue` · `referral` 은 그대로 오지만 화면에 싣지 않습니다. 순번을 다시 보이려면
+              `queue.basis` 문장을 함께 실으십시오(계약 2-5: 순번은 초대 순서의 약속이 아닙니다). -->
       <div class="done" id="done" hidden>
         <div class="label">신청 완료</div>
         <h3 id="doneTitle" tabindex="-1">신청이 접수되었습니다</h3>
-        <p class="qpos" id="qPos" hidden><b id="qNum">○</b><span>번째로 신청하셨습니다</span></p>
-        <p class="fair" id="qBasis"></p>
-        <p class="refn">소개해 주시면 먼저 연락드립니다.</p>
-        <div id="shareBox" hidden>
-          <div class="share"><input id="myRef" readonly value="" aria-label="내 소개 링크"><button type="button" id="copyRef">링크 복사</button></div>
-          <a class="kakao" id="kakaoShare" href="#">카카오톡으로 보내기</a>
-        </div>
+        <p>담당자가 곧 초대 메일을 보내드립니다.</p>
       </div>
     </div>
   </div>
@@ -1376,9 +1378,10 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
     var el = form.elements[name];
     return el && el.closest ? el.closest('.fld') : null;
   }
+  /* ⚠️ 동의 칸에는 오류 문구 자리(`.err`)가 없습니다 〔2026-10-03〕 — 동의 줄의 색으로만 알립니다. */
   function markField(w, message){
     var el = w.querySelector('input,select'), err = w.querySelector('.err');
-    if (message) err.textContent = message;
+    if (message && err) err.textContent = message;
     w.classList.add('bad');
     el.setAttribute('aria-invalid', 'true');
   }
@@ -1388,7 +1391,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
       var el = w.querySelector('input,select'), err = w.querySelector('.err');
       w.classList.remove('bad');
       el.setAttribute('aria-invalid', 'false');
-      if (err.dataset['default']) err.textContent = err.dataset['default'];
+      if (err && err.dataset['default']) err.textContent = err.dataset['default'];
     });
   }
   function showFormError(message){ formErr.textContent = message; formErr.hidden = false; }   /* role=alert 가 읽어 줍니다 */
@@ -1424,7 +1427,8 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
       var loose = [];
       (err.fields || []).forEach(function(f){
         var w = fieldBox(f.field);
-        if (w) markField(w, f.message); else if (f.message) loose.push(f.message);
+        if (w) markField(w, f.message);
+        if (f.message && !(w && w.querySelector('.err'))) loose.push(f.message);   /* 문구 자리가 없는 칸은 폼 아래에 */
       });
       if (loose.length || !(err.fields || []).length) showFormError(loose.join(' ') || err.message || MSG.invalid);
       firstBadFocus();
@@ -1440,18 +1444,9 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
     showFormError(MSG.other);
   }
 
-  /* ── 완료 화면 — 순번 · 앱의 순번 설명 · 내 소개 링크 ── */
+  /* ── 완료 화면 — 접수 사실과 다음 연락만 말합니다(순번 · 소개 링크는 싣지 않습니다) ── */
   function showDone(data){
-    var q = data.queue || {}, ref = data.referral || {};
     if (data.result === 'updated') $('doneTitle').textContent = '신청 내용을 고쳐 받았습니다';
-    if (q.position) { $('qNum').textContent = String(q.position); $('qPos').hidden = false; }
-    $('qBasis').textContent = q.basis || '';
-    if (ref.code) {
-      /* 운영에서는 정식 주소, 미리보기에서는 그 미리보기 주소로 — 시험한 사람이 링크를 눌러 이어 볼 수 있게 */
-      var base = ON_PROD ? 'https://trops.kr' : location.origin;
-      $('myRef').value = base + '/?ref=' + encodeURIComponent(ref.code) + '#apply';
-      $('shareBox').hidden = false;
-    }
     form.hidden = true;
     $('done').hidden = false;
     $('doneTitle').focus();
@@ -1545,23 +1540,6 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
      */
     var wait = Math.max(0, 3200 - (Date.now() - openedAt));
     setTimeout(function(){ $('fElapsed').value = String(Date.now() - openedAt); send(); }, wait);
-  });
-
-  /* 완료 화면의 내 소개 링크 — 응답의 소개 코드로 채운 뒤에만 뜻이 있습니다. */
-  var cr = $('copyRef');
-  cr.addEventListener('click', function(){
-    var v = $('myRef').value;
-    if (v && navigator.clipboard) navigator.clipboard.writeText(v).then(function(){
-      cr.textContent = '복사됨'; setTimeout(function(){ cr.textContent = '링크 복사'; }, 1500);
-    });
-  });
-  var ks = $('kakaoShare');
-  ks.addEventListener('click', function(e){
-    e.preventDefault();
-    var v = $('myRef').value;
-    if (!v) return;
-    if (navigator.share) navigator.share({ title: 'TROPS 먼저 사용해 보기', text: '수출 업무 AI, 먼저 사용해 보실래요?', url: v })['catch'](function(){});
-    else if (navigator.clipboard) { navigator.clipboard.writeText(v); ks.textContent = '링크를 복사했습니다. 카카오톡에 붙여 넣어 주세요'; }
   });
 })();
 </script>
