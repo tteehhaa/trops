@@ -146,9 +146,8 @@ p,li,dd{text-wrap:pretty}
 
 nav{border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);z-index:10}
 nav .w{display:flex;justify-content:space-between;align-items:center;height:64px}
-.nav-right{display:flex;align-items:center;gap:18px}
-.nav-login{font-size:14px;font-weight:600;color:var(--ink-2);text-decoration:none;transition:color .15s}
-.nav-login:hover{color:var(--ink)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.nav-right .ne{margin-left:5px}
 .logo{display:flex;align-items:center;gap:9px;font-size:19px;font-weight:800;letter-spacing:-.02em;text-decoration:none}
 .logo i{width:9px;height:9px;border-radius:2px;background:var(--accent);display:block}
 
@@ -298,6 +297,11 @@ footer .cp{margin-top:18px;color:#64748B}
 }
 /* 인쇄 — 회사 소개는 «출력해서 들고 가는» 장입니다(기관 제출·사내 보고).
    ⚠️ 배경을 지우면 면책 블록의 테두리만 남습니다 — 그래서 왼쪽 강조선을 검정으로 남깁니다. */
+@media(max-width:640px){
+  .nav-right{gap:8px}
+  .nav-right .btn-s{padding:0 12px}
+  .nav-right .ne{display:none}
+}
 @media print{
   nav,.skip,.fin,footer .fl{display:none}
   body{font-size:11pt}
@@ -312,14 +316,17 @@ footer .cp{margin-top:18px;color:#64748B}
 
 <nav><div class="w">
   <a class="logo" href="/"><i></i>TROPS</a>
-  <!-- ⚠️ 랜딩 헤더와 **같은 순서**입니다 — 조용한 로그인 링크 뒤에 주 버튼 하나.
-       ⛔ 이 순서를 바꾸지 마십시오(index.html 헤더 주석에 이유가 있습니다). -->
+  <!-- ⚠️ 랜딩 헤더와 **같은 순서 · 같은 무게**입니다 — 외곽선 「앱 열기」 뒤에 채운 주 버튼 하나.
+       🔄 **조용한 「로그인」 글자 링크를 버튼으로 바꿨습니다** 〔2026-10-03 · 대표 결정〕 — 2026-09-05 의
+          「버튼으로 만들지 마십시오」를 뒤집습니다. 그때의 걱정(진단 버튼과 둘이 다툰다)은 무게를 갈라 풉니다 —
+          앱 입구는 외곽선, 진단은 채운 버튼입니다. ⛔ 둘을 같은 무게로 되돌리지 마십시오.
+       ⚠️ `nav-app` 은 index · en · contact 와 **같은 이름 · 같은 목적지(앱 루트)**입니다 — 한 장만 옮기지 마십시오. -->
   <div class="nav-right">
-    <a class="nav-login" href="https://app.trops.kr/login" data-track="nav-login">로그인</a>
+    <a class="btn-2 btn-s" href="https://app.trops.kr/" data-track="nav-app">앱 열기<span class="ne" aria-hidden="true">↗&#xFE0E;</span></a>
   <!-- 🔴 목적지 정본은 `index.html` 의 같은 nav 주석입니다 〔2026-09-21〕 — `nav-precheck` 는
        **두 장에 같은 이름으로** 서 있어, 한쪽만 옮기면 한 시계열이 두 목적지를 뜻하게 됩니다.
        ⛔ `?from=` 을 손으로 붙이지 마십시오(사유도 그 주석이 갖습니다). -->
-    <a class="btn-2 btn-s" href="https://app.trops.kr/quick-check" data-track="nav-precheck">1분 무료 진단</a>
+    <a class="btn btn-s" href="https://app.trops.kr/quick-check" data-track="nav-precheck">1분 무료 진단</a>
   </div>
 </div></nav>
 

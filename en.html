@@ -258,9 +258,15 @@ p,li,.sp .p,.nm .desc,.faq .a,.dr .rs,.dcard .gd,.demofoot p,.sec-sub,.lead{text
 
 nav{border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);z-index:10}
 nav .w{display:flex;justify-content:space-between;align-items:center;height:64px}
-.nav-right{display:flex;align-items:center;gap:18px}
-.nav-login{font-size:14px;font-weight:600;color:var(--ink-2);text-decoration:none}
-.nav-login:hover{color:var(--ink)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.nav-right .ne{margin-left:5px}
+/* 좁은 화면에서는 진단 버튼 글자가 길어 줄이 접힙니다 — 앱 입구를 글자 링크로 되돌려 폭을 더 쓰지 않습니다. */
+@media(max-width:640px){
+  .nav-right{gap:12px}
+  .nav-right .nav-app{min-height:0;padding:0;border:0;background:none;font-weight:600;color:var(--ink-2)}
+  .nav-right .nav-app:hover{background:none;color:var(--ink)}
+  .nav-right .ne{display:none}
+}
 /* 🔴 **skip 링크** 〔2026-09-01 복원 · 대표 지시〕. 구판 index.html·en.html 과 **같은 값**입니다
    (`.skip` 두 줄 · 문구 「본문으로 건너뛰기」). v11 원본에 이 요소가 없어 접근성 요소가
    조용히 빠져 있었습니다 — 새로 지은 문구가 아니라 라이브에 있던 것을 되돌린 것입니다.
@@ -438,10 +444,13 @@ footer .cp{margin-top:18px;color:#64748B}
 
 <nav data-section="nav"><div class="w">
   <a class="logo" href="/en"><i></i>TROPS</a>
-  <!-- 🔴 **기존 고객 자리** 〔2026-09-05 · 대표 지시〕 — 조용한 링크입니다. 버튼으로 만들지 마십시오. -->
+  <!-- 🔴 **기존 고객 자리** 〔2026-09-05 · 대표 지시〕.
+       🔄 **조용한 「Log in」 글자 링크를 외곽선 버튼 「Open app」으로 바꿨습니다** 〔2026-10-03 · 대표 결정〕 —
+          국문 랜딩과 같은 무게입니다(앱 입구는 외곽선, 진단은 채운 주 버튼). 640px 이하에서는 글자 링크로 돌아갑니다.
+       ⚠️ `nav-app` 은 index · about · contact 와 **같은 이름 · 같은 목적지(앱 루트)**입니다 — 한 장만 옮기지 마십시오. -->
   <div class="nav-right">
-    <a class="nav-login" href="https://app.trops.kr/login" data-track="nav-login">Log in</a>
-    <a class="btn-2 btn-s" href="https://app.trops.kr/quick-check" data-track="nav-precheck">Free 1-minute export readiness check</a>
+    <a class="btn-2 btn-s nav-app" href="https://app.trops.kr/" data-track="nav-app">Open app<span class="ne" aria-hidden="true">↗&#xFE0E;</span></a>
+    <a class="btn btn-s" href="https://app.trops.kr/quick-check" data-track="nav-precheck">Free 1-minute export readiness check</a>
   </div>
 </div></nav>
 
