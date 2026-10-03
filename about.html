@@ -16,7 +16,7 @@
   gtag('config', '{{analytics.gaId}}', { allow_google_signals: false, allow_ad_personalization_signals: false });
 </script>
 <title>회사 소개 · TROPS</title>
-<meta name="description" content="TROPS를 만드는 회사와, 1분 수출 준비 진단·무역보험 준비 패키지·수출대금 관리를 왜 이 순서로 만들고 있는지 적었습니다.">
+<meta name="description" content="TROPS를 만드는 회사가 무엇을 하고 무엇을 하지 않는지, 수출 업무를 위한 AI를 왜 만들고 있는지 적었습니다.">
 <!-- 🔴 `canonical` 이 «있어야» 합니다 — scripts/build-static.js 가 이 값으로 사이트맵에
      주소를 싣습니다. 없으면 빌드가 「무슨 주소로 실어야 할지 모르겠다」며 멈춥니다.
      ⚠️ apex(`trops.kr`)입니다. www 를 쓰는 자리는 og:image **하나뿐**이고, 그 이유는
@@ -33,7 +33,7 @@
 <meta property="og:site_name" content="TROPS">
 <meta property="og:locale" content="ko_KR">
 <meta property="og:title" content="회사 소개 · TROPS">
-<meta property="og:description" content="TROPS를 만드는 회사와, 1분 수출 준비 진단·무역보험 준비 패키지·수출대금 관리를 왜 이 순서로 만들고 있는지 적었습니다.">
+<meta property="og:description" content="TROPS를 만드는 회사가 무엇을 하고 무엇을 하지 않는지, 수출 업무를 위한 AI를 왜 만들고 있는지 적었습니다.">
 <meta name="twitter:card" content="summary_large_image">
 <!-- 🔴 랜딩 3장과 **같은 로고 한 장**을 씁니다 〔2026-09-19 · 대표 결정 「B · 브랜드 블루」〕.
      ⛔ 이미지에 문구를 다시 넣지 마십시오 — 넣는 순간 언어별 두 장과 낡음이 돌아옵니다.
@@ -146,9 +146,8 @@ p,li,dd{text-wrap:pretty}
 
 nav{border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);z-index:10}
 nav .w{display:flex;justify-content:space-between;align-items:center;height:64px}
-.nav-right{display:flex;align-items:center;gap:18px}
-.nav-login{font-size:14px;font-weight:600;color:var(--ink-2);text-decoration:none;transition:color .15s}
-.nav-login:hover{color:var(--ink)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.nav-right .ne{margin-left:5px}
 .logo{display:flex;align-items:center;gap:9px;font-size:19px;font-weight:800;letter-spacing:-.02em;text-decoration:none}
 .logo i{width:9px;height:9px;border-radius:2px;background:var(--accent);display:block}
 
@@ -192,24 +191,23 @@ h2.sec{font-size:clamp(22px,2.8vw,30px);font-weight:700;letter-spacing:-.03em;li
 .prose em{font-style:normal;font-weight:700;color:var(--ink)}
 .prose a{color:var(--accent);font-weight:600;text-underline-offset:3px}
 
-/* ── 3단계 흐름 ─────────────────────────────────────────────────────────
-   🔴 카드 셋이 아니라 «흐름»입니다 — 한 건의 거래가 지나가는 순서라, 번호와 잇는 선이
-      그 사실을 말합니다. ⚠️ 잇는 선은 마지막 칸에서 끊깁니다(`:last-child` 규칙).
-      끊지 않으면 3단계 다음에 무엇이 더 있는 것처럼 읽힙니다. */
-.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line);border-radius:var(--r-card);overflow:hidden;background:var(--white)}
-.fs{position:relative;padding:30px 26px 28px;border-right:1px solid var(--line)}
+/* ── 제품 넷 · 함께 제공하는 것 ─────────────────────────────────────────
+   🔄 종전에는 번호가 붙은 «3단계 흐름»이었습니다 〔~2026-10-03〕. 지금 네 칸은 순서가 아니라
+      «한 제품의 네 면»이라 번호와 단계 꼬리표가 없습니다. ⛔ 번호를 되살리지 마십시오 —
+      넷이 차례로 열리는 단계처럼 읽힙니다. */
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);border-radius:var(--r-card);overflow:hidden;background:var(--white)}
+.fs{position:relative;padding:28px 24px 26px;border-right:1px solid var(--line)}
 .fs:last-child{border-right:0}
-.fs .mk{display:flex;align-items:center;gap:10px;margin-bottom:16px}
-.fs .dot{width:26px;height:26px;border-radius:var(--r-pill);background:var(--accent-soft);color:var(--accent);
-  font-size:12.5px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none}
-.fs .ph{font-size:12.5px;font-weight:700;color:var(--ink-3);letter-spacing:.02em}
 .fs h3{font-size:17.5px;font-weight:700;letter-spacing:-.02em;margin-bottom:10px}
 .fs p{font-size:14.5px;color:var(--ink-2);line-height:1.72}
-.fs .tag{margin-top:18px;display:inline-block;font-size:12.5px;font-weight:700;color:var(--ink-2);
-  background:var(--surface);border:1px solid var(--line);border-radius:var(--r-pill);padding:4px 12px}
-.fs.now .dot{background:var(--accent);color:#fff}
-.fs.soon .dot{background:var(--line-soft);color:var(--ink-3)}
-.fs.soon h3{color:var(--ink-2)}
+.flow-note{margin-top:14px;font-size:13.5px;font-weight:600;color:var(--ink-3)}
+.also-h{margin:38px 0 14px;font-size:15px;font-weight:700;color:var(--ink-2)}
+.also{border:1px solid var(--line);border-radius:var(--r-card);overflow:hidden;background:var(--white)}
+.also div{display:grid;grid-template-columns:200px 1fr;gap:16px;padding:17px 24px;border-bottom:1px solid var(--line-soft)}
+.also div:last-child{border-bottom:0}
+.also dt{font-size:15px;font-weight:700}
+.also dd{font-size:14.5px;color:var(--ink-2);line-height:1.72}
+.also dd span{display:block;margin-top:5px;font-size:12.5px;font-weight:700;color:var(--ink-3)}
 
 /* ── 면책 ───────────────────────────────────────────────────────────────
    🔴 **셋을 «각각 한 줄»로 나눠 둔 것은 의도입니다** — 한 문장에 묶여 있으면 셋 중
@@ -251,7 +249,7 @@ h2.sec{font-size:clamp(22px,2.8vw,30px);font-weight:700;letter-spacing:-.03em;li
 
 /* ── 연혁 — 왼쪽 기둥과 점 ──────────────────────────────────────────────
    🔴 **날짜 없는 줄을 넣지 마십시오** — 시점이 없는 이력은 「언제 일인가」를 묻게 만들고,
-      그 물음이 남으면 목록 전체가 흐려집니다. 「준비 중」인 3단계는 위 흐름이 말합니다. */
+      그 물음이 남으면 목록 전체가 흐려집니다. */
 .tl{max-width:66ch;position:relative;padding-left:2px}
 .tl>div{position:relative;display:grid;grid-template-columns:118px 1fr;gap:22px;
   padding:0 0 30px 30px;border-left:2px solid var(--line-soft)}
@@ -292,12 +290,18 @@ footer .cp{margin-top:18px;color:#64748B}
   .flow{grid-template-columns:1fr}
   .fs{border-right:0;border-bottom:1px solid var(--line)}
   .fs:last-child{border-bottom:0}
+  .also div{grid-template-columns:1fr;gap:4px;padding:15px 18px}
   .tl>div{grid-template-columns:1fr;gap:6px}
   .biz div{grid-template-columns:1fr;gap:4px;padding:14px 18px}
   .shead{margin-bottom:26px}
 }
 /* 인쇄 — 회사 소개는 «출력해서 들고 가는» 장입니다(기관 제출·사내 보고).
    ⚠️ 배경을 지우면 면책 블록의 테두리만 남습니다 — 그래서 왼쪽 강조선을 검정으로 남깁니다. */
+@media(max-width:640px){
+  .nav-right{gap:8px}
+  .nav-right .btn-s{padding:0 12px}
+  .nav-right .ne{display:none}
+}
 @media print{
   nav,.skip,.fin,footer .fl{display:none}
   body{font-size:11pt}
@@ -312,14 +316,17 @@ footer .cp{margin-top:18px;color:#64748B}
 
 <nav><div class="w">
   <a class="logo" href="/"><i></i>TROPS</a>
-  <!-- ⚠️ 랜딩 헤더와 **같은 순서**입니다 — 조용한 로그인 링크 뒤에 주 버튼 하나.
-       ⛔ 이 순서를 바꾸지 마십시오(index.html 헤더 주석에 이유가 있습니다). -->
+  <!-- ⚠️ 랜딩 헤더와 **같은 순서 · 같은 무게**입니다 — 외곽선 「앱 열기」 뒤에 채운 주 버튼 하나.
+       🔄 **조용한 「로그인」 글자 링크를 버튼으로 바꿨습니다** 〔2026-10-03 · 대표 결정〕 — 2026-09-05 의
+          「버튼으로 만들지 마십시오」를 뒤집습니다. 그때의 걱정(진단 버튼과 둘이 다툰다)은 무게를 갈라 풉니다 —
+          앱 입구는 외곽선, 진단은 채운 버튼입니다. ⛔ 둘을 같은 무게로 되돌리지 마십시오.
+       ⚠️ `nav-app` 은 index · en · contact 와 **같은 이름 · 같은 목적지(앱 루트)**입니다 — 한 장만 옮기지 마십시오. -->
   <div class="nav-right">
-    <a class="nav-login" href="https://app.trops.kr/login" data-track="nav-login">로그인</a>
+    <a class="btn-2 btn-s" href="https://app.trops.kr/" data-track="nav-app">앱 열기<span class="ne" aria-hidden="true">↗&#xFE0E;</span></a>
   <!-- 🔴 목적지 정본은 `index.html` 의 같은 nav 주석입니다 〔2026-09-21〕 — `nav-precheck` 는
        **두 장에 같은 이름으로** 서 있어, 한쪽만 옮기면 한 시계열이 두 목적지를 뜻하게 됩니다.
        ⛔ `?from=` 을 손으로 붙이지 마십시오(사유도 그 주석이 갖습니다). -->
-    <a class="btn-2 btn-s" href="https://app.trops.kr/quick-check" data-track="nav-precheck">1분 무료 진단</a>
+    <a class="btn btn-s" href="https://app.trops.kr/quick-check" data-track="nav-precheck">1분 무료 진단</a>
   </div>
 </div></nav>
 
@@ -337,34 +344,41 @@ footer .cp{margin-top:18px;color:#64748B}
 
 <section aria-labelledby="h-what"><div class="w">
   <div class="shead"><span class="n">01</span><h2 class="sec" id="h-what">무엇을 하는 회사인가</h2></div>
-  <!-- 🔴 **세 칸의 «상태»는 랜딩 3단계와 같아야 합니다** — 1단계 무료 · 2단계 유료 ·
-       3단계 준비 중. 설명 문장은 페이지마다 달라도 되지만 상태가 갈리면 같은 회사의
-       두 페이지가 다른 상품을 팝니다.
-       ⚠️ 2026-09-20 초안이 아래 연혁에서 2단계를 「출시 예정」으로 적고 있었습니다 —
-          랜딩은 그것을 **유료로 팔고** 있고 app.trops.kr `/insurance/quick` 버튼이
-          살아 있습니다. 상태 표기를 고칠 때는 랜딩 3단계 카드를 함께 보십시오.
+  <!-- 🔄 **세 단계 카드를 제품 넷으로 바꿨습니다** 〔2026-10-03 · 대표 결정〕 — 종전의 「1단계 무료 · 2단계 유료 ·
+          3단계 준비 중」은 v3 랜딩(2026-09-30)에서 사라진 틀이었고, 이미 제품에 들어 있는 대금 관리를
+          「준비 중」으로 적고 있었습니다.
+       🔴 **네 칸의 이름과 순서는 랜딩 제품 탭(`index.html` `.tabs button b`)과 같아야 합니다** —
+          test/landing-invariants.test.js ⑥ 이 두 장을 맞댑니다. 설명 문장은 장마다 달라도 됩니다.
+       ⚠️ 「함께 제공하는 것」 두 줄의 꼬리표는 랜딩의 같은 자리 문구 그대로입니다
+          (진단 = `#check` 의 버튼 옆 · 보험 서류 = `#service` 의 `.om`). 한쪽만 고치지 마십시오.
+       ⚠️ 유료 상품의 이름은 정본 그대로입니다 — 옛 이름은 test/i18n-parity.test.js 가 막습니다.
+       ⛔ 「알려 드립니다」로 알림을 약속하지 마십시오 — 랜딩과 같은 규칙입니다(「미리 보여 드립니다」).
        ⛔ 여기에 **요금을 적지 마십시오** — `test/price-exposure.test.js` 가 살아 있는
           어느 페이지에도 원화 금액이 없어야 한다고 단정합니다. -->
   <div class="flow">
-    <div class="fs now">
-      <div class="mk"><span class="dot">1</span><span class="ph">선적 전</span></div>
-      <h3>1분 수출 준비 진단</h3>
-      <p>이번 수출에서 최우선으로 확인해야 할 규제와 절차적 요건을 점검하고, 항목별 명확한 판단 근거를 함께 제시해 드립니다.</p>
-      <div class="tag">무료 · 계정 불필요</div>
+    <div class="fs">
+      <h3>어시스턴트</h3>
+      <p>수출 거래 등록, 서류 초안, 다음 할 일까지 한 번에 처리합니다.</p>
     </div>
-    <div class="fs now">
-      <div class="mk"><span class="dot">2</span><span class="ph">계약 및 선적</span></div>
-      <h3>무역보험 준비 패키지</h3>
-      <p>무역보험 가입과 실행에 필요한 까다로운 절차 및 구비 서류를 거래 한 건의 기준으로 체계적으로 정리해 드립니다.</p>
-      <div class="tag">유료 · 거래 건 기준</div>
+    <div class="fs">
+      <h3>장부</h3>
+      <p>수출 거래별 조건과 받을 대금을 한 화면에서 확인합니다.</p>
     </div>
-    <div class="fs soon">
-      <div class="mk"><span class="dot">3</span><span class="ph">선적 후</span></div>
-      <h3>수출대금 관리</h3>
-      <p>결제 기일, 사고 통지 기한, 증권 만료일 등 놓치기 쉬운 사후 관리 일정을 한자리에서 안전하게 관리합니다.</p>
-      <div class="tag">준비 중</div>
+    <div class="fs">
+      <h3>서류</h3>
+      <p>견적서에서 선적서류까지 품목·단가·합계가 그대로 이어집니다.</p>
+    </div>
+    <div class="fs">
+      <h3>기한</h3>
+      <p>통지 기한과 결제기일을 약관 기준으로 계산해 미리 보여 드립니다.</p>
     </div>
   </div>
+  <p class="flow-note">초대 기간 무료 · 카드 등록 없음</p>
+  <h3 class="also-h">함께 제공하는 것</h3>
+  <dl class="also">
+    <div><dt>1분 수출 준비 진단</dt><dd>수출국과 결제 조건만 고르면 점수와 먼저 챙길 것을 보여 드립니다.<span>무료 · 가입 없이</span></dd></div>
+    <div><dt>무역보험 준비 패키지</dt><dd>한국무역보험공사 양식이 필요한 서류를 제출할 수 있도록 준비해 드립니다.<span>수출 거래 건별 · 자료 확인 후 비용 안내</span></dd></div>
+  </dl>
 </div></section>
 
 <section class="band" aria-labelledby="h-deny"><div class="w">
