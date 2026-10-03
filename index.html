@@ -188,7 +188,7 @@
           "name": "먼저 사용해 보기는 무엇인가요?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "정식 공개 전에 먼저 이용하실 기업을 초대 방식으로 모시는 기간입니다. 신청하신 내용으로 장부를 미리 준비해 초대 순서대로 안내해 드립니다."
+            "text": "정식 공개 전에 먼저 이용하실 기업을 초대 방식으로 모시는 기간입니다. 신청하신 내용으로 회사 정보를 미리 넣어 초대 순서대로 안내해 드립니다."
           }
         },
         {
@@ -835,7 +835,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
           <div class="th"><div class="h">오늘 확인<span>2건</span></div><span class="rec" aria-hidden="true">기록 보기</span></div>
           <ol>
             <li><p><b>Hanoi Trading</b><span class="k"> · 선적 통보</span><span> · 실제 선적 <span id="mockShip">2026-09-27</span> · 바이어에게 알릴 메일</span></p><span class="ob" aria-hidden="true">통보 준비</span></li>
-            <li><p><b>Manila Supply</b><span class="k"> · 받을 돈 USD 36,000</span><span> · 만기 <span id="mockDue">2026-10-02</span> · 3일 남음 · 장부상 잔액</span></p><span class="ob" aria-hidden="true">대금 확인</span></li>
+            <li><p><b>Manila Supply</b><span class="k"> · 받을 돈 USD 36,000</span><span> · 만기 <span id="mockDue">2026-10-02</span> · 3일 남음 · 받을 금액</span></p><span class="ob" aria-hidden="true">대금 확인</span></li>
           </ol>
         </div>
       </div>
@@ -861,7 +861,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
       <div class="head"><div class="label">제품</div><h2>수출 거래 한 건을<br>처음부터 끝까지</h2></div>
     <div class="tabs" role="tablist" aria-label="제품 기능">
       <button type="button" class="on" data-t="p1" role="tab" id="tab1" aria-controls="p1" aria-selected="true" tabindex="0"><i class="bar"></i><b>어시스턴트</b><span>수출 거래 등록, 서류 초안, 다음 할 일까지 한 번에 처리합니다.</span></button>
-      <button type="button" data-t="p2" role="tab" id="tab2" aria-controls="p2" aria-selected="false" tabindex="-1"><i class="bar"></i><b>장부</b><span>수출 거래별 조건과 받을 대금을 한 화면에.</span></button>
+      <button type="button" data-t="p2" role="tab" id="tab2" aria-controls="p2" aria-selected="false" tabindex="-1"><i class="bar"></i><b>수출 거래</b><span>수출 거래별 조건과 받을 대금을 한 화면에.</span></button>
       <button type="button" data-t="p3" role="tab" id="tab3" aria-controls="p3" aria-selected="false" tabindex="-1"><i class="bar"></i><b>서류</b><span>견적서에서 선적서류까지 그대로 이어집니다.</span></button>
       <!-- 🔄 시안 「미리 알려 드립니다」 → 「미리 보여 드립니다」 〔2026-09-29 · 대표 결정〕 —
            test/landing-invariants.test.js 가 랜딩 전역에서 알림 약속 문면을 0건으로 잠급니다. -->
@@ -1070,7 +1070,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
             <summary>수집·이용 내용 보기</summary>
             <dl>
               <dt>받는 항목</dt><dd>회사명 · 이메일 · 업종 · 지역, 요청하신 업무와 받으신 소개 코드(있을 때), 들어오신 경로(채널 코드 · 광고 표지)</dd>
-              <dt>쓰는 곳</dt><dd>시범 참여 선정과 초대 안내·연락, 회사 장부 미리 채움, 가입 뒤 첫 화면에 요청하신 업무 채움, 소개 수 집계, 신청 경로 집계</dd>
+              <dt>쓰는 곳</dt><dd>시범 참여 선정과 초대 안내·연락, 회사 정보 미리 채움, 가입 뒤 첫 화면에 요청하신 업무 채움, 소개 수 집계, 신청 경로 집계</dd>
               <dt>보관</dt><dd>신청일부터 1년 뒤 삭제합니다. 가입하시면 회원 정보로 옮겨지고, 동의를 철회하시면 바로 삭제합니다.</dd>
               <dt>메일</dt><dd>이 주소로 접수 메일(대기 순번 · 소개 코드 · 먼저 챙길 것 요약)을 보내고, 회사 담당자에게 알림 메일이 갑니다.</dd>
             </dl>
@@ -1133,7 +1133,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
           인용하는 자리라, 여기서 새로 약속하면 그 약속이 가장 널리 퍼집니다. -->
   <div class="faq rv">
     <div class="fg">이용 안내</div>
-    <details><summary>먼저 사용해 보기는 무엇인가요?</summary><div class="a"><p>정식 공개 전에 먼저 이용하실 기업을 초대 방식으로 모시는 기간입니다. 신청하신 내용으로 장부를 미리 준비해 초대 순서대로 안내해 드립니다.</p></div></details>
+    <details><summary>먼저 사용해 보기는 무엇인가요?</summary><div class="a"><p>정식 공개 전에 먼저 이용하실 기업을 초대 방식으로 모시는 기간입니다. 신청하신 내용으로 회사 정보를 미리 넣어 초대 순서대로 안내해 드립니다.</p></div></details>
     <details><summary>초대는 어떤 순서로 이루어지나요?</summary><div class="a"><p>신청 순서와 회사 상황(담당자 수, 거래 방식)을 함께 보고 정합니다. 다른 수출기업을 소개해 주시면 먼저 연락드립니다.</p></div></details>
     <details><summary>비용이 드나요?</summary><div class="a"><p>초대 기간에는 무료이며 카드 등록도 필요 없습니다. 요금이 정해지면 미리 안내해 드립니다. 무역보험 준비 패키지는 수출 거래 건별로 따로 안내합니다.</p></div></details>
     <details><summary>TROPS AI는 무엇을 해 주나요?</summary><div class="a"><p>수출 거래 등록, 견적서와 선적서류 초안 작성, 결제기일과 통지 기한 계산을 돕습니다. AI가 만든 초안은 담당자가 확인한 뒤에만 저장됩니다.</p></div></details>
@@ -1171,7 +1171,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
            ⚠️ 이 블록 안에 다른 div 를 넣지 마십시오 — 검사가 첫 닫는 div 까지를 집습니다. -->
       <div class="nd"><b>TROPS가 하지 않는 일</b>법률 자문과 계약서에 대한 법률적 검토를 제공하지 않습니다(변호사법·외국법자문사법). 보험 인수·지급 심사나 가입 대행, 특정 상품 추천을 하지 않으며, 가입 가능 여부와 조건은 해당 기관이 약관과 심사 기준에 따라 결정합니다. 미수금 회수를 보장하지 않습니다.</div>
     </div>
-    <div><b>제품</b><ul><li><a href="#product">어시스턴트</a></li><li><a href="#product">장부 · 서류 · 기한</a></li><li><a href="#service">무역보험 준비 패키지</a></li><li><a href="#check">1분 수출 준비 진단</a></li><li><a href="#calc">업무 시간 계산기</a></li><li><a href="mailto:contact@theo-ne.com?subject=TROPS%20교육%20문의">수출 실무 교육</a></li></ul></div>
+    <div><b>제품</b><ul><li><a href="#product">어시스턴트</a></li><li><a href="#product">수출 거래 · 서류 · 기한</a></li><li><a href="#service">무역보험 준비 패키지</a></li><li><a href="#check">1분 수출 준비 진단</a></li><li><a href="#calc">업무 시간 계산기</a></li><li><a href="mailto:contact@theo-ne.com?subject=TROPS%20교육%20문의">수출 실무 교육</a></li></ul></div>
     <div><b>자료</b><ul><li><a href="https://app.trops.kr/guide">수출절차 안내</a></li><li><a href="https://app.trops.kr/guide/support">보험료 지원사업</a></li><li><a href="https://app.trops.kr/guide/glossary">무역 용어</a></li></ul></div>
     <!-- 🔄 「문의 · 교육 · 파트너」를 /contact 로 되돌렸습니다 〔2026-09-30 · 대표 결정〕 — v3 에서 랜딩 → /contact 길이 0 이었습니다. -->
     <div><b>회사</b><ul><li><a href="/about">회사 소개</a></li><li><a href="#security">보안</a></li><li><a href="/contact" data-track="footer-contact">문의 · 교육 · 파트너</a></li></ul></div>
