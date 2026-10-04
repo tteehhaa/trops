@@ -40,8 +40,8 @@
      ⚠️ app.trops.kr 화면은 아직 **국문**입니다. 영문 앱이 서기 전까지는 알고 받아들인 값입니다. -->
 <link rel="preconnect" href="https://app.trops.kr">
 <link rel="dns-prefetch" href="https://app.trops.kr">
-<title>Trade Insurance Paperwork and Export Receivables Management · TROPS</title>
-<meta name="description" content="Get the documents a trade insurance claim requires in place before you ship, and track payment due dates and loss-notice deadlines in case a buyer doesn’t pay. The 1-minute export readiness check is free, with no sign-up required.">
+<title>{{publicCopy.headline}}</title>
+<meta name="description" content="{{publicCopy.audience}} {{publicCopy.detail}}">
 <!-- ⚠️ `/en` 입니다 — `.html` 이 아닙니다. vercel.json `cleanUrls:true` 라 정본은
      확장자 없는 쪽이고, 바로 아래 hreflang 도 `/en` 을 가리킵니다. -->
 <link rel="canonical" href="https://trops.kr/en">
@@ -55,8 +55,8 @@
 <meta property="og:site_name" content="TROPS">
 <meta property="og:locale" content="en_US">
 <!-- 국문 index.html 의 같은 자리와 같은 판단입니다(og:title 은 <title> 과 «일부러» 다릅니다). -->
-<meta property="og:title" content="Export operations software for small and midsize businesses">
-<meta property="og:description" content="Get the documents a trade insurance claim requires in place before you ship, and track payment due dates and loss-notice deadlines in case a buyer doesn’t pay.">
+<meta property="og:title" content="{{publicCopy.headline}}">
+<meta property="og:description" content="{{publicCopy.audience}} {{publicCopy.detail}}">
 <meta name="twitter:card" content="summary_large_image">
 <!-- 🔴 og:image 는 절대 URL · `www.` 호스트입니다 — 이유는 index.html 의 같은 자리 주석을 보십시오.
      ⚠️ 배포한 뒤 **카카오 캐시를 손으로 비워야** 새 카드가 보입니다 —
@@ -111,7 +111,7 @@
         "@type": "BusinessAudience",
         "name": "Small and midsize exporters"
       },
-      "description": "A per-deal service that gets the documents needed to apply for trade insurance, such as Short-term Export Insurance, and to file a claim in place before shipment. It covers choosing the right coverage, checking the destination country's underwriting policy and buyer rating requirements, matching documents at the application, shipment and claim stages, and a calendar of export notice and loss notice deadlines.",
+      "description": "A per-deal service that gets the documents needed to apply for trade insurance, such as Short-term Export Insurance, and to file a claim in place before shipment. It covers choosing the right coverage, checking the destination country's underwriting policy and buyer rating requirements, matching documents at the application, shipment and claim stages, and export notice and loss notice deadline preparation.",
       "offers": {
         "@type": "Offer",
         "priceCurrency": "KRW",
@@ -148,7 +148,7 @@
         "@type": "Country",
         "name": "South Korea"
       },
-      "description": "Tracks payment due dates, outstanding receivables, trade insurance loss-notice deadlines and policy expirations deal by deal. In development."
+      "description": "Tracks payment due dates, outstanding receivables, trade insurance loss-notice deadlines and policy expirations deal by deal. In pilot for invited companies."
     },
     {
       "@type": "FAQPage",
@@ -206,7 +206,7 @@
           "name": "What is TROPS?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "TROPS is software that supports export operations for small and midsize businesses. It handles each export deal in three stages. Before shipment, the 1-minute export readiness check shows what to verify first on the deal. At the contract and shipment stage, the Trade Insurance Prep Package organizes the steps and documents needed to apply, deal by deal. Post-shipment receivables management is in development. It’s built for companies that handle everything from contract to collection themselves, without a dedicated department."
+            "text": "{{publicCopy.definition}}. {{publicCopy.audience}} {{publicCopy.detail}} {{publicCopy.coreSummary}} {{publicCopy.integrationSummary}} TROPS Web and familiar work tools aim to reduce learning and repeated data entry."
           }
         },
         {
@@ -222,7 +222,7 @@
           "name": "How much does the Trade Insurance Prep Package cost?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Pricing depends on how many documents we prepare, so there’s no fixed price up front. It’s priced per deal. Send us a request and we’ll quote the price and turnaround time within one business day. You pay once you’ve reviewed them. The 1-minute export readiness check is free either way."
+            "text": "Pricing depends on how many documents we prepare, so there’s no fixed price up front. It’s priced per deal. Send us an inquiry; scope, cost and timing are confirmed after reviewing your materials. The 1-minute export readiness check is free either way."
           }
         }
       ]
@@ -450,18 +450,18 @@ footer .cp{margin-top:18px;color:#64748B}
        ⚠️ `nav-app` 은 index · about · contact 와 **같은 이름 · 같은 목적지(앱 루트)**입니다 — 한 장만 옮기지 마십시오. -->
   <div class="nav-right">
     <a class="btn-2 btn-s nav-app" href="https://app.trops.kr/" data-track="nav-app">Open app<span class="ne" aria-hidden="true">↗&#xFE0E;</span></a>
-    <a class="btn btn-s" href="https://app.trops.kr/quick-check" data-track="nav-precheck">Free 1-minute export readiness check</a>
+    <a class="btn btn-s" href="/#apply" data-track="nav-precheck">Apply for the pilot (Korean)</a>
   </div>
 </div></nav>
 
 <main id="main">
 
 <header class="hero" data-section="hero"><div class="w">
-  <span class="eyebrow">Export operations software for small and midsize businesses</span>
-  <h1>Protect your export receivables<br>with TROPS.</h1>
-  <p class="lead">For companies that run every export themselves, from contract to collection, without a dedicated export team. We manage the risks that matter, one deal at a time.</p>
+  <span class="eyebrow">{{publicCopy.audience}}</span>
+  <h1>{{publicCopy.headline}}</h1>
+  <p class="lead">{{publicCopy.detail}}</p>
   <div class="act">
-    <a class="btn" href="https://app.trops.kr/quick-check" data-track="hero-precheck">Start your free 1-minute export readiness check</a>
+    <a class="btn" href="/#apply" data-track="hero-precheck">Apply for the pilot (Korean)</a>
     <a class="btn-2" href="mailto:contact@theo-ne.com?subject=TROPS%20inquiry" data-track="hero-consult">Talk to us</a>
   </div>
   <p class="badge">Free · 1 minute · No sign-up required</p>
@@ -499,7 +499,8 @@ footer .cp{margin-top:18px;color:#64748B}
 
 <section data-section="steps"><div class="w">
   <div class="center">
-    <h2 class="sec">TROPS manages each export deal in three stages</h2>
+    <h2 class="sec">Export tools and availability</h2>
+    <p>{{publicCopy.coreSummary}}</p><p>{{publicCopy.integrationSummary}}</p>
   </div>
   <div class="steps">
     <div class="sp">
@@ -511,7 +512,7 @@ footer .cp{margin-top:18px;color:#64748B}
         <li>What to address first</li>
         <li>Readiness checklist</li>
       </ul>
-      <div class="tag">Free · No account needed</div>
+      <div class="tag">Available · Free · No account needed</div>
       <div class="go"><a class="btn-2" href="https://app.trops.kr/quick-check" data-track="step1-precheck">Start the check</a></div>
     </div>
     <div class="sp mid">
@@ -523,7 +524,7 @@ footer .cp{margin-top:18px;color:#64748B}
         <li>One-page summary for internal approval and reporting</li>
         <li>Review of national and local premium subsidy programs</li>
       </ul>
-      <div class="tag">Paid</div>
+      <div class="tag">Available · Inquiry and scope review</div>
       <!-- 🔴 `?from=landing` 은 도메인을 넘는 유일한 출처 단서입니다 — index.html 의 같은 자리 주석을 보십시오.
            ⚠️ 국문과 **같은 값**입니다. 영문을 따로 세려면 앱이 새 값을 받는지 먼저 확인하십시오. -->
       <div class="go"><a class="btn" href="https://app.trops.kr/insurance/quick?from=landing" data-track="step2-quote">Learn more</a></div>
@@ -533,16 +534,17 @@ footer .cp{margin-top:18px;color:#64748B}
       <h3>Export Receivables Management</h3>
       <div class="p">Tracks payment due dates, loss-notice deadlines and policy expiration dates.</div>
       <ul class="outs">
-        <li>Payment due date and notice deadline alerts</li>
+        <li>Payment due dates and notice deadlines in the web app</li>
         <li>Outstanding receivables and insurance coverage at a glance</li>
         <li>Policy expiration tracking</li>
       </ul>
-      <div class="tag">Coming soon</div>
-      <div class="go"><a class="btn-2" href="mailto:contact@theo-ne.com?subject=Notify%20me%20when%20TROPS%20receivables%20management%20launches" data-track="step3-notify">Get notified at launch</a></div>
+      <div class="tag">{{publicCopy.coreStatus}}</div>
+      <div class="go"><a class="btn-2" href="mailto:contact@theo-ne.com?subject=Notify%20me%20when%20TROPS%20receivables%20management%20launches" data-track="step3-notify">Ask about pilot availability</a></div>
     </div>
   </div>
 
   <div class="demo" id="demo" data-section="demo">
+    <p>Screen example</p>
     <div class="demohead">
       <div class="demolabel">1-Minute Export Readiness Check result (sample)</div>
     </div>
@@ -638,13 +640,13 @@ footer .cp{margin-top:18px;color:#64748B}
       <div class="a"><p>Yes. With no sign-up and just a few quick selections, you can see what to check first on this export.</p><p>Based on what you enter, we show your results along with the basis for each item.</p><p>If you’re preparing to apply for trade insurance, the separate Trade Insurance Prep Package is available. It works on a per-deal basis.</p></div>
     </details>
     <details><summary>What is TROPS?</summary>
-      <div class="a"><p>TROPS is software that supports export operations for small and midsize businesses. It handles each export deal in three stages.</p><p>Before shipment, the 1-minute export readiness check shows what to verify first on the deal. At the contract and shipment stage, the Trade Insurance Prep Package organizes the steps and documents needed to apply, deal by deal. Post-shipment receivables management is in development.</p><p>It’s built for companies that handle everything from contract to collection themselves, without a dedicated department.</p></div>
+      <div class="a"><p>{{publicCopy.definition}}. {{publicCopy.audience}} {{publicCopy.detail}}</p><p>{{publicCopy.coreSummary}} {{publicCopy.integrationSummary}}</p><p>TROPS Web and familiar work tools aim to reduce learning and repeated data entry.</p></div>
     </details>
     <details><summary>Does TROPS apply for trade insurance on my behalf?</summary>
       <div class="a"><p>No. TROPS doesn’t underwrite insurance, review claims or apply for coverage on your behalf, and it doesn’t recommend specific products. Eligibility and terms are decided by the relevant institution, such as K-SURE, under its policy terms and review criteria.</p><p>What TROPS does is get you ready to apply. For each deal, we check the eligibility requirements and prepare your deal information in application-ready form, a list of the documents a claim requires, and materials for internal approval.</p><p>We also don’t provide legal advice or legal review of contracts, and we don’t guarantee that receivables will be collected.</p></div>
     </details>
     <details><summary>How much does the Trade Insurance Prep Package cost?</summary>
-      <div class="a"><p>Pricing depends on how many documents we prepare, so there’s no fixed price up front. It’s priced per deal.</p><p>Send us a request and we’ll quote the price and turnaround time within one business day. You pay once you’ve reviewed them.</p><p>The 1-minute export readiness check is free either way.</p></div>
+      <div class="a"><p>Pricing depends on how many documents we prepare, so there’s no fixed price up front. It’s priced per deal.</p><p>Send us an inquiry; scope, cost and timing are confirmed after reviewing your materials.</p><p>The 1-minute export readiness check is free either way.</p></div>
     </details>
   </div>
 </div></section>
@@ -652,7 +654,7 @@ footer .cp{margin-top:18px;color:#64748B}
 <section class="fin band" data-section="final"><div class="w">
   <h2 class="sec">Export with confidence. Start with TROPS.</h2>
   <div style="margin-top:32px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-    <a class="btn" href="https://app.trops.kr/quick-check" data-track="final-precheck">Start your free 1-minute export readiness check</a>
+    <a class="btn" href="/#apply" data-track="final-precheck">Apply for the pilot (Korean)</a>
     <a class="btn-2" href="mailto:contact@theo-ne.com?subject=TROPS%20inquiry" data-track="final-consult">Talk to us</a>
   </div>
 </div></section>
@@ -670,7 +672,7 @@ footer .cp{margin-top:18px;color:#64748B}
      🔴 언어 전환 링크에는 `hreflang="ko"` 를 답니다 — assets/lang-switch.js 가 그 선언을 보고
         누를 때 `lang=ko` 쿠키를 심습니다. ⛔ 떼지 마십시오: 떼면 `lang=en` 쿠키를 가진 방문자가
         「한국어」를 눌러도 middleware.js 가 다시 /en 으로 돌려보냅니다(2026-09-19 실측 · 모바일 신고). -->
-<div class="fl"><a href="/en-privacy">Privacy Notice</a><a href="/en-refund">Refund Policy</a><a href="/" hreflang="ko" lang="ko">한국어</a></div>
+<div class="fl"><a href="https://app.trops.kr/terms">Terms of Service (Korean)</a><a href="https://app.trops.kr/privacy">Privacy Notice (Korean)</a><a href="/en-refund">Refund Policy</a><a href="/" hreflang="ko" lang="ko">한국어</a></div>
 <div class="cp">© 2026 TROPS. All rights reserved.</div>
 </div></footer>
 <!-- 🔴 익명 집계 〔2026-09-01〕 — 개인 식별값 없음(en-privacy.html §01). -->

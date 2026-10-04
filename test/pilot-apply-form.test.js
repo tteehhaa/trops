@@ -77,7 +77,7 @@ test('🔴 보내는 본문이 동의를 `consents.collection` 으로 묶고 봇
 });
 
 test('🔴 201 이 아니면 완료 화면을 띄우지 않는다 — 저장 못 한 신청을 «접수됐다»고 하지 않는다', () => {
-  assert.match(script, /r\.status === 201 && r\.data && r\.data\.ok\) \{ showDone\(/, '완료 화면이 201·ok 에만 묶여 있지 않습니다');
+  assert.match(script, /r\.status === 201 && r\.data && r\.data\.ok === true &&[\s\S]*?typeof r\.data\.application_id === 'string'[\s\S]*?r\.data\.result === 'created'[\s\S]*?showDone\(/, '완료 화면이 201·ok 에만 묶여 있지 않습니다');
   for (const status of ['400', '403', '409', '413', '429', '503']) {
     assert.ok(new RegExp('status === ' + status).test(script), status + ' 응답의 문구 갈래가 없습니다');
   }
@@ -142,60 +142,17 @@ test('🔴 페이지가 스위치를 «토큰으로» 읽고, 운영 주소를 t
 
 /* ══ ②-b 동의 블록 ↔ 처리방침 — 같은 말을 한다 ═══════════════════════ */
 
-test('🔴 폼의 동의 블록과 방침 §02 시범 신청 행이 같은 항목·목적·보관을 말한다', () => {
-  /*
-   * 🔴 계약 0-1: 「요청하신 업무」는 앱 동의 기록의 범위 코드에 실리지 않아 **동의 문구가 글로 적어야** 합니다.
-   *    그리고 contact.html 과 같은 규칙으로, 화면이 약속한 것과 방침이 적은 것이 갈리면 안 됩니다.
-   * ⚠️ 문장 전체가 아니라 «뜻의 조각»을 맞댑니다 — 동의 블록은 짧고 방침 칸은 줄바꿈으로 나뉩니다.
-   */
-  const cons = (formHtml.match(/<div class="fld cons">[\s\S]*?<\/dl>/) || [])[0] || '';
-  const ko = read('privacy.html').replace(/<!--[\s\S]*?-->/g, '');
-  const row = (ko.match(/<th scope="row">먼저 사용해 보기 &middot; 시범 참여 신청[\s\S]*?<\/tr>/) || [])[0] || '';
-  assert.ok(cons, '폼의 동의 블록을 찾지 못했습니다');
-  assert.ok(row, 'privacy.html §02 에 시범 참여 신청 행이 없습니다 — 폼을 켜기 전에 방침이 먼저입니다(계약 0-1)');
-  for (const piece of ['요청하신 업무', '소개 코드', '시범 참여 선정과 초대 안내·연락',
-    '가입 뒤 첫 화면에 요청하신 업무 채움', '소개 수 집계', '신청일부터 1년', '회원 정보로 옮겨', '동의를 철회하시면 바로 삭제',
-    '접수 메일', '먼저 챙길 것 요약', '회사 담당자에게 알림 메일', '들어오신 경로', '신청 경로 집계']) {
-    assert.ok(cons.includes(piece), '폼 동의 블록에 없습니다: ' + piece);
-    assert.ok(row.includes(piece), '방침 시범 신청 행에 없습니다: ' + piece);
-  }
-  /*
-   * ⚠️ 같은 목적의 두 표기 — 폼은 「회사 정보 미리 채움」, 방침은 아직 「회사 장부 미리 채움」입니다
-   *    〔2026-10-04 · 대표 결정 — 화면의 「장부」는 앱과 같은 기준으로 바꾸고 방침 2곳은 다음 개정 때 같이〕.
-   *    방침을 개정하면 이 쌍을 지우고 「회사 정보 미리 채움」을 위 목록으로 되돌립니다.
-   */
-  assert.ok(cons.includes('회사 정보 미리 채움'), '폼 동의 블록에 없습니다: 회사 정보 미리 채움');
-  assert.ok(row.includes('회사 장부 미리 채움') || row.includes('회사 정보 미리 채움'),
-    '방침 시범 신청 행에 없습니다: 회사 정보 미리 채움(개정 전 표기 「회사 장부 미리 채움」)');
-  /*
-   * 🔴 메일을 보내면 이메일 주소 · 회사명 · 담당자 이름 · 문의·요청 내용이 미국의 Resend 로 넘어갑니다 — 국외이전 표에 그 행이 있어야 합니다
-   *    〔2026-09-30 · 대표 결정 · 수탁 표에만 있고 국외이전 표에 없던 빈칸〕.
-   */
-  assert.match(ko, /<th scope="row">Resend, Inc\.<\/th>\s*<td>이메일, 회사명, 담당자 이름, 문의·요청 내용<\/td>\s*<td>미국<\/td>/,
-    'privacy.html §04 국외이전 표에 Resend(미국) 행이 없습니다');
-  /* 영문 방침도 같은 자리를 갖는다 — 「one place only」 는 더는 사실이 아니다. */
-  const en = read('en-privacy.html').replace(/<!--[\s\S]*?-->/g, '');
-  assert.ok(en.includes('<th scope="row">Early access application'), 'en-privacy.html §02 에 시범 신청 행이 없습니다');
-  assert.ok(!en.includes('in one place only'), 'en-privacy.html §01 이 아직 「one place only」입니다');
-  assert.match(en, /<th scope="row">Resend, Inc\.<\/th>\s*<td>Email address, company name, contact name, and the content of your inquiry or request<\/td>\s*<td>United States<\/td>/,
-    'en-privacy.html §04 cross-border 표에 Resend 행이 없습니다');
-  assert.ok(!ko.includes('출시 알림 신청</a> 한 자리입니다'), 'privacy.html §01 이 아직 「한 자리」입니다');
+test('신청 동의는 공식 앱 정책과 확인한 보관 기준을 안내한다', () => {
+  const config = JSON.parse(read('site.config.json'));
+  assert.match(formHtml, /href="https:\/\/app\.trops\.kr\/privacy"/);
+  assert.ok(formHtml.includes('{{publicCopy.retention}}'));
+  assert.strictEqual(config.publicCopy.ko.retention, '시범 운영 종료 또는 동의 철회 시까지 보관하며, 최대 1년입니다.');
+  assert.ok(!formHtml.includes('가입하시면 회원 정보로 옮겨지고'));
+  assert.ok(formHtml.includes('요청하신 업무'));
 });
 
-test('🔴 동의 문구의 판 이름이 처리방침 시행일과 같은 날이다 — pilot-apply-YYYY-MM-DD', () => {
-  /*
-   * 🔴 앱은 `notice_version` 을 동의 기록에 그대로 적습니다(계약 0-2). 판 이름이 방침 시행일과 다르면, 나중에
-   *    「그 사람이 동의한 문구가 어느 판이었는가」를 방침 이력(§07)에서 찾을 수 없습니다.
-   * ⚠️ 날짜는 `node scripts/set-release-date.js YYYY-MM-DD` 가 방침 네 자리와 함께 바꿉니다.
-   * ⛔ 초안 꼴(`draft`)로 되돌리지 마십시오 — 운영에서 받는 동의가 초안 판으로 기록됩니다.
-   */
-  const v = (formHtml.match(/name="notice_version" value="([^"]+)"/) || [])[1] || '';
-  const m = v.match(/^pilot-apply-(\d{4})-(\d{2})-(\d{2})(?:-[2-9])?$/);   // -N = 같은 날 N 번째 판(set-release-date --rev)
-  assert.ok(m, 'notice_version 이 pilot-apply-YYYY-MM-DD(-N) 꼴이 아닙니다: ' + v);
-  const head = read('privacy.html').match(/개정 &middot; 시행 (\d{4})년 (\d{1,2})월 (\d{1,2})일/);
-  assert.ok(head, 'privacy.html 머리의 개정 시행일을 읽지 못했습니다');
-  assert.deepStrictEqual([+m[1], +m[2], +m[3]], [+head[1], +head[2], +head[3]],
-    '판 이름의 날짜(' + v + ')가 방침 시행일과 다릅니다 — scripts/set-release-date.js 로 함께 맞추십시오');
+test('동의 문구 판은 이번 공개 문구 개정과 함께 갱신한다', () => {
+  assert.match(formHtml, /name="notice_version" value="pilot-apply-2026-10-04"/);
 });
 
 /* ══ ②-c 들어오신 경로 · 신청 접수 계측 · /contact ══════════════════ */

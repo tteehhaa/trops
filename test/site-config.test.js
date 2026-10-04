@@ -274,7 +274,7 @@ function footerBlock(file) {
 const POLICY_PATHS = (locale) =>
   STATIC.html
     .filter((e) => e.locale === locale && /(^|-)(privacy|refund)\.html$/.test(e.file))
-    .map((e) => '/' + e.file.replace(/\.html$/, ''));
+    .map((e) => /privacy/.test(e.file) ? 'https://app.trops.kr/privacy' : '/' + e.file.replace(/\.html$/, ''));
 
 /** `/privacy.html` · `/refund?x=1` 같은 표기를 한 형태로 모읍니다(i18n-parity ④ 와 같은 규칙). */
 const normHref = (h) => h.split(/[?#]/)[0].replace(/\.html$/, '');
@@ -316,7 +316,7 @@ test('🔴 푸터가 개인정보처리방침·환불규정으로 가는 길을 
   for (const { file, locale, footer } of FOOTER_DECL) {
     if (!FOOTER_TIERS[footer].policyLinks) continue;
     const linked = new Set(
-      [...footerBlock(file).matchAll(/href="(\/[^"]*)"/g)].map((m) => normHref(m[1]))
+      [...footerBlock(file).matchAll(/href="([^"]*)"/g)].map((m) => normHref(m[1]))
     );
     for (const want of POLICY_PATHS(locale)) {
       assert.ok(

@@ -343,7 +343,7 @@ form{padding-block:clamp(8px,1.5vw,16px) clamp(48px,6vw,72px)}
     </dl>
     <div class="agree">
       <input id="consent" name="consent" type="checkbox" required>
-      <label for="consent">위 항목을 수집·이용하는 데 동의합니다. 동의하지 않으셔도 되며, 그때는 이 양식으로 접수할 수 없습니다. 자세한 내용은 <a href="/privacy">개인정보처리방침</a>에서 확인하실 수 있습니다.</label>
+      <label for="consent">위 항목을 수집·이용하는 데 동의합니다. 동의하지 않으셔도 되며, 그때는 이 양식으로 접수할 수 없습니다. 자세한 내용은 <a href="https://app.trops.kr/privacy">개인정보처리방침</a>에서 확인하실 수 있습니다.</label>
     </div>
   </section>
 
@@ -395,7 +395,7 @@ form{padding-block:clamp(8px,1.5vw,16px) clamp(48px,6vw,72px)}
     <nav class="footer-links" aria-label="사이트 정보">
       <a href="/about">회사 소개</a>
       <a href="https://app.trops.kr/terms">이용약관</a>
-      <a href="/privacy">개인정보처리방침</a>
+      <a href="https://app.trops.kr/privacy">개인정보처리방침</a>
       <a href="/refund">환불규정</a>
     </nav>
     <div class="footer-legal"><p>© 2026 TROPS. All rights reserved.</p></div>
@@ -476,11 +476,11 @@ form{padding-block:clamp(8px,1.5vw,16px) clamp(48px,6vw,72px)}
    * ⚠️ 숫자의 정본은 api/_cleanup.js `LEADS_RETENTION_DAYS` 입니다(183 · 365).
    *    여기는 그 값을 사람 말로 옮긴 자리이고, 갈라지면 화면이 못 지킬 약속을 합니다.
    */
-  var KEEP_INQUIRY = '접수일부터 6개월(183일) 보관 후 삭제합니다. 요청하시면 그 전에도 삭제합니다.';
+  var KEEP_INQUIRY = '보유·삭제 기준은 앱의 공식 개인정보처리방침을 확인해 주세요. 문의 기록의 구체적인 보유기간은 contact@theo-ne.com으로 문의하실 수 있습니다.';
   var RETENTION = {
     consult: KEEP_INQUIRY,
     quote: KEEP_INQUIRY,
-    notify: '접수일부터 1년(365일) 보관 후 삭제합니다. 요청하시면 그 전에도 삭제합니다.'
+    notify: '보유·삭제 기준은 앱의 공식 개인정보처리방침을 확인해 주세요. 출시 알림 기록의 구체적인 보유기간은 contact@theo-ne.com으로 문의하실 수 있습니다.'
   };
 
   var params = new URLSearchParams(location.search);
@@ -600,7 +600,10 @@ form{padding-block:clamp(8px,1.5vw,16px) clamp(48px,6vw,72px)}
      * ⚠️ 응답 계약은 종전과 같습니다 — 2xx 성공 · 400 입력값 · 그 밖은 실패.
      *    아래 `.then` 이 그 셋으로 갈립니다.
      */
+    var controller = new AbortController();
+    var timeout = setTimeout(function(){ controller.abort(); }, 20000);
     fetch('https://app.trops.kr/api/leads', {
+      signal: controller.signal,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -621,7 +624,12 @@ form{padding-block:clamp(8px,1.5vw,16px) clamp(48px,6vw,72px)}
         consentMarketing: false
       })
     }).then(function(res){
-      if (res.ok) {
+      return res.json().catch(function(){ return null; }).then(function(data){
+        return { status: res.status, data: data };
+      });
+    }).then(function(res){
+      clearTimeout(timeout);
+      if (res.status === 201 && res.data && res.data.ok === true) {
         done = true;
         note.textContent = '';
         /*
@@ -651,10 +659,11 @@ form{padding-block:clamp(8px,1.5vw,16px) clamp(48px,6vw,72px)}
          사람이 할 수 있는 말로 바꿉니다. */
       throw new Error(res.status === 400 ? '입력값을 다시 확인해 주십시오.' : '보내지 못했습니다.');
     }).catch(function(err){
+      clearTimeout(timeout);
       sending = false;
       submit.disabled = false;
       note.textContent = '';
-      say('bad', (err && err.message ? err.message : '보내지 못했습니다.') +
+      say('bad', (err && err.name === 'AbortError' ? '접수 결과를 확인하지 못했습니다. 입력 내용은 유지됩니다.' : '보내지 못했습니다. 입력 내용을 확인해 주세요.') +
         ' 잠시 뒤 다시 시도해 주시거나 contact@theo-ne.com 으로 보내 주십시오.');
     });
   });

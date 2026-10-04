@@ -21,6 +21,26 @@
   ],
   "redirects": [
     {
+      "source": "/privacy",
+      "destination": "https://app.trops.kr/privacy",
+      "permanent": false
+    },
+    {
+      "source": "/privacy.html",
+      "destination": "https://app.trops.kr/privacy",
+      "permanent": false
+    },
+    {
+      "source": "/en-privacy",
+      "destination": "https://app.trops.kr/privacy",
+      "permanent": false
+    },
+    {
+      "source": "/en-privacy.html",
+      "destination": "https://app.trops.kr/privacy",
+      "permanent": false
+    },
+    {
       "source": "/en-precheck",
       "destination": "https://app.trops.kr/export-precheck/new",
       "permanent": false

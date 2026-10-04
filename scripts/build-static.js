@@ -347,7 +347,7 @@ const NOT_DEPLOYED = new Set([
  * ────────────────────────────────────────────────────────────── */
 
 /** 아는 묶음 이름. 여기 없는 이름은 애초에 토큰으로 잡히지 않습니다(오타 = 빌드 실패). */
-const TOKEN_NAMESPACES = ['biz', 'precheck', 'analytics', 'pilotApply'];
+const TOKEN_NAMESPACES = ['biz', 'precheck', 'analytics', 'pilotApply', 'publicCopy'];
 
 const TOKEN_RE = new RegExp(
   '\\{\\{\\s*(' + TOKEN_NAMESPACES.join('|') + ')\\.([A-Za-z0-9_]+)\\s*\\}\\}',
@@ -417,6 +417,13 @@ function loadSiteConfig() {
     process.exit(1);
   }
 
+  for (const locale of ['ko', 'en']) {
+    for (const key of ['headline', 'definition', 'audience', 'detail', 'coreStatus', 'coreSummary', 'integrationSummary', 'securitySummary', 'retention']) {
+      if (typeof config.publicCopy?.[locale]?.[key] !== 'string' || !config.publicCopy[locale][key].trim()) {
+        throw new Error(`publicCopy.${locale}.${key} 공개 문구가 없습니다.`);
+      }
+    }
+  }
   return config;
 }
 
@@ -424,6 +431,7 @@ function loadSiteConfig() {
 function tokenValues(config, locale) {
   return {
     biz: config.biz[locale],
+    publicCopy: config.publicCopy[locale],
     precheck: config.precheck,
     analytics: config.analytics,
     pilotApply: config.pilotApply,

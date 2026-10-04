@@ -45,7 +45,11 @@ const source = (name) =>
   fs
     .readFileSync(path.join(ROOT, name), 'utf8')
     .replace(/<!--[\s\S]*?-->/g, '')
-    .replace(/\/\*[\s\S]*?\*\//g, '');
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\{\{publicCopy\.([A-Za-z0-9_]+)\}\}/g, (token, key) => {
+      const locale = name.startsWith('en') ? 'en' : 'ko';
+      return config.publicCopy[locale][key] ?? token;
+    });
 
 /* ──────────────────────────────────────────────────────────────
  * 확인 항목
@@ -225,8 +229,11 @@ const EXPECTED_LANG_PAIRS = KO_FILES
  */
 const PAGE_FILES = new Map(STATIC.html.map((e) => [routeOf(e.file), e.file]));
 const LOCALE_OF = new Map(STATIC.html.map((e) => [routeOf(e.file), e.locale]));
-const ALL_PAGES = [...PAGE_FILES.keys()];
-const EN_PAGES = STATIC.html.filter((e) => e.locale === 'en').map((e) => routeOf(e.file));
+const POLICY_REDIRECTS = JSON.parse(fs.readFileSync(path.join(ROOT, 'vercel.json'), 'utf8')).redirects
+  .filter((r) => r.destination === 'https://app.trops.kr/privacy' && !r.source.endsWith('.html'));
+const REDIRECTED_PAGES = new Set(POLICY_REDIRECTS.map((r) => r.source));
+const ALL_PAGES = [...PAGE_FILES.keys()].filter((p) => !REDIRECTED_PAGES.has(p));
+const EN_PAGES = STATIC.html.filter((e) => e.locale === 'en').map((e) => routeOf(e.file)).filter((p) => !REDIRECTED_PAGES.has(p));
 /** 경로 → 소스 파일. 러너의 `sourceOf` 자리에 그대로 넣습니다. */
 const SOURCE_OF = Object.fromEntries(PAGE_FILES);
 
@@ -268,11 +275,22 @@ const COUNT_PHRASE = {
  * ⚠️ privacy 쌍은 아직 hreflang 이 없어 여기서 자동으로 빠집니다(인계 메모 §4). 그것은 이
  *    스크립트가 잴 일이 아니라 **아직 안 한 일**이고, 짝이 서면 여기에 저절로 들어옵니다.
  */
-const HREFLANG_PAIRS = EXPECTED_LANG_PAIRS.filter(([ko]) =>
+const HREFLANG_PAIRS = EXPECTED_LANG_PAIRS.filter(([ko]) => !REDIRECTED_PAGES.has(ko) &&
   /<link rel="alternate" hreflang=/.test(source(PAGE_FILES.get(ko)))
 );
 
 const CHECKS = [
+  {
+    id: '공식-개인정보-연결',
+    label: '이전 개인정보 URL은 공식 앱 방침으로 이동한다',
+    raw: POLICY_REDIRECTS.map((r) => r.source),
+    check: (res, target) => {
+      const redirect = POLICY_REDIRECTS.find((r) => r.source === target);
+      return res.status === 307 && res.location === redirect.destination
+        ? true : `응답 ${res.status}, 목적지 ${res.location}`;
+    },
+  },
+
   /* ── 언어 짝 표가 배포되는 장수와 어긋나지 않는가 〔2026-09-01 신설〕 ─────────
    * 🔴 종전에는 이 축이 `국문우선` 안에 「짝이 7개 미만이면 실패」로 섞여 있었습니다.
    *    그래서 **표가 낡은 것**과 **라이브가 국문을 안 내주는 것**이 한 항목에서 같은
@@ -319,7 +337,7 @@ const CHECKS = [
     label: '쿠키 없는 첫 방문이 국문 그대로 200 으로 온다 (middleware.js PAIRS 전부)',
     page: null,
     noCookie: true,
-    raw: LANG_PAIRS.map(([ko]) => ko),
+    raw: LANG_PAIRS.filter(([ko]) => !REDIRECTED_PAGES.has(ko)).map(([ko]) => ko),
     /*
      * 🔴 **표가 옳은지는 여기서 재지 않습니다** 〔2026-09-01〕 — 위 `언어짝-표` 가 봅니다.
      *    이 항목은 오직 「그 주소가 쿠키 없이 200 으로 오는가」 하나만 잽니다.
@@ -344,7 +362,7 @@ const CHECKS = [
     label: '`lang=en` 쿠키를 보내면 영문 짝으로 307 된다 (middleware.js PAIRS 전부)',
     page: null,
     cookie: 'lang=en',
-    raw: LANG_PAIRS.map(([ko]) => ko),
+    raw: LANG_PAIRS.filter(([ko]) => !REDIRECTED_PAGES.has(ko)).map(([ko]) => ko),
     check: (res, target) => {
       const expected = (LANG_PAIRS.find(([ko]) => ko === target) || [])[1];
       if (res.status !== 307) return `${res.status} 로 답했습니다 (307 이어야 합니다)`;
