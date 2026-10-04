@@ -476,11 +476,11 @@ form{padding-block:clamp(8px,1.5vw,16px) clamp(48px,6vw,72px)}
    * ⚠️ 숫자의 정본은 api/_cleanup.js `LEADS_RETENTION_DAYS` 입니다(183 · 365).
    *    여기는 그 값을 사람 말로 옮긴 자리이고, 갈라지면 화면이 못 지킬 약속을 합니다.
    */
-  var KEEP_INQUIRY = '보유·삭제 기준은 앱의 공식 개인정보처리방침을 확인해 주세요. 문의 기록의 구체적인 보유기간은 contact@theo-ne.com으로 문의하실 수 있습니다.';
+  var KEEP_INQUIRY = '접수일부터 6개월(183일) 보관 후 삭제합니다. 요청하시면 그 전에도 삭제합니다.';
   var RETENTION = {
     consult: KEEP_INQUIRY,
     quote: KEEP_INQUIRY,
-    notify: '보유·삭제 기준은 앱의 공식 개인정보처리방침을 확인해 주세요. 출시 알림 기록의 구체적인 보유기간은 contact@theo-ne.com으로 문의하실 수 있습니다.'
+    notify: '접수일부터 1년(365일) 보관 후 삭제합니다. 요청하시면 그 전에도 삭제합니다.'
   };
 
   var params = new URLSearchParams(location.search);

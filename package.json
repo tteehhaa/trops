@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "node scripts/build-static.js",
-    "test": "node --test --test-concurrency=1 test/",
+    "test": "node --test --test-concurrency=1 test/*.test.js",
     "verify:deploy": "node scripts/verify-deployment.js",
     "verify:prod": "node scripts/verify-deployment.js https://www.trops.kr"
   },
