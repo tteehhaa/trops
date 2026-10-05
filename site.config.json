@@ -109,11 +109,12 @@
     "   PILOT_APPLY_ALLOWED_ORIGINS 에 랜딩 미리보기 주소가 있어야 받습니다(없으면 403 origin).",
     "⛔ 여기에 비밀값을 두지 마십시오 — 이 값은 전부 화면 스크립트로 공개됩니다.",
     "",
-    "🔄 joinOpensOn 〔2026-10-05〕 — 「가입하기 · 두 갈래」(#join)가 서는 한국 날짜입니다. 개인정보처리방침 2차 개정",
-    "   시행일과 같아야 합니다(새 수집 항목은 방침이 적은 뒤에만 받습니다). 그 전에는 「가입하기」가 #apply 로 갑니다."
+    "🔄 newFieldsFrom 〔2026-10-05 · 종전 이름 joinOpensOn〕 — 「신청하기 · 두 갈래」(#join)에 «새 칸»이 서는 한국 날짜입니다.",
+    "   개인정보처리방침 2차 개정 시행일과 같아야 합니다 — 앱 trops_a lib/legal/privacy-rev2.ts PRIVACY_REV2_EFFECTIVE(test/pilot-apply-form.test.js 가 대조).",
+    "   #join 구획 자체는 이 날짜와 무관하게 늘 섭니다(대표 지시 2026-10-05). 그 전에는 지금 방침에 적힌 칸만 보이고 받습니다."
   ],
   "pilotApply": {
-    "joinOpensOn": "2026-10-13",
+    "newFieldsFrom": "2026-10-13",
     "productionEnabled": true,
     "productionEndpoint": "https://app.trops.kr/api/pilot-apply",
     "previewEnabled": true,
