@@ -604,6 +604,19 @@ form.f{border:1px solid var(--line);border-radius:14px;padding:30px;background:v
 .done{border:1px solid var(--line);border-radius:14px;padding:30px;background:var(--white)}
 .done h3{font-size:22px;margin-top:6px}
 .done p{font-size:15px;color:var(--sub);margin-top:16px}
+/* 가입하기 · 두 갈래 — 카드 둘(휴대폰은 세로 · 아래 미디어 쿼리) */
+.join{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:28px;align-items:start}
+.jcard{border:1px solid var(--line);border-radius:14px;padding:28px;background:var(--white)}
+.jcard h3{font-size:20px}
+.jcard .jl{font-size:15px;color:var(--sub);margin:8px 0 18px}
+.f .opt{border:0;padding:0;margin-top:18px}
+.f .opt legend{font-size:13.5px;font-weight:600}
+.f .opt .agree{margin-top:8px}
+.f .addrrow{display:flex;gap:8px;align-items:center}
+.f .addrrow input{flex:1}
+.f .addrrow .btn-s{margin-top:7px;flex:none}
+.f .addr input[name="address_detail"]{margin-top:8px}
+.f .cdp{margin-top:8px;font-size:12.5px;line-height:1.6;color:var(--sub)}
 
 /* 자료 */
 .res{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px}
@@ -687,7 +700,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
   .app .chips .gap{display:none}
   .app .chips .edit{grid-column:1/-1}
   .app .today li{align-items:flex-start}
-  .head,.show,.qc,.calc,.apply,.f .two{grid-template-columns:1fr;gap:20px}
+  .head,.show,.qc,.calc,.apply,.join,.f .two{grid-template-columns:1fr;gap:20px}
   #product .head,#product .tabs,.screen{grid-column:1;grid-row:auto}
   .screen{padding:20px}
   .bubble{max-width:94%}
@@ -741,6 +754,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
        ⚠️ `&#xFE0E;` 는 ↗ 를 글자꼴로 고정합니다 — 떼면 iOS 가 이모지로 그립니다. -->
   <div class="nav-right">
     <a class="btn-2 btn-s" href="https://app.trops.kr/" data-track="nav-app">앱 열기<span class="ne" aria-hidden="true">↗&#xFE0E;</span></a>
+    <a class="btn-2 btn-s" href="#join" data-track="nav-join">가입하기</a>
     <a class="btn btn-s" href="#apply" data-track="nav-apply">실증 신청</a>
   </div>
 </div></nav>
@@ -753,6 +767,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
   <p class="free">{{publicCopy.audience}}</p>
   <div class="cta">
     <a class="btn" href="#apply" data-track="hero-apply">실증 신청</a>
+    <a class="btn-2" href="#join" data-track="hero-join">가입하기</a>
     <a class="btn-2" href="https://app.trops.kr/quick-check" data-track="hero-precheck">1분 진단 · 가입 없이</a>
   </div>
   <p class="free">초대 기간 무료 · 카드 등록 없음</p>
@@ -962,6 +977,114 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
   </div>
 </div></section>
 
+<!--
+  🔴 **가입하기 · 두 갈래** 〔2026-10-05 · trops_a onboarding-signup-v3 설계 §4-§5〕.
+     ① 출시 소식 받기 → 앱 `POST /api/leads`(kind: notify) · ② 실증 참여 → 앱 `POST /api/pilot-apply`(form_version: 3).
+     계약 정본 = trops_a docs/02-design/features/onboarding-signup-v3.design.md §4.
+  🔴 **여는 날은 site.config.json `pilotApply.joinOpensOn` 하나입니다** — 개인정보처리방침 2차 개정이 시행되는 날(한국 날짜)입니다.
+     그 전에는 이 구획이 숨은 채이고 「가입하기」는 기존 실증 신청(#apply)으로 갑니다. 그날부터는 이 구획이 서고
+     기존 신청 폼 자리에는 이 구획으로 가는 안내 한 줄이 섭니다(아래 스크립트 「가입하기 · 두 갈래」).
+     ⚠️ 새 칸(규모 · 주소 · 우편번호 · 직급 · 전화 · 선택 동의 둘)은 방침이 적은 뒤에만 받습니다. 날짜를 앞당기지 마십시오.
+  ⚠️ 업종 · 규모 `value` 는 앱의 정본 어휘입니다(trops_a lib/organization/onboarding.ts SECTOR_CHOICES · SIZE_BAND_CHOICES).
+-->
+<section id="join" data-section="join" hidden><div class="w">
+  <div class="label">가입하기</div>
+  <h2>원하시는 방법을 골라 주세요</h2>
+  <div class="join rv">
+    <div class="jcard">
+      <h3>출시 소식 받기</h3>
+      <p class="jl">정식 출시와 새 기능 소식을 이메일로 보내 드립니다.</p>
+      <form class="f" id="joinNotifyForm" novalidate>
+        <div class="fld"><label>회사명<span class="star">*</span><input name="company" maxlength="200" autocomplete="organization" placeholder="주식회사 ○○" required></label><div class="err">회사명을 입력해 주세요.</div></div>
+        <div class="fld"><label>이름<span class="star">*</span><input name="name" maxlength="100" autocomplete="name" required></label><div class="err">이름을 입력해 주세요.</div></div>
+        <div class="fld"><label>이메일<span class="star">*</span><input name="email" type="email" maxlength="254" autocomplete="email" inputmode="email" placeholder="name@company.com" required></label><div class="err">이메일을 입력해 주세요.</div></div>
+        <div class="fld cons">
+          <details class="cd">
+            <summary>수집·이용 내용 보기</summary>
+            <dl>
+              <dt>받는 항목</dt><dd>회사명 · 이름 · 이메일</dd>
+              <dt>쓰는 곳</dt><dd>출시 소식 알림, 접수 확인 메일</dd>
+              <dt>보관</dt><dd>신청일부터 1년, 또는 수신을 멈추실 때까지</dd>
+            </dl>
+          </details>
+          <label class="agree"><input type="checkbox" name="consentPrivacy" value="true" required><span>개인정보 수집·이용에 동의합니다(필수). 자세한 내용은 <a href="https://app.trops.kr/privacy">개인정보처리방침</a>에 있습니다.</span></label>
+        </div>
+        <fieldset class="opt">
+          <legend>광고성 정보 수신(선택)</legend>
+          <label class="agree"><input type="checkbox" name="consentNewsletter" value="true"><span>TROPS 소식지를 받겠습니다.</span></label>
+          <label class="agree"><input type="checkbox" name="consentSupportInfo" value="true"><span>정부 수출 지원사업 정보를 받겠습니다.</span></label>
+          <p class="hint">동의하지 않아도 출시 소식은 받으실 수 있습니다. 받으신 메일 아래의 수신 거부 링크나 contact@theo-ne.com 으로 언제든 멈출 수 있습니다.</p>
+        </fieldset>
+        <p class="ferr" role="alert" hidden></p>
+        <button class="btn" type="submit" data-track="join-notify-submit">출시 소식 받기</button>
+      </form>
+      <div class="done" hidden>
+        <div class="label">등록 완료</div>
+        <h3 tabindex="-1">등록했습니다</h3>
+        <p>확인 메일을 보냈습니다. 출시 소식은 같은 주소로 보내 드립니다.</p>
+      </div>
+    </div>
+    <div class="jcard">
+      <h3>실증 참여</h3>
+      <p class="jl">초대받은 기업과 수출 실무 도구를 함께 실증합니다. 초대 기간에는 무료입니다.</p>
+      <form class="f" id="joinPilotForm" novalidate>
+        <div class="hp" aria-hidden="true"><label>웹사이트<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+        <input type="hidden" name="requested_work">
+        <input type="hidden" name="referral_code">
+        <!-- 동의 문구의 판 = 방침 2차 개정 시행일. 문구를 고치면 판 이름도 바꿉니다. -->
+        <input type="hidden" name="notice_version" value="pilot-apply-2026-10-13">
+        <div class="fld"><label>회사명<span class="star">*</span><input name="company_name" maxlength="120" autocomplete="organization" placeholder="주식회사 ○○" required></label><div class="err">회사명을 입력해 주세요.</div></div>
+        <div class="two">
+          <div class="fld"><label>업종<span class="star">*</span><select name="industry" required><option value="">선택</option><option value="manufacturing">제조</option><option value="trade">무역·도소매</option><option value="service">서비스</option><option value="other">기타</option></select></label><div class="err">업종을 선택해 주세요.</div></div>
+          <div class="fld"><label>규모<span class="star">*</span><select name="company_size_band" required><option value="">선택</option><option value="small">중소기업</option><option value="medium">중견기업</option></select></label><div class="err">규모를 선택해 주세요.</div></div>
+        </div>
+        <div class="two">
+          <div class="fld"><label>이름<span class="star">*</span><input name="contact_name" maxlength="80" autocomplete="name" required></label><div class="err">이름을 입력해 주세요.</div></div>
+          <div class="fld"><label>직급<input name="job_title" maxlength="60" autocomplete="organization-title"></label></div>
+        </div>
+        <div class="fld"><label>이메일<span class="star">*</span><input name="email" type="email" maxlength="254" autocomplete="email" inputmode="email" placeholder="name@company.com" required></label><div class="err">이메일을 입력해 주세요.</div><p class="hint">초대 메일이 이 주소로 가고, 가입하실 때도 같은 주소를 씁니다.</p></div>
+        <div class="fld"><label>전화<span class="star">*</span><input name="phone" type="tel" maxlength="40" autocomplete="tel" inputmode="tel" placeholder="010-0000-0000" required></label><div class="err">연락받으실 전화번호를 입력해 주세요.</div></div>
+        <div class="fld addr"><label>주소<span class="addrrow"><input name="address" maxlength="250" readonly placeholder="주소 검색을 눌러 고릅니다"><button type="button" class="btn-2 btn-s" data-addr-search>주소 검색</button></span></label>
+          <input name="address_detail" maxlength="50" placeholder="상세 주소(선택)" aria-label="상세 주소">
+          <input type="hidden" name="postal_code">
+        </div>
+        <div class="fld cons">
+          <details class="cd">
+            <summary>실증 참여 안내</summary>
+            <p class="cdp">신청을 받으면 담당자가 참여 가능 여부를 확인한 뒤 초대 메일을 보내 드립니다. 초대 메일의 링크에서 신청하신 이메일로 가입하면 적어 주신 회사 정보가 미리 채워진 채로 시작합니다. 실증 기간에는 이용 경험을 여쭙는 연락을 드릴 수 있습니다.</p>
+          </details>
+          <label class="agree"><input type="checkbox" name="consents.program_notice" value="true" required><span>실증 참여 안내를 확인했습니다(필수).</span></label>
+        </div>
+        <div class="fld cons">
+          <details class="cd">
+            <summary>수집·이용 내용 보기</summary>
+            <dl>
+              <dt>받는 항목</dt><dd>회사명 · 업종 · 규모 · 이름 · 이메일 · 전화, 적으신 경우 직급 · 주소(우편번호), 요청하신 업무와 받으신 소개 코드(있을 때), 들어오신 경로</dd>
+              <dt>쓰는 곳</dt><dd>실증 참여 신청 접수 · 초대 안내 · 연락, 가입 뒤 회사 정보와 담당자 정보 미리 채움, 실증 운영 안내</dd>
+              <dt>보관</dt><dd>실증 종료 또는 동의 철회 때까지이며 최대 1년입니다. 가입하시면 회원 정보로 옮겨집니다.</dd>
+            </dl>
+          </details>
+          <label class="agree"><input type="checkbox" name="consents.collection" value="true" required><span>개인정보 수집·이용에 동의합니다(필수). 자세한 내용은 <a href="https://app.trops.kr/privacy">개인정보처리방침</a>에 있습니다.</span></label>
+        </div>
+        <fieldset class="opt">
+          <legend>광고성 정보 수신(선택)</legend>
+          <label class="agree"><input type="checkbox" name="consents.newsletter" value="true"><span>TROPS 소식지를 받겠습니다.</span></label>
+          <label class="agree"><input type="checkbox" name="consents.support_info" value="true"><span>정부 수출 지원사업 정보를 받겠습니다.</span></label>
+          <p class="hint">동의하지 않아도 실증에 참여하실 수 있습니다. 받으신 메일 아래의 수신 거부 링크나 contact@theo-ne.com 으로 언제든 멈출 수 있습니다.</p>
+        </fieldset>
+        <p class="ferr" role="alert" hidden></p>
+        <button class="btn" type="submit" data-track="join-pilot-submit">실증 참여 신청</button>
+        <p class="after">나머지 정보는 초대 메일에서 입력하실 수 있습니다.</p>
+      </form>
+      <div class="done" hidden>
+        <div class="label">신청 완료</div>
+        <h3 tabindex="-1">신청이 접수되었습니다</h3>
+        <p>담당자가 참여 가능 여부를 확인한 뒤 이메일로 안내드립니다.</p>
+      </div>
+    </div>
+  </div>
+</div></section>
+
 <section id="apply" class="tint" data-section="apply"><div class="w">
   <div class="apply rv">
     <div>
@@ -1043,6 +1166,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
         <h3 id="doneTitle" tabindex="-1">신청이 접수되었습니다</h3>
         <p>담당자가 참여 가능 여부를 확인한 뒤 이메일로 안내드립니다.</p>
       </div>
+      <p class="note" id="applyMoved" hidden>실증 참여 신청은 <a href="#join" data-track="apply-moved">가입하기</a>에서 받습니다.</p>
     </div>
   </div>
 </div></section>
@@ -1499,6 +1623,195 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
 })();
 </script>
 <!-- 🔴 익명 집계 〔2026-09-01〕 — 개인 식별값 없음(privacy.html §01). -->
+<script>
+/* ══════════════ 가입하기 · 두 갈래(출시 소식 받기 · 실증 참여) ══════════════
+ * 🔴 여는 날 = site.config.json `pilotApply.joinOpensOn`(한국 날짜 · 방침 2차 개정 시행일).
+ *    그 전: #join 은 숨고 「가입하기」 링크는 #apply(기존 실증 신청)로 갑니다 — 새 칸은 받지 않습니다.
+ *    그날부터: #join 이 서고, 「실증 신청」 링크(#apply)도 #join 으로 가며, 기존 신청 폼 자리에는 안내 한 줄이 섭니다.
+ * ⚠️ 날짜는 브라우저 시계로 봅니다(한국 시간으로 바꿔서) — 시계가 틀린 기기에서는 하루 어긋날 수 있습니다.
+ *    앱도 같은 날짜 전에는 3판 신청을 받지 않으므로(두 겹) 일찍 열려도 저장되지 않습니다.
+ * ⚠️ 보낼 곳은 기존 신청 폼과 같은 스위치(pilotApply)에서 읽습니다 — 출시 소식은 같은 앱의 /api/leads 입니다.
+ */
+(function(){
+  'use strict';
+  var $ = function(id){ return document.getElementById(id); };
+  var OPENS = '{{pilotApply.joinOpensOn}}';
+  var kstToday = new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
+  var OPEN = /^\d{4}-\d{2}-\d{2}$/.test(OPENS) && kstToday >= OPENS;
+  var ON_PROD = /^(www\.)?trops\.kr$/.test(location.hostname);
+  var PILOT_ENDPOINT = ON_PROD ? '{{pilotApply.productionEndpoint}}' : '{{pilotApply.previewEndpoint}}';
+  var LEADS_ENDPOINT = PILOT_ENDPOINT.replace(/\/api\/pilot-apply$/, '/api/leads');
+  var MAIL = 'contact@theo-ne.com';
+  var section = $('join');
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function retarget(from, to){
+    [].forEach.call(document.querySelectorAll('a[href="' + from + '"]'), function(a){ a.setAttribute('href', to); });
+  }
+
+  if (!OPEN) {
+    retarget('#join', '#apply');
+    if (location.hash === '#join') { var ap = $('apply'); if (ap) ap.scrollIntoView(); }
+    return;
+  }
+
+  section.hidden = false;
+  retarget('#apply', '#join');
+  var oldForm = $('applyForm'), moved = $('applyMoved');
+  if (oldForm) oldForm.hidden = true;
+  if (moved) moved.hidden = false;
+  if (location.hash === '#join' || location.hash === '#apply') section.scrollIntoView();
+
+  /* ── 공통 — 칸 오류 · 폼 아래 오류 · 완료 화면 ── */
+  function ui(form){
+    var err = form.querySelector('.ferr');
+    return {
+      clear: function(){
+        err.hidden = true; err.textContent = '';
+        [].forEach.call(form.querySelectorAll('.fld'), function(w){ w.classList.remove('bad'); });
+      },
+      check: function(){
+        var ok = true;
+        [].forEach.call(form.querySelectorAll('[required]'), function(el){
+          var bad = el.type === 'checkbox' ? !el.checked
+            : el.type === 'email' ? !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(el.value.trim())
+            : !el.value.trim();
+          if (bad) { var w = el.closest('.fld'); if (w) w.classList.add('bad'); ok = false; }
+        });
+        if (!ok) { var first = form.querySelector('.fld.bad input,.fld.bad select'); if (first) first.focus(); }
+        return ok;
+      },
+      show: function(message){ err.textContent = message; err.hidden = false; },
+      done: function(){
+        form.hidden = true;
+        var d = form.parentNode.querySelector('.done');
+        d.hidden = false;
+        var h = d.querySelector('h3'); if (h) h.focus();
+      }
+    };
+  }
+  var v = function(form, n){ var el = form.elements[n]; return el ? String(el.value || '').trim() : ''; };
+  var on = function(form, n){ var el = form.elements[n]; return !!(el && el.checked); };
+
+  function post(url, body){
+    var controller = new AbortController();
+    var timeout = setTimeout(function(){ controller.abort(); }, 20000);
+    return fetch(url, {
+      signal: controller.signal, method: 'POST',
+      headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+    }).then(function(res){
+      return res.json()['catch'](function(){ return null; }).then(function(data){ return { status: res.status, data: data }; });
+    }).then(function(r){ clearTimeout(timeout); return r; }, function(e){ clearTimeout(timeout); throw e; });
+  }
+  function failText(status, data){
+    var err = (data && data.error) || {};
+    var code = typeof err === 'string' ? err : (err.code || '');
+    if (status === 400 && err && err.fields && err.fields.length) return err.fields.map(function(f){ return f.message; }).join(' ');
+    if (status === 400) return '적은 내용을 확인해 주세요.';
+    if (status === 403) return '이 주소에서는 보낼 수 없습니다. ' + MAIL + ' 으로 보내 주십시오.';
+    if (status === 409) return (err && err.message) || '이미 초대했거나 가입한 신청이라 내용을 바꿀 수 없습니다.';
+    if (status === 429) return '요청이 잠시 몰려 받지 못했습니다. 잠시 뒤 다시 보내 주세요.';
+    if (status === 503 && code === 'closed') return '지금은 신청을 받지 않고 있습니다. ' + MAIL + ' 으로 보내 주십시오.';
+    return '보내지 못했습니다. 잠시 뒤 다시 시도해 주시거나 ' + MAIL + ' 으로 보내 주십시오.';
+  }
+  function wire(form, label, build, isDone){
+    var u = ui(form), btn = form.querySelector('button[type="submit"]'), opened = Date.now(), sending = false;
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      if (sending) return;
+      u.clear();
+      if (!u.check()) return;
+      sending = true; btn.disabled = true; btn.textContent = '보내는 중…';
+      /* 앱은 폼을 연 지 3초가 안 된 제출을 봇으로 봅니다 — 모자란 만큼 기다렸다 보냅니다. */
+      var wait = Math.max(0, 3200 - (Date.now() - opened));
+      setTimeout(function(){
+        post(build.url, build.body(Date.now() - opened)).then(function(r){
+          if (isDone(r)) { u.done(); if (window.tropsEvent) window.tropsEvent(build.event); return; }
+          u.show(failText(r.status, r.data));
+        })['catch'](function(){
+          u.show('접수 결과를 확인하지 못했습니다. 입력 내용은 유지됩니다. 다시 보내기 전 ' + MAIL + ' 으로 문의하실 수 있습니다.');
+        }).then(function(){ sending = false; btn.disabled = false; btn.textContent = label; });
+      }, wait);
+    });
+  }
+
+  /* ── ① 출시 소식 받기 → /api/leads ── */
+  var nf = $('joinNotifyForm');
+  wire(nf, '출시 소식 받기', {
+    url: LEADS_ENDPOINT, event: 'join-notify-success',
+    body: function(){
+      return { kind: 'notify', company: v(nf, 'company'), name: v(nf, 'name'), email: v(nf, 'email'),
+        consentPrivacy: true, consentNewsletter: on(nf, 'consentNewsletter'), consentSupportInfo: on(nf, 'consentSupportInfo') };
+    }
+  }, function(r){ return r.status >= 200 && r.status < 300 && r.data && r.data.ok === true; });
+
+  /* ── ② 실증 참여 → /api/pilot-apply (form_version 3) ── */
+  var pf = $('joinPilotForm');
+  try {
+    var rp = (new URLSearchParams(location.search).get('ref') || '').trim();
+    if (/^[A-Za-z0-9-]{4,32}$/.test(rp)) pf.elements.referral_code.value = rp.toUpperCase();
+  } catch (e) { /* 주소를 못 읽으면 소개 코드 없이 받습니다 */ }
+  wire(pf, '실증 참여 신청', {
+    url: PILOT_ENDPOINT, event: 'apply-success',
+    body: function(elapsed){
+      var addr = [v(pf, 'address'), v(pf, 'address_detail')].filter(Boolean).join(' ');
+      var body = {
+        form_version: 3,
+        company_name: v(pf, 'company_name'), email: v(pf, 'email'),
+        industry: v(pf, 'industry'), company_size_band: v(pf, 'company_size_band'),
+        contact_name: v(pf, 'contact_name'), phone: v(pf, 'phone'),
+        consents: { collection: on(pf, 'consents.collection'), program_notice: on(pf, 'consents.program_notice'),
+          newsletter: on(pf, 'consents.newsletter'), support_info: on(pf, 'consents.support_info') },
+        notice_version: v(pf, 'notice_version'),
+        website: pf.elements.website.value, elapsed_ms: elapsed
+      };
+      if (v(pf, 'job_title')) body.job_title = v(pf, 'job_title');
+      if (v(pf, 'address')) { body.address = addr.slice(0, 300); if (/^\d{5}$/.test(v(pf, 'postal_code'))) body.postal_code = v(pf, 'postal_code'); }
+      if (v(pf, 'requested_work')) body.requested_work = v(pf, 'requested_work');
+      if (v(pf, 'referral_code')) body.referral_code = v(pf, 'referral_code');
+      return body;
+    }
+  }, function(r){
+    return r.status === 201 && r.data && r.data.ok === true &&
+      typeof r.data.application_id === 'string' && (r.data.result === 'created' || r.data.result === 'updated');
+  });
+
+  /* 주소 검색 — 카카오(다음) 우편번호 서비스. 누를 때만 불러옵니다. */
+  var addrBtn = pf.querySelector('[data-addr-search]');
+  function openPostcode(){
+    new window.daum.Postcode({
+      oncomplete: function(d){
+        pf.elements.address.value = d.roadAddress || d.address || '';
+        pf.elements.postal_code.value = d.zonecode || '';
+        pf.elements.address_detail.focus();
+      }
+    }).open();
+  }
+  addrBtn.addEventListener('click', function(){
+    if (window.daum && window.daum.Postcode) return openPostcode();
+    var s = document.createElement('script');
+    s.src = 'https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
+    s.onload = openPostcode;
+    s.onerror = function(){ ui(pf).show('주소 검색을 불러오지 못했습니다. 주소는 비워 두셔도 신청할 수 있습니다.'); };
+    document.head.appendChild(s);
+  });
+  pf.elements.address.addEventListener('click', function(){ addrBtn.click(); });
+
+  /* 화면 위 입력창 · 명령 버튼의 요청 문장을 이 폼으로도 넘깁니다(기존 신청 폼과 같은 500자). */
+  function carry(q){
+    q = (q || '').trim().slice(0, 500);
+    if (q) pf.elements.requested_work.value = q;
+    section.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
+  }
+  var ask = $('ask'), askInput = $('askInput');
+  if (ask) ask.addEventListener('submit', function(){ carry(askInput && askInput.value); });
+  var plus = $('askPlus');
+  if (plus) plus.addEventListener('click', function(){ carry(askInput && askInput.value); });
+  [].forEach.call(document.querySelectorAll('.chips button[data-q]'), function(b){
+    b.addEventListener('click', function(){ carry(b.dataset.q); });
+  });
+})();
+</script>
 <script defer src="/assets/track.js"></script>
 <!-- 🔴 언어 전환 〔2026-09-19 복구〕 — en.html 에도 같은 줄이 있습니다. -->
 <script defer src="/assets/lang-switch.js"></script>
