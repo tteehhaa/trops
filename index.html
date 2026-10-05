@@ -635,6 +635,25 @@ form.f{border:1px solid var(--line);border-radius:14px;padding:30px;background:v
 .done{border:1px solid var(--line);border-radius:14px;padding:30px;background:var(--white)}
 .done h3{font-size:22px;margin-top:6px}
 .done p{font-size:15px;color:var(--sub);margin-top:16px}
+/*
+ * 신청 폼 진행 막대 · 완료 체크 〔2026-10-06 · 대표 결정 애니메이션 B〕.
+ *    막대 = 필수 칸 중 채운 몫(잠긴 칸 · 10-13 전의 새 칸은 세지 않음 — 제출 검사와 같은 기준). 다 채우면 글자가 강조색.
+ *    체크 = 완료 화면(앱 응답 201 에서만 뜸)이 설 때 원 → 체크 순으로 그려집니다.
+ *    🔴 체크의 기본 모양은 «다 그려진» 상태이고 그리기는 keyframes(fill both)로만 — 움직임 줄이기에서는 처음부터 다 보입니다.
+ */
+.jprog{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+.jprog-bar{flex:1;height:4px;border-radius:999px;background:var(--line);overflow:hidden}
+.jprog-bar i{display:block;height:100%;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .35s ease}
+.jprog-n{font-size:12.5px;color:var(--mute);white-space:nowrap}
+.jprog-n b{color:var(--ink);font-weight:600}
+.jprog.full .jprog-n,.jprog.full .jprog-n b{color:var(--accent)}
+.done .ok{display:block;width:52px;height:52px;margin-bottom:14px;fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.done .ok circle{stroke-dasharray:151;stroke-dashoffset:0}
+.done .ok path{stroke-dasharray:32;stroke-dashoffset:0}
+.js .done .ok circle{animation:draw-ring .6s ease both}
+.js .done .ok path{animation:draw-check .35s ease .5s both}
+@keyframes draw-ring{from{stroke-dashoffset:151}to{stroke-dashoffset:0}}
+@keyframes draw-check{from{stroke-dashoffset:32}to{stroke-dashoffset:0}}
 /* 신청하기 · 실증 참여 카드 */
 .jcard{border:1px solid var(--line);border-radius:14px;padding:28px;background:var(--white)}
 /* 카드 안의 폼은 상자를 따로 두르지 않습니다(옛 신청 폼의 테두리 · 여백을 걷음 — 상자 안의 상자). */
@@ -1113,6 +1132,9 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
       <h3>실증 참여</h3>
       <p class="jl">초대받은 기업과 수출 실무 도구를 함께 실증합니다. 초대 기간에는 무료입니다.</p>
       <form class="f" id="joinPilotForm" novalidate>
+        <!-- 진행 막대(애니메이션 B · 2026-10-06) — 필수 칸을 채울수록 찹니다. 숨긴 채로 오고, 스크립트가 신청 스위치가 켜졌을 때만 세웁니다.
+             화면 읽기 프로그램에는 칸마다 「필수」가 이미 있어 막대는 들려주지 않습니다(aria-hidden). -->
+        <div class="jprog" id="pilotProg" aria-hidden="true" hidden><span class="jprog-bar"><i></i></span><span class="jprog-n">필수 항목 <b>0</b> / <span class="jprog-t">0</span></span></div>
         <div class="req" id="reqBox" hidden>요청하신 업무 <b id="reqText"></b><span>초대해 드릴 때 이 업무부터 시작할 수 있게 준비해 둡니다.</span></div>
         <div class="hp" aria-hidden="true"><label>웹사이트<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
         <input type="hidden" name="requested_work">
@@ -1174,6 +1196,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
       </form>
       <!-- 🔴 완료 화면 — 앱 응답 201 에서만 뜹니다. 접수 사실과 다음 연락만 말합니다(순번 · 소개 링크는 싣지 않습니다 · 2026-10-03). -->
       <div class="done" hidden>
+        <svg class="ok" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-15"/></svg>
         <div class="label">신청 완료</div>
         <h3 tabindex="-1">신청이 접수되었습니다</h3>
         <p>담당자가 참여 가능 여부를 확인한 뒤 이메일로 안내드립니다.</p>
@@ -1431,6 +1454,24 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
   var section = $('join');
   var pf = $('joinPilotForm');
 
+  /* ── 채움 판정 — 제출 검사(ui.check)와 진행 막대가 같은 기준을 씁니다 ── */
+  function filled(el){
+    return el.type === 'checkbox' ? el.checked
+      : el.type === 'email' ? /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(el.value.trim())
+      : !!el.value.trim();
+  }
+  /* ── 진행 막대(애니메이션 B) — 필수 칸 중 채운 몫. 잠긴 칸(10-13 전의 새 칸)은 세지 않습니다. 막대가 숨어 있으면 셈하지 않습니다. ── */
+  var prog = $('pilotProg');
+  function progress(){
+    if (!prog || prog.hidden) return;
+    var req = [].filter.call(pf.querySelectorAll('[required]'), function(el){ return !el.disabled; });
+    var n = req.filter(filled).length, total = req.length;
+    prog.querySelector('i').style.transform = 'scaleX(' + (total ? n / total : 0) + ')';
+    prog.querySelector('b').textContent = n;
+    prog.querySelector('.jprog-t').textContent = total;
+    prog.classList.toggle('full', total > 0 && n === total);
+  }
+
   /* ── 방침 2차 개정 시행일 — 새 칸을 세우거나 잠급니다 ── */
   var CONTROLS = 'input,select,textarea,button,fieldset';
   function setOn(el, on){
@@ -1445,13 +1486,18 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
     var nv = pf.elements.notice_version;
     if (!nv.dataset.beforeValue) nv.dataset.beforeValue = nv.value;
     nv.value = rev2 ? nv.dataset.rev2Value : nv.dataset.beforeValue;
+    progress();
   }
   applyPhase(REV2);
 
-  /* ── 제출 버튼 — 스위치가 켜졌을 때만 세웁니다(마크업의 기본은 숨김) ── */
+  /* ── 제출 버튼 · 진행 막대 — 스위치가 켜졌을 때만 세웁니다(마크업의 기본은 숨김) ── */
   if (PILOT.enabled) {
     pf.querySelector('[data-js-submit]').hidden = false;
     $('pilotOff').hidden = true;
+    prog.hidden = false;
+    pf.addEventListener('input', progress);
+    pf.addEventListener('change', progress);
+    progress();
   }
 
   /* ── 옛 주소 #apply → 이 구획 ── */
@@ -1473,10 +1519,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
         /* 잠긴 칸(새 칸이 아직 서지 않은 자리)은 재지 않습니다. */
         [].forEach.call(form.querySelectorAll('[required]'), function(el){
           if (el.disabled) return;
-          var bad = el.type === 'checkbox' ? !el.checked
-            : el.type === 'email' ? !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(el.value.trim())
-            : !el.value.trim();
-          if (bad) { var w = el.closest('.fld'); if (w) w.classList.add('bad'); ok = false; }
+          if (!filled(el)) { var w = el.closest('.fld'); if (w) w.classList.add('bad'); ok = false; }
         });
         if (!ok) { var first = form.querySelector('.fld.bad input,.fld.bad select'); if (first) first.focus(); }
         return ok;
