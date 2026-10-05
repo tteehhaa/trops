@@ -407,7 +407,9 @@ function loadSiteConfig() {
     typeof pa.productionEnabled !== 'boolean' ||
     typeof pa.previewEnabled !== 'boolean' ||
     pa.productionEndpoint !== 'https://app.trops.kr/api/pilot-apply' ||
-    !endpointOk(pa.previewEndpoint)
+    !endpointOk(pa.previewEndpoint) ||
+    // 신청하기 · 두 갈래에 새 칸이 서는 한국 날짜(방침 2차 개정 시행일) — 모양이 틀리면 새 칸이 영영 서지 않습니다.
+    !/^\d{4}-\d{2}-\d{2}$/.test(String(pa.newFieldsFrom))
   ) {
     console.error(
       '✋ site.config.json 의 pilotApply 가 모양에 맞지 않습니다: ' + JSON.stringify(pa) +
