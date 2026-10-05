@@ -443,11 +443,15 @@ nav .m a:hover{color:var(--ink)}
 /* 자리만 있는 블록(로고 벽 · 후기 · 영상) — hidden 으로 둡니다 */
 .sample{display:inline-block;font-size:12px;color:var(--warn-ink);background:var(--warn-bg);border-radius:999px;padding:2px 10px;margin-left:8px;vertical-align:middle}
 
-/* 제품 — 탭 */
+/* 제품 — 탭
+ * 🔄 2026-10-05(대표 결정 3B) — 왼쪽 한 덩어리(제목 → 실증 중 한 줄 → 탭) · 오른쪽 화면 예시가 제목 높이부터 · 아래 전폭 연동 띠.
+ *    종전 `.product-nav{display:contents}` 는 제목 · 상태 문구 둘 · 탭을 그리드 칸에 하나씩 흘려,
+ *    상태 문구 하나는 오른쪽 위에, 하나는 탭 아래 왼쪽 끝에 떠 있었습니다. */
 .show{display:grid;grid-template-columns:360px minmax(0,1fr);gap:28px 40px;align-items:start}
-.product-nav{display:contents}
+.product-nav{grid-column:1;grid-row:1}
 #product .head{display:block}
-#product .tabs{grid-column:1;grid-row:2}
+#product .flow-note{font-size:15px;color:var(--sub);margin-top:16px}
+#product .tabs{margin-top:28px}
 .tabs button{position:relative;display:block;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);
   padding:20px 0;font-family:inherit;cursor:pointer;color:var(--mute)}
 .tabs button:last-child{border-bottom:1px solid var(--line)}
@@ -463,7 +467,7 @@ nav .m a:hover{color:var(--ink)}
 .tabs.paused button.on .bar{animation-play-state:paused}
 .tabs.stopped button.on .bar{width:100%;animation:none}
 @keyframes fill{to{width:100%}}
-.screen{display:grid;grid-column:2;grid-row:2;min-width:0;border:1px solid var(--line);border-radius:14px;background:var(--white);box-shadow:0 12px 32px rgba(19,27,46,.06);padding:28px}
+.screen{display:grid;grid-column:2;grid-row:1;min-width:0;border:1px solid var(--line);border-radius:14px;background:var(--white);box-shadow:0 12px 32px rgba(19,27,46,.06);padding:28px}
 .pane{grid-area:1/1;min-width:0;visibility:hidden;pointer-events:none}
 .pane.on{visibility:visible;pointer-events:auto;animation:fadein .45s ease}
 @keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -479,6 +483,21 @@ nav .m a:hover{color:var(--ink)}
 .pill{display:inline-block;font-size:12px;border-radius:999px;padding:2px 9px;background:var(--accent-soft)}
 .pill.warn{background:var(--warn-bg);color:var(--warn-ink)}
 .pill.bad{background:var(--bad-bg);color:var(--bad-ink)}
+.pill.off{background:var(--surface);color:var(--mute);box-shadow:inset 0 0 0 1px var(--line)}
+.pane .big .pill{vertical-align:4px;margin-left:6px}
+.pane .scope{font-size:13px;color:var(--sub);margin-top:4px}
+/* 서류 확인 — 개수 네 칸. 숫자는 무채색, 색은 «불일치» 이름에만(앱 결과 화면과 같은 규칙 · 많으면 나쁘다는 서열을 만들지 않음). */
+.cnt{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:14px}
+.cnt div{border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.cnt span{display:block;font-size:12.5px;color:var(--mute)}
+.cnt b{display:block;font-size:20px;margin-top:2px}
+.cnt div:first-child span{color:var(--bad-ink);font-weight:600}
+/* 연동 띠 — 두 열 아래 전폭. 상태 = site.config.json publicCopy.integrationSummary */
+.intg{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:10px 28px;border:1px solid var(--line);border-radius:14px;background:var(--white);padding:18px 24px;font-size:14.5px}
+.intg>b{font-size:15px}
+.intg ul{display:flex;flex-wrap:wrap;gap:8px 24px;list-style:none;margin:0;padding:0}
+.intg li{display:flex;align-items:center;gap:8px}
+.intg p{margin-left:auto;font-size:13px;color:var(--mute)}
 .doc{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:14px}
 .doc div{border:1px solid var(--line);border-radius:10px;padding:14px;font-size:13px}
 .doc div b{display:block;font-size:15px;margin-bottom:6px}
@@ -709,11 +728,14 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
   .app .chips .edit{grid-column:1/-1}
   .app .today li{align-items:flex-start}
   .head,.show,.qc,.calc,.jhead,.join,.f .two{grid-template-columns:1fr;gap:20px}
-  #product .head,#product .tabs,.screen{grid-column:1;grid-row:auto}
+  .product-nav,.screen,.intg{grid-column:1;grid-row:auto}
+  .cnt{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .intg p{margin-left:0}
   .screen{padding:20px}
   .bubble{max-width:94%}
   #product .tbl{font-size:12px;overflow-wrap:anywhere;word-break:normal}
   #product .tbl th,#product .tbl td{padding:10px 4px}
+  #product .tbl .pill{white-space:nowrap}
   .qc{gap:28px}
   .sec{grid-template-columns:1fr 1fr}
   .doc{grid-template-columns:1fr}
@@ -852,19 +874,26 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
 
 
 <section id="product" class="tint" data-section="product"><div class="w">
+  <!-- 🔄 **탭 넷 → 셋 + 연동 띠** 〔2026-10-05 · 대표 결정 3B〕 —
+       어시스턴트 · 수출 거래 · 서류 · 기한 → TROPS AI · 거래·기한 관리 · 서류 확인.
+       · 「서류 확인」은 앱의 메뉴 · 화면 제목과 같은 이름입니다(trops_a lib/constants/ledger-nav.ts · export-document-review.ts REVIEW_COPY).
+         「서류 검토」를 쓰지 않습니다 — 랜딩의 면책(「계약서에 대한 법률적 검토를 제공하지 않습니다」)과 부딪힙니다.
+         화면 예시는 앱 결과 화면의 순서 · 말을 따릅니다 — 한 문장(서로 다른 값 N개) → 개수 네 칸 → 불일치 줄(값을 나란히, 어느 쪽이 틀렸는지 정하지 않음)
+         → 대조 범위 한 줄(«확인된 문제 없음»은 그 범위 안에서만 참이라 범위가 언제나 섭니다).
+       · 거래 · 기한 화면은 옛 두 화면의 값만 옮겼습니다(새 숫자 없음).
+       · 연동은 보여 줄 화면이 아직 없어 화면 예시 대신 띠로 적습니다 — 상태는 site.config.json publicCopy.integrationSummary 와 같아야 합니다.
+       ⚠️ 이름을 바꾸면 publicCopy.ko.coreSummary · 푸터 「제품」 링크 · about.html 01 도 함께 바꿉니다. -->
   <div class="show rv">
     <div class="product-nav">
       <div class="head"><div class="label">제품</div><h2>수출 거래 한 건을<br>처음부터 끝까지</h2></div>
-    <p class="flow-note">{{publicCopy.coreSummary}}</p>
-    <p class="flow-note">{{publicCopy.integrationSummary}}</p>
-    <div class="tabs" role="tablist" aria-label="제품 기능">
-      <button type="button" class="on" data-t="p1" role="tab" id="tab1" aria-controls="p1" aria-selected="true" tabindex="0"><i class="bar"></i><b>어시스턴트</b><span>{{publicCopy.coreStatus}} · 수출 거래 등록, 서류 초안, 다음 할 일까지 한 번에 처리합니다.</span></button>
-      <button type="button" data-t="p2" role="tab" id="tab2" aria-controls="p2" aria-selected="false" tabindex="-1"><i class="bar"></i><b>수출 거래</b><span>{{publicCopy.coreStatus}} · 수출 거래별 조건과 받을 대금을 한 화면에.</span></button>
-      <button type="button" data-t="p3" role="tab" id="tab3" aria-controls="p3" aria-selected="false" tabindex="-1"><i class="bar"></i><b>서류</b><span>{{publicCopy.coreStatus}} · 견적서에서 선적서류까지 그대로 이어집니다.</span></button>
-      <!-- 🔄 시안 「미리 알려 드립니다」 → 「미리 보여 드립니다」 〔2026-09-29 · 대표 결정〕 —
-           test/landing-invariants.test.js 가 랜딩 전역에서 알림 약속 문면을 0건으로 잠급니다. -->
-      <button type="button" data-t="p4" role="tab" id="tab4" aria-controls="p4" aria-selected="false" tabindex="-1"><i class="bar"></i><b>기한</b><span>{{publicCopy.coreStatus}} · 약관 기준으로 계산해 미리 보여 드립니다.</span></button>
-    </div>
+      <p class="flow-note">{{publicCopy.coreSummary}}</p>
+      <div class="tabs" role="tablist" aria-label="제품 기능">
+        <button type="button" class="on" data-t="p1" role="tab" id="tab1" aria-controls="p1" aria-selected="true" tabindex="0"><i class="bar"></i><b>TROPS AI</b><span>{{publicCopy.coreStatus}} · 수출 거래 등록, 서류 초안, 다음 할 일까지 한 번에 처리합니다.</span></button>
+        <!-- 🔄 시안 「미리 알려 드립니다」 → 「미리 보여 드립니다」 〔2026-09-29 · 대표 결정〕 —
+             test/landing-invariants.test.js 가 랜딩 전역에서 알림 약속 문면을 0건으로 잠급니다. -->
+        <button type="button" data-t="p2" role="tab" id="tab2" aria-controls="p2" aria-selected="false" tabindex="-1"><i class="bar"></i><b>거래·기한 관리</b><span>{{publicCopy.coreStatus}} · 거래별 단계와 다음 기한을 한 화면에. 기한은 약관 기준으로 계산해 미리 보여 드립니다.</span></button>
+        <button type="button" data-t="p3" role="tab" id="tab3" aria-controls="p3" aria-selected="false" tabindex="-1"><i class="bar"></i><b>서류 확인</b><span>{{publicCopy.coreStatus}} · 다른 곳에서 만든 서류를 서류끼리, 그리고 거래 정보와 대조합니다.</span></button>
+      </div>
     </div>
     <div class="screen">
       <p class="src">화면 예시 · {{publicCopy.coreStatus}}</p>
@@ -876,26 +905,28 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
       </div>
       <div class="pane" id="p2" inert aria-hidden="true" role="tabpanel" aria-labelledby="tab2">
         <div class="t">이달 들어올 돈</div><div class="big">USD 72,000 · 2건</div>
-        <table class="tbl"><tr><th>거래</th><th>바이어</th><th>금액</th><th>단계</th></tr>
-          <tr><td>TR-0008</td><td>베트남 · Hanoi Trading</td><td>USD 36,000</td><td><span class="pill">선적 완료</span></td></tr>
-          <tr><td>TR-0006</td><td>필리핀 · Manila Supply</td><td>USD 36,000</td><td><span class="pill warn">결제 대기</span></td></tr>
-          <tr><td>TR-0005</td><td>미국 · Ohio Parts</td><td>USD 18,500</td><td><span class="pill">계약</span></td></tr></table>
-        <div class="preview"><b>입금 예정 요약</b><p>선적을 마친 거래와 결제 대기 거래의 받을 대금을 함께 확인합니다.</p><p>USD 72,000 · 입금 예정 2건</p></div>
-      </div>
-      <div class="pane" id="p3" inert aria-hidden="true" role="tabpanel" aria-labelledby="tab3">
-        <div class="t">TR-2026-0008 서류</div><div class="big">품목·단가·합계가 그대로 이어집니다</div>
-        <div class="doc"><div><b>PI</b>견적서<br><span class="pill">확정</span></div><div><b>CI</b>상업송장<br><span class="pill">초안</span></div><div><b>PL</b>포장명세서<br><span class="pill">초안</span></div></div>
-        <div class="preview"><b>거래 정보로 이어지는 서류 초안</b><p>품목 3개 · FOB 부산 · 합계 USD 36,000</p><p>견적서의 품목과 단가를 확인한 뒤 상업송장과 포장명세서에 이어 씁니다.</p></div>
-      </div>
-      <div class="pane" id="p4" inert aria-hidden="true" role="tabpanel" aria-labelledby="tab4">
-        <div class="t">다가오는 기한</div><div class="big">놓치면 보상받기 어려운 기한</div>
-        <table class="tbl"><tr><th>항목</th><th>거래</th><th>기한</th></tr>
-          <tr><td>수출통지</td><td>베트남 건</td><td><span class="pill warn">D-4</span></td></tr>
-          <tr><td>결제기일</td><td>필리핀 건</td><td><span class="pill bad">오늘</span></td></tr>
-          <tr><td>증권 만료</td><td>단기수출보험</td><td><span class="pill">D-27</span></td></tr></table>
+        <table class="tbl"><tr><th>거래</th><th>바이어</th><th>단계</th><th>다음 기한</th></tr>
+          <tr><td>TR-0008</td><td>베트남 · Hanoi Trading</td><td><span class="pill">선적 완료</span></td><td>수출통지 <span class="pill warn">D-4</span></td></tr>
+          <tr><td>TR-0006</td><td>필리핀 · Manila Supply</td><td><span class="pill warn">결제 대기</span></td><td>결제기일 <span class="pill bad">오늘</span></td></tr>
+          <tr><td>TR-0005</td><td>미국 · Ohio Parts</td><td><span class="pill">계약</span></td><td>-</td></tr></table>
         <div class="preview"><b>먼저 확인할 기한</b><p>오늘 결제기일인 필리핀 건의 입금 여부를 확인하고, 베트남 건의 수출통지 자료를 준비합니다.</p></div>
         <div class="src">근거: 적용 약관 기준 · 선적일부터 영업일로 계산</div>
       </div>
+      <div class="pane" id="p3" inert aria-hidden="true" role="tabpanel" aria-labelledby="tab3">
+        <div class="t">TR-2026-0008 · 견적서(PI) · 상업송장(CI) · 패킹리스트(PL)</div>
+        <div class="big">서로 다른 값이 1개 있습니다 <span class="pill warn">수정 필요</span></div>
+        <p class="scope">대조 항목 30개 중 28개 확인 · 2개 확인 불가</p>
+        <div class="cnt"><div><span>불일치</span><b>1</b></div><div><span>표기 차이</span><b>1</b></div><div><span>확인 불가</span><b>2</b></div><div><span>일치</span><b>26</b></div></div>
+        <div class="preview"><b>불일치 · 품목 2 단가</b><p>견적서(PI) USD 12.00 · 상업송장(CI) USD 12.50</p><span class="btn btn-s">전체 결과 보기</span></div>
+      </div>
+    </div>
+    <div class="intg">
+      <b>연동</b>
+      <ul>
+        <li>메일 · 캘린더 · 알림 · 외부 AI <span class="pill">{{publicCopy.coreStatus}}</span></li>
+        <li>브라우저 업무도구 <span class="pill off">준비 중</span></li>
+      </ul>
+      <p>제공 범위는 초대 시 확인합니다.</p>
     </div>
   </div>
 </div></section>
@@ -1215,7 +1246,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
            ⚠️ 이 블록 안에 다른 div 를 넣지 마십시오 — 검사가 첫 닫는 div 까지를 집습니다. -->
       <div class="nd"><b>TROPS가 하지 않는 일</b>법률 자문과 계약서에 대한 법률적 검토를 제공하지 않습니다(변호사법·외국법자문사법). 보험 인수·지급 심사나 가입 대행, 특정 상품 추천을 하지 않으며, 가입 가능 여부와 조건은 해당 기관이 약관과 심사 기준에 따라 결정합니다. 미수금 회수를 보장하지 않습니다.</div>
     </div>
-    <div><b>제품</b><ul><li><a href="#product">어시스턴트</a></li><li><a href="#product">수출 거래 · 서류 · 기한</a></li><li><a href="#service">무역보험 준비 패키지</a></li><li><a href="#check">1분 수출 준비 진단</a></li><li><a href="#calc">업무 시간 계산기</a></li><li><a href="mailto:contact@theo-ne.com?subject=TROPS%20교육%20문의">수출 실무 교육</a></li></ul></div>
+    <div><b>제품</b><ul><li><a href="#product">TROPS AI</a></li><li><a href="#product">거래·기한 관리 · 서류 확인</a></li><li><a href="#service">무역보험 준비 패키지</a></li><li><a href="#check">1분 수출 준비 진단</a></li><li><a href="#calc">업무 시간 계산기</a></li><li><a href="mailto:contact@theo-ne.com?subject=TROPS%20교육%20문의">수출 실무 교육</a></li></ul></div>
     <div><b>자료</b><ul><li><a href="https://app.trops.kr/guide">수출절차 안내</a></li><li><a href="https://app.trops.kr/guide/support">보험료 지원사업</a></li><li><a href="https://app.trops.kr/guide/glossary">무역 용어</a></li></ul></div>
     <!-- 🔄 「문의 · 교육 · 파트너」를 /contact 로 되돌렸습니다 〔2026-09-30 · 대표 결정〕 — v3 에서 랜딩 → /contact 길이 0 이었습니다. -->
     <div><b>회사</b><ul><li><a href="#join" data-track="footer-join">신청하기</a></li><li><a href="/about">회사 소개</a></li><li><a href="#security">보안</a></li><li><a href="/contact" data-track="footer-contact">문의 · 교육 · 파트너</a></li></ul></div>

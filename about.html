@@ -191,11 +191,11 @@ h2.sec{font-size:clamp(22px,2.8vw,30px);font-weight:700;letter-spacing:-.03em;li
 .prose em{font-style:normal;font-weight:700;color:var(--ink)}
 .prose a{color:var(--accent);font-weight:600;text-underline-offset:3px}
 
-/* ── 제품 넷 · 함께 제공하는 것 ─────────────────────────────────────────
-   🔄 종전에는 번호가 붙은 «3단계 흐름»이었습니다 〔~2026-10-03〕. 지금 네 칸은 순서가 아니라
-      «한 제품의 네 면»이라 번호와 단계 꼬리표가 없습니다. ⛔ 번호를 되살리지 마십시오 —
-      넷이 차례로 열리는 단계처럼 읽힙니다. */
-.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);border-radius:var(--r-card);overflow:hidden;background:var(--white)}
+/* ── 제품 셋 · 함께 제공하는 것 ─────────────────────────────────────────
+   🔄 종전에는 번호가 붙은 «3단계 흐름»이었습니다 〔~2026-10-03〕 → 제품 넷 〔2026-10-03〕 → 셋 〔2026-10-05 · 랜딩 탭을 따라〕.
+      칸은 순서가 아니라 «한 제품의 여러 면»이라 번호와 단계 꼬리표가 없습니다. ⛔ 번호를 되살리지 마십시오 —
+      차례로 열리는 단계처럼 읽힙니다. */
+.flow{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line);border-radius:var(--r-card);overflow:hidden;background:var(--white)}
 .fs{position:relative;padding:28px 24px 26px;border-right:1px solid var(--line)}
 .fs:last-child{border-right:0}
 .fs h3{font-size:17.5px;font-weight:700;letter-spacing:-.02em;margin-bottom:10px}
@@ -347,7 +347,9 @@ footer .cp{margin-top:18px;color:#64748B}
   <!-- 🔄 **세 단계 카드를 제품 넷으로 바꿨습니다** 〔2026-10-03 · 대표 결정〕 — 종전의 「1단계 무료 · 2단계 유료 ·
           3단계 준비 중」은 v3 랜딩(2026-09-30)에서 사라진 틀이었고, 이미 제품에 들어 있는 대금 관리를
           「준비 중」으로 적고 있었습니다.
-       🔴 **네 칸의 이름과 순서는 랜딩 제품 탭(`index.html` `.tabs button b`)과 같아야 합니다** —
+       🔄 **넷 → 셋** 〔2026-10-05 · 대표 결정 3B〕 — 랜딩 제품 탭이 TROPS AI · 거래·기한 관리 · 서류 확인 셋이 되어 따라 바꿨습니다.
+          「서류 확인」 설명은 앱 화면의 안내 글과 같습니다(trops_a lib/constants/export-document-review.ts REVIEW_COPY.lead).
+       🔴 **칸의 이름과 순서는 랜딩 제품 탭(`index.html` `.tabs button b`)과 같아야 합니다** —
           test/landing-invariants.test.js ⑥ 이 두 장을 맞댑니다. 설명 문장은 장마다 달라도 됩니다.
        ⚠️ 「함께 제공하는 것」 두 줄의 꼬리표는 랜딩의 같은 자리 문구 그대로입니다
           (진단 = `#check` 의 버튼 옆 · 보험 서류 = `#service` 의 `.om`). 한쪽만 고치지 마십시오.
@@ -357,20 +359,16 @@ footer .cp{margin-top:18px;color:#64748B}
           어느 페이지에도 원화 금액이 없어야 한다고 단정합니다. -->
   <div class="flow">
     <div class="fs">
-      <h3>어시스턴트</h3>
+      <h3>TROPS AI</h3>
       <p>{{publicCopy.coreStatus}} · 수출 거래 등록, 서류 초안, 다음 할 일까지 한 번에 처리합니다.</p>
     </div>
     <div class="fs">
-      <h3>수출 거래</h3>
-      <p>{{publicCopy.coreStatus}} · 수출 거래별 조건과 받을 대금을 한 화면에서 확인합니다.</p>
+      <h3>거래·기한 관리</h3>
+      <p>{{publicCopy.coreStatus}} · 수출 거래별 조건과 받을 대금을 한 화면에서 확인하고, 통지 기한과 결제기일을 약관 기준으로 계산해 미리 보여 드립니다.</p>
     </div>
     <div class="fs">
-      <h3>서류</h3>
-      <p>{{publicCopy.coreStatus}} · 견적서에서 선적서류까지 품목·단가·합계가 그대로 이어집니다.</p>
-    </div>
-    <div class="fs">
-      <h3>기한</h3>
-      <p>{{publicCopy.coreStatus}} · 통지 기한과 결제기일을 약관 기준으로 계산해 미리 보여 드립니다.</p>
+      <h3>서류 확인</h3>
+      <p>{{publicCopy.coreStatus}} · 다른 곳에서 만든 상업송장·견적서·패킹리스트를 서류끼리, 그리고 수출 거래 정보와 대조합니다.</p>
     </div>
   </div>
   <p class="flow-note">{{publicCopy.coreSummary}}</p>
