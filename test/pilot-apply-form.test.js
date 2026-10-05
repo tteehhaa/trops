@@ -1,14 +1,18 @@
 'use strict';
 /*
- * pilot-apply-form.test.js — 홈 «신청하기» 두 갈래(#join · 출시 소식 받기 · 실증 참여) 〔신설 2026-09-29 · 🔄 2026-10-05 입구 통합〕
+ * pilot-apply-form.test.js — 홈 «신청하기»(#join · 실증 참여) 〔신설 2026-09-29 · 🔄 2026-10-05 입구 통합 · 🔄 2026-10-06 출시 소식 걷음〕
+ *
+ * 🔄 **2026-10-06 · 대표 결정 「출시 소식 받기 빼자」** — #join 은 실증 참여 하나만 받습니다. 출시 알림은 /contact 의
+ *    「출시 알림」 신청이 그대로 받습니다. 종전 이 파일이 재던 출시 소식 폼(#joinNotifyForm · /api/leads)의 검사는 걷고,
+ *    «되살아나지 않는다» 한 가지만 남겼습니다.
  *
  * 🔄 **2026-10-05 · 대표 지시 「랜딩 신청 입구를 지금 하나로 합쳐줘」** — 옛 신청 폼(#apply)과 「실증 신청」 · 「가입하기」
  *    두 버튼을 걷고, 신청 버튼을 전부 「신청하기」 → #join 으로 모았습니다. #join 은 오늘부터 섭니다.
- *    종전 이 파일은 옛 폼(#applyForm · 2판 · 업종 6 · 지역 5)을 쟀습니다 — 그 폼이 사라져 대상이 #join 두 폼으로 옮겼습니다.
+ *    종전 이 파일은 옛 폼(#applyForm · 2판 · 업종 6 · 지역 5)을 쟀습니다 — 그 폼이 사라져 대상이 #join 으로 옮겼습니다.
  *
  * 🔴 이 검사가 지키는 것은 **네 갈래**입니다.
  *    ① 입구가 하나다 — 신청 버튼은 전부 #join, 옛 폼·옛 버튼 0.
- *    ② 폼이 앱 계약(trops_a lib/pilot/validate.ts 3판 · app/api/leads/route.ts)의 **키 그대로** 보낸다.
+ *    ② 폼이 앱 계약(trops_a lib/pilot/validate.ts 3판)의 **키 그대로** 보낸다.
  *    ③ **새 칸은 방침 2차 개정 시행일부터** — 그 칸은 마크업에서 숨김·잠김으로 오고, 보내는 본문도 그날부터만 싣는다.
  *       지금 받는 칸은 지금 시행 중인 방침에 적힌 것뿐이다(근거는 아래 TODAY 표의 주석).
  *    ④ **꺼짐이 기본** — 제출 버튼은 숨긴 채로 오고, 운영 스위치는 site.config.json 한 줄이다.
@@ -29,9 +33,8 @@ const src = html.replace(/<!--[\s\S]*?-->/g, '');
 
 const joinHtml = (src.match(/<section id="join"[\s\S]*?<\/section>/) || [])[0] || '';
 const pilotHtml = (joinHtml.match(/<form class="f" id="joinPilotForm"[\s\S]*?<\/form>/) || [])[0] || '';
-const notifyHtml = (joinHtml.match(/<form class="f" id="joinNotifyForm"[\s\S]*?<\/form>/) || [])[0] || '';
 const script = [...src.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]).join('\n');
-const joinScript = (script.match(/\/\* ══════════════ 신청하기 · 두 갈래[\s\S]*?\}\)\(\);/) || [])[0] || '';
+const joinScript = (script.match(/\/\* ══════════════ 신청하기 · 실증 참여[\s\S]*?\}\)\(\);/) || [])[0] || '';
 
 const namesIn = (h) => [...h.matchAll(/\sname="([^"]+)"/g)].map((m) => m[1]);
 /** `data-from-rev2` 가 붙은 덩어리(여는 태그 ~ 짝 닫는 태그)를 전부 꺼냅니다 — 같은 태그 이름의 겹침을 셉니다. */
@@ -59,15 +62,12 @@ function rev2Blocks(h) {
  * 🔴 **지금 받는 칸** — 지금 시행 중인 방침에 «함께» 적힌 것만입니다.
  *    실증 참여: 앱 방침 2026-10-01 판 제2조 「시범 참여 신청」(회사명 · 이메일 · 업종 · 요청하신 업무 · 소개 코드 · 유입 경로)
  *               ∩ privacy.html §02 「시범 참여 신청」 행(같은 항목 · 이름 · 전화 · 직급은 없음).
- *    출시 소식: privacy.html §02 「문의 · 견적 요청 · 출시 알림 신청」 · contact.html 출시 알림과 같은 한 칸(이메일).
  *    + 동의(수집·이용 · 실증 참여 안내 확인)와 봇 방지 · 판 이름.
  */
 const TODAY_PILOT = ['website', 'requested_work', 'referral_code', 'notice_version', 'company_name', 'industry', 'email',
   'consents.program_notice', 'consents.collection'];
 const REV2_PILOT = ['company_size_band', 'contact_name', 'job_title', 'phone', 'address', 'address_detail', 'postal_code',
   'consents.newsletter', 'consents.support_info'];
-const TODAY_NOTIFY = ['email', 'consentPrivacy'];
-const REV2_NOTIFY = ['company', 'name', 'consentNewsletter', 'consentSupportInfo'];
 const SECTOR = ['manufacturing', 'trade', 'service', 'other'];
 const SIZE = ['small', 'medium'];
 
@@ -110,6 +110,14 @@ test('🔴 다른 페이지(about · en · privacy)도 홈의 #join 으로 간�
   assert.ok(!/실증 신청<\/a>/.test(about), 'about.html 의 버튼 이름이 「실증 신청」 그대로입니다');
 });
 
+test('🔴 출시 소식 받기는 #join 에 없다 — 2026-10-06 대표 결정 · 출시 알림은 /contact 가 받는다', () => {
+  assert.ok(joinHtml && pilotHtml, '#join · 실증 참여 폼을 찾지 못했습니다 — 검사가 헛돕니다');
+  assert.ok(!/id="joinNotifyForm"/.test(src), '출시 소식 폼이 되살아났습니다');
+  assert.strictEqual((joinHtml.match(/<form\b/g) || []).length, 1, '#join 의 폼이 하나가 아닙니다');
+  assert.ok(!/\/api\/leads|kind: 'notify'/.test(joinScript), '#join 스크립트가 출시 소식(/api/leads)을 보냅니다');
+  assert.match(read('contact.html'), /href="\/contact\?type=notify"/, '/contact 의 출시 알림 신청이 사라졌습니다 — 출시 알림을 받을 곳이 없습니다');
+});
+
 test('🔴 #join 은 오늘부터 선다 — 숨김으로 오지 않고, 옛 주소 #apply 를 받아 준다', () => {
   assert.match(joinHtml, /^<section id="join" class="tint" data-section="apply">/, '#join 이 숨은 채로 옵니다(계측 영역 이름은 apply 를 잇습니다)');
   assert.match(joinScript, /location\.hash === '#apply'/, '옛 주소 #apply 를 이 구획으로 데려오는 자리가 없습니다');
@@ -118,10 +126,9 @@ test('🔴 #join 은 오늘부터 선다 — 숨김으로 오지 않고, 옛 주
 
 /* ══ ② 계약의 키 그대로 ══════════════════════════════════════════════ */
 
-test('🔴 실증 참여 폼의 칸 이름 = 지금 칸 + 새 칸(3판 계약 키) · 출시 소식 폼도 같다', () => {
-  assert.ok(pilotHtml && notifyHtml, '두 폼을 찾지 못했습니다 — 검사가 헛돕니다');
+test('🔴 실증 참여 폼의 칸 이름 = 지금 칸 + 새 칸(3판 계약 키)', () => {
+  assert.ok(pilotHtml, '실증 참여 폼을 찾지 못했습니다 — 검사가 헛돕니다');
   assert.deepStrictEqual([...namesIn(pilotHtml)].sort(), [...TODAY_PILOT, ...REV2_PILOT].sort(), '실증 참여 폼의 칸 이름이 계약과 다릅니다');
-  assert.deepStrictEqual([...namesIn(notifyHtml)].sort(), [...TODAY_NOTIFY, ...REV2_NOTIFY].sort(), '출시 소식 폼의 칸 이름이 계약과 다릅니다');
 });
 
 test('🔴 업종 · 규모 선택지 값이 앱의 정본 어휘다', () => {
@@ -147,7 +154,6 @@ test('🔴 보내는 본문 — 3판 · 동의는 consents 객체 · 봇 방지 
   assert.match(joinScript, /website: pf\.elements\.website\.value, elapsed_ms: elapsed/, '봇 방지 두 칸을 싣지 않습니다');
   assert.match(joinScript, /3200 - \(Date\.now\(\) - opened\)/, '3초 전 제출을 기다려 보내는 장치가 없습니다 — 앱이 bot 으로 봅니다');
   assert.match(joinScript, /'Content-Type': 'application\/json'/, 'JSON 으로 보내지 않습니다');
-  assert.match(joinScript, /kind: 'notify', email: v\(nf, 'email'\), consentPrivacy: true/, '출시 소식 본문이 계약과 다릅니다');
 });
 
 test('🔴 201 이 아니면 완료 화면을 띄우지 않는다 — 저장 못 한 신청을 «접수됐다»고 하지 않는다', () => {
@@ -170,12 +176,12 @@ test('🔴 새 칸은 전부 `data-from-rev2` 안에 있고, 마크업에서 숨
     for (const c of controls) assert.match(c, /\sdisabled\b/, '새 칸이 잠긴 채로 오지 않습니다: ' + c);
   }
   const inRev2 = new Set(blocks.flatMap((b) => namesIn(b.body)));
-  for (const n of [...REV2_PILOT, ...REV2_NOTIFY]) assert.ok(inRev2.has(n), n + ' 가 `data-from-rev2` 밖에 있습니다 — 방침 시행 전에 보입니다');
-  for (const n of [...TODAY_PILOT, ...TODAY_NOTIFY]) assert.ok(!inRev2.has(n), n + ' 가 `data-from-rev2` 안에 있습니다 — 오늘 받을 칸이 숨습니다');
+  for (const n of REV2_PILOT) assert.ok(inRev2.has(n), n + ' 가 `data-from-rev2` 밖에 있습니다 — 방침 시행 전에 보입니다');
+  for (const n of TODAY_PILOT) assert.ok(!inRev2.has(n), n + ' 가 `data-from-rev2` 안에 있습니다 — 오늘 받을 칸이 숨습니다');
 });
 
 test('🔴 지금 칸은 잠기지 않은 채로 온다 — 오늘부터 보이고 받는다', () => {
-  for (const [form, names] of [[pilotHtml, TODAY_PILOT], [notifyHtml, TODAY_NOTIFY]]) {
+  for (const [form, names] of [[pilotHtml, TODAY_PILOT]]) {
     for (const n of names) {
       const tag = (form.match(new RegExp('<(?:input|select)\\b[^>]*\\sname="' + n.replace('.', '\\.') + '"[^>]*>')) || [])[0] || '';
       assert.ok(tag, n + ' 칸을 찾지 못했습니다');
@@ -186,9 +192,7 @@ test('🔴 지금 칸은 잠기지 않은 채로 온다 — 오늘부터 보이�
 
 test('🔴 보내는 본문도 새 칸을 «그날부터만» 싣는다', () => {
   const pilotBody = (joinScript.match(/url: PILOT\.endpoint[\s\S]*?return body;/) || [])[0] || '';
-  const notifyBody = (joinScript.match(/url: LEADS_ENDPOINT[\s\S]*?return body;/) || [])[0] || '';
-  for (const [body, names] of [[pilotBody, ['company_size_band', 'contact_name', 'phone', 'job_title', 'address', 'postal_code', 'newsletter', 'support_info']],
-    [notifyBody, ['company', 'name', 'consentNewsletter', 'consentSupportInfo']]]) {
+  for (const [body, names] of [[pilotBody, ['company_size_band', 'contact_name', 'phone', 'job_title', 'address', 'postal_code', 'newsletter', 'support_info']]]) {
     assert.ok(body, '본문을 만드는 자리를 찾지 못했습니다');
     const outside = body.replace(/if \(REV2\) \{[\s\S]*?\n {6}\}/, '');
     for (const n of names) assert.ok(!new RegExp('\\.' + n + '\\b').test(outside), n + ' 를 시행일 전에도 싣습니다');
@@ -212,7 +216,7 @@ test('⚠️ 새 칸이 서는 날 = 앱의 방침 2차 개정 시행일(PRIVACY
 });
 
 test('🔴 수집·이용 안내 글이 둘이다 — 지금 방침에 맞춘 글(data-until-rev2)과 새 글(data-from-rev2), 판 이름도 둘', () => {
-  for (const form of [pilotHtml, notifyHtml]) {
+  for (const form of [pilotHtml]) {
     assert.match(form, /<dl data-until-rev2>/, '지금 방침에 맞춘 안내 글이 없습니다');
     assert.match(form, /<dl data-from-rev2 hidden>/, '새 안내 글이 숨은 채로 오지 않습니다');
   }
@@ -220,14 +224,12 @@ test('🔴 수집·이용 안내 글이 둘이다 — 지금 방침에 맞춘 �
   for (const word of ['규모', '전화', '직급', '주소', '이름']) assert.ok(!today.includes(word), '지금 안내 글이 아직 받지 않는 칸(' + word + ')을 적습니다');
   assert.ok(today.includes('{{publicCopy.retention}}'), '지금 안내 글이 보관 기준(publicCopy.retention)을 쓰지 않습니다');
   assert.match(pilotHtml, /name="notice_version" value="pilot-apply-2026-10-05" data-rev2-value="pilot-apply-2026-10-13"/, '동의 문구의 판 이름이 바뀌었습니다 — 글을 고쳤으면 판도 바꾸십시오');
-  const notifyToday = (notifyHtml.match(/<dl data-until-rev2>([\s\S]*?)<\/dl>/) || [])[1] || '';
-  assert.match(notifyToday, /<dd>이메일<\/dd>/, '출시 소식의 지금 안내 글이 이메일 한 칸이 아닙니다');
 });
 
 /* ══ ④ 꺼짐이 기본 ═══════════════════════════════════════════════════ */
 
 test('🔴 제출 버튼은 숨긴 채로 온다 — 스크립트가 없으면 아무것도 보내지 않는다', () => {
-  for (const form of [pilotHtml, notifyHtml]) {
+  for (const form of [pilotHtml]) {
     assert.match(form, /<button class="btn" type="submit"[^>]*\sdata-js-submit hidden>/, '제출 버튼이 숨은 채로 오지 않습니다');
   }
   assert.match(pilotHtml, /<p class="note" id="pilotOff">/, '꺼졌을 때의 안내 문구가 보이는 채로 오지 않습니다');

@@ -444,7 +444,8 @@ nav .m a:hover{color:var(--ink)}
 .sample{display:inline-block;font-size:12px;color:var(--warn-ink);background:var(--warn-bg);border-radius:999px;padding:2px 10px;margin-left:8px;vertical-align:middle}
 
 /* 제품 — 탭
- * 🔄 2026-10-05(대표 결정 3B) — 왼쪽 한 덩어리(제목 → 실증 중 한 줄 → 탭) · 오른쪽 화면 예시가 제목 높이부터 · 아래 전폭 연동 띠.
+ * 🔄 2026-10-05(대표 결정 3B) — 왼쪽 한 덩어리(제목 → 실증 중 한 줄 → 탭) · 오른쪽 화면 예시가 제목 높이부터.
+ *    (아래 전폭 연동 띠는 2026-10-06 「업무도구 연동」 탭으로 옮기며 걷었습니다.)
  *    종전 `.product-nav{display:contents}` 는 제목 · 상태 문구 둘 · 탭을 그리드 칸에 하나씩 흘려,
  *    상태 문구 하나는 오른쪽 위에, 하나는 탭 아래 왼쪽 끝에 떠 있었습니다. */
 .show{display:grid;grid-template-columns:360px minmax(0,1fr);gap:28px 40px;align-items:start}
@@ -484,20 +485,22 @@ nav .m a:hover{color:var(--ink)}
 .pill.warn{background:var(--warn-bg);color:var(--warn-ink)}
 .pill.bad{background:var(--bad-bg);color:var(--bad-ink)}
 .pill.off{background:var(--surface);color:var(--mute);box-shadow:inset 0 0 0 1px var(--line)}
-.pane .big .pill{vertical-align:4px;margin-left:6px}
-.pane .scope{font-size:13px;color:var(--sub);margin-top:4px}
-/* 서류 확인 — 개수 네 칸. 숫자는 무채색, 색은 «불일치» 이름에만(앱 결과 화면과 같은 규칙 · 많으면 나쁘다는 서열을 만들지 않음). */
-.cnt{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:14px}
-.cnt div{border:1px solid var(--line);border-radius:10px;padding:10px 12px}
-.cnt span{display:block;font-size:12.5px;color:var(--mute)}
-.cnt b{display:block;font-size:20px;margin-top:2px}
-.cnt div:first-child span{color:var(--bad-ink);font-weight:600}
-/* 연동 띠 — 두 열 아래 전폭. 상태 = site.config.json publicCopy.integrationSummary */
-.intg{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:10px 28px;border:1px solid var(--line);border-radius:14px;background:var(--white);padding:18px 24px;font-size:14.5px}
-.intg>b{font-size:15px}
-.intg ul{display:flex;flex-wrap:wrap;gap:8px 24px;list-style:none;margin:0;padding:0}
-.intg li{display:flex;align-items:center;gap:8px}
-.intg p{margin-left:auto;font-size:13px;color:var(--mute)}
+/* TROPS AI — 대화 예시 아래 앱 첫 화면의 입력창 · 빠른 버튼(「서류 확인」 강조 · 앱과 같은 모양). */
+.cmp{margin-top:14px;border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.cmp p{font-size:13px;color:var(--mute)}
+.cmp div{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.cmp i{display:grid;place-items:center;width:28px;height:28px;border:1px solid var(--line);border-radius:50%;font-style:normal;font-size:15px;color:var(--sub)}
+.cmp span{font-size:12.5px;font-weight:600;color:var(--white);background:var(--accent);opacity:.45;border-radius:8px;padding:6px 12px}
+.qk{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.qk span{border:1px solid var(--line);border-radius:10px;padding:9px 8px;font-size:13px;text-align:center;background:var(--white)}
+.qk .on{background:var(--accent);border-color:var(--accent);color:var(--white);font-weight:600}
+.qk svg{width:14px;height:14px;vertical-align:-2px;margin-right:5px}
+/* 업무도구 연동 — 도구 이름(글자) + 상태. ⛔ 로고를 쓰지 않습니다. 상태 = site.config.json publicCopy.integrationSummary */
+.pane .lede{font-size:14px;color:var(--sub);margin-top:6px}
+.tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:16px}
+.tools div{border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.tools b{display:block;font-size:14.5px}
+.tools .pill{margin-top:8px}
 .doc{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:14px}
 .doc div{border:1px solid var(--line);border-radius:10px;padding:14px;font-size:13px}
 .doc div b{display:block;font-size:15px;margin-bottom:6px}
@@ -574,15 +577,21 @@ nav .m a:hover{color:var(--ink)}
 .sec span{display:block;font-size:14.5px;color:var(--sub);margin-top:8px}
 .sec b .soon{display:inline-block;font-size:12px;font-weight:500;color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:1px 8px;margin:0 0 0 6px;vertical-align:2px}
 
-/* 신청하기 — 머리(누구를 모시는지) · 꼬리(1분 진단 · 대표) */
-.jhead{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
-.jhead .lead{font-size:17px;color:var(--sub);margin-top:20px}
-.jhead .fit div{font-size:15px;padding:10px 0;border-top:1px solid var(--line)}
-.jhead .fit .x{color:var(--mute)}
-.jfoot{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;margin-top:28px}
-.jfoot .pre{font-size:15px}
-.jfoot .pre a{font-weight:600;border-bottom:1px solid var(--ink)}
-.jfoot .maker2{margin-top:0}
+/* 신청하기 — 왼쪽 소개(누구를 모시는지 · 1분 진단 · 대표) · 오른쪽 실증 참여 폼
+ * 🔄 2026-10-06 대표 결정 — 출시 소식 받기를 걷어 갈래가 하나가 되었고, 배치를 «왼쪽 소개 + 오른쪽 폼»으로 바꿨습니다.
+ *    왼쪽은 스크롤을 따라옵니다(sticky) — 소개가 약 550px 로 노트북 화면보다 짧아 가려지는 곳이 없고,
+ *    10-13 뒤 폼이 길어져도(약 1.7배) 왼쪽에 빈칸이 생기지 않습니다.
+ *    ⚠️ 왼쪽에 무엇을 더 넣어 화면보다 길어지면 따라오기를 빼십시오 — 아래쪽이 화면 밖에 걸립니다.
+ *    휴대폰(860px 이하)은 한 줄 — 제목 · 대상 → 폼 → 1분 진단 · 대표 순(아래 미디어 쿼리 · order). */
+.jwrap{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:56px;align-items:start}
+.jintro{position:sticky;top:96px}
+.jintro .lead{font-size:17px;color:var(--sub);margin-top:20px}
+.jintro .fit{margin-top:28px}
+.jintro .fit div{font-size:15px;padding:10px 0;border-top:1px solid var(--line)}
+.jintro .fit .x{color:var(--mute)}
+.jtail{margin-top:32px}
+.jtail .pre{font-size:15px}
+.jtail .pre a{font-weight:600;border-bottom:1px solid var(--ink)}
 .maker2{display:flex;gap:14px;align-items:center;margin-top:28px;border-top:1px solid var(--line);padding-top:22px}
 .maker2 .pf{width:44px;height:44px;border-radius:50%;background:var(--white) url(/img/icon_primary.svg) center/22px no-repeat;border:1px solid var(--line);flex:none}
 .maker2 b{display:block;font-size:15.5px}
@@ -595,6 +604,8 @@ form.f{border:1px solid var(--line);border-radius:14px;padding:30px;background:v
 .f input,.f select{width:100%;margin-top:7px;padding:12px 13px;border:1px solid var(--line);border-radius:8px;font-size:15px;font-family:inherit;background:var(--white);color:var(--ink)}
 .f input:focus,.f select:focus{outline:2px solid var(--accent);outline-offset:1px}
 .f .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+/* 짝 칸이 아직 숨어 있으면(10-13 전 「규모」) 남은 칸이 한 줄을 다 씁니다 — 업종만 반쪽으로 서던 것(2026-10-06). */
+.f .two:has(> [hidden]){grid-template-columns:1fr}
 .fs{border:0;margin:0;padding:0;min-width:0}
 .fs:disabled input,.fs:disabled select{background:var(--surface);color:var(--mute);cursor:not-allowed}
 .f .hint{font-size:12.5px;color:var(--mute);margin-top:5px}
@@ -624,11 +635,26 @@ form.f{border:1px solid var(--line);border-radius:14px;padding:30px;background:v
 .done{border:1px solid var(--line);border-radius:14px;padding:30px;background:var(--white)}
 .done h3{font-size:22px;margin-top:6px}
 .done p{font-size:15px;color:var(--sub);margin-top:16px}
-/* 신청하기 · 두 갈래 — 카드 둘(휴대폰은 세로 · 아래 미디어 쿼리)
- * 🔄 2026-10-05 대표 결정 — 같은 너비 둘(1:1) → 주·부(3:2). 실증 참여(.jmain)가 먼저 · 넓게, 출시 소식(.jside)이 곁에 좁게.
- *    두 폼의 칸 수가 달라 높이는 맞지 않습니다(오늘 약 1.7배 · 10-13 뒤 약 1.6배) — 같은 너비로 두면 그 차이가 «빈칸»으로 읽힙니다.
- *    ⚠️ 출시 소식 카드를 스크롤에 따라오게(sticky) 하지 않습니다 — 10-13 뒤 카드가 노트북 화면보다 길어져 아래 동의·버튼이 가려집니다. */
-.join{display:grid;grid-template-columns:3fr 2fr;gap:24px;margin-top:28px;align-items:start}
+/*
+ * 신청 폼 진행 막대 · 완료 체크 〔2026-10-06 · 대표 결정 애니메이션 B〕.
+ *    막대 = 필수 칸 중 채운 몫(잠긴 칸 · 10-13 전의 새 칸은 세지 않음 — 제출 검사와 같은 기준). 다 채우면 글자가 강조색.
+ *    체크 = 완료 화면(앱 응답 201 에서만 뜸)이 설 때 원 → 체크 순으로 그려집니다.
+ *    🔴 체크의 기본 모양은 «다 그려진» 상태이고 그리기는 keyframes(fill both)로만 — 움직임 줄이기에서는 처음부터 다 보입니다.
+ */
+.jprog{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+.jprog-bar{flex:1;height:4px;border-radius:999px;background:var(--line);overflow:hidden}
+.jprog-bar i{display:block;height:100%;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .35s ease}
+.jprog-n{font-size:12.5px;color:var(--mute);white-space:nowrap}
+.jprog-n b{color:var(--ink);font-weight:600}
+.jprog.full .jprog-n,.jprog.full .jprog-n b{color:var(--accent)}
+.done .ok{display:block;width:52px;height:52px;margin-bottom:14px;fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.done .ok circle{stroke-dasharray:151;stroke-dashoffset:0}
+.done .ok path{stroke-dasharray:32;stroke-dashoffset:0}
+.js .done .ok circle{animation:draw-ring .6s ease both}
+.js .done .ok path{animation:draw-check .35s ease .5s both}
+@keyframes draw-ring{from{stroke-dashoffset:151}to{stroke-dashoffset:0}}
+@keyframes draw-check{from{stroke-dashoffset:32}to{stroke-dashoffset:0}}
+/* 신청하기 · 실증 참여 카드 */
 .jcard{border:1px solid var(--line);border-radius:14px;padding:28px;background:var(--white)}
 /* 카드 안의 폼은 상자를 따로 두르지 않습니다(옛 신청 폼의 테두리 · 여백을 걷음 — 상자 안의 상자). */
 .jcard form.f,.jcard .done{border:0;border-radius:0;padding:0;background:none}
@@ -702,6 +728,41 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
 .js .app .today li{opacity:0;transform:translateY(6px);transition:opacity .4s ease,transform .4s ease}
 .js .app.in .today li{opacity:1;transform:none}
 .js .app.in .today li:nth-child(2){transition-delay:.35s}
+/*
+ * 제품 화면 예시 «재생» 〔2026-10-06 · 대표 결정 애니메이션 A〕 — 탭이 설 때마다(.pane.on) 그 화면이 한 번 움직입니다.
+ *    TROPS AI: 질문 → 입력 중(점 셋) → 답 → 「서류 확인」 한 번 빛남 · 거래·기한: 줄이 차례로 → 「오늘」 한 번 · 업무도구: 칸이 차례로.
+ * 🔴 3.2초 안에 끝납니다 — 탭은 6초마다 넘어갑니다(아래 탭 스크립트). 구획이 화면에 든 뒤(.show.in)부터만 돕니다.
+ * 🔴 기본 모양은 «다 보이는» 상태이고, 숨김은 keyframes(fill both)로만 합니다 — 움직임 줄이기(animation:none)에서는
+ *    처음부터 다 보입니다(점 셋만 기본이 숨김). 투명도 · 위치 · 그림자만 움직여 화면이 밀리지 않습니다.
+ */
+.bubble.ai{position:relative}
+.bubble .dots{position:absolute;left:14px;top:16px;display:flex;gap:4px;opacity:0;pointer-events:none}
+.bubble .dots i{width:6px;height:6px;border-radius:50%;background:var(--mute)}
+.js .show.in .pane.on .bubble.me{animation:rise .35s ease .1s both}
+.js .show.in .pane.on .bubble.ai{animation:rise .35s ease .45s both}
+.js .show.in .pane.on .bubble.ai .dots{animation:dots-on 1.05s steps(1,end) .45s both}
+.js .show.in .pane.on .bubble.ai .dots i{animation:blink .7s ease-in-out .45s 2 both}
+.js .show.in .pane.on .bubble.ai .dots i:nth-child(2){animation-delay:.6s}
+.js .show.in .pane.on .bubble.ai .dots i:nth-child(3){animation-delay:.75s}
+.js .show.in .pane.on .bubble.ai .say,.js .show.in .pane.on .bubble.ai .pills{animation:show .3s ease 1.5s both}
+.js .show.in .pane.on .qk .on{animation:ping 1.2s ease 1.9s 1}
+.js .show.in .pane.on .tbl tr:nth-child(n+2){animation:show .35s ease .15s both}
+.js .show.in .pane.on .tbl tr:nth-child(3){animation-delay:.3s}
+.js .show.in .pane.on .tbl tr:nth-child(4){animation-delay:.45s}
+.js .show.in .pane.on .preview{animation:rise .35s ease .6s both}
+.js .show.in .pane.on .pill.bad{animation:ping-bad 1.2s ease 1s 1}
+.js .show.in .pane.on .tools div{animation:rise .35s ease .1s both}
+.js .show.in .pane.on .tools div:nth-child(2){animation-delay:.18s}
+.js .show.in .pane.on .tools div:nth-child(3){animation-delay:.26s}
+.js .show.in .pane.on .tools div:nth-child(4){animation-delay:.34s}
+.js .show.in .pane.on .tools div:nth-child(5){animation-delay:.42s}
+.js .show.in .pane.on .tools div:nth-child(6){animation-delay:.5s}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes show{from{opacity:0}to{opacity:1}}
+@keyframes dots-on{from{opacity:1}to{opacity:0}}
+@keyframes blink{0%,100%{opacity:.3}50%{opacity:1}}
+@keyframes ping{from{box-shadow:0 0 0 0 rgba(29,78,216,.45)}to{box-shadow:0 0 0 12px rgba(29,78,216,0)}}
+@keyframes ping-bad{from{box-shadow:0 0 0 0 rgba(159,29,29,.35)}to{box-shadow:0 0 0 8px rgba(159,29,29,0)}}
 /* 🔴 움직임 줄이기 — 전부 멈춥니다(탭 자동 넘김 · 예시 타이핑은 스크립트가 따로 끕니다) */
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
@@ -727,10 +788,13 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
   .app .chips .gap{display:none}
   .app .chips .edit{grid-column:1/-1}
   .app .today li{align-items:flex-start}
-  .head,.show,.qc,.calc,.jhead,.join,.f .two{grid-template-columns:1fr;gap:20px}
-  .product-nav,.screen,.intg{grid-column:1;grid-row:auto}
-  .cnt{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .intg p{margin-left:0}
+  .head,.show,.qc,.calc,.f .two{grid-template-columns:1fr;gap:20px}
+  .jwrap{display:flex;flex-direction:column;gap:0}
+  .jintro{display:contents}
+  .jmain{order:2;margin-top:28px}
+  .jtail{order:3}
+  .product-nav,.screen{grid-column:1;grid-row:auto}
+  .qk,.tools{grid-template-columns:repeat(2,minmax(0,1fr))}
   .screen{padding:20px}
   .bubble{max-width:94%}
   #product .tbl{font-size:12px;overflow-wrap:anywhere;word-break:normal}
@@ -874,14 +938,19 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
 
 
 <section id="product" class="tint" data-section="product"><div class="w">
-  <!-- 🔄 **탭 넷 → 셋 + 연동 띠** 〔2026-10-05 · 대표 결정 3B〕 —
-       어시스턴트 · 수출 거래 · 서류 · 기한 → TROPS AI · 거래·기한 관리 · 서류 확인.
-       · 「서류 확인」은 앱의 메뉴 · 화면 제목과 같은 이름입니다(trops_a lib/constants/ledger-nav.ts · export-document-review.ts REVIEW_COPY).
-         「서류 검토」를 쓰지 않습니다 — 랜딩의 면책(「계약서에 대한 법률적 검토를 제공하지 않습니다」)과 부딪힙니다.
-         화면 예시는 앱 결과 화면의 순서 · 말을 따릅니다 — 한 문장(서로 다른 값 N개) → 개수 네 칸 → 불일치 줄(값을 나란히, 어느 쪽이 틀렸는지 정하지 않음)
-         → 대조 범위 한 줄(«확인된 문제 없음»은 그 범위 안에서만 참이라 범위가 언제나 섭니다).
+  <!-- 🔄 **탭 셋 = TROPS AI · 거래·기한 관리 · 업무도구 연동** —
+       〔2026-10-05 · 대표 결정 3B〕 어시스턴트 · 수출 거래 · 서류 · 기한 → TROPS AI · 거래·기한 관리 · 서류 확인 + 연동 띠.
+       〔2026-10-06 · 대표 결정〕 세 번째 탭 「서류 확인」 → 「업무도구 연동」, 아래 연동 띠는 걷음(탭과 겹침).
+       · 「업무도구 연동」은 앱 메뉴와 같은 이름입니다(trops_a components/nav/workspace-preview.tsx «Chrome·Gmail·Google Calendar·ChatGPT·Claude·이메일 알림을
+         회사의 수출 업무와 연결합니다»). 상태는 site.config.json publicCopy.integrationSummary 와 같아야 합니다 —
+         메일 · 캘린더 · 알림 · 외부 AI = 실증 중, 브라우저(Chrome) = 준비 중.
+         ⛔ 로고를 쓰지 않습니다(대표 결정 · 이름만 글자로) — 제휴 · 보증으로 읽힐 수 있고, 앱도 Claude 로고를 P0 에서 표시하지 않습니다
+            (trops_a lib/constants/nda-review.ts). 도구마다 하는 일을 새로 지어 적지 않습니다(앱에 적힌 문장만).
+       · 「서류 확인」은 TROPS AI 화면 예시의 첫 빠른 버튼으로 남깁니다 — 앱 첫 화면과 같은 강조(trops_a lib/work/chat/quick-fixed.ts).
+         빠른 버튼 여섯 · 입력창 문구는 앱 그대로입니다(quick-fixed.ts 순서 · components/nav/shell-chat.tsx PLACEHOLDER).
+         🔄 「NDA 검토」 〔2026-10-06 · 대표 결정 «앱과 같게»〕 — 한때 뺐다가 되살렸습니다. 랜딩 면책 「계약서에 대한 법률적 검토를
+            제공하지 않습니다」와 엇갈려 보일 수 있다는 점을 알고 고른 것입니다. 앱이 버튼 이름을 바꾸면 여기도 따라 바꿉니다.
        · 거래 · 기한 화면은 옛 두 화면의 값만 옮겼습니다(새 숫자 없음).
-       · 연동은 보여 줄 화면이 아직 없어 화면 예시 대신 띠로 적습니다 — 상태는 site.config.json publicCopy.integrationSummary 와 같아야 합니다.
        ⚠️ 이름을 바꾸면 publicCopy.ko.coreSummary · 푸터 「제품」 링크 · about.html 01 도 함께 바꿉니다. -->
   <div class="show rv">
     <div class="product-nav">
@@ -892,7 +961,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
         <!-- 🔄 시안 「미리 알려 드립니다」 → 「미리 보여 드립니다」 〔2026-09-29 · 대표 결정〕 —
              test/landing-invariants.test.js 가 랜딩 전역에서 알림 약속 문면을 0건으로 잠급니다. -->
         <button type="button" data-t="p2" role="tab" id="tab2" aria-controls="p2" aria-selected="false" tabindex="-1"><i class="bar"></i><b>거래·기한 관리</b><span>{{publicCopy.coreStatus}} · 거래별 단계와 다음 기한을 한 화면에. 기한은 약관 기준으로 계산해 미리 보여 드립니다.</span></button>
-        <button type="button" data-t="p3" role="tab" id="tab3" aria-controls="p3" aria-selected="false" tabindex="-1"><i class="bar"></i><b>서류 확인</b><span>{{publicCopy.coreStatus}} · 다른 곳에서 만든 서류를 서류끼리, 그리고 거래 정보와 대조합니다.</span></button>
+        <button type="button" data-t="p3" role="tab" id="tab3" aria-controls="p3" aria-selected="false" tabindex="-1"><i class="bar"></i><b>업무도구 연동</b><span>{{publicCopy.coreStatus}} · 쓰시던 메일·캘린더·AI를 회사의 수출 업무와 연결합니다.</span></button>
       </div>
     </div>
     <div class="screen">
@@ -900,8 +969,9 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
       <div class="pane on" id="p1" role="tabpanel" aria-labelledby="tab1">
         <div class="t">TROPS AI</div>
         <div class="bubble me">베트남 바이어한테 보낼 견적서 만들어 줘. 지난번이랑 같은 품목으로.</div>
-        <div class="bubble ai">지난 거래(TR-2026-0008)의 품목 3개와 FOB 조건으로 견적서 초안을 만들었습니다. 유효기간은 30일로 두었습니다. 확인하시면 저장합니다.<div class="pills"><span class="pill">초안 만듦</span><span class="pill warn">단가 확인 필요</span></div></div>
-        <div class="preview"><b>견적서(PI) 초안 · TR-2026-0009</b><p>품목 3개 · FOB 부산 · 합계 USD 36,000</p><span class="btn btn-s">확인하고 저장</span></div>
+        <div class="bubble ai"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="say">지난 거래(TR-2026-0008)의 품목 3개와 FOB 조건으로 견적서 초안을 만들었습니다. 유효기간은 30일로 두었습니다. 확인하시면 저장합니다.</span><div class="pills"><span class="pill">초안 만듦</span><span class="pill warn">단가 확인 필요</span></div></div>
+        <div class="cmp"><p>서류를 넣으면 바로 확인해 드려요. 다른 업무도 말씀해 주세요.</p><div><i aria-hidden="true">+</i><span>보내기</span></div></div>
+        <div class="qk"><span class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/></svg>서류 확인</span><span>견적서(PI)</span><span>선적서류(CI, PL)</span><span>생산의뢰서</span><span>NDA 검토</span><span>내 수출현황 보기</span></div>
       </div>
       <div class="pane" id="p2" inert aria-hidden="true" role="tabpanel" aria-labelledby="tab2">
         <div class="t">이달 들어올 돈</div><div class="big">USD 72,000 · 2건</div>
@@ -913,20 +983,18 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
         <div class="src">근거: 적용 약관 기준 · 선적일부터 영업일로 계산</div>
       </div>
       <div class="pane" id="p3" inert aria-hidden="true" role="tabpanel" aria-labelledby="tab3">
-        <div class="t">TR-2026-0008 · 견적서(PI) · 상업송장(CI) · 패킹리스트(PL)</div>
-        <div class="big">서로 다른 값이 1개 있습니다 <span class="pill warn">수정 필요</span></div>
-        <p class="scope">대조 항목 30개 중 28개 확인 · 2개 확인 불가</p>
-        <div class="cnt"><div><span>불일치</span><b>1</b></div><div><span>표기 차이</span><b>1</b></div><div><span>확인 불가</span><b>2</b></div><div><span>일치</span><b>26</b></div></div>
-        <div class="preview"><b>불일치 · 품목 2 단가</b><p>견적서(PI) USD 12.00 · 상업송장(CI) USD 12.50</p><span class="btn btn-s">전체 결과 보기</span></div>
+        <div class="t">업무도구 연동</div><div class="big">쓰시던 환경에서 바로</div>
+        <p class="lede">Gmail · Google Calendar · ChatGPT · Claude · 이메일 알림을 회사의 수출 업무와 연결합니다.</p>
+        <div class="tools">
+          <div><b>Gmail</b><span class="pill">{{publicCopy.coreStatus}}</span></div>
+          <div><b>Google Calendar</b><span class="pill">{{publicCopy.coreStatus}}</span></div>
+          <div><b>이메일 알림</b><span class="pill">{{publicCopy.coreStatus}}</span></div>
+          <div><b>ChatGPT</b><span class="pill">{{publicCopy.coreStatus}}</span></div>
+          <div><b>Claude</b><span class="pill">{{publicCopy.coreStatus}}</span></div>
+          <div><b>Chrome</b><span class="pill off">준비 중</span></div>
+        </div>
+        <div class="src">제공 범위는 초대 시 확인합니다.</div>
       </div>
-    </div>
-    <div class="intg">
-      <b>연동</b>
-      <ul>
-        <li>메일 · 캘린더 · 알림 · 외부 AI <span class="pill">{{publicCopy.coreStatus}}</span></li>
-        <li>브라우저 업무도구 <span class="pill off">준비 중</span></li>
-      </ul>
-      <p>제공 범위는 초대 시 확인합니다.</p>
     </div>
   </div>
 </div></section>
@@ -1018,9 +1086,11 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
 </div></section>
 
 <!--
-  🔴 **신청하기 · 두 갈래** 〔2026-10-05 · 대표 지시 「랜딩 신청 입구를 지금 하나로 합쳐줘」〕.
-     ① 출시 소식 받기 → 앱 `POST /api/leads`(kind: notify) · ② 실증 참여 → 앱 `POST /api/pilot-apply`(form_version: 3).
-     계약 정본 = trops_a docs/02-design/features/onboarding-signup-v3.design.md §4.
+  🔴 **신청하기 · 실증 참여** 〔2026-10-05 · 대표 지시 「랜딩 신청 입구를 지금 하나로 합쳐줘」〕.
+     실증 참여 → 앱 `POST /api/pilot-apply`(form_version: 3). 계약 정본 = trops_a docs/02-design/features/onboarding-signup-v3.design.md §4.
+  🔄 **출시 소식 받기를 걷었습니다** 〔2026-10-06 · 대표 결정〕 — 이 구획은 실증 참여 하나만 받습니다.
+     출시 알림은 /contact 의 「출시 알림」 신청이 그대로 받습니다(privacy.html §02 「문의 · 견적 요청 · 출시 알림 신청」).
+     ⛔ 이 구획에 출시 소식 폼을 되살리지 마십시오 — test/pilot-apply-form.test.js 가 막습니다.
   🔄 **이 구획은 오늘부터 섭니다** — 종전에는 방침 2차 개정 시행일까지 숨었고 그동안 옛 신청 폼(#apply)이 받았습니다.
      옛 폼과 「실증 신청」 · 「가입하기」 두 버튼은 걷었고 신청 버튼은 전부 「신청하기」 → #join 입니다.
      ⛔ 옛 폼이나 별도 버튼을 되살리지 마십시오 — 같은 곳으로 가는 문이 둘이 됩니다.
@@ -1031,31 +1101,40 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
      지금 받는 칸 = 지금 시행 중인 두 방침에 함께 적힌 것뿐입니다:
        실증 참여 — 회사명 · 업종 · 이메일 · 요청하신 업무 · 소개 코드 · 들어오신 경로
                    (앱 방침 2026-10-01 판 제2조 「시범 참여 신청」 · privacy.html §02 「시범 참여 신청」)
-       출시 소식 — 이메일(privacy.html §02 「문의 · 견적 요청 · 출시 알림 신청」 · contact.html 출시 알림과 같은 한 칸)
      ⚠️ 앱도 같은 날짜 전에는 새 칸이 와도 저장하지 않습니다(두 겹 · trops_a lib/legal/privacy-rev2.ts).
   ⚠️ 업종 · 규모 `value` 는 앱의 정본 어휘입니다(trops_a lib/organization/onboarding.ts SECTOR_CHOICES · SIZE_BAND_CHOICES).
 -->
 <!-- ⚠️ 계측 영역 이름은 `apply` 그대로입니다 — 옛 신청 구획의 시계열과 신청 접수 사건(`apply-success` → `apply` · assets/track.js)을 잇습니다. -->
 <section id="join" class="tint" data-section="apply"><div class="w">
-  <div class="jhead rv">
-    <div>
+  <div class="jwrap">
+    <div class="jintro rv">
       <div class="label">신청하기</div>
       <!-- 🔄 「원하시는 방법을 골라 주세요」 → 참여를 청하는 제목 〔2026-10-05 · 대표 결정〕 — 초대·선정 방식이라
            「바로 써 보세요」류의 약속은 쓰지 않습니다(신청 = 함께 만들 기업을 찾는 일). -->
       <h2>함께 만들어 갈<br>수출 기업을 찾습니다</h2>
       <p class="lead">초대 방식으로 실증에 참여할 기업을 모십니다. 소개해 주시면 먼저 연락드립니다.</p>
+      <div class="fit">
+        <div>✓ 담당자 한두 명이 수출 업무를 모두 맡는 회사</div>
+        <div>✓ 새 바이어, 새 국가와 외상으로 거래하는 회사</div>
+        <div class="x">– 수출 전담팀과 ERP가 이미 있는 회사에는 필요하지 않습니다</div>
+      </div>
+      <div class="jtail">
+        <p class="pre">먼저 우리 수출 거래부터 점검해 보시겠어요? <a href="https://app.trops.kr/quick-check" data-track="apply-precheck">1분 진단 · 가입 없이</a></p>
+        <!-- 🔴 **대표 소개는 이름·직함 한 줄과 /about 링크뿐입니다** 〔2026-09-29 · 대표 결정〕 — 옛 신청 구획에서 옮겼습니다.
+             시안의 경력 세 줄(자격 · 전 직장 · 멘토 · 선정 이력)은 두 기록과 부딪힙니다 —
+             ① 「회사 자신에 대한 말은 /about 으로, 랜딩에 되돌리지 않는다」(scripts/build-static.js about 등재 주석)
+             ② 기관 이름을 신뢰 신호로 쓰던 문구를 걷어낸 이력(test/landing-invariants.test.js ①).
+             ⚠️ 이름은 토큰입니다(site.config.json) — 글자로 적으면 test/site-config.test.js 가 막습니다. -->
+        <div class="maker2"><span class="pf" aria-hidden="true"></span><div><b>{{biz.ceo}} · TROPS 대표</b><a href="/about" data-track="apply-about">회사 소개 →</a></div></div>
+      </div>
     </div>
-    <div class="fit">
-      <div>✓ 담당자 한두 명이 수출 업무를 모두 맡는 회사</div>
-      <div>✓ 새 바이어, 새 국가와 외상으로 거래하는 회사</div>
-      <div class="x">– 수출 전담팀과 ERP가 이미 있는 회사에는 필요하지 않습니다</div>
-    </div>
-  </div>
-  <div class="join rv">
-    <div class="jcard jmain">
+    <div class="jcard jmain rv">
       <h3>실증 참여</h3>
       <p class="jl">초대받은 기업과 수출 실무 도구를 함께 실증합니다. 초대 기간에는 무료입니다.</p>
       <form class="f" id="joinPilotForm" novalidate>
+        <!-- 진행 막대(애니메이션 B · 2026-10-06) — 필수 칸을 채울수록 찹니다. 숨긴 채로 오고, 스크립트가 신청 스위치가 켜졌을 때만 세웁니다.
+             화면 읽기 프로그램에는 칸마다 「필수」가 이미 있어 막대는 들려주지 않습니다(aria-hidden). -->
+        <div class="jprog" id="pilotProg" aria-hidden="true" hidden><span class="jprog-bar"><i></i></span><span class="jprog-n">필수 항목 <b>0</b> / <span class="jprog-t">0</span></span></div>
         <div class="req" id="reqBox" hidden>요청하신 업무 <b id="reqText"></b><span>초대해 드릴 때 이 업무부터 시작할 수 있게 준비해 둡니다.</span></div>
         <div class="hp" aria-hidden="true"><label>웹사이트<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
         <input type="hidden" name="requested_work">
@@ -1117,59 +1196,12 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
       </form>
       <!-- 🔴 완료 화면 — 앱 응답 201 에서만 뜹니다. 접수 사실과 다음 연락만 말합니다(순번 · 소개 링크는 싣지 않습니다 · 2026-10-03). -->
       <div class="done" hidden>
+        <svg class="ok" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-15"/></svg>
         <div class="label">신청 완료</div>
         <h3 tabindex="-1">신청이 접수되었습니다</h3>
         <p>담당자가 참여 가능 여부를 확인한 뒤 이메일로 안내드립니다.</p>
       </div>
     </div>
-    <div class="jcard jside">
-      <h3>출시 소식 받기</h3>
-      <p class="jl">정식 출시와 새 기능 소식을 이메일로 보내 드립니다.</p>
-      <form class="f" id="joinNotifyForm" novalidate>
-        <div class="fld" data-from-rev2 hidden><label>회사명<span class="star">*</span><input name="company" maxlength="200" autocomplete="organization" placeholder="주식회사 ○○" required disabled></label><div class="err">회사명을 입력해 주세요.</div></div>
-        <div class="fld" data-from-rev2 hidden><label>이름<span class="star">*</span><input name="name" maxlength="100" autocomplete="name" required disabled></label><div class="err">이름을 입력해 주세요.</div></div>
-        <div class="fld"><label>이메일<span class="star">*</span><input name="email" type="email" maxlength="254" autocomplete="email" inputmode="email" placeholder="name@company.com" required></label><div class="err">이메일을 입력해 주세요.</div></div>
-        <div class="fld cons">
-          <details class="cd">
-            <summary>수집·이용 내용 보기</summary>
-            <dl data-until-rev2>
-              <dt>받는 항목</dt><dd>이메일</dd>
-              <dt>쓰는 곳</dt><dd>출시 소식 알림</dd>
-              <dt>보관</dt><dd>신청일부터 1년</dd>
-            </dl>
-            <dl data-from-rev2 hidden>
-              <dt>받는 항목</dt><dd>회사명 · 이름 · 이메일</dd>
-              <dt>쓰는 곳</dt><dd>출시 소식 알림, 접수 확인 메일</dd>
-              <dt>보관</dt><dd>신청일부터 1년, 또는 수신을 멈추실 때까지</dd>
-            </dl>
-          </details>
-          <label class="agree"><input type="checkbox" name="consentPrivacy" value="true" required><span>개인정보 수집·이용에 동의합니다(필수). 자세한 내용은 <a href="https://app.trops.kr/privacy">개인정보처리방침</a>에 있습니다.</span></label>
-        </div>
-        <fieldset class="opt" data-from-rev2 hidden disabled>
-          <legend>광고성 정보 수신(선택)</legend>
-          <label class="agree"><input type="checkbox" name="consentNewsletter" value="true"><span>TROPS 소식지를 받겠습니다.</span></label>
-          <label class="agree"><input type="checkbox" name="consentSupportInfo" value="true"><span>정부 수출 지원사업 정보를 받겠습니다.</span></label>
-          <p class="hint">동의하지 않아도 출시 소식은 받으실 수 있습니다. 받으신 메일 아래의 수신 거부 링크나 contact@theo-ne.com 으로 언제든 멈출 수 있습니다.</p>
-        </fieldset>
-        <p class="ferr" role="alert" hidden></p>
-        <!-- 🔴 제출 버튼은 숨긴 채로 옵니다 — 스크립트가 세웁니다. action 없는 폼이 스크립트 없이 제출되면 GET 이라 이메일이 주소창에 실립니다. -->
-        <button class="btn" type="submit" data-track="join-notify-submit" data-js-submit hidden>출시 소식 받기</button>
-      </form>
-      <div class="done" hidden>
-        <div class="label">등록 완료</div>
-        <h3 tabindex="-1">등록했습니다</h3>
-        <p>출시 소식은 적어 주신 주소로 보내 드립니다.</p>
-      </div>
-    </div>
-  </div>
-  <div class="jfoot">
-    <p class="pre">먼저 우리 수출 거래부터 점검해 보시겠어요? <a href="https://app.trops.kr/quick-check" data-track="apply-precheck">1분 진단 · 가입 없이</a></p>
-    <!-- 🔴 **대표 소개는 이름·직함 한 줄과 /about 링크뿐입니다** 〔2026-09-29 · 대표 결정〕 — 옛 신청 구획에서 옮겼습니다.
-         시안의 경력 세 줄(자격 · 전 직장 · 멘토 · 선정 이력)은 두 기록과 부딪힙니다 —
-         ① 「회사 자신에 대한 말은 /about 으로, 랜딩에 되돌리지 않는다」(scripts/build-static.js about 등재 주석)
-         ② 기관 이름을 신뢰 신호로 쓰던 문구를 걷어낸 이력(test/landing-invariants.test.js ①).
-         ⚠️ 이름은 토큰입니다(site.config.json) — 글자로 적으면 test/site-config.test.js 가 막습니다. -->
-    <div class="maker2"><span class="pf" aria-hidden="true"></span><div><b>{{biz.ceo}} · TROPS 대표</b><a href="/about" data-track="apply-about">회사 소개 →</a></div></div>
   </div>
 </div></section>
 
@@ -1246,7 +1278,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
            ⚠️ 이 블록 안에 다른 div 를 넣지 마십시오 — 검사가 첫 닫는 div 까지를 집습니다. -->
       <div class="nd"><b>TROPS가 하지 않는 일</b>법률 자문과 계약서에 대한 법률적 검토를 제공하지 않습니다(변호사법·외국법자문사법). 보험 인수·지급 심사나 가입 대행, 특정 상품 추천을 하지 않으며, 가입 가능 여부와 조건은 해당 기관이 약관과 심사 기준에 따라 결정합니다. 미수금 회수를 보장하지 않습니다.</div>
     </div>
-    <div><b>제품</b><ul><li><a href="#product">TROPS AI</a></li><li><a href="#product">거래·기한 관리 · 서류 확인</a></li><li><a href="#service">무역보험 준비 패키지</a></li><li><a href="#check">1분 수출 준비 진단</a></li><li><a href="#calc">업무 시간 계산기</a></li><li><a href="mailto:contact@theo-ne.com?subject=TROPS%20교육%20문의">수출 실무 교육</a></li></ul></div>
+    <div><b>제품</b><ul><li><a href="#product">TROPS AI</a></li><li><a href="#product">거래·기한 관리 · 업무도구 연동</a></li><li><a href="#service">무역보험 준비 패키지</a></li><li><a href="#check">1분 수출 준비 진단</a></li><li><a href="#calc">업무 시간 계산기</a></li><li><a href="mailto:contact@theo-ne.com?subject=TROPS%20교육%20문의">수출 실무 교육</a></li></ul></div>
     <div><b>자료</b><ul><li><a href="https://app.trops.kr/guide">수출절차 안내</a></li><li><a href="https://app.trops.kr/guide/support">보험료 지원사업</a></li><li><a href="https://app.trops.kr/guide/glossary">무역 용어</a></li></ul></div>
     <!-- 🔄 「문의 · 교육 · 파트너」를 /contact 로 되돌렸습니다 〔2026-09-30 · 대표 결정〕 — v3 에서 랜딩 → /contact 길이 0 이었습니다. -->
     <div><b>회사</b><ul><li><a href="#join" data-track="footer-join">신청하기</a></li><li><a href="/about">회사 소개</a></li><li><a href="#security">보안</a></li><li><a href="/contact" data-track="footer-contact">문의 · 교육 · 파트너</a></li></ul></div>
@@ -1393,7 +1425,8 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
 </script>
 <!-- 🔴 익명 집계 〔2026-09-01〕 — 개인 식별값 없음(privacy.html §01). -->
 <script>
-/* ══════════════ 신청하기 · 두 갈래(출시 소식 받기 · 실증 참여) ══════════════
+/* ══════════════ 신청하기 · 실증 참여 ══════════════
+ * 🔄 2026-10-06 · 대표 결정 — 출시 소식 받기(앱 leads 접수)를 걷었습니다. 이 구획은 실증 참여 하나만 보냅니다.
  * 🔄 2026-10-05 · 대표 지시 — 이 구획이 랜딩의 «유일한» 신청 입구입니다(옛 #apply 폼 · 「실증 신청」 버튼을 걷었습니다).
  *    오늘부터 섭니다. 옛 주소 `#apply` 로 오면 이 구획으로 데려옵니다.
  * 🔴 새 칸이 서는 날 = site.config.json `pilotApply.newFieldsFrom`(한국 날짜 · 방침 2차 개정 시행일).
@@ -1403,7 +1436,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
  *    ① 시계가 빠른 기기: 앱이 같은 날짜 전에는 새 칸을 «저장하지 않고» 나머지만 받습니다(두 겹 · 신청은 잃지 않습니다).
  *    ② 시계가 늦은 기기: 앱이 새 필수 칸을 요구하면(400) 그 자리에서 새 칸을 열고 채워 달라고 말합니다.
  * ⚠️ 보낼 곳과 켜고 끄는 스위치는 site.config.json `pilotApply` 입니다 — 운영 주소(trops.kr · www)는 production 칸,
- *    그 밖(Vercel 미리보기 · 로컬)은 preview 칸. 출시 소식은 같은 앱의 /api/leads 입니다.
+ *    그 밖(Vercel 미리보기 · 로컬)은 preview 칸.
  * ⛔ 이 줄들에 true 를 손으로 적지 마십시오 — 토큰을 따옴표 안에 둡니다(빌드 없이 열면 «꺼짐»입니다).
  */
 (function(){
@@ -1417,10 +1450,27 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
   var PILOT = ON_PROD
     ? { enabled: '{{pilotApply.productionEnabled}}' === 'true', endpoint: '{{pilotApply.productionEndpoint}}' }
     : { enabled: '{{pilotApply.previewEnabled}}' === 'true', endpoint: '{{pilotApply.previewEndpoint}}' };
-  var LEADS_ENDPOINT = PILOT.endpoint.replace(/\/api\/pilot-apply$/, '/api/leads');
   var MAIL = 'contact@theo-ne.com';
   var section = $('join');
-  var nf = $('joinNotifyForm'), pf = $('joinPilotForm');
+  var pf = $('joinPilotForm');
+
+  /* ── 채움 판정 — 제출 검사(ui.check)와 진행 막대가 같은 기준을 씁니다 ── */
+  function filled(el){
+    return el.type === 'checkbox' ? el.checked
+      : el.type === 'email' ? /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(el.value.trim())
+      : !!el.value.trim();
+  }
+  /* ── 진행 막대(애니메이션 B) — 필수 칸 중 채운 몫. 잠긴 칸(10-13 전의 새 칸)은 세지 않습니다. 막대가 숨어 있으면 셈하지 않습니다. ── */
+  var prog = $('pilotProg');
+  function progress(){
+    if (!prog || prog.hidden) return;
+    var req = [].filter.call(pf.querySelectorAll('[required]'), function(el){ return !el.disabled; });
+    var n = req.filter(filled).length, total = req.length;
+    prog.querySelector('i').style.transform = 'scaleX(' + (total ? n / total : 0) + ')';
+    prog.querySelector('b').textContent = n;
+    prog.querySelector('.jprog-t').textContent = total;
+    prog.classList.toggle('full', total > 0 && n === total);
+  }
 
   /* ── 방침 2차 개정 시행일 — 새 칸을 세우거나 잠급니다 ── */
   var CONTROLS = 'input,select,textarea,button,fieldset';
@@ -1436,14 +1486,18 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
     var nv = pf.elements.notice_version;
     if (!nv.dataset.beforeValue) nv.dataset.beforeValue = nv.value;
     nv.value = rev2 ? nv.dataset.rev2Value : nv.dataset.beforeValue;
+    progress();
   }
   applyPhase(REV2);
 
-  /* ── 제출 버튼 — 출시 소식은 늘 · 실증 참여는 스위치가 켜졌을 때만 세웁니다(마크업의 기본은 숨김) ── */
-  nf.querySelector('[data-js-submit]').hidden = false;
+  /* ── 제출 버튼 · 진행 막대 — 스위치가 켜졌을 때만 세웁니다(마크업의 기본은 숨김) ── */
   if (PILOT.enabled) {
     pf.querySelector('[data-js-submit]').hidden = false;
     $('pilotOff').hidden = true;
+    prog.hidden = false;
+    pf.addEventListener('input', progress);
+    pf.addEventListener('change', progress);
+    progress();
   }
 
   /* ── 옛 주소 #apply → 이 구획 ── */
@@ -1465,10 +1519,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
         /* 잠긴 칸(새 칸이 아직 서지 않은 자리)은 재지 않습니다. */
         [].forEach.call(form.querySelectorAll('[required]'), function(el){
           if (el.disabled) return;
-          var bad = el.type === 'checkbox' ? !el.checked
-            : el.type === 'email' ? !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(el.value.trim())
-            : !el.value.trim();
-          if (bad) { var w = el.closest('.fld'); if (w) w.classList.add('bad'); ok = false; }
+          if (!filled(el)) { var w = el.closest('.fld'); if (w) w.classList.add('bad'); ok = false; }
         });
         if (!ok) { var first = form.querySelector('.fld.bad input,.fld.bad select'); if (first) first.focus(); }
         return ok;
@@ -1495,8 +1546,8 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
       return res.json()['catch'](function(){ return null; }).then(function(data){ return { status: res.status, data: data }; });
     }).then(function(r){ clearTimeout(timeout); return r; }, function(e){ clearTimeout(timeout); throw e; });
   }
-  /* 시계가 늦은 기기 — 앱이 새 필수 칸(규모 · 이름 · 전화 / 회사명 · 이름)을 요구하면 새 칸을 엽니다. */
-  var REV2_REQUIRED = ['company_size_band', 'contact_name', 'phone', 'company', 'name'];
+  /* 시계가 늦은 기기 — 앱이 새 필수 칸(규모 · 이름 · 전화)을 요구하면 새 칸을 엽니다. */
+  var REV2_REQUIRED = ['company_size_band', 'contact_name', 'phone'];
   function asksForNewFields(status, data){
     if (REV2 || status !== 400 || !data) return false;
     if (data.error === 'required') return true;
@@ -1569,21 +1620,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
     return out;
   }
 
-  /* ── ① 출시 소식 받기 → /api/leads ── */
-  wire(nf, '출시 소식 받기', {
-    url: LEADS_ENDPOINT, event: 'join-notify-success',
-    body: function(){
-      var body = { kind: 'notify', email: v(nf, 'email'), consentPrivacy: true };
-      /* 방침 2차 개정 시행일부터 — 회사명 · 이름 · 광고성 정보 선택 동의 둘 */
-      if (REV2) {
-        body.company = v(nf, 'company'); body.name = v(nf, 'name');
-        body.consentNewsletter = on(nf, 'consentNewsletter'); body.consentSupportInfo = on(nf, 'consentSupportInfo');
-      }
-      return body;
-    }
-  }, function(r){ return r.status >= 200 && r.status < 300 && r.data && r.data.ok === true; }, function(){ return true; });
-
-  /* ── ② 실증 참여 → /api/pilot-apply (form_version 3) ── */
+  /* ── 실증 참여 → /api/pilot-apply (form_version 3) ── */
   /*
    * 소개 코드 — `?ref=` 로 받습니다. 계약 모양(영문·숫자·하이픈 4~32자)이 아니면 담지 않습니다
    * (그대로 보내면 400 입니다). 대문자로 맞추는 것은 앱도 합니다.
