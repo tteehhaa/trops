@@ -444,7 +444,8 @@ nav .m a:hover{color:var(--ink)}
 .sample{display:inline-block;font-size:12px;color:var(--warn-ink);background:var(--warn-bg);border-radius:999px;padding:2px 10px;margin-left:8px;vertical-align:middle}
 
 /* 제품 — 탭
- * 🔄 2026-10-05(대표 결정 3B) — 왼쪽 한 덩어리(제목 → 실증 중 한 줄 → 탭) · 오른쪽 화면 예시가 제목 높이부터 · 아래 전폭 연동 띠.
+ * 🔄 2026-10-05(대표 결정 3B) — 왼쪽 한 덩어리(제목 → 실증 중 한 줄 → 탭) · 오른쪽 화면 예시가 제목 높이부터.
+ *    (아래 전폭 연동 띠는 2026-10-06 「업무도구 연동」 탭으로 옮기며 걷었습니다.)
  *    종전 `.product-nav{display:contents}` 는 제목 · 상태 문구 둘 · 탭을 그리드 칸에 하나씩 흘려,
  *    상태 문구 하나는 오른쪽 위에, 하나는 탭 아래 왼쪽 끝에 떠 있었습니다. */
 .show{display:grid;grid-template-columns:360px minmax(0,1fr);gap:28px 40px;align-items:start}
@@ -484,20 +485,22 @@ nav .m a:hover{color:var(--ink)}
 .pill.warn{background:var(--warn-bg);color:var(--warn-ink)}
 .pill.bad{background:var(--bad-bg);color:var(--bad-ink)}
 .pill.off{background:var(--surface);color:var(--mute);box-shadow:inset 0 0 0 1px var(--line)}
-.pane .big .pill{vertical-align:4px;margin-left:6px}
-.pane .scope{font-size:13px;color:var(--sub);margin-top:4px}
-/* 서류 확인 — 개수 네 칸. 숫자는 무채색, 색은 «불일치» 이름에만(앱 결과 화면과 같은 규칙 · 많으면 나쁘다는 서열을 만들지 않음). */
-.cnt{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:14px}
-.cnt div{border:1px solid var(--line);border-radius:10px;padding:10px 12px}
-.cnt span{display:block;font-size:12.5px;color:var(--mute)}
-.cnt b{display:block;font-size:20px;margin-top:2px}
-.cnt div:first-child span{color:var(--bad-ink);font-weight:600}
-/* 연동 띠 — 두 열 아래 전폭. 상태 = site.config.json publicCopy.integrationSummary */
-.intg{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:10px 28px;border:1px solid var(--line);border-radius:14px;background:var(--white);padding:18px 24px;font-size:14.5px}
-.intg>b{font-size:15px}
-.intg ul{display:flex;flex-wrap:wrap;gap:8px 24px;list-style:none;margin:0;padding:0}
-.intg li{display:flex;align-items:center;gap:8px}
-.intg p{margin-left:auto;font-size:13px;color:var(--mute)}
+/* TROPS AI — 대화 예시 아래 앱 첫 화면의 입력창 · 빠른 버튼(「서류 확인」 강조 · 앱과 같은 모양). */
+.cmp{margin-top:14px;border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.cmp p{font-size:13px;color:var(--mute)}
+.cmp div{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.cmp i{display:grid;place-items:center;width:28px;height:28px;border:1px solid var(--line);border-radius:50%;font-style:normal;font-size:15px;color:var(--sub)}
+.cmp span{font-size:12.5px;font-weight:600;color:var(--white);background:var(--accent);opacity:.45;border-radius:8px;padding:6px 12px}
+.qk{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.qk span{border:1px solid var(--line);border-radius:10px;padding:9px 8px;font-size:13px;text-align:center;background:var(--white)}
+.qk .on{background:var(--accent);border-color:var(--accent);color:var(--white);font-weight:600}
+.qk svg{width:14px;height:14px;vertical-align:-2px;margin-right:5px}
+/* 업무도구 연동 — 도구 이름(글자) + 상태. ⛔ 로고를 쓰지 않습니다. 상태 = site.config.json publicCopy.integrationSummary */
+.pane .lede{font-size:14px;color:var(--sub);margin-top:6px}
+.tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:16px}
+.tools div{border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.tools b{display:block;font-size:14.5px}
+.tools .pill{margin-top:8px}
 .doc{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:14px}
 .doc div{border:1px solid var(--line);border-radius:10px;padding:14px;font-size:13px}
 .doc div b{display:block;font-size:15px;margin-bottom:6px}
@@ -728,9 +731,8 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
   .app .chips .edit{grid-column:1/-1}
   .app .today li{align-items:flex-start}
   .head,.show,.qc,.calc,.jhead,.join,.f .two{grid-template-columns:1fr;gap:20px}
-  .product-nav,.screen,.intg{grid-column:1;grid-row:auto}
-  .cnt{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .intg p{margin-left:0}
+  .product-nav,.screen{grid-column:1;grid-row:auto}
+  .qk,.tools{grid-template-columns:repeat(2,minmax(0,1fr))}
   .screen{padding:20px}
   .bubble{max-width:94%}
   #product .tbl{font-size:12px;overflow-wrap:anywhere;word-break:normal}
@@ -874,14 +876,18 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
 
 
 <section id="product" class="tint" data-section="product"><div class="w">
-  <!-- 🔄 **탭 넷 → 셋 + 연동 띠** 〔2026-10-05 · 대표 결정 3B〕 —
-       어시스턴트 · 수출 거래 · 서류 · 기한 → TROPS AI · 거래·기한 관리 · 서류 확인.
-       · 「서류 확인」은 앱의 메뉴 · 화면 제목과 같은 이름입니다(trops_a lib/constants/ledger-nav.ts · export-document-review.ts REVIEW_COPY).
-         「서류 검토」를 쓰지 않습니다 — 랜딩의 면책(「계약서에 대한 법률적 검토를 제공하지 않습니다」)과 부딪힙니다.
-         화면 예시는 앱 결과 화면의 순서 · 말을 따릅니다 — 한 문장(서로 다른 값 N개) → 개수 네 칸 → 불일치 줄(값을 나란히, 어느 쪽이 틀렸는지 정하지 않음)
-         → 대조 범위 한 줄(«확인된 문제 없음»은 그 범위 안에서만 참이라 범위가 언제나 섭니다).
+  <!-- 🔄 **탭 셋 = TROPS AI · 거래·기한 관리 · 업무도구 연동** —
+       〔2026-10-05 · 대표 결정 3B〕 어시스턴트 · 수출 거래 · 서류 · 기한 → TROPS AI · 거래·기한 관리 · 서류 확인 + 연동 띠.
+       〔2026-10-06 · 대표 결정〕 세 번째 탭 「서류 확인」 → 「업무도구 연동」, 아래 연동 띠는 걷음(탭과 겹침).
+       · 「업무도구 연동」은 앱 메뉴와 같은 이름입니다(trops_a components/nav/workspace-preview.tsx «Chrome·Gmail·Google Calendar·ChatGPT·Claude·이메일 알림을
+         회사의 수출 업무와 연결합니다»). 상태는 site.config.json publicCopy.integrationSummary 와 같아야 합니다 —
+         메일 · 캘린더 · 알림 · 외부 AI = 실증 중, 브라우저(Chrome) = 준비 중.
+         ⛔ 로고를 쓰지 않습니다(대표 결정 · 이름만 글자로) — 제휴 · 보증으로 읽힐 수 있고, 앱도 Claude 로고를 P0 에서 표시하지 않습니다
+            (trops_a lib/constants/nda-review.ts). 도구마다 하는 일을 새로 지어 적지 않습니다(앱에 적힌 문장만).
+       · 「서류 확인」은 TROPS AI 화면 예시의 첫 빠른 버튼으로 남깁니다 — 앱 첫 화면과 같은 강조(trops_a lib/work/chat/quick-fixed.ts).
+         빠른 버튼 · 입력창 문구는 앱 그대로이고(quick-fixed.ts · components/nav/shell-chat.tsx PLACEHOLDER),
+         ⛔ 「NDA 검토」만 뺍니다 — 랜딩 면책 「계약서에 대한 법률적 검토를 제공하지 않습니다」와 엇갈립니다(NDA 도 계약서).
        · 거래 · 기한 화면은 옛 두 화면의 값만 옮겼습니다(새 숫자 없음).
-       · 연동은 보여 줄 화면이 아직 없어 화면 예시 대신 띠로 적습니다 — 상태는 site.config.json publicCopy.integrationSummary 와 같아야 합니다.
        ⚠️ 이름을 바꾸면 publicCopy.ko.coreSummary · 푸터 「제품」 링크 · about.html 01 도 함께 바꿉니다. -->
   <div class="show rv">
     <div class="product-nav">
@@ -892,7 +898,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
         <!-- 🔄 시안 「미리 알려 드립니다」 → 「미리 보여 드립니다」 〔2026-09-29 · 대표 결정〕 —
              test/landing-invariants.test.js 가 랜딩 전역에서 알림 약속 문면을 0건으로 잠급니다. -->
         <button type="button" data-t="p2" role="tab" id="tab2" aria-controls="p2" aria-selected="false" tabindex="-1"><i class="bar"></i><b>거래·기한 관리</b><span>{{publicCopy.coreStatus}} · 거래별 단계와 다음 기한을 한 화면에. 기한은 약관 기준으로 계산해 미리 보여 드립니다.</span></button>
-        <button type="button" data-t="p3" role="tab" id="tab3" aria-controls="p3" aria-selected="false" tabindex="-1"><i class="bar"></i><b>서류 확인</b><span>{{publicCopy.coreStatus}} · 다른 곳에서 만든 서류를 서류끼리, 그리고 거래 정보와 대조합니다.</span></button>
+        <button type="button" data-t="p3" role="tab" id="tab3" aria-controls="p3" aria-selected="false" tabindex="-1"><i class="bar"></i><b>업무도구 연동</b><span>{{publicCopy.coreStatus}} · 쓰시던 메일·캘린더·AI를 회사의 수출 업무와 연결합니다.</span></button>
       </div>
     </div>
     <div class="screen">
@@ -901,7 +907,8 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
         <div class="t">TROPS AI</div>
         <div class="bubble me">베트남 바이어한테 보낼 견적서 만들어 줘. 지난번이랑 같은 품목으로.</div>
         <div class="bubble ai">지난 거래(TR-2026-0008)의 품목 3개와 FOB 조건으로 견적서 초안을 만들었습니다. 유효기간은 30일로 두었습니다. 확인하시면 저장합니다.<div class="pills"><span class="pill">초안 만듦</span><span class="pill warn">단가 확인 필요</span></div></div>
-        <div class="preview"><b>견적서(PI) 초안 · TR-2026-0009</b><p>품목 3개 · FOB 부산 · 합계 USD 36,000</p><span class="btn btn-s">확인하고 저장</span></div>
+        <div class="cmp"><p>서류를 넣으면 바로 확인해 드려요. 다른 업무도 말씀해 주세요.</p><div><i aria-hidden="true">+</i><span>보내기</span></div></div>
+        <div class="qk"><span class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/></svg>서류 확인</span><span>견적서(PI)</span><span>선적서류(CI, PL)</span><span>생산의뢰서</span><span>내 수출현황 보기</span></div>
       </div>
       <div class="pane" id="p2" inert aria-hidden="true" role="tabpanel" aria-labelledby="tab2">
         <div class="t">이달 들어올 돈</div><div class="big">USD 72,000 · 2건</div>
@@ -913,20 +920,18 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
         <div class="src">근거: 적용 약관 기준 · 선적일부터 영업일로 계산</div>
       </div>
       <div class="pane" id="p3" inert aria-hidden="true" role="tabpanel" aria-labelledby="tab3">
-        <div class="t">TR-2026-0008 · 견적서(PI) · 상업송장(CI) · 패킹리스트(PL)</div>
-        <div class="big">서로 다른 값이 1개 있습니다 <span class="pill warn">수정 필요</span></div>
-        <p class="scope">대조 항목 30개 중 28개 확인 · 2개 확인 불가</p>
-        <div class="cnt"><div><span>불일치</span><b>1</b></div><div><span>표기 차이</span><b>1</b></div><div><span>확인 불가</span><b>2</b></div><div><span>일치</span><b>26</b></div></div>
-        <div class="preview"><b>불일치 · 품목 2 단가</b><p>견적서(PI) USD 12.00 · 상업송장(CI) USD 12.50</p><span class="btn btn-s">전체 결과 보기</span></div>
+        <div class="t">업무도구 연동</div><div class="big">쓰시던 환경에서 바로</div>
+        <p class="lede">Gmail · Google Calendar · ChatGPT · Claude · 이메일 알림을 회사의 수출 업무와 연결합니다.</p>
+        <div class="tools">
+          <div><b>Gmail</b><span class="pill">{{publicCopy.coreStatus}}</span></div>
+          <div><b>Google Calendar</b><span class="pill">{{publicCopy.coreStatus}}</span></div>
+          <div><b>이메일 알림</b><span class="pill">{{publicCopy.coreStatus}}</span></div>
+          <div><b>ChatGPT</b><span class="pill">{{publicCopy.coreStatus}}</span></div>
+          <div><b>Claude</b><span class="pill">{{publicCopy.coreStatus}}</span></div>
+          <div><b>Chrome</b><span class="pill off">준비 중</span></div>
+        </div>
+        <div class="src">제공 범위는 초대 시 확인합니다.</div>
       </div>
-    </div>
-    <div class="intg">
-      <b>연동</b>
-      <ul>
-        <li>메일 · 캘린더 · 알림 · 외부 AI <span class="pill">{{publicCopy.coreStatus}}</span></li>
-        <li>브라우저 업무도구 <span class="pill off">준비 중</span></li>
-      </ul>
-      <p>제공 범위는 초대 시 확인합니다.</p>
     </div>
   </div>
 </div></section>
@@ -1246,7 +1251,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
            ⚠️ 이 블록 안에 다른 div 를 넣지 마십시오 — 검사가 첫 닫는 div 까지를 집습니다. -->
       <div class="nd"><b>TROPS가 하지 않는 일</b>법률 자문과 계약서에 대한 법률적 검토를 제공하지 않습니다(변호사법·외국법자문사법). 보험 인수·지급 심사나 가입 대행, 특정 상품 추천을 하지 않으며, 가입 가능 여부와 조건은 해당 기관이 약관과 심사 기준에 따라 결정합니다. 미수금 회수를 보장하지 않습니다.</div>
     </div>
-    <div><b>제품</b><ul><li><a href="#product">TROPS AI</a></li><li><a href="#product">거래·기한 관리 · 서류 확인</a></li><li><a href="#service">무역보험 준비 패키지</a></li><li><a href="#check">1분 수출 준비 진단</a></li><li><a href="#calc">업무 시간 계산기</a></li><li><a href="mailto:contact@theo-ne.com?subject=TROPS%20교육%20문의">수출 실무 교육</a></li></ul></div>
+    <div><b>제품</b><ul><li><a href="#product">TROPS AI</a></li><li><a href="#product">거래·기한 관리 · 업무도구 연동</a></li><li><a href="#service">무역보험 준비 패키지</a></li><li><a href="#check">1분 수출 준비 진단</a></li><li><a href="#calc">업무 시간 계산기</a></li><li><a href="mailto:contact@theo-ne.com?subject=TROPS%20교육%20문의">수출 실무 교육</a></li></ul></div>
     <div><b>자료</b><ul><li><a href="https://app.trops.kr/guide">수출절차 안내</a></li><li><a href="https://app.trops.kr/guide/support">보험료 지원사업</a></li><li><a href="https://app.trops.kr/guide/glossary">무역 용어</a></li></ul></div>
     <!-- 🔄 「문의 · 교육 · 파트너」를 /contact 로 되돌렸습니다 〔2026-09-30 · 대표 결정〕 — v3 에서 랜딩 → /contact 길이 0 이었습니다. -->
     <div><b>회사</b><ul><li><a href="#join" data-track="footer-join">신청하기</a></li><li><a href="/about">회사 소개</a></li><li><a href="#security">보안</a></li><li><a href="/contact" data-track="footer-contact">문의 · 교육 · 파트너</a></li></ul></div>
