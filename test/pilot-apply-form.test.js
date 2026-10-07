@@ -324,9 +324,11 @@ test('🔴 계정 만들기 화면 주소는 신청을 보낸 그 앱의 /pilot/
   assert.match(joinScript, /var url = accountUrlOf\(data && data\.account_url\);\s+if \(!url\) return;/, '주소를 검사하지 않고 옮깁니다');
 });
 
-test('🔴 실증 참여 폼의 안내 글이 «초대 메일을 기다린다»고 말하지 않는다 — 신청 직후 계정을 만든다', () => {
+test('🔴 실증 참여 폼의 안내 글이 «초대 메일을 기다린다»고 말하지 않는다 — 앱이 계정 화면을 주든 안 주든 맞는 글', () => {
   for (const bad of ['초대 메일이 이 주소로', '초대 메일을 보내 드립니다', '초대 메일에서 입력', '초대해 드릴 때']) {
     assert.ok(!joinHtml.replace(/<!--[\s\S]*?-->/g, '').includes(bad), '옛 흐름의 글이 남았습니다: ' + bad);
   }
-  assert.ok(pilotHtml.includes('신청하신 이메일로 바로 계정을 만드실 수 있습니다'), '실증 참여 안내가 새 흐름을 말하지 않습니다');
+  assert.ok(pilotHtml.includes('담당자가 참여 가능 여부를 확인해 승인하면 이메일로 알려 드리고'), '실증 참여 안내가 승인 흐름을 말하지 않습니다');
+  // 폼의 글은 «바로 계정을 만들 수 있다»고 약속하지 않는다 — 그 길은 앱이 주소를 줬을 때 완료 화면이 말한다.
+  assert.ok(!pilotHtml.includes('바로 계정을'), '폼이 앱이 열지 않았을 수도 있는 길을 약속합니다');
 });
