@@ -223,7 +223,7 @@ test('🔴 수집·이용 안내 글이 둘이다 — 지금 방침에 맞춘 �
   const today = (pilotHtml.match(/<dl data-until-rev2>([\s\S]*?)<\/dl>/) || [])[1] || '';
   for (const word of ['규모', '전화', '직급', '주소', '이름']) assert.ok(!today.includes(word), '지금 안내 글이 아직 받지 않는 칸(' + word + ')을 적습니다');
   assert.ok(today.includes('{{publicCopy.retention}}'), '지금 안내 글이 보관 기준(publicCopy.retention)을 쓰지 않습니다');
-  assert.match(pilotHtml, /name="notice_version" value="pilot-apply-2026-10-05" data-rev2-value="pilot-apply-2026-10-13"/, '동의 문구의 판 이름이 바뀌었습니다 — 글을 고쳤으면 판도 바꾸십시오');
+  assert.match(pilotHtml, /name="notice_version" value="pilot-apply-2026-10-07" data-rev2-value="pilot-apply-2026-10-13"/, '동의 문구의 판 이름이 바뀌었습니다 — 글을 고쳤으면 판도 바꾸십시오');
 });
 
 /* ══ ④ 꺼짐이 기본 ═══════════════════════════════════════════════════ */
@@ -273,7 +273,7 @@ test('🔴 실증 참여에 들어오신 경로(acquisition)를 계약의 키로
 
 test('🔴 신청 접수 계측(apply-success)은 실증 참여 완료(201)에서만 한 번 부른다', () => {
   assert.strictEqual((joinScript.match(/event: 'apply-success'/g) || []).length, 1, 'apply-success 를 붙인 자리가 하나가 아닙니다');
-  assert.match(joinScript, /if \(isDone\(r\)\) \{ u\.done\(\); if \(window\.tropsEvent\) window\.tropsEvent\(build\.event\); return; \}/, '계측이 완료 화면 밖에서 불립니다');
+  assert.match(joinScript, /if \(isDone\(r\)\) \{ u\.done\(\); if \(window\.tropsEvent\) window\.tropsEvent\(build\.event\); if \(build\.after\) build\.after\(r\.data\); return; \}/, '계측이 완료 화면 밖에서 불립니다');
   const track = read('assets/track.js');
   assert.match(track, /var PAGE_EVENTS = \{ 'apply-success': 'apply' \};/, 'track.js 가 받는 페이지 사건 표가 바뀌었습니다');
 });
@@ -290,4 +290,43 @@ test('🔴 소개 문구가 순번을 약속하지 않는다 — 「소개해 �
 
 test('⚠️ 소개 코드는 계약 모양일 때만 담는다 — 영문·숫자·하이픈 4~32자', () => {
   assert.ok(joinScript.includes('/^[A-Za-z0-9-]{4,32}$/.test(rp)'), '소개 코드 모양 검사가 바뀌었습니다');
+});
+
+/*
+ * 🔄 2026-10-07 — 신청하면서 가입 · 승인은 뒤에서(대표 지시).
+ * 신청이 끝나면 앱이 준 계정 만들기 화면으로 보낸다. 그 주소는 «신청을 보낸 그 앱»의 /pilot/account 일 때만 쓴다.
+ * 주소가 없으면(앱이 아직 그 길을 열지 않았다) 종전 완료 글 그대로다 — 없는 화면을 약속하지 않는다.
+ */
+test('🔴 완료 화면 — 계정 만들기 글과 버튼은 숨긴 채로 오고, 앱이 주소를 줬을 때만 선다', () => {
+  const done = (joinHtml.match(/<div class="done" hidden>[\s\S]*?<\/div>\s*<\/div>/) || [])[0] || '';
+  assert.ok(done, '완료 화면을 찾지 못했습니다');
+  assert.match(done, /<p data-done-wait>담당자가 참여 가능 여부를 확인한 뒤 이메일로 안내드립니다\.<\/p>/, '주소가 없을 때의 완료 글이 바뀌었습니다');
+  assert.match(done, /<div data-done-account hidden>/, '계정 만들기 자리가 처음부터 보입니다');
+  assert.match(done, /data-done-account-link href="https:\/\/app\.trops\.kr\/pilot\/account"/, '계정 만들기 버튼의 기본 주소가 앱의 계정 화면이 아닙니다');
+  assert.match(joinScript, /link\.href = url; box\.hidden = false; wait\.hidden = true;/, '주소를 받았을 때 글을 바꾸지 않습니다');
+});
+
+test('🔴 계정 만들기 화면 주소는 신청을 보낸 그 앱의 /pilot/account 일 때만 쓴다', () => {
+  const fn = (joinScript.match(/function accountUrlOf\(raw\)\{[\s\S]*?\n  \}/) || [])[0] || '';
+  assert.ok(fn, 'accountUrlOf() 를 찾지 못했습니다');
+  const make = (endpoint) => new Function('PILOT', 'location', 'URL', fn + '; return accountUrlOf;')({ endpoint }, { href: 'https://trops.kr/' }, URL);
+  const ok = make('https://app.trops.kr/api/pilot-apply');
+  assert.strictEqual(ok('https://app.trops.kr/pilot/account?applied=1#e=a%40b.co'), 'https://app.trops.kr/pilot/account?applied=1#e=a%40b.co');
+  for (const bad of [
+    'https://evil.example/pilot/account', 'https://app.trops.kr.evil.example/pilot/account', 'http://app.trops.kr/pilot/account',
+    'https://app.trops.kr/login', 'https://app.trops.kr/pilot/account/../../login', 'javascript:alert(1)', '/pilot/account', '', null, undefined, 42,
+    'https://app.trops.kr/pilot/account?' + 'x'.repeat(700),
+  ]) assert.strictEqual(ok(bad), null, '받으면 안 되는 주소를 받았습니다: ' + String(bad).slice(0, 60));
+  // 미리보기 앱으로 보낸 신청은 그 미리보기 앱의 화면만 받는다.
+  const preview = make('https://trops-a-git-x.vercel.app/api/pilot-apply');
+  assert.strictEqual(preview('https://app.trops.kr/pilot/account'), null);
+  assert.ok(preview('https://trops-a-git-x.vercel.app/pilot/account?applied=1'));
+  assert.match(joinScript, /var url = accountUrlOf\(data && data\.account_url\);\s+if \(!url\) return;/, '주소를 검사하지 않고 옮깁니다');
+});
+
+test('🔴 실증 참여 폼의 안내 글이 «초대 메일을 기다린다»고 말하지 않는다 — 신청 직후 계정을 만든다', () => {
+  for (const bad of ['초대 메일이 이 주소로', '초대 메일을 보내 드립니다', '초대 메일에서 입력', '초대해 드릴 때']) {
+    assert.ok(!joinHtml.replace(/<!--[\s\S]*?-->/g, '').includes(bad), '옛 흐름의 글이 남았습니다: ' + bad);
+  }
+  assert.ok(pilotHtml.includes('신청하신 이메일로 바로 계정을 만드실 수 있습니다'), '실증 참여 안내가 새 흐름을 말하지 않습니다');
 });
