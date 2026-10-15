@@ -100,10 +100,13 @@ h2{font-size:42px;line-height:1.22;letter-spacing:-0.04em;font-weight:700}
 nav{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);
   border-bottom:1px solid var(--line);transition:box-shadow .2s ease}
 nav.scrolled{box-shadow:0 6px 20px rgba(19,27,46,.06)}
-nav .w{display:flex;justify-content:space-between;align-items:center;height:64px}
+nav .w{display:grid;grid-template-columns:180px minmax(0,1fr) 180px;gap:24px;align-items:center;min-height:88px;max-width:1200px}
 .logo{display:inline-flex;align-items:center;gap:9px;font-size:17px;font-weight:700;letter-spacing:-.01em;text-decoration:none;color:var(--ink)}
 .logo i{width:18px;height:18px;background:url(/img/icon_primary.svg) center/contain no-repeat;display:block}
-nav .m{display:flex;gap:28px;font-size:14.5px;color:var(--sub)}
+nav .m{display:flex;justify-content:center;align-items:center;gap:28px;font-size:17px;font-weight:600;color:var(--sub)}
+nav .m a{display:inline-flex;align-items:center;justify-content:center;min-height:48px;white-space:nowrap}
+nav .nav-right{justify-self:end}
+nav .nav-right .btn-s{min-height:44px;padding:12px 18px;font-size:15px;white-space:nowrap}
 nav .m a:hover{color:var(--ink)}
 .nav-right{display:flex;align-items:stretch;gap:10px;font-size:14.5px}
 .nav-right .ne{margin-left:5px}
@@ -477,7 +480,6 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
 
 @media(max-width:860px){
   .w{padding:0 20px}
-  nav .m{display:none}
   section{padding:72px 0}
   h2,.faq-h{font-size:30px}
   .hero{padding:64px 0 24px}
@@ -637,7 +639,7 @@ section{padding:88px 0}.hero{padding-bottom:64px}.static-workspace img{display:b
 :root{--ease-out:cubic-bezier(.22,1,.36,1);--ease-soft:cubic-bezier(.2,.65,.3,1)}
 nav{background:rgba(255,255,255,.78);backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%);transition:background .35s,box-shadow .35s,border-color .35s}
 nav.scrolled{background:rgba(255,255,255,.92);box-shadow:0 4px 24px #131b2e09;border-bottom-color:#131b2e10}
-nav .m a{position:relative;transition:color .2s}nav .m a::after{content:"";position:absolute;bottom:-7px;left:0;width:100%;height:1px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .25s var(--ease-out)}nav .m a:hover::after{transform:scaleX(1)}
+nav .m a{position:relative;transition:color .2s}nav .m a::after{content:"";position:absolute;bottom:6px;left:0;width:100%;height:1px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .25s var(--ease-out)}nav .m a:hover::after{transform:scaleX(1)}
 .hero{position:relative;padding-top:112px;overflow:clip;background:radial-gradient(ellipse 65% 45% at 67% 85%,#eaf0ff80,transparent)}
 .hero h1{font-size:clamp(40px,4.65vw,68px);letter-spacing:-.05em;line-height:1.16;max-width:1000px}
 .hero .lead{max-width:680px;line-height:1.75;margin-top:26px}.hero>.w>.free{color:var(--mute);font-size:13px;letter-spacing:-.01em}
@@ -706,7 +708,37 @@ footer{padding-top:96px;padding-bottom:104px}
  .compact-footer{gap:40px}
  footer{padding-top:80px;padding-bottom:88px}
 }
-</style></head><body>
+</style><style id="workspace-flow-style">
+.workspace-flow{margin-top:80px;text-align:left;border-top:1px solid var(--line);padding-top:48px}
+.workspace-flow h2{font-size:clamp(24px,2.5vw,32px);font-weight:600;letter-spacing:-.04em;line-height:1.45}
+.workspace-flow>p{margin-top:14px;color:var(--sub);font-size:16px}
+.workspace-flow ol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:48px;list-style:none;margin-top:36px}
+.workspace-flow li{position:relative;min-width:0}
+.workspace-flow li+li::before{content:'→';position:absolute;left:-32px;top:9px;color:var(--mute);font-size:20px}
+.workspace-flow .flow-icon{display:grid;place-items:center;width:40px;height:40px;border-radius:10px;background:var(--accent-soft);color:var(--accent);margin-bottom:16px}
+.workspace-flow svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.workspace-flow h3{font-size:17px;font-weight:600;letter-spacing:-.02em}
+.workspace-flow li p{margin-top:8px;color:var(--sub);font-size:14px;line-height:1.8}
+@media(max-width:860px){.workspace-flow{margin-top:48px;padding-top:32px}.workspace-flow>p{font-size:14px}.workspace-flow ol{grid-template-columns:1fr;gap:28px;margin-top:28px}.workspace-flow li{display:grid;grid-template-columns:40px minmax(0,1fr);column-gap:16px}.workspace-flow .flow-icon{grid-row:1/3;margin:0}.workspace-flow li+li::before{content:none}.workspace-flow h3{font-size:16px}.workspace-flow li p{font-size:13px;margin-top:4px}}
+</style>
+<style id="navigation-layout">
+html{scroll-padding-top:112px}
+#workspace-flow{scroll-margin-top:24px}
+@media(max-width:1000px){
+ nav .w{grid-template-columns:1fr auto;gap:4px 20px;padding-top:14px;padding-bottom:8px}
+ nav .m{grid-column:1/-1;grid-row:2;gap:28px;flex-wrap:wrap}
+ nav .nav-right{grid-column:2;grid-row:1}
+ html{scroll-padding-top:148px}
+}
+@media(max-width:600px){
+ nav .w{padding-left:20px;padding-right:20px;gap:8px 16px}
+ nav .m{justify-content:space-between;column-gap:8px;row-gap:0;font-size:14px}
+ nav .m a{min-height:44px}
+ nav .nav-right .btn-s{font-size:14px;padding:10px 14px}
+ html{scroll-padding-top:164px}
+}
+</style>
+</head><body>
 
 <a class="skip" href="#main">Skip to content</a>
 
@@ -715,7 +747,7 @@ footer{padding-top:96px;padding-bottom:104px}
 
 <nav data-section="nav" aria-label="Main navigation"><div class="w">
   <a class="logo" href="https://www.trops.kr/"><i></i>TROPS</a>
-  <div class="m"><a href="#product">Product</a><a href="#resources">Resources</a><a href="#faq">Frequently asked questions</a></div>
+  <div class="m"><a href="#product">Product</a><a href="#workspace-flow">How it works</a><a href="#resources">Resources</a><a href="#faq">FAQ</a><a href="mailto:contact@theo-ne.com" data-track="nav-contact">Contact</a></div>
 
 
 
@@ -739,7 +771,8 @@ footer{padding-top:96px;padding-bottom:104px}
 
 
 
-  <figure class="appfig static-workspace" id="demo"><img src="/assets/img/workspace-overview.png" decoding="async" fetchpriority="high" width="984" height="560" alt="Illustrative TROPS workspace in Korean showing export deals, documents, expected payments and tasks to check"><figcaption>Workspace example · Illustrative companies and amounts · App interface is in Korean</figcaption></figure>
+  <figure class="appfig static-workspace" id="demo"><img src="/assets/img/workspace-overview.png" decoding="async" fetchpriority="high" width="1440" height="900" alt="Actual TROPS guest home in Korean: three task cards and the TROPS AI request box"><figcaption>TROPS guest home · Sign in to continue your selected task · App interface is in Korean</figcaption></figure>
+  <div class="workspace-flow" id="workspace-flow" role="region" aria-labelledby="workspace-flow-title"><h2 id="workspace-flow-title">From export documents to payments, keep your work connected.</h2><p>Start with the materials you have and ask AI for the help you need.</p><ol><li><span class="flow-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H5v20h14V7ZM14 2v6h5M8 12h8M8 16h6"/></svg></span><h3>Add your materials</h3><p>Quotes, purchase orders and buyer requests</p></li><li><span class="flow-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V3h8v4M3 12h18M10 12v3h4v-3"/></svg></span><h3>Organize deals and documents</h3><p>Check extracted details and prepare documents</p></li><li><span class="flow-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M5 9h1M18 15h1"/></svg></span><h3>Track payments</h3><p>Amounts due and payment records by deal</p></li></ol></div>
 </div></header>
 
 
