@@ -176,7 +176,9 @@ test('[대조] 검출기가 실제로 문다 — 0건 통과 금지', () => {
   assert.strictEqual(norm('/en-privacy'), '/en-privacy');
 
   const linked = [...strip(read('en.html')).matchAll(/href="(\/[^"]*)"/g)];
-  assert.ok(linked.length >= 3, 'en.html 에서 내부 링크를 ' + linked.length + '개만 찾았습니다');
+  // Compact English landing retains the language switch and refund policy;
+  // contact is email because there is no English contact page.
+  assert.ok(linked.length >= 2, 'en.html 에서 내부 링크를 ' + linked.length + '개만 찾았습니다');
 });
 
 /* ══ ⑥ 푸터 서비스명 — 국문·영문이 같은 셋을 말한다 ══════════════════════ */

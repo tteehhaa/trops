@@ -164,34 +164,14 @@ test('🔴 알림 주기를 «말한다면» 코드와 같은 주기여야 한�
   }
 });
 
-test('🔴 무료 경로 CTA 가 랜딩에 살아 있다 — 「유료 아니면 문의뿐」으로 되돌아가지 않았다', () => {
-  /*
-   * B2 가 세운 것을 지키는 축입니다. 종전 게이트는 앱의 «특정 URL 세 개»를 단정했는데
-   * 2026-08-29 개편이 그 목적지를 정당하게 바꿨습니다(그 게이트가 「목적지가 사라지면
-   * B2 가 되돌아간 것」이라 적어 둔 자리입니다). URL 이 아니라 **무료 경로의 존재**로
-   * 축을 좁혔습니다 — 그것이 B2 가 실제로 세운 것입니다.
-   */
-  /*
-   * ⚠️ 무료 경로가 **두 장에서 다른 주소**입니다 — 둘 다 이제 **앱**이지만 화면이 다릅니다.
-   * 🔄 **국문이 `/precheck` → `app.trops.kr/quick-check` 로 옮겼습니다** 〔2026-09-21 ·
-   *    대표 결정〕. 이 검사가 지키는 것은 **무료 경로의 존재**이지 특정 주소가 아니며
-   *    (바로 위 머리말이 그 축을 적었습니다), 그 존재는 그대로입니다 — 옮긴 것은 주소입니다.
-   * 🔄 **영문도 `/quick-check` 로 옮겼습니다** 〔2026-09-21 · 대표 결정〕. 종전 이 자리는
-   *    「영문은 그대로 `export-precheck/new` — `/quick-check` 는 국문 전용이라 영문이 거기로
-   *    가면 안 된다」였습니다. 🔴 **그 사유는 둘을 갈라 세우지 못합니다** — 실측하면
-   *    `export-precheck/new` **도 한국어 화면**입니다. 갈리는 것은 언어가 아니라 **무엇이
-   *    열리는가**였고, 영문 버튼이 "Free 1-minute check"라 적힌 채 **14항목·로그인 필요**
-   *    화면을 열고 있었습니다. 지금은 두 지면이 같은 화면을 가리킵니다.
-   * ⚠️ **도착 화면이 한국어인 것은 그대로입니다** — 영문 화면은 앱에 아직 없습니다.
-   *    알고 고른 결과이며, 적어도 「1-minute」이 거짓이 되지는 않습니다.
-   */
-  const FREE = {
-    'index.html': /href="https:\/\/app\.trops\.kr\/quick-check"/g,
-    'en.html': /href="https:\/\/app\.trops\.kr\/quick-check"/g,
-  };
+test('국·영문 주요 시작 버튼이 앱으로 직접 연결된다', () => {
   for (const f of LANDINGS) {
-    const free = (body(f).match(FREE[f]) || []).length;
-    assert.ok(free > 0, f + ' 에 무료 경로 CTA 가 0개입니다 — 유료·문의만 남았습니다');
+    const html = body(f);
+    for (const id of ['nav-start', 'hero-start', 'final-start']) {
+      const tag = html.match(new RegExp('<a[^>]*data-track="' + id + '"[^>]*>'))?.[0];
+      assert.ok(tag, f + ': 시작 버튼이 없습니다: ' + id);
+      assert.ok(tag.includes('href="https://app.trops.kr/"'), f + ': 앱으로 직접 연결되지 않습니다');
+    }
   }
 });
 
@@ -238,40 +218,9 @@ test('마감 CTA 에 «주» 버튼이 정확히 하나다', () => {
  *       아무것도 재지 않습니다(이 파일 머리주석의 「거짓 green」).
  * ⛔ 국문에 통계를 다시 싣게 되면 이 목록에 index.html 을 되돌리십시오.
  */
-const STAT_BLOCK_LANDINGS = ['en.html'];
-
-test('🔴 인용 출처가 본문보다 작다 — 출처가 본문만큼 크면 인용이 주장이 된다', () => {
-  /*
-   * 🔄 **두 번째 retarget** 〔2026-09-01 · v11〕 — `.stat-quote .stat-src` → `.qb-src`.
-   *    출처 표기 자리는 그대로 있고 이름만 바뀌었습니다. 축도 그대로 「본문보다 작다」입니다.
-   * ⚠️ 실측 기준값: `.qb-src` 13px · 본문 16.5px.
-   */
-  assert.ok(STAT_BLOCK_LANDINGS.length > 0, '잴 랜딩이 0장입니다 — 이 검사를 걷을 때입니다');
-  for (const f of STAT_BLOCK_LANDINGS) {
-    const css = read(f);
-    const src = Number((css.match(/\.qb-src\{[^}]*font-size:([\d.]+)px/) || [])[1]);
-    const bodySize = Number((css.match(/body\{[^}]*font-size:([\d.]+)px/) || [])[1]);
-    assert.ok(src > 0 && bodySize > 0, f + ': 크기 값을 읽지 못했습니다 (src=' + src + ' body=' + bodySize + ')');
-    assert.ok(src < bodySize, f + ': 인용 출처(' + src + 'px)가 본문(' + bodySize + 'px)보다 작지 않습니다');
-  }
-});
-
-test('🔴 통계 숫자가 그 설명보다 크다 — 「제일 중요한 한마디」가 작게 나간 사고 이력', () => {
-  /*
-   * ⚠️ 종전 E3 은 「인용문이 h2 보다 크다(헤드라인급)」였는데, 새 랜딩에서는 인용문이
-   *    h2 보다 **작습니다**(clamp 상한 28px vs 40px). 그 기대를 그대로 옮기면 red 이고,
-   *    그것은 **개편이 내린 결정**이지 결함이 아닙니다. 그래서 축을 같은 블록 «안»의
-   *    위계로 좁혔습니다 — 숫자(`.stat-n`)가 라벨(`.stat-t`)보다 크다.
-   */
-  /* 🔄 `.stat-n`/`.stat-t` → `.qb-stat .n`/`.qb-stat .l` 〔2026-09-01 · v11〕. 자리는 같습니다. */
-  assert.ok(STAT_BLOCK_LANDINGS.length > 0, '잴 랜딩이 0장입니다 — 이 검사를 걷을 때입니다');
-  for (const f of STAT_BLOCK_LANDINGS) {
-    const css = read(f);
-    const n = Number((css.match(/\.qb-stat \.n\{font-size:clamp\([\d.]+px,[^,]+,([\d.]+)px\)/) || [])[1]);
-    const t = Number((css.match(/\.qb-stat \.l\{font-size:([\d.]+)px/) || [])[1]);
-    assert.ok(n > 0 && t > 0, f + ': 크기 값을 읽지 못했습니다 (n=' + n + ' t=' + t + ')');
-    assert.ok(n > t, f + ': 통계 숫자(' + n + 'px)가 설명(' + t + 'px)보다 크지 않습니다');
-  }
+// The compact landing removes the former statistics and quotation sections in both languages.
+test('국·영문에 과거 통계·인용 섹션이 남지 않는다', () => {
+  for (const f of LANDINGS) assert.ok(!/data-section="(problem|voice)"/.test(body(f)));
 });
 
 /* ══ ④ 샘플 2종 — **내렸습니다** ═════════════════════════════════════════

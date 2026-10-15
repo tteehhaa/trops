@@ -178,8 +178,7 @@ test('🔴 주요 영역 전부에 이름이 붙어 있다 — 하나라도 빠�
    * ⚠️ 숨긴 자리(로고 벽 · 후기 · 영상)에는 이름을 붙이지 않았습니다 — 공개하는 날 붙이십시오.
    */
   const want = [
-    'nav', 'hero', 'product', 'service', 'check', 'calc',
-    'security', 'apply', 'resources', 'faq', 'final', 'footer',
+    'nav', 'hero', 'product', 'resources', 'faq', 'final', 'footer',
   ];
   for (const w of want) assert.ok(found.includes(w), '영역이 빠졌습니다: ' + w);
   assert.strictEqual(new Set(found).size, found.length, '같은 이름이 두 번 붙었습니다');
