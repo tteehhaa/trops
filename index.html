@@ -103,7 +103,7 @@ nav.scrolled{box-shadow:0 6px 20px rgba(19,27,46,.06)}
 nav .w{display:grid;grid-template-columns:180px minmax(0,1fr) 180px;gap:24px;align-items:center;min-height:88px;max-width:1200px}
 .logo{display:inline-flex;align-items:center;gap:9px;font-size:17px;font-weight:700;letter-spacing:-.01em;text-decoration:none;color:var(--ink)}
 .logo i{width:18px;height:18px;background:url(/img/icon_primary.svg) center/contain no-repeat;display:block}
-nav .m{display:flex;justify-content:center;align-items:center;gap:28px;font-size:17px;font-weight:600;color:var(--sub)}
+nav .m{display:flex;justify-content:flex-end;align-items:center;gap:28px;font-size:17px;font-weight:500;color:var(--mute)}
 nav .m a{display:inline-flex;align-items:center;justify-content:center;min-height:48px;white-space:nowrap}
 nav .nav-right{justify-self:end}
 nav .nav-right .btn-s{min-height:44px;padding:12px 18px;font-size:15px;white-space:nowrap}
@@ -726,7 +726,7 @@ html{scroll-padding-top:112px}
 #workspace-flow{scroll-margin-top:24px}
 @media(max-width:1000px){
  nav .w{grid-template-columns:1fr auto;gap:4px 20px;padding-top:14px;padding-bottom:8px}
- nav .m{grid-column:1/-1;grid-row:2;gap:28px;flex-wrap:wrap}
+ nav .m{grid-column:1/-1;grid-row:2;justify-content:center;gap:28px;flex-wrap:wrap}
  nav .nav-right{grid-column:2;grid-row:1}
  html{scroll-padding-top:148px}
 }
