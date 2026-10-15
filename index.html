@@ -1,22 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="icon" href="/favicon.ico" sizes="any">
-<!-- 🔴 **Google tag (gtag.js) — GA4** 〔2026-09-12〕. 구글이 주는 스니펫 그대로이고
-     **측정 ID 만 토큰**입니다(`site.config.json` 의 `analytics.gaId` 한 곳이 원본).
-     ⛔ **공용 `.js` 파일로 빼지 마십시오** 〔2026-09-12 실측〕 — 처음에 `assets/ga.js`
-        가 gtag.js 를 주입하게 만들었고 **수집은 정상**이었는데(`/g/collect` 204)
-        GA 화면은 「웹사이트에서 Google 태그가 감지되지 않았습니다」였습니다.
-        감지기는 실행된 DOM 이 아니라 **HTML 소스**에서 gtag.js 를 찾습니다.
-     ⚠️ 8장이 이 블록을 **문자 그대로 같게** 싣습니다. 한 장이라도 갈리면
-        `test/ga-policy.test.js` 가 red 입니다 — 고칠 때는 8장을 함께 고치십시오.
-     🔴 광고 두 값을 **false 로 못박습니다** — 방침 §01 이 「광고 기능(Google 신호
-        데이터 · 광고 맞춤설정)을 켜지 않았습니다」를 단정합니다. GA 콘솔 설정에
-        맡기면 그 문면이 저장소 밖 토글에 매달립니다(첫 배포에서 `npa=0` 이 나갔습니다).
-     🔴 **이 블록이 분석 쿠키(`_ga` · `_ga_<속성ID>`)를 심습니다.** 걷을 때는
-        `privacy.html` §01(셋째 예외) · §04 두 표 · §07 개정 고지와 짝인
-        `en-privacy.html` 의 같은 네 자리를 **함께** 걷으십시오.
-     ⛔ `test/track-section.test.js` 와 합치지 마십시오 — 그쪽은 쿠키 없는 자체 집계입니다. -->
+<link rel="icon" href="https://www.trops.kr/favicon.ico" sizes="any">
+
+
+
+
 <script async src="https://www.googletagmanager.com/gtag/js?id={{analytics.gaId}}"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -24,35 +13,15 @@
   gtag('js', new Date());
   gtag('config', '{{analytics.gaId}}', { allow_google_signals: false, allow_ad_personalization_signals: false });
 </script>
-<!-- 🔴 **app 도메인 미리 잇기** 〔2026-09-05〕 — 이 페이지의 «나가는» 링크는 전부
-     app.trops.kr 입니다(헤더 로그인 · 3단계 유료 버튼). 다른 출처라 클릭한 뒤에야
-     DNS→TCP→TLS 를 새로 트는데, 그 세 왕복이 첫 바이트 앞에 통째로 붙습니다.
-     미리 터 두면 클릭 시점에는 요청만 나갑니다.
-     ⚠️ `crossorigin` 을 붙이지 마십시오 — 문서 이동(navigation)이지 CORS 요청이
-        아니라, 붙이면 «다른» 연결이 되어 미리 튼 것이 버려집니다.
-     ⚠️ `dns-prefetch` 는 preconnect 를 무시하는 옛 브라우저용 보험입니다. -->
 <link rel="preconnect" href="https://app.trops.kr">
 <link rel="dns-prefetch" href="https://app.trops.kr">
-<!-- 🔄 **제목·설명을 v3 시안 문구로 바꿨습니다** 〔2026-09-29 · 대표 결정〕 — 종전 제목은
-     「무역보험 서류 준비와 수출대금 관리 · TROPS」로 찾는 낱말을 앞에 두었습니다. 랜딩이 「수출 업무를
-     위한 AI」로 자리를 옮기면서 제목도 따라갑니다. og:description 도 같은 문장으로 맞췄습니다. -->
-<title>{{publicCopy.headline}}</title>
-<meta name="description" content="{{publicCopy.audience}} {{publicCopy.detail}}">
+
+<title>{{publicCopy.headline}} | 수출 서류·거래 관리·지원사업</title>
+<meta name="description" content="TROPS는 중소기업의 수출 서류 작성, 거래별 기한·대금 관리와 맞춤 지원사업 찾기를 돕는 수출 실무 서비스입니다. 앱에서 가입하고 필요한 업무를 시작하세요.">
 <link rel="canonical" href="https://trops.kr/">
-<!-- 🔴 **네이버 사이트 소유확인** 〔2026-09-10〕 — 서치어드바이저에 등록한 속성은
-     `https://www.trops.kr` 입니다. ⛔ 이 줄을 지우면 소유확인이 풀립니다.
-     ⚠️ **파일 업로드 방식이 아니라 이 태그인 이유** — `vercel.json` 의 `cleanUrls: true` 가
-        `.html` 로 끝나는 요청을 확장자 없는 주소로 무조건 308 합니다(파일이 있든 없든).
-        네이버가 그 308 을 따라간다는 보장이 없어서, 리다이렉트를 아예 타지 않는 쪽을
-        골랐습니다. 미들웨어로 200 을 직접 내주는 우회는 되지 않습니다 —
-        Vercel 이 cleanUrls 를 미들웨어보다 먼저 처리합니다(c386b76 에서 배포해 확인 후 되돌림).
-     ⚠️ 토큰은 **속성마다 다릅니다.** 등록 주소를 바꾸면 이 값도 새로 받아야 합니다
-        (처음 등록한 `http://trops.kr` 의 값과 다릅니다). -->
+
 <meta name="naver-site-verification" content="82ea864b3d6cdf087f4568558ceb5ad495445c6f" />
-<!-- 🔴 hreflang 은 **양쪽이 서로를 가리켜야** 검색엔진이 인정합니다 — 한쪽만 있으면 무시됩니다.
-     en.html <head> 에 같은 3줄이 있고 test/i18n-parity.test.js ③ 이 상호 지목을 단정합니다.
-     ⚠️ v11 원본에는 이 3줄이 없었습니다. 빠뜨리면 그 검사가 막습니다(영문판을 새로 만드는
-        것이 아니라, en.html 이 이미 선언한 짝을 이쪽에서 되받는 것입니다). ⛔ 지우지 마십시오. -->
+
 <link rel="alternate" hreflang="ko" href="https://trops.kr/">
 <link rel="alternate" hreflang="en" href="https://trops.kr/en">
 <link rel="alternate" hreflang="x-default" href="https://trops.kr/">
@@ -60,253 +29,21 @@
 <meta property="og:url" content="https://trops.kr/">
 <meta property="og:site_name" content="TROPS">
 <meta property="og:locale" content="ko_KR">
-<!-- 🔴 **og:title 은 <title> 과 «일부러» 다릅니다** 〔2026-09-08 · 대표 지시〕.
-     <title> 은 검색 결과·브라우저 탭 자리입니다(🔄 2026-09-29 부터 「TROPS — {{publicCopy.definition}}」).
-     og:title 은 **카카오톡·슬랙 카드의 제목**이고, 링크를 처음 받는 사람이 「이게 뭐냐」를
-     한 줄로 알아야 하는 자리라 회사가 무엇인지를 답니다.
-     ⛔ 둘을 같게 맞추지 마십시오 — 맞추면 한쪽이 자기 일을 못 합니다.
-     ⚠️ 카드에는 이 제목 아래 `trops.kr` 이 함께 나오므로 제목에 브랜드를 또 넣지
-        않았습니다(대표 지시 문구 그대로). -->
+
 <meta property="og:title" content="{{publicCopy.headline}}">
-<meta property="og:description" content="{{publicCopy.audience}} {{publicCopy.detail}}">
+<meta property="og:description" content="TROPS는 중소기업의 수출 서류 작성, 거래별 기한·대금 관리와 맞춤 지원사업 찾기를 돕는 수출 실무 서비스입니다. 앱에서 가입하고 필요한 업무를 시작하세요.">
 <meta name="twitter:card" content="summary_large_image">
-<!-- 🔴 **og:image 는 «있어야» 합니다** 〔2026-09-08 · 카카오톡 공유 실측〕.
-     없으면 카카오톡이 og 를 못 읽었을 때 **본문 첫 글자를 설명으로 긁어** 갑니다 —
-     실제로 「본문으로 건너뛰기 TROPS 로그인 1분 수출 준비 진단 …」이 카드에 실렸습니다.
-     ⚠️ **절대 URL 이어야** 합니다(`/img/…` 상대경로는 카카오·페이스북 모두 무시).
-     🔴 **호스트가 `www.` 입니다 — 이 자리만 그렇습니다.** apex(`trops.kr`)는 www 로
-        **308 리다이렉트**되는데, 카카오는 이미지 URL 의 리다이렉트를 따라가지 않는
-        경우가 있어 썸네일이 통째로 빕니다(실측 2026-09-08: apex → 308 15바이트,
-        www → 200 image/png). og:url·canonical·hreflang 은 apex 그대로 두십시오 —
-        그건 «문서의 이름»이고 이건 «자산의 주소»라 판단이 다릅니다.
-     ⚠️ SVG 는 렌더되지 않습니다 — PNG/JPG 1200×630 입니다. `img/icon_primary.svg`
-        를 여기 쓰지 마십시오.
-     ⚠️ 배포한 뒤 **카카오 캐시를 손으로 비워야** 새 카드가 보입니다 —
-        developers.kakao.com/tool/debugger/sharing 에서 URL 을 넣고 「초기화」.
-        비우지 않으면 며칠 동안 옛 카드가 그대로 나옵니다. -->
-<!-- 🔄 **로고 한 장으로 바꿨습니다** 〔2026-09-19 · 대표 결정 「B · 브랜드 블루」〕 — 종전에는
-     헤드라인을 그린 og-ko.png · og-en.png 두 장이었는데, 카드 아래 og:title·description 과
-     같은 말을 이미지가 또 했고, 문구가 바뀔 때마다 언어별로 다시 그려야 했습니다(영문 판이
-     실제로 몇 주 낡은 헤드라인을 싣고 있었습니다). 이제 index · en · precheck 가
-     `img/og.png` 한 장을 씁니다 — 공식 락업(TROPS_logo_package) · 배경 #1F56C9 · 1200×630.
-     ⛔ 이미지에 문구를 다시 넣지 마십시오 — 넣는 순간 언어별 두 장과 낡음이 돌아옵니다.
-     ⚠️ 색은 로고 패키지 COLOR_SPEC 의 값만 씁니다(「다른 파랑을 들이지 말 것」). -->
+
+
 <meta property="og:image" content="https://www.trops.kr/img/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="TROPS 로고">
 <meta name="twitter:image" content="https://www.trops.kr/img/og.png">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": "https://trops.kr/#org",
-      "name": "{{biz.companyName}}",
-      "alternateName": "TROPS",
-      "url": "https://trops.kr/",
-      "email": "contact@theo-ne.com",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "봉은사로 524, B층 269-11호",
-        "addressLocality": "강남구",
-        "addressRegion": "서울특별시",
-        "addressCountry": "KR"
-      }
-    },
-    {
-      "@type": "WebSite",
-      "@id": "https://trops.kr/#site",
-      "url": "https://trops.kr/",
-      "name": "TROPS",
-      "inLanguage": "ko-KR",
-      "publisher": {
-        "@id": "https://trops.kr/#org"
-      }
-    },
-    {
-      "@type": "Service",
-      "name": "무역보험 준비 패키지",
-      "serviceType": "무역보험 서류 준비",
-      "provider": {
-        "@id": "https://trops.kr/#org"
-      },
-      "areaServed": {
-        "@type": "Country",
-        "name": "대한민국"
-      },
-      "audience": {
-        "@type": "BusinessAudience",
-        "name": "수출 중소기업"
-      },
-      "description": "단기수출보험 등 무역보험의 신청과 보험금 청구에 필요한 서류를 선적 전에 갖춰 두는 거래 단위 서비스입니다. 상품 선정, 목적국 인수방침과 바이어 등급 요건 확인, 청약·선적·청구 단계별 서류 대조, 수출통지와 사고통지 기한 정리를 지원합니다. 제공 범위는 자료 확인 후 안내합니다.",
-      "offers": {
-        "@type": "Offer",
-        "priceCurrency": "KRW",
-        "availability": "https://schema.org/InStock"
-      }
-    },
-    {
-      "@type": "Service",
-      "name": "1분 수출 준비 진단",
-      "serviceType": "수출 절차 진단",
-      "provider": {
-        "@id": "https://trops.kr/#org"
-      },
-      "url": "https://app.trops.kr/quick-check",
-      "areaServed": {
-        "@type": "Country",
-        "name": "대한민국"
-      },
-      "description": "대금 조건, 결제 기한, 목적국, 바이어 이력, 무역보험 다섯 항목으로 수출 거래의 대금 미회수 위험을 100점 기준으로 진단합니다. 회원가입 없이 무료로 이용할 수 있습니다.",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "KRW"
-      }
-    },
-    {
-      "@type": "Service",
-      "name": "수출대금 관리",
-      "serviceType": "수출채권 및 무역보험 증권 일정 관리",
-      "provider": {
-        "@id": "https://trops.kr/#org"
-      },
-      "areaServed": {
-        "@type": "Country",
-        "name": "대한민국"
-      },
-      "description": "결제기일, 미수금, 무역보험 사고통지 기한과 증권 만료를 거래 단위 일정으로 관리합니다. 실증 중이며 초대받은 기업에 제공합니다."
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "실증 신청은 무엇인가요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "초대받은 기업과 수출 실무 도구를 실증하는 과정입니다. 신청이 접수되면 담당자가 참여 가능 여부와 제공 기능을 확인해 안내합니다."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "초대는 어떤 순서로 이루어지나요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "신청 순서와 회사 상황(담당자 수, 거래 방식)을 함께 보고 정합니다. 다른 수출기업을 소개해 주시면 먼저 연락드립니다."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "비용이 드나요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "초대 기간에는 무료이며 카드 등록도 필요 없습니다. 요금이 정해지면 미리 안내해 드립니다. 무역보험 준비 패키지는 수출 거래 건별로 따로 안내합니다."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "TROPS AI는 무엇을 해 주나요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "{{publicCopy.coreSummary}} {{publicCopy.detail}} {{publicCopy.integrationSummary}}"
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "우리 회사 정보는 안전한가요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "{{publicCopy.securitySummary}}"
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "무역보험이란 무엇인가요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "수출 거래에서 수입자의 신용 문제나 수입국 사정으로 대금을 받지 못할 때 손실을 보상하는 정책보험입니다. 한국무역보험공사가 운영합니다."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "무역보험 보상비율은 몇 퍼센트인가요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "보험 상품과 계약 조건에 따라 다릅니다. 실제 비율은 보험증권과 약관에 적힌 내용을 따릅니다."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "무역보험 보험금 청구에는 어떤 서류가 필요한가요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "보험금 청구서와 함께 수출 사실과 채권 발생을 보여 주는 서류, 사고 경위와 회수 노력을 보여 주는 자료 등이 필요합니다. 구체적인 목록은 보험 상품과 약관에 따라 다릅니다."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "단기수출보험 사고발생 통지는 언제까지 해야 하나요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "단기수출보험(선적후) 개별보험은 결제만기일로부터 1개월 이내에 서면으로 통지하도록 정하고 있습니다. 실제 조건은 보험증권과 약관에 따릅니다."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "수출보험료 지원사업은 어디서 확인할 수 있나요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "지자체와 지원기관이 보험료 일부를 지원하는 사업을 운영합니다. TROPS의 수출절차 안내에서 지역별로 확인하실 수 있습니다."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "TROPS 1분 수출 준비 진단은 무료인가요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "무료이며 가입 없이 이용하실 수 있습니다. 수출 거래 조건을 고르면 대금 회수 대비 점수와 먼저 볼 영역을 보여 드립니다."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "TROPS는 어떤 서비스인가요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "{{publicCopy.definition}}입니다. {{publicCopy.audience}} {{publicCopy.detail}} TROPS Web과 업무도구 연동을 통해 학습 부담과 재입력을 줄이는 방향으로 실증하고 있습니다."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "TROPS가 무역보험 가입을 대신해 주나요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "대신 가입해 드리지 않습니다. 보험 인수·지급 심사나 가입 대행, 특정 상품 추천을 하지 않으며, 가입 가능 여부와 조건은 해당 기관이 약관과 심사 기준에 따라 결정합니다. 법률 자문과 계약서에 대한 법률적 검토도 제공하지 않으며, 미수금 회수를 보장하지 않습니다."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "무역보험 준비 패키지는 얼마인가요?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "작성할 서류 종수에 따라 달라집니다. 자료를 보내 주시면 금액과 소요 기간을 안내해 드리고, 확인하신 뒤 결제하시면 됩니다."
-          }
-        }
-      ]
-    }
-  ]
-}
-</script>
+
 <style>
-/*
- * 🔴 **랜딩 v3** 〔2026-09-29 · 대표 지시〕 — 기준 시안은 docs/design/landing-v3/trops-landing-v3-blue.html.
- *    색은 **지금 사이트의 파랑**(#1D4ED8)을 그대로 씁니다. 시안의 #1F4FE0 · 주홍 판은 들이지 않습니다.
- *    중립색(잉크·회색·선)은 시안 값입니다.
- * ⚠️ 다크 모드는 넣지 않았습니다 — 다른 7장과 앱이 모두 밝은 화면입니다(시안에는 있습니다).
- */
+
 :root{
   --accent:#1D4ED8; --accent-deep:#1739A8; --accent-soft:#EFF4FE;
   --ink:#131B2E; --sub:#5E6678; --mute:#6B7385;
@@ -328,15 +65,7 @@ p,li{text-wrap:pretty}
 [hidden]{display:none!important}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
-/*
- * 🔴 **`.w` · `nav .w` · `.logo` · `.logo i` 는 지금 값 그대로입니다** 〔2026-09-29 · 대표 결정〕 —
- *    앱 저장소의 검사(trops_a tests/guardrails/landing-entry-header.test.ts)가 이 파일에서
- *    `max-width:1040px` · `padding:0 28px` · `height:64px` · `.logo` 의 gap·크기·굵기·자간과
- *    `.logo i` 의 로고 SVG 를 **글자로** 읽어 앱 착지 헤더와 맞댑니다.
- *    시안은 1160px · 32px · 글자+점 로고였습니다.
- * ⛔ 이 값을 바꾸려면 **이 파일이 먼저**, 그다음 앱 ui.ts 의 `*Landing` 토큰 · cross-repo-values.ts
- *    `LANDING_NAV_MIRROR.spec` · 그 검사의 대응표를 함께 고치십시오(앱 LANDING_NAV_SYNC_ORDER).
- */
+
 .w{max-width:1040px;margin:0 auto;padding:0 28px}
 section{padding:112px 0}
 .tint{background:var(--surface)}
@@ -346,7 +75,7 @@ h2{font-size:42px;line-height:1.22;letter-spacing:-0.04em;font-weight:700}
 .head{display:grid;grid-template-columns:1fr 1.3fr;gap:48px;align-items:end}
 .head p{font-size:17px;color:var(--sub)}
 
-/* 🔴 skip 링크 — 전 페이지 같은 값입니다(test/page-essentials.test.js). z-index 는 nav(10) 보다 위. */
+
 .skip{position:absolute;left:-9999px;top:8px;padding:10px 16px;border-radius:6px;background:var(--ink);color:#fff;font-size:14px;z-index:20}
 .skip:focus{left:16px;color:#fff}
 
@@ -360,33 +89,36 @@ h2{font-size:42px;line-height:1.22;letter-spacing:-0.04em;font-weight:700}
 .btn-2:hover{border-color:var(--accent)}
 .btn-s{padding:9px 16px;font-size:14px}
 
-/* 공지 띠 */
+
 .announce{position:relative;background:var(--ink);color:#fff;font-size:13.5px;text-align:center;padding:9px 48px}
 .announce a{color:#fff;text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:3px;margin-left:8px}
 .ax{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:0;color:inherit;
   font-size:18px;line-height:1;padding:6px 8px;cursor:pointer;opacity:.7;font-family:inherit}
 .ax:hover{opacity:1}
 
-/* nav */
+
 nav{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);
   border-bottom:1px solid var(--line);transition:box-shadow .2s ease}
 nav.scrolled{box-shadow:0 6px 20px rgba(19,27,46,.06)}
-nav .w{display:flex;justify-content:space-between;align-items:center;height:64px}
+nav .w{display:grid;grid-template-columns:180px minmax(0,1fr) 180px;gap:24px;align-items:center;min-height:88px;max-width:1200px}
 .logo{display:inline-flex;align-items:center;gap:9px;font-size:17px;font-weight:700;letter-spacing:-.01em;text-decoration:none;color:var(--ink)}
 .logo i{width:18px;height:18px;background:url(/img/icon_primary.svg) center/contain no-repeat;display:block}
-nav .m{display:flex;gap:28px;font-size:14.5px;color:var(--sub)}
+nav .m{display:flex;justify-content:flex-end;align-items:center;gap:28px;font-size:17px;font-weight:500;color:var(--mute)}
+nav .m a{display:inline-flex;align-items:center;justify-content:center;min-height:48px;white-space:nowrap}
+nav .nav-right{justify-self:end}
+nav .nav-right .btn-s{min-height:44px;padding:12px 18px;font-size:15px;white-space:nowrap}
 nav .m a:hover{color:var(--ink)}
 .nav-right{display:flex;align-items:stretch;gap:10px;font-size:14.5px}
 .nav-right .ne{margin-left:5px}
 
-/* 히어로 */
+
 .hero{padding:104px 0 40px}
 .hero h1{font-size:66px;line-height:1.14;letter-spacing:-0.045em;font-weight:700}
 .hero .lead{font-size:19px;color:var(--sub);margin-top:24px;max-width:600px}
 .hero .cta{display:flex;gap:12px;margin-top:36px;flex-wrap:wrap}
 .hero .free{font-size:14px;color:var(--sub);margin-top:16px}
 
-/* 히어로 속 앱 화면 — 배치·여백은 시안, 글자·구성은 앱 홈(아래 마크업 주석) */
+
 .appfig{margin-top:64px}
 .appfig figcaption{margin-top:10px;text-align:center;font-size:12.5px;color:var(--mute)}
 .app{border:1px solid var(--line);border-radius:14px;background:var(--white);box-shadow:0 20px 50px rgba(19,27,46,.08);overflow:hidden}
@@ -440,14 +172,10 @@ nav .m a:hover{color:var(--ink)}
 .app .today li .k{color:#334155}
 .app .today .ob{flex:none;display:inline-flex;align-items:center;height:32px;padding:0 12px;border:1.5px solid var(--accent);border-radius:6px;font-size:12.5px;font-weight:600;color:var(--accent);background:var(--white)}
 
-/* 자리만 있는 블록(로고 벽 · 후기 · 영상) — hidden 으로 둡니다 */
+
 .sample{display:inline-block;font-size:12px;color:var(--warn-ink);background:var(--warn-bg);border-radius:999px;padding:2px 10px;margin-left:8px;vertical-align:middle}
 
-/* 제품 — 탭
- * 🔄 2026-10-05(대표 결정 3B) — 왼쪽 한 덩어리(제목 → 실증 중 한 줄 → 탭) · 오른쪽 화면 예시가 제목 높이부터.
- *    (아래 전폭 연동 띠는 2026-10-06 「업무도구 연동」 탭으로 옮기며 걷었습니다.)
- *    종전 `.product-nav{display:contents}` 는 제목 · 상태 문구 둘 · 탭을 그리드 칸에 하나씩 흘려,
- *    상태 문구 하나는 오른쪽 위에, 하나는 탭 아래 왼쪽 끝에 떠 있었습니다. */
+
 .show{display:grid;grid-template-columns:360px minmax(0,1fr);gap:28px 40px;align-items:start}
 .product-nav{grid-column:1;grid-row:1}
 #product .head{display:block}
@@ -485,7 +213,7 @@ nav .m a:hover{color:var(--ink)}
 .pill.warn{background:var(--warn-bg);color:var(--warn-ink)}
 .pill.bad{background:var(--bad-bg);color:var(--bad-ink)}
 .pill.off{background:var(--surface);color:var(--mute);box-shadow:inset 0 0 0 1px var(--line)}
-/* TROPS AI — 대화 예시 아래 앱 첫 화면의 입력창 · 빠른 버튼(「서류 확인」 강조 · 앱과 같은 모양). */
+
 .cmp{margin-top:14px;border:1px solid var(--line);border-radius:14px;padding:12px 14px}
 .cmp p{font-size:13px;color:var(--mute)}
 .cmp div{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
@@ -495,7 +223,7 @@ nav .m a:hover{color:var(--ink)}
 .qk span{border:1px solid var(--line);border-radius:10px;padding:9px 8px;font-size:13px;text-align:center;background:var(--white)}
 .qk .on{background:var(--accent);border-color:var(--accent);color:var(--white);font-weight:600}
 .qk svg{width:14px;height:14px;vertical-align:-2px;margin-right:5px}
-/* 업무도구 연동 — 도구 이름(글자) + 상태. ⛔ 로고를 쓰지 않습니다. 상태 = site.config.json publicCopy.integrationSummary */
+
 .pane .lede{font-size:14px;color:var(--sub);margin-top:6px}
 .tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:16px}
 .tools div{border:1px solid var(--line);border-radius:10px;padding:12px 14px}
@@ -510,7 +238,7 @@ nav .m a:hover{color:var(--ink)}
 .preview .btn{margin-top:12px;cursor:default}
 .src{font-size:12.5px;color:var(--mute);margin-top:16px;border-top:1px dashed var(--line);padding-top:10px}
 
-/* 대금 관리 — 페이지에 하나뿐인 어두운 띠 */
+
 .svc{background:var(--dark);color:var(--dark-ink)}
 .svc .label{color:#A9B1C2}
 .svc h2{color:var(--dark-ink)}
@@ -532,7 +260,7 @@ nav .m a:hover{color:var(--ink)}
 .opt .btn{white-space:nowrap}
 .svn{font-size:13.5px;color:var(--dark-mute);margin-top:22px}
 
-/* 1분 진단 */
+
 .qc{display:grid;grid-template-columns:1fr 1.15fr;gap:56px;align-items:center}
 .qt p{font-size:17px;color:var(--sub);margin-top:20px}
 .qb{display:flex;align-items:center;gap:14px;margin-top:28px;flex-wrap:wrap}
@@ -553,7 +281,7 @@ nav .m a:hover{color:var(--ink)}
 .qw{grid-column:2/4;font-size:13px;color:var(--sub)}
 .qf{font-size:12.5px;color:var(--mute);margin-top:12px}
 
-/* 계산기 */
+
 .calc{display:grid;grid-template-columns:1.2fr 1fr;gap:24px;margin-top:48px}
 .ci{border:1px solid var(--line);border-radius:14px;padding:28px;background:var(--white)}
 .ci label{display:block;font-size:15px;font-weight:600;margin-top:22px}
@@ -569,7 +297,7 @@ nav .m a:hover{color:var(--ink)}
 .co .btn{align-self:flex-start;margin-top:24px}
 .cn{font-size:12.5px;color:var(--mute);margin-top:14px}
 
-/* 보안 */
+
 .sec{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:56px}
 .sec div{border:1px solid var(--line);border-radius:14px;padding:26px;background:var(--white);transition:transform .2s ease,box-shadow .2s ease}
 .sec div:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(19,27,46,.07)}
@@ -577,12 +305,7 @@ nav .m a:hover{color:var(--ink)}
 .sec span{display:block;font-size:14.5px;color:var(--sub);margin-top:8px}
 .sec b .soon{display:inline-block;font-size:12px;font-weight:500;color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:1px 8px;margin:0 0 0 6px;vertical-align:2px}
 
-/* 신청하기 — 왼쪽 소개(누구를 모시는지 · 1분 진단 · 대표) · 오른쪽 실증 참여 폼
- * 🔄 2026-10-06 대표 결정 — 출시 소식 받기를 걷어 갈래가 하나가 되었고, 배치를 «왼쪽 소개 + 오른쪽 폼»으로 바꿨습니다.
- *    왼쪽은 스크롤을 따라옵니다(sticky) — 소개가 약 550px 로 노트북 화면보다 짧아 가려지는 곳이 없고,
- *    10-13 뒤 폼이 길어져도(약 1.7배) 왼쪽에 빈칸이 생기지 않습니다.
- *    ⚠️ 왼쪽에 무엇을 더 넣어 화면보다 길어지면 따라오기를 빼십시오 — 아래쪽이 화면 밖에 걸립니다.
- *    휴대폰(860px 이하)은 한 줄 — 제목 · 대상 → 폼 → 1분 진단 · 대표 순(아래 미디어 쿼리 · order). */
+
 .jwrap{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:56px;align-items:start}
 .jintro{position:sticky;top:96px}
 .jintro .lead{font-size:17px;color:var(--sub);margin-top:20px}
@@ -604,7 +327,7 @@ form.f{border:1px solid var(--line);border-radius:14px;padding:30px;background:v
 .f input,.f select{width:100%;margin-top:7px;padding:12px 13px;border:1px solid var(--line);border-radius:8px;font-size:15px;font-family:inherit;background:var(--white);color:var(--ink)}
 .f input:focus,.f select:focus{outline:2px solid var(--accent);outline-offset:1px}
 .f .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-/* 짝 칸이 아직 숨어 있으면(10-13 전 「규모」) 남은 칸이 한 줄을 다 씁니다 — 업종만 반쪽으로 서던 것(2026-10-06). */
+
 .f .two:has(> [hidden]){grid-template-columns:1fr}
 .fs{border:0;margin:0;padding:0;min-width:0}
 .fs:disabled input,.fs:disabled select{background:var(--surface);color:var(--mute);cursor:not-allowed}
@@ -628,19 +351,14 @@ form.f{border:1px solid var(--line);border-radius:14px;padding:30px;background:v
 .bad input,.bad select{border-color:var(--danger)}
 .req{margin-bottom:16px;font-size:14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
 .req span{display:block;color:var(--sub)}
-/* 봇 방지 칸(website) — 사람 눈에는 없고 화면 읽기에서도 빠집니다. display:none 은 쓰지 않습니다. */
+
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .note{margin-top:14px;font-size:14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--sub)}
 .note a{color:var(--ink);font-weight:600}
 .done{border:1px solid var(--line);border-radius:14px;padding:30px;background:var(--white)}
 .done h3{font-size:22px;margin-top:6px}
 .done p{font-size:15px;color:var(--sub);margin-top:16px}
-/*
- * 신청 폼 진행 막대 · 완료 체크 〔2026-10-06 · 대표 결정 애니메이션 B〕.
- *    막대 = 필수 칸 중 채운 몫(잠긴 칸 · 10-13 전의 새 칸은 세지 않음 — 제출 검사와 같은 기준). 다 채우면 글자가 강조색.
- *    체크 = 완료 화면(앱 응답 201 에서만 뜸)이 설 때 원 → 체크 순으로 그려집니다.
- *    🔴 체크의 기본 모양은 «다 그려진» 상태이고 그리기는 keyframes(fill both)로만 — 움직임 줄이기에서는 처음부터 다 보입니다.
- */
+
 .jprog{display:flex;align-items:center;gap:12px;margin-bottom:4px}
 .jprog-bar{flex:1;height:4px;border-radius:999px;background:var(--line);overflow:hidden}
 .jprog-bar i{display:block;height:100%;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .35s ease}
@@ -654,14 +372,13 @@ form.f{border:1px solid var(--line);border-radius:14px;padding:30px;background:v
 .js .done .ok path{animation:draw-check .35s ease .5s both}
 @keyframes draw-ring{from{stroke-dashoffset:151}to{stroke-dashoffset:0}}
 @keyframes draw-check{from{stroke-dashoffset:32}to{stroke-dashoffset:0}}
-/* 신청하기 · 실증 참여 카드 */
+
 .jcard{border:1px solid var(--line);border-radius:14px;padding:28px;background:var(--white)}
-/* 카드 안의 폼은 상자를 따로 두르지 않습니다(옛 신청 폼의 테두리 · 여백을 걷음 — 상자 안의 상자). */
+
 .jcard form.f,.jcard .done{border:0;border-radius:0;padding:0;background:none}
 .jcard h3{font-size:20px}
 .jcard .jl{font-size:15px;color:var(--sub);margin:8px 0 18px}
-/* 🔴 display:block — 이름이 같은 어두운 띠 `.opt`(display:flex · gap 32px)를 이어받아 선택 동의 칸이 가로로 찢어졌습니다
- *    (10-13 에 서는 칸이라 그 전엔 숨어 있었음 · 2026-10-05 발견). */
+
 .f .opt{display:block;border:0;padding:0;margin-top:18px}
 .f .opt legend{font-size:13.5px;font-weight:600}
 .f .opt .agree{margin-top:8px}
@@ -671,16 +388,15 @@ form.f{border:1px solid var(--line);border-radius:14px;padding:30px;background:v
 .f .addr input[name="address_detail"]{margin-top:8px}
 .f .cdp{margin-top:8px;font-size:12.5px;line-height:1.6;color:var(--sub)}
 
-/* 자료 */
+
 .res{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px}
 .res a{border:1px solid var(--line);border-radius:14px;padding:24px;background:var(--white);display:block;transition:transform .2s ease,box-shadow .2s ease}
 .res a:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(19,27,46,.07)}
-.res a:last-child{grid-column:1/-1;background:var(--surface)}
 .res span{font-size:12.5px;color:var(--mute);font-weight:600}
 .res b{display:block;font-size:19px;margin-top:6px;letter-spacing:-0.02em}
 .res em{display:block;font-style:normal;font-size:14.5px;color:var(--sub);margin-top:6px}
 
-/* FAQ — 🔴 본문 형식 `details > summary + div.a > p` 는 test/faq-structured-data.test.js 가 읽는 모양입니다 */
+
 .faq-h{font-size:38px}
 .faq{max-width:820px;margin-top:40px}
 .faq .fg{font-size:13.5px;font-weight:700;color:var(--mute);margin-top:34px;padding-bottom:6px;border-bottom:1px solid var(--ink)}
@@ -692,12 +408,12 @@ form.f{border:1px solid var(--line);border-radius:14px;padding:30px;background:v
 .faq details[open] summary::after{content:"−"}
 .faq .a p{font-size:15.5px;color:var(--sub);margin-top:12px}
 
-/* 마감 — 🔴 `section.fin` 이름은 test/landing-invariants.test.js 가 찾는 자리입니다(주 버튼 하나) */
+
 .final{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:72px 56px;text-align:center}
 .final .tag-en{font-size:15px;font-weight:600;letter-spacing:.01em;color:var(--mute);margin-bottom:14px}
 .final .btn{margin-top:30px}
 
-/* 푸터 */
+
 footer{border-top:1px solid var(--line);padding:56px 0 72px;font-size:14px;color:var(--sub)}
 footer .cols{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:32px}
 footer .logo{margin-bottom:14px}
@@ -710,10 +426,7 @@ footer .nd b{font-size:13.5px}
 footer .legal{margin-top:40px;font-size:12.5px;color:var(--mute);line-height:1.9}
 footer .fl{display:flex;gap:16px;flex-wrap:wrap}
 
-/*
- * 움직임 — 🔴 `.js` 가 붙은 뒤에만 숨깁니다. 스크립트가 없거나 막힌 브라우저에서도 본문이 보여야
- *    합니다(시안은 `.rv` 를 무조건 opacity:0 으로 두었습니다).
- */
+
 .js .rv{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
 .js .rv.in{opacity:1;transform:none}
 .js .tl::before{transform:scaleX(0);transform-origin:left;transition:transform 1.2s ease .2s}
@@ -728,13 +441,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
 .js .app .today li{opacity:0;transform:translateY(6px);transition:opacity .4s ease,transform .4s ease}
 .js .app.in .today li{opacity:1;transform:none}
 .js .app.in .today li:nth-child(2){transition-delay:.35s}
-/*
- * 제품 화면 예시 «재생» 〔2026-10-06 · 대표 결정 애니메이션 A〕 — 탭이 설 때마다(.pane.on) 그 화면이 한 번 움직입니다.
- *    TROPS AI: 질문 → 입력 중(점 셋) → 답 → 「서류 확인」 한 번 빛남 · 거래·기한: 줄이 차례로 → 「오늘」 한 번 · 업무도구: 칸이 차례로.
- * 🔴 3.2초 안에 끝납니다 — 탭은 6초마다 넘어갑니다(아래 탭 스크립트). 구획이 화면에 든 뒤(.show.in)부터만 돕니다.
- * 🔴 기본 모양은 «다 보이는» 상태이고, 숨김은 keyframes(fill both)로만 합니다 — 움직임 줄이기(animation:none)에서는
- *    처음부터 다 보입니다(점 셋만 기본이 숨김). 투명도 · 위치 · 그림자만 움직여 화면이 밀리지 않습니다.
- */
+
 .bubble.ai{position:relative}
 .bubble .dots{position:absolute;left:14px;top:16px;display:flex;gap:4px;opacity:0;pointer-events:none}
 .bubble .dots i{width:6px;height:6px;border-radius:50%;background:var(--mute)}
@@ -763,17 +470,16 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
 @keyframes blink{0%,100%{opacity:.3}50%{opacity:1}}
 @keyframes ping{from{box-shadow:0 0 0 0 rgba(29,78,216,.45)}to{box-shadow:0 0 0 12px rgba(29,78,216,0)}}
 @keyframes ping-bad{from{box-shadow:0 0 0 0 rgba(159,29,29,.35)}to{box-shadow:0 0 0 8px rgba(159,29,29,0)}}
-/* 🔴 움직임 줄이기 — 전부 멈춥니다(탭 자동 넘김 · 예시 타이핑은 스크립트가 따로 끕니다) */
+
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
   .js .rv,.js .tl .st,.js .app .today li{opacity:1!important;transform:none!important}
   .js .tl::before,.js .qbar i{transform:none!important}
 }
 
-/* 🔴 좁은 화면 기준은 860px 입니다 — `.w` 좌우 20px 을 앱 착지 헤더가 861px 기준으로 따라갑니다 */
+
 @media(max-width:860px){
   .w{padding:0 20px}
-  nav .m{display:none}
   section{padding:72px 0}
   h2,.faq-h{font-size:30px}
   .hero{padding:64px 0 24px}
@@ -819,39 +525,224 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
   .sec{grid-template-columns:1fr}
 }
 </style>
-<script>document.documentElement.className += ' js';</script>
+
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://trops.kr/#org",
+      "name": "{{biz.companyName}}",
+      "url": "https://trops.kr/",
+      "email": "contact@theo-ne.com"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://trops.kr/#site",
+      "name": "TROPS",
+      "url": "https://trops.kr/",
+      "inLanguage": "ko-KR",
+      "publisher": {
+        "@id": "https://trops.kr/#org"
+      }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "TROPS",
+      "url": "https://app.trops.kr/",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "description": "TROPS는 중소기업의 수출 서류 작성, 거래별 기한·대금 관리와 맞춤 지원사업 찾기를 돕는 수출 실무 서비스입니다. 앱에서 가입하고 필요한 업무를 시작하세요.",
+      "publisher": {
+        "@id": "https://trops.kr/#org"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://trops.kr/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "TROPS는 어떤 서비스인가요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "TROPS는 중소기업을 위한 수출 실무 서비스입니다. 수출 서류 초안과 거래별 기한·다음 할 일을 관리하고, 우리 회사에 맞는 지원사업을 찾을 수 있습니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "TROPS는 어떻게 시작하나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "app.trops.kr에서 가입한 뒤 회사를 만들고 필요한 업무를 선택합니다. 계약서가 없어도 서류 작성이나 지원사업 찾기부터 시작할 수 있습니다. 앱에서 확인하기 →"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "어떤 수출 서류를 만들 수 있나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "견적서(PI), 상업송장(CI), 포장명세서(PL) 등의 초안을 준비할 수 있습니다. 회사·거래 정보를 반영한 뒤 담당자가 항목과 값을 확인하고 발행하거나 내려받습니다. 제출 전에는 제출처의 요구사항도 확인하세요."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "수출 거래의 기한과 다음 할 일은 어떻게 확인하나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "거래별로 서류와 진행 상황, 관련 기한을 함께 확인합니다. 선적이나 입금처럼 외부에서 일어난 일은 담당자가 확인해 기록합니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "TROPS AI는 수출 지원사업을 어떻게 찾아주나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "회사 지역·업종 등을 바탕으로 관련 공고를 근거와 함께 제안하고, 확인된 조건과 더 확인할 조건을 구분합니다. 신청 자격과 선정 여부는 공고 기관이 결정합니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "지원사업 신청 서류 작성도 도와주나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "관련 공고와 원문을 확인한 뒤 신청 서류 작성을 문의할 수 있습니다. 모든 공고의 신청서를 자동으로 작성하거나 대신 제출하는 방식은 아닙니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "이용 요금과 무료 이용 조건은 어디서 확인하나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "현재 적용되는 요금, 무료 이용 기간과 유료 전환 조건은 앱에서 확인할 수 있습니다. 앱에서 확인하기 →"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "회사 정보와 수출 자료는 어떻게 처리하나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "개인정보의 수집·이용, 외부 AI 처리, 보관과 삭제 기준은 앱의 공식 개인정보처리방침에서 확인할 수 있습니다. 개인정보처리방침 →"
+          }
+        }
+      ]
+    }
+  ]
+}</script>
+<style>.faq-group{margin-top:32px}.faq-group h3{font-size:14px;color:var(--muted,#64748b);margin-bottom:8px}.rv,.tl{opacity:1!important;transform:none!important}.hero .cta{gap:0}nav .nav-right{gap:0}</style><style>
+section{padding:88px 0}.hero{padding-bottom:64px}.static-workspace img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px;box-shadow:0 20px 50px #131b2e0d}.static-workspace figcaption{margin-top:14px;font-size:12px;color:var(--mute)}
+#resources .res{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:stretch}#resources .head{align-items:center}#resources .res a{padding:26px 22px;grid-column:auto;background:var(--white);min-height:156px;display:flex;flex-direction:column;align-items:flex-start}#resources .res em{font-style:normal;margin-top:auto;padding-top:12px}
+.compact-final{display:flex;align-items:center;justify-content:space-between;gap:28px;padding:36px 0}.compact-final h2{font-size:28px;line-height:1.4}.compact-final .btn{flex-shrink:0}.fin{padding:28px 0}
+.compact-footer{display:flex;justify-content:space-between;align-items:center;gap:24px}.compact-footer p{font-size:13px;color:var(--mute);margin-top:8px}.footer-links{display:flex;gap:24px;font-size:13px;color:var(--sub)}.trust-line{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:12px;color:var(--sub);padding:24px 0 12px}.trust-line a{text-decoration:underline;text-underline-offset:3px}.scope-note{font-size:12px;color:var(--mute);padding:8px 0}.scope-note summary{cursor:pointer}.scope-note p{max-width:760px;margin-top:10px}.faq{max-width:820px}
+@media(max-width:860px){section{padding:60px 0}.hero{padding-bottom:40px}#resources .res{grid-template-columns:1fr}.compact-final{align-items:flex-start;flex-direction:column;gap:20px;padding:18px 0}.compact-final h2{font-size:24px}.compact-footer{align-items:flex-start;flex-direction:column}.footer-links{gap:16px;flex-wrap:wrap}.fin{padding:28px 0}.trust-line span{flex-basis:100%}}
+</style><style id="premium-motion">
+:root{--ease-out:cubic-bezier(.22,1,.36,1);--ease-soft:cubic-bezier(.2,.65,.3,1)}
+nav{background:rgba(255,255,255,.78);backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%);transition:background .35s,box-shadow .35s,border-color .35s}
+nav.scrolled{background:rgba(255,255,255,.92);box-shadow:0 4px 24px #131b2e09;border-bottom-color:#131b2e10}
+nav .m a{position:relative;transition:color .2s}nav .m a::after{content:"";position:absolute;bottom:6px;left:0;width:100%;height:1px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .25s var(--ease-out)}nav .m a:hover::after{transform:scaleX(1)}
+.hero{position:relative;padding-top:112px;overflow:clip;background:radial-gradient(ellipse 65% 45% at 67% 85%,#eaf0ff80,transparent)}
+.hero h1{font-size:clamp(40px,4.65vw,68px);letter-spacing:-.05em;line-height:1.16;max-width:1000px}
+.hero .lead{max-width:680px;line-height:1.75;margin-top:26px}.hero>.w>.free{color:var(--mute);font-size:13px;letter-spacing:-.01em}
+.btn{position:relative;overflow:hidden;isolation:isolate;box-shadow:0 3px 8px #1d4ed814;transition:transform .25s var(--ease-out),box-shadow .25s,background .25s}.btn::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(110deg,transparent 25%,#ffffff20 48%,transparent 72%);transform:translateX(-120%);transition:transform .65s var(--ease-out)}.btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px #1d4ed827}.btn:hover::after{transform:translateX(120%)}.btn:active{transform:translateY(0) scale(.98);box-shadow:0 2px 6px #1d4ed820}
+.static-workspace{position:relative;perspective:1200px;margin-top:62px}.static-workspace img{position:relative;z-index:1;border-radius:14px;box-shadow:0 32px 65px -26px #243b7138,0 2px 8px #131b2e05;transform-origin:50% 0;will-change:transform}
+.show .screen{border-color:#e0e6f0;box-shadow:0 20px 55px -20px #131b2e24;padding:32px;transition:box-shadow .4s}.show .screen:hover{box-shadow:0 25px 65px -20px #131b2e30}
+.pane{transition:opacity .3s var(--ease-soft),transform .45s var(--ease-out);opacity:0;transform:translateY(10px)}.pane.on{animation:none;opacity:1;transform:translateY(0)}
+.tabs{position:relative}.tabs button{transition:background .3s,padding-left .4s var(--ease-out)}.tabs button.on{padding-left:16px;background:linear-gradient(90deg,#eaf0ff80,transparent 85%)}.tabs button b{transition:color .3s}.tabs button span{line-height:1.7}.tabs .bar{display:none}.tabs::before{content:"";position:absolute;left:0;top:var(--indicator-top,0px);height:var(--indicator-height,80px);width:2px;border-radius:2px;background:var(--accent);z-index:1;transition:top .45s var(--ease-out),height .45s var(--ease-out)}
+#resources .res a{border-radius:12px;position:relative;transition:transform .35s var(--ease-out),border-color .3s,box-shadow .35s;background:#fff;min-height:164px}#resources .res a:hover{transform:translateY(-5px);border-color:#1d4ed845;box-shadow:0 16px 32px -16px #1d4ed82b}#resources .res a em{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%}.card-arrow{font-size:19px;line-height:1;transition:transform .3s var(--ease-out);color:var(--accent)}#resources .res a:hover .card-arrow{transform:translateX(4px)}
+.faq{max-width:100%;margin-top:36px}.faq details{padding:0;overflow:hidden;transition:border-color .3s}.faq summary{padding:24px 0;font-size:16px;line-height:1.6;align-items:center;transition:color .2s}.faq summary:hover,.faq details[open] summary{color:var(--accent)}.faq summary::after,.faq details[open] summary::after{content:"+";font-size:22px;font-weight:400;line-height:1;width:24px;text-align:center;flex-shrink:0;transform:rotate(0);transition:transform .3s var(--ease-out),color .3s}.faq details[open] summary::after{transform:rotate(45deg);color:var(--accent)}.faq .a{max-width:760px}.faq .a p{margin-top:0;padding:0 32px 24px 0;line-height:1.85;font-size:15px}.faq .a a{color:var(--accent);white-space:nowrap}
+.compact-final{border-top:1px solid var(--line-soft);padding:36px 0}.fin{background:linear-gradient(120deg,#fff,#f7f9ff)}.compact-final h2{max-width:600px;font-weight:600;letter-spacing:-.04em}
+@media(max-width:860px){.hero{padding-top:64px}.hero h1{font-size:40px;line-height:1.2}.hero .lead{font-size:16px}.static-workspace{margin-top:40px}.static-workspace img{border-radius:9px}.show .screen{padding:22px}.faq summary{font-size:15px;padding:21px 0}.faq .a p{font-size:14px}.compact-final h2{font-size:24px}.tabs button.on{padding-left:12px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.static-workspace img,.pane,.pane.on{transform:none!important;will-change:auto}.btn:hover,#resources .res a:hover{transform:none}}
+</style>
+<style id="spacing-refinement">
+section{padding:176px 0}
+.hero{padding-top:168px;padding-bottom:152px}
+.hero .lead{margin-top:40px}
+.hero>.w>.free{margin-top:24px}
+.hero .cta{margin-top:56px}
+.static-workspace{margin-top:200px}
+.label+h2{margin-top:24px}
+.show{grid-template-columns:320px minmax(0,1fr);gap:80px}
+#product .tabs{margin-top:60px}
+.tabs button{padding-top:36px;padding-bottom:36px}
+.tabs button span{margin-top:18px}
+.show .screen{padding:44px}
+.pane .big{margin-top:10px}
+.screen .tbl{margin-top:28px}
+.screen .preview{margin-top:28px;padding:22px}
+.screen .src{margin-top:24px}
+#resources .res{margin-top:80px;gap:28px}
+#resources .res a{padding:36px 28px;min-height:208px}
+#resources .res b{margin-top:18px}
+#resources .res em{padding-top:32px}
+.faq{margin-top:72px}
+.faq summary{padding:38px 0}
+.faq .a p{padding-bottom:38px}
+.fin{padding:104px 0}
+.compact-final{padding:44px 0;gap:48px}
+footer{padding-top:96px;padding-bottom:104px}
+.trust-line{padding-top:36px;padding-bottom:20px}
+@media(max-width:860px){
+ .w{padding-left:24px;padding-right:24px}
+ section{padding:120px 0}
+ .hero{padding-top:112px;padding-bottom:104px}
+ .hero .lead{margin-top:32px;line-height:1.85}
+ .hero>.w>.free{margin-top:24px;line-height:1.8}
+ .hero .cta{margin-top:44px}
+ .static-workspace{margin-top:140px}
+ .label+h2{margin-top:20px}
+ .show{grid-template-columns:1fr;gap:56px}
+ #product .tabs{margin-top:44px}
+ .tabs button{padding-top:30px;padding-bottom:30px}
+ .show .screen{padding:28px 24px}
+ .screen .preview{padding:18px}
+ #resources .head{gap:32px}
+ #resources .res{margin-top:52px;gap:28px}
+ #resources .res a{padding:32px;min-height:184px}
+ .faq{margin-top:52px}
+ .faq summary{padding:32px 0}
+ .faq .a p{padding-bottom:34px}
+ .fin{padding:72px 0}
+ .compact-final{padding:28px 0;gap:36px}
+ .compact-footer{gap:40px}
+ footer{padding-top:80px;padding-bottom:88px}
+}
+</style><link rel="stylesheet" href="/assets/workspace-flow.css">
+<link rel="stylesheet" href="/assets/product-demo.css">
+<style id="navigation-layout">
+html{scroll-padding-top:112px}
+#workspace-flow{scroll-margin-top:24px}
+@media(max-width:1000px){
+ nav .w{grid-template-columns:1fr auto;gap:4px 20px;padding-top:14px;padding-bottom:8px}
+ nav .m{grid-column:1/-1;grid-row:2;justify-content:center;gap:28px;flex-wrap:wrap}
+ nav .nav-right{grid-column:2;grid-row:1}
+ html{scroll-padding-top:148px}
+}
+@media(max-width:600px){
+ nav .w{padding-left:20px;padding-right:20px;gap:8px 16px}
+ nav .m{justify-content:space-between;column-gap:8px;row-gap:0;font-size:14px}
+ nav .m a{min-height:44px}
+ nav .nav-right .btn-s{font-size:14px;padding:10px 14px}
+ html{scroll-padding-top:164px}
+}
+</style>
+<link rel="stylesheet" href="/assets/workspace-demo.css">
 </head><body>
 
 <a class="skip" href="#main">본문으로 건너뛰기</a>
 
-<!-- 🔴 **공지 띠의 소개 문구** 〔2026-09-29 · 대표 결정〕 — 「소개해 주시면 먼저 연락드립니다」로 통일했습니다.
-     앱 `/api/pilot-apply` 의 `referral.note` 와 같은 문장입니다(trops_a doc/self15/pilot-apply-api.md 2-5).
-     ⛔ 「순서가 앞당겨집니다」 · 「세 칸씩」 류로 되돌리지 마십시오 — 앱은 소개로 순번을 자동으로 바꾸지 않습니다. -->
-<div class="announce" id="announce" role="region" aria-label="공지">수출 실무 도구 실증에 참여할 기업을 모십니다<span class="sr">. </span><span class="an2"> · 소개해 주시면 먼저 연락드립니다</span><a href="#join" data-track="announce-join">신청 →</a><button type="button" class="ax" aria-label="공지 닫기">×</button></div>
+
+
 
 <nav data-section="nav" aria-label="주 메뉴"><div class="w">
-  <a class="logo" href="/"><i></i>TROPS</a>
-  <div class="m">
-    <a href="#product">제품</a>
-    <a href="#service">대금 관리</a>
-    <a href="#check">1분 진단</a>
-    <a href="#security">보안</a>
-    <a href="#resources">자료</a>
-  </div>
-  <!-- 🔄 **헤더의 주 버튼이 「실증 신청」로 바뀌었습니다** 〔2026-09-29 · v3〕 — 종전
-       「1분 수출 준비 진단」(`nav-precheck`) 자리입니다. 1분 진단은 히어로 · 진단 섹션 · 신청 섹션의
-       버튼으로 남습니다. `nav-precheck` 시계열은 여기서 끝납니다.
-       ⛔ 앱 링크에 `?from=` 을 손으로 붙이지 마십시오 — `assets/track.js` 가 누르는 순간 채웁니다. -->
-  <!-- 🔄 **「로그인」 글자 링크가 「앱 열기」 버튼으로 바뀌었습니다** 〔2026-10-03〕 — 목적지도
-       `app.trops.kr/login` 에서 앱 루트로 옮겼습니다. `nav-login` 시계열은 여기서 끝나고 `nav-app` 이
-       이어받습니다. 종전에는 640px 이하에서 숨겨 모바일 상단에 앱 입구가 없었습니다 — 이제 숨기지 않습니다.
-       ⚠️ `&#xFE0E;` 는 ↗ 를 글자꼴로 고정합니다 — 떼면 iOS 가 이모지로 그립니다. -->
-  <!-- 🔄 **신청 입구가 «하나»가 됐습니다** 〔2026-10-05 · 대표 지시〕 — 「가입하기」(#join) · 「실증 신청」(#apply) 두 버튼을
-       「신청하기」 하나로 합쳤고 목적지는 #join(출시 소식 받기 · 실증 참여 두 갈래)입니다. `nav-apply` 시계열은 여기서 끝나고
-       `nav-join` 이 이어받습니다. ⛔ 「실증 신청」 별도 버튼을 되살리지 마십시오 — 같은 곳으로 가는 문이 둘이 됩니다. -->
+  <a class="logo" href="https://www.trops.kr/"><i></i>TROPS</a>
+  <div class="m"><a href="#product">제품</a><a href="#workspace-flow">이용 방법</a><a href="#resources">수출 자료</a><a href="#faq">자주 묻는 질문</a><a href="/contact" data-track="nav-contact">문의하기</a></div>
+
+
+
   <div class="nav-right">
-    <a class="btn-2 btn-s" href="https://app.trops.kr/" data-track="nav-app">앱 열기<span class="ne" aria-hidden="true">↗&#xFE0E;</span></a>
-    <a class="btn btn-s" href="#join" data-track="nav-join">신청하기</a>
+
+    <a class="btn btn-s" href="https://app.trops.kr/" data-track="nav-start">TROPS 시작하기</a>
   </div>
 </div></nav>
 
@@ -862,882 +753,141 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
   <p class="lead">{{publicCopy.detail}}</p>
   <p class="free">{{publicCopy.audience}}</p>
   <div class="cta">
-    <a class="btn" href="#join" data-track="hero-join">신청하기</a>
-    <a class="btn-2" href="https://app.trops.kr/quick-check" data-track="hero-precheck">1분 진단 · 가입 없이</a>
-  </div>
-  <p class="free">초대 기간 무료 · 카드 등록 없음</p>
+    <a class="btn" href="https://app.trops.kr/" data-track="hero-start">TROPS 시작하기</a>
 
-  <!--
-    🔴 **히어로 속 앱 화면 — 글자와 구성은 실제 앱 홈, 배치·여백은 시안** 〔2026-09-29 · 대표 지시 · 3단계〕.
-       앱 = trops_a `app/organizations/[id]/home/page.tsx`(브랜치 prd-v2-pdca · dc30e6cc + 작업 중 트리).
-       어느 값을 어느 파일에서 옮겼는지는 docs/design/landing-v3/app-home-mapping.md 에 있습니다 —
-       ⛔ 앱이 이름·순서를 바꾸면 그 표부터 고치고 여기를 따라 고치십시오(여기가 앞서지 않습니다).
-    ⚠️ 숫자 · 거래처 · 오늘 확인 줄은 **예시**입니다(아래 「화면 예시」). 날짜 둘(요약 줄의 오늘 · 오늘 확인의
-       선적일·만기)은 스크립트가 오늘을 기준으로 채웁니다 — 스크립트가 없으면 아래 적힌 날짜가 그대로 보입니다.
-    ⚠️ 이 화면에서 움직이는 것은 입력칸 · + · 보내기 · 명령 여섯뿐이고, 모두 신청 폼으로 요청 문장을 넘깁니다.
-       메뉴 · 「기록 보기」 · 「편집」 · 줄의 버튼은 그림입니다(누를 곳처럼 보이지 않게 커서를 두지 않았습니다).
-  -->
-  <!--! 아이콘: Lucide (ISC License · https://lucide.dev/license) -->
-  <figure class="appfig">
-  <div class="app rv">
-    <div class="bar" aria-hidden="true"><i></i><i></i><i></i></div>
-    <div class="body">
-      <div class="side" aria-hidden="true">
-        <div class="brand"><span class="mk"></span><b>TROPS</b><svg class="ic tg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="m16 15-3-3 3-3"/></svg></div>
-        <div class="org"><b>○○무역</b> · 소유자</div>
-        <div class="cap">업무</div>
-        <div class="it on"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>홈</span></div>
-        <div class="it"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></svg><span>수출 거래</span><span class="add"><svg class="ic sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span></div>
-        <div class="it"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg><span>서류</span></div>
-        <div class="it"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg><span>운송</span><span class="add"><svg class="ic sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span></div>
-        <div class="it"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg><span>대금·보험</span></div>
-        <div class="it"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg><span>보내기</span></div>
-        <div class="cap">기준 정보</div>
-        <div class="it"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 2v2"/><path d="M7 21v-2a2 2 0 012-2h6a2 2 0 012 2v2"/><path d="M8 2v2"/><circle cx="12" cy="10" r="3"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg><span>바이어</span><span class="add"><svg class="ic sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span></div>
-        <div class="it"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z"/><path d="m7 16.5-4.74-2.85"/><path d="m7 16.5 5-3"/><path d="M7 16.5v5.17"/><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z"/><path d="m17 16.5-5-3"/><path d="m17 16.5 4.74-2.85"/><path d="M17 16.5v5.17"/><path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z"/><path d="M12 8 7.26 5.15"/><path d="m12 8 4.74-2.85"/><path d="M12 13.5V8"/></svg><span>수출 품목</span><span class="add"><svg class="ic sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span></div>
-        <div class="cap">참고</div>
-        <div class="it mu"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v16"/><path d="M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z"/></svg><span>수출 정보</span></div>
-        <div class="bottom">
-          <div class="it"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 12h4"/><path d="M10 8h4"/><path d="M14 21v-3a2 2 0 0 0-4 0v3"/><path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2"/><path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"/></svg><span>회사</span></div>
-          <div class="it"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.925 20.056a6 6 0 0 0-11.851.001"/><circle cx="12" cy="11" r="4"/><circle cx="12" cy="12" r="10"/></svg><span>내 정보</span></div>
-        </div>
-      </div>
-      <div class="main">
-        <p class="stat"><span class="dt" id="mockDate">9월 29일(화)</span><span class="sp">·</span>이달 수출 예정 <b>3</b><span class="sp">·</span>진행 <b>2</b><span class="sp">·</span>받을 돈 <b>USD 108,000</b><span class="sp">·</span>이달 들어올 돈 <b>USD 72,000</b></p>
-        <div class="title">TROPS AI</div>
-        <form id="ask">
-          <label><span class="sr">TROPS AI 에게 요청</span><textarea name="q" id="askInput" rows="2" maxlength="500" placeholder="오늘은 어떤 수출 업무를 도와 드릴까요?"></textarea></label>
-          <div class="ctl">
-            <button type="button" class="plus" id="askPlus" aria-label="자료 넣기 · 수출 건 연결 · 신청 폼으로 이동" data-track="hero-plus"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
-            <button type="submit" class="send" id="askSend" disabled data-track="hero-ask">보내기</button>
-          </div>
-        </form>
-        <div class="chips" role="group" aria-label="자주 쓰는 명령">
-          <button type="button" data-q="신규 수출 건 등록" title="신규 수출 건 등록" data-track="hero-cmd-1">신규 수출 건 등록</button>
-          <button type="button" data-q="견적서(PI) 작성" title="견적서(PI) 작성" data-track="hero-cmd-2">견적서(PI) 작성</button>
-          <button type="button" data-q="선적서류(CI, PL) 초안 작성" title="선적서류(CI, PL) 초안 작성" data-track="hero-cmd-3">선적서류(CI, PL) 초안 작성</button>
-          <span class="gap" aria-hidden="true"></span>
-          <button type="button" data-q="운송 견적 요청" title="운송 견적 요청" data-track="hero-cmd-4">운송 견적 요청</button>
-          <button type="button" data-q="선적 통보 보내기" title="선적 통보 보내기" data-track="hero-cmd-5">선적 통보 보내기</button>
-          <button type="button" data-q="대금 확인" title="대금 확인" data-track="hero-cmd-6">대금 확인</button>
-          <span class="edit" aria-hidden="true">편집</span>
-        </div>
-        <div class="today">
-          <div class="th"><div class="h">오늘 확인<span>2건</span></div><span class="rec" aria-hidden="true">기록 보기</span></div>
-          <ol>
-            <li><p><b>Hanoi Trading</b><span class="k"> · 선적 통보</span><span> · 실제 선적 <span id="mockShip">2026-09-27</span> · 바이어에게 알릴 메일</span></p><span class="ob" aria-hidden="true">통보 준비</span></li>
-            <li><p><b>Manila Supply</b><span class="k"> · 받을 돈 USD 36,000</span><span> · 만기 <span id="mockDue">2026-10-02</span> · 3일 남음 · 받을 금액</span></p><span class="ob" aria-hidden="true">대금 확인</span></li>
-          </ol>
-        </div>
-      </div>
-    </div>
   </div>
-  <figcaption>화면 예시 · {{publicCopy.coreStatus}} · 요청 입력은 실증 신청서로 이어집니다.</figcaption>
-  </figure>
+
+
+
+
+  <figure class="appfig static-workspace" id="demo"><div class="workspace-preview"><img src="/assets/img/workspace-overview.png" decoding="async" fetchpriority="high" width="1440" height="900" alt="TROPS 실제 비로그인 홈: 시작할 업무를 고르는 세 가지 카드와 TROPS AI 입력창"><div class="workspace-demo" data-request="바이어에게 보낼 견적서를 만들어 주세요" data-state="ready"><span class="workspace-demo-label">TROPS AI · 요청 예시</span><span class="sr">바이어에게 보낼 견적서를 만들어 주세요</span><span class="workspace-demo-text" aria-hidden="true">바이어에게 보낼 견적서를 만들어 주세요</span></div></div><figcaption>TROPS 비로그인 홈 · 로그인하면 선택한 업무를 이어갑니다</figcaption></figure>
+  <div class="workspace-flow" id="workspace-flow" role="region" aria-labelledby="workspace-flow-title"><h2 id="workspace-flow-title">수출 서류부터 대금 회수까지,<br>한 화면에서 관리하세요.</h2><ol><li><span class="flow-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H5v20h14V7ZM14 2v6h5M8 12h8M8 16h6"/></svg></span><h3>자료 넣기</h3><p>견적서·주문서·바이어 요청</p></li><li><span class="flow-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V3h8v4M3 12h18M10 12v3h4v-3"/></svg></span><h3>거래·서류 정리</h3><p>읽은 값 확인·필요한 서류 작성</p></li><li><span class="flow-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M5 9h1M18 15h1"/></svg></span><h3>받을 돈 확인</h3><p>거래별 대금·입금 기록</p></li></ol></div>
 </div></header>
 
 
 <section id="product" class="tint" data-section="product"><div class="w">
-  <!-- 🔄 **탭 셋 = TROPS AI · 거래·기한 관리 · 업무도구 연동** —
-       〔2026-10-05 · 대표 결정 3B〕 어시스턴트 · 수출 거래 · 서류 · 기한 → TROPS AI · 거래·기한 관리 · 서류 확인 + 연동 띠.
-       〔2026-10-06 · 대표 결정〕 세 번째 탭 「서류 확인」 → 「업무도구 연동」, 아래 연동 띠는 걷음(탭과 겹침).
-       · 「업무도구 연동」은 앱 메뉴와 같은 이름입니다(trops_a components/nav/workspace-preview.tsx «Chrome·Gmail·Google Calendar·ChatGPT·Claude·이메일 알림을
-         회사의 수출 업무와 연결합니다»). 상태는 site.config.json publicCopy.integrationSummary 와 같아야 합니다 —
-         메일 · 캘린더 · 알림 · 외부 AI = 실증 중, 브라우저(Chrome) = 준비 중.
-         ⛔ 로고를 쓰지 않습니다(대표 결정 · 이름만 글자로) — 제휴 · 보증으로 읽힐 수 있고, 앱도 Claude 로고를 P0 에서 표시하지 않습니다
-            (trops_a lib/constants/nda-review.ts). 도구마다 하는 일을 새로 지어 적지 않습니다(앱에 적힌 문장만).
-       · 「서류 확인」은 TROPS AI 화면 예시의 첫 빠른 버튼으로 남깁니다 — 앱 첫 화면과 같은 강조(trops_a lib/work/chat/quick-fixed.ts).
-         빠른 버튼 여섯 · 입력창 문구는 앱 그대로입니다(quick-fixed.ts 순서 · components/nav/shell-chat.tsx PLACEHOLDER).
-         🔄 「NDA 검토」 〔2026-10-06 · 대표 결정 «앱과 같게»〕 — 한때 뺐다가 되살렸습니다. 랜딩 면책 「계약서에 대한 법률적 검토를
-            제공하지 않습니다」와 엇갈려 보일 수 있다는 점을 알고 고른 것입니다. 앱이 버튼 이름을 바꾸면 여기도 따라 바꿉니다.
-       · 거래 · 기한 화면은 옛 두 화면의 값만 옮겼습니다(새 숫자 없음).
-       ⚠️ 이름을 바꾸면 publicCopy.ko.coreSummary · 푸터 「제품」 링크 · about.html 01 도 함께 바꿉니다. -->
+
   <div class="show rv">
     <div class="product-nav">
-      <div class="head"><div class="label">제품</div><h2>수출 거래 한 건을<br>처음부터 끝까지</h2></div>
-      <p class="flow-note">{{publicCopy.coreSummary}}</p>
+      <div class="head"><div class="label">제품</div><h2>수출 업무에 필요한<br>세 가지를 한곳에</h2></div>
+
       <div class="tabs" role="tablist" aria-label="제품 기능">
-        <button type="button" class="on" data-t="p1" role="tab" id="tab1" aria-controls="p1" aria-selected="true" tabindex="0"><i class="bar"></i><b>TROPS AI</b><span>{{publicCopy.coreStatus}} · 수출 거래 등록, 서류 초안, 다음 할 일까지 한 번에 처리합니다.</span></button>
-        <!-- 🔄 시안 「미리 알려 드립니다」 → 「미리 보여 드립니다」 〔2026-09-29 · 대표 결정〕 —
-             test/landing-invariants.test.js 가 랜딩 전역에서 알림 약속 문면을 0건으로 잠급니다. -->
-        <button type="button" data-t="p2" role="tab" id="tab2" aria-controls="p2" aria-selected="false" tabindex="-1"><i class="bar"></i><b>거래·기한 관리</b><span>{{publicCopy.coreStatus}} · 거래별 단계와 다음 기한을 한 화면에. 기한은 약관 기준으로 계산해 미리 보여 드립니다.</span></button>
-        <button type="button" data-t="p3" role="tab" id="tab3" aria-controls="p3" aria-selected="false" tabindex="-1"><i class="bar"></i><b>업무도구 연동</b><span>{{publicCopy.coreStatus}} · 쓰시던 메일·캘린더·AI를 회사의 수출 업무와 연결합니다.</span></button>
+        <button type="button" class="on" data-t="p1" role="tab" id="tab1" aria-controls="p1" aria-selected="true" tabindex="0"><i class="bar"></i><b>수출 서류</b><span>회사·거래 정보를 반영해 필요한 서류 초안을 준비합니다.</span></button>
+
+        <button type="button" data-t="p2" role="tab" id="tab2" aria-controls="p2" aria-selected="false" tabindex="-1"><i class="bar"></i><b>거래·기한 관리</b><span>거래별 서류와 기한, 다음 할 일을 함께 확인합니다.</span></button>
+        <button type="button" data-t="p3" role="tab" id="tab3" aria-controls="p3" aria-selected="false" tabindex="-1"><i class="bar"></i><b>지원사업 AI</b><span>우리 회사에 맞는 지원사업을 근거와 함께 찾습니다.</span></button>
       </div>
     </div>
     <div class="screen">
-      <p class="src">화면 예시 · {{publicCopy.coreStatus}}</p>
+      <p class="src">화면 예시</p>
       <div class="pane on" id="p1" role="tabpanel" aria-labelledby="tab1">
-        <div class="t">TROPS AI</div>
-        <div class="bubble me">베트남 바이어한테 보낼 견적서 만들어 줘. 지난번이랑 같은 품목으로.</div>
-        <div class="bubble ai"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="say">지난 거래(TR-2026-0008)의 품목 3개와 FOB 조건으로 견적서 초안을 만들었습니다. 유효기간은 30일로 두었습니다. 확인하시면 저장합니다.</span><div class="pills"><span class="pill">초안 만듦</span><span class="pill warn">단가 확인 필요</span></div></div>
-        <div class="cmp"><p>서류를 넣으면 바로 확인해 드려요. 다른 업무도 말씀해 주세요.</p><div><i aria-hidden="true">+</i><span>보내기</span></div></div>
-        <div class="qk"><span class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/></svg>서류 확인</span><span>견적서(PI)</span><span>선적서류(CI, PL)</span><span>생산의뢰서</span><span>NDA 검토</span><span>내 수출현황 보기</span></div>
-      </div>
-      <div class="pane" id="p2" inert aria-hidden="true" role="tabpanel" aria-labelledby="tab2">
+<div class="t">수출 서류</div><div class="big">필요한 서류를 한곳에서</div>
+<table class="tbl"><tr><th>서류</th><th>쓰는 때</th><th>작업</th></tr>
+<tr><td>견적서 · PI</td><td>바이어와 협의할 때</td><td><span class="pill">초안 작성</span></td></tr>
+<tr><td>상업송장 · CI</td><td>선적을 준비할 때</td><td><span class="pill">초안 작성</span></td></tr>
+<tr><td>포장명세서 · PL</td><td>포장 정보를 정리할 때</td><td><span class="pill">초안 작성</span></td></tr></table>
+<div class="preview product-demo demo-document"><b>회사·거래 정보를 연결합니다</b><div class="demo-fields"><div><span>서류</span><strong data-demo-field>견적송장 · PI</strong></div><div><span>거래 정보</span><strong data-demo-field>바이어 · 품목 · 수량</strong></div><div><span>금액·조건</span><strong data-demo-field>단가 · 결제조건</strong></div></div><span class="demo-complete">✓ 초안 준비 · 항목 확인하기</span><p>초안의 항목과 값을 확인한 뒤 발행하고 내려받습니다.</p></div>
+<div class="src">서류별 출처와 작성 안내를 함께 확인하세요.</div></div>
+<div class="pane" id="p2" inert aria-hidden="true" role="tabpanel" aria-labelledby="tab2">
         <div class="t">이달 들어올 돈</div><div class="big">USD 72,000 · 2건</div>
-        <table class="tbl"><tr><th>거래</th><th>바이어</th><th>단계</th><th>다음 기한</th></tr>
-          <tr><td>TR-0008</td><td>베트남 · Hanoi Trading</td><td><span class="pill">선적 완료</span></td><td>수출통지 <span class="pill warn">D-4</span></td></tr>
-          <tr><td>TR-0006</td><td>필리핀 · Manila Supply</td><td><span class="pill warn">결제 대기</span></td><td>결제기일 <span class="pill bad">오늘</span></td></tr>
+        <div class="demo-timeline" aria-label="거래 진행 예시"><span data-demo-stage>계약</span><i aria-hidden="true">→</i><span data-demo-stage>선적</span><i aria-hidden="true">→</i><span data-demo-stage>대금 확인</span></div>
+<table class="tbl"><tr><th>거래</th><th>바이어</th><th>단계</th><th>다음 기한</th></tr>
+          <tr data-demo-deal="0"><td>TR-0008</td><td>베트남 · Hanoi Trading</td><td><span class="pill">선적 완료</span></td><td>수출통지 <span class="pill warn">D-4</span></td></tr>
+          <tr data-demo-deal="1"><td>TR-0006</td><td>필리핀 · Manila Supply</td><td><span class="pill warn">결제 대기</span></td><td>결제기일 <span class="pill bad">오늘</span></td></tr>
           <tr><td>TR-0005</td><td>미국 · Ohio Parts</td><td><span class="pill">계약</span></td><td>-</td></tr></table>
-        <div class="preview"><b>먼저 확인할 기한</b><p>오늘 결제기일인 필리핀 건의 입금 여부를 확인하고, 베트남 건의 수출통지 자료를 준비합니다.</p></div>
-        <div class="src">근거: 적용 약관 기준 · 선적일부터 영업일로 계산</div>
+        <div class="preview demo-next-task"><b>먼저 확인할 기한</b><p>오늘 결제기일인 필리핀 건의 입금 여부를 확인하고, 베트남 건의 수출통지 자료를 준비합니다.</p></div>
+        <div class="src">예시 거래 · 실제 기한은 거래 조건과 적용 기준에 따라 달라집니다.</div>
       </div>
       <div class="pane" id="p3" inert aria-hidden="true" role="tabpanel" aria-labelledby="tab3">
-        <div class="t">업무도구 연동</div><div class="big">쓰시던 환경에서 바로</div>
-        <p class="lede">Gmail · Google Calendar · ChatGPT · Claude · 이메일 알림을 회사의 수출 업무와 연결합니다.</p>
-        <div class="tools">
-          <div><b>Gmail</b><span class="pill">{{publicCopy.coreStatus}}</span></div>
-          <div><b>Google Calendar</b><span class="pill">{{publicCopy.coreStatus}}</span></div>
-          <div><b>이메일 알림</b><span class="pill">{{publicCopy.coreStatus}}</span></div>
-          <div><b>ChatGPT</b><span class="pill">{{publicCopy.coreStatus}}</span></div>
-          <div><b>Claude</b><span class="pill">{{publicCopy.coreStatus}}</span></div>
-          <div><b>Chrome</b><span class="pill off">준비 중</span></div>
-        </div>
-        <div class="src">제공 범위는 초대 시 확인합니다.</div>
-      </div>
-    </div>
-  </div>
-</div></section>
-
-<section id="service" class="svc" data-section="service"><div class="w">
-  <div class="head rv">
-    <div><div class="label">대금 관리</div><h2>선적 이후의 서류와 기한도<br>거래에 연결합니다</h2></div>
-  </div>
-  <!-- 🔄 시안의 「알려 드립니다」 두 곳을 바꿨습니다 〔2026-09-29 · 대표 결정〕 — 「미리 보여 드립니다」 ·
-       「먼저 짚어 드립니다」. 알림 발송을 약속하지 않습니다(test/landing-invariants.test.js). -->
-  <p class="flow-note">{{publicCopy.coreSummary}}</p>
-  <div class="tl rv">
-    <div class="st"><div class="dot"></div><span>선적 전</span><b>무역보험</b><em>가입이 필요한지, 무엇을 준비할지 안내합니다.</em></div>
-    <div class="st"><div class="dot"></div><span>선적 직후</span><b>수출통지</b><em>통지 기한을 계산해 미리 보여 드립니다.</em></div>
-    <div class="st"><div class="dot"></div><span>결제일 전</span><b>대금 확인</b><em>입금 예정일을 모아 보고, 지연을 먼저 짚어 드립니다.</em></div>
-    <div class="st"><div class="dot"></div><span>늦어지면</span><b>사고 통지</b><em>보상에 필요한 서류를 미리 챙겨 둡니다.</em></div>
-  </div>
-  <div class="opt rv">
-    <div>
-      <div class="ot">무역보험 서류가 처음이라면</div>
-      <p>한국무역보험공사 양식이 필요한 서류는 제출할 수 있도록 준비해 드립니다.</p>
-      <div class="om">사용 가능 · 상담 접수 · 수출 거래 건별 · 자료 확인 후 비용 안내</div>
-    </div>
-    <!-- 🔴 `?from=landing` 은 **도메인을 넘는 유일한 출처 단서**입니다(닫힌 5값 축 · 앱 0053).
-         ⛔ 지우지 마십시오 — 앱 검사(landing-entry-header ⑤)도 이 글자를 찾습니다.
-         ⚠️ 라벨 `step2-quote` 는 종전 3단계 카드의 같은 목적지 버튼 이름 그대로입니다 — 깔때기
-            (page_events.label → 앱의 from=landing)가 끊기지 않게 합니다. -->
-    <a class="btn" href="https://app.trops.kr/insurance/quick?from=landing" data-track="step2-quote">서류 맡기기</a>
-  </div>
-  <p class="svn">가입 여부와 조건은 한국무역보험공사가 정합니다. TROPS는 서류 준비를 도울 뿐, 가입 대행이나 보험 추천은 하지 않습니다.</p>
-</div></section>
-
-<section id="check" data-section="check"><div class="w">
-  <div class="qc">
-    <div class="qt rv">
-      <div class="label">1분 진단</div>
-      <h2>이번 수출 거래,<br>대금 받을 준비는 몇 점일까</h2>
-      <p>수출국과 결제 조건만 고르면 점수와 먼저 챙길 것을 보여 드립니다.</p>
-      <div class="qb"><a class="btn" href="https://app.trops.kr/quick-check" data-track="check-start">1분 진단 시작</a><span>사용 가능 · 무료 · 가입 없이</span></div>
-    </div>
-    <!-- 🔴 `id="demo"` 는 종전 「화면 예시 · 진단 결과」 블록의 앵커입니다 — 바깥에서 `trops.kr/#demo` 로
-         오는 링크가 이 카드에 닿게 옮겨 왔습니다(test/track-section.test.js). ⛔ 지우지 마십시오. -->
-    <div class="qr rv" id="demo">
-      <div class="qh"><span>화면 예시 · 진단 결과</span><b>55<small>/100</small></b></div>
-      <div class="qrow"><div class="qn">목적국<span class="sr">: </span><em>아랍에미리트</em></div><div class="qbar"><i style="width:55%"></i></div><div class="qs">11/20</div><div class="qw">위험도가 높은 권역에 속한 국가입니다</div></div>
-      <div class="qrow"><div class="qn">상대방 이력</div><div class="qbar"><i style="width:40%"></i></div><div class="qs">6/15</div><div class="qw">확인할 수 있는 거래 이력이 부족합니다</div></div>
-      <div class="qrow"><div class="qn">대금 조건</div><div class="qbar"><i class="ok" style="width:83%"></i></div><div class="qs">25/30</div><div class="qw">비교적 안전한 결제 방식입니다</div></div>
-      <div class="qrow"><div class="qn">결제 기한</div><div class="qbar"><i style="width:40%"></i></div><div class="qs">8/20</div><div class="qw">대금 회수 기간이 긴 편입니다</div></div>
-      <div class="qrow"><div class="qn">무역보험</div><div class="qbar"><i class="bad" style="width:33%"></i></div><div class="qs">5/15</div><div class="qw">선적 전 준비가 필요합니다</div></div>
-      <div class="qf">점수는 고른 조건만으로 계산한 참고값입니다</div>
-    </div>
-  </div>
-</div></section>
-
-<section id="calc" class="tint" data-section="calc"><div class="w">
-  <div class="head rv">
-    <div><div class="label">계산기</div><h2>우리 회사는 한 달에<br>몇 시간을 쓰고 있을까</h2></div>
-    <p>수출 거래 수와 평소 걸리는 시간을 넣어 보세요.</p>
-  </div>
-  <div class="calc rv">
-    <div class="ci">
-      <label>한 달 수출 건수<output id="o1">4건</output><input type="range" id="c1" min="1" max="30" value="4"></label>
-      <label>건당 만드는 서류 수<output id="o2">5종</output><input type="range" id="c2" min="1" max="12" value="5"></label>
-      <label>서류 한 장 만드는 시간<output id="o3">40분</output><input type="range" id="c3" min="10" max="120" step="5" value="40"></label>
-      <label>건당 기한 확인·메일 시간<output id="o4">60분</output><input type="range" id="c4" min="0" max="240" step="10" value="60"></label>
-      <label>TROPS로 줄일 수 있는 비율(가정)<output id="o5">50%</output><input type="range" id="c5" min="10" max="80" step="5" value="50"></label>
-    </div>
-    <div class="co" aria-live="polite">
-      <div class="k">지금 한 달에</div><div class="v"><b id="r1">17</b>시간</div>
-      <div class="k">TROPS로 줄일 수 있는 시간</div><div class="v"><b id="r2">8.5</b>시간 / 월</div>
-      <div class="yr">연간 약 <b id="r3">102</b>시간, 근무일로 약 <b id="r4">13</b>일</div>
-      <a class="btn" href="#join" data-track="calc-join">신청하기</a>
-      <p class="cn">추정치입니다. 실제 결과는 수출 거래 조건과 업무 방식에 따라 다릅니다.</p>
+<div class="t">TROPS AI · 지원사업</div><div class="big">우리 회사에 맞는 공고 찾기</div>
+<div class="bubble me">우리 회사가 확인할 수출 지원사업을 찾아줘.</div>
+<div class="bubble ai"><span class="say">회사 지역과 업종을 바탕으로 관련 공고와 확인할 조건을 정리합니다.</span></div>
+<div class="preview product-demo demo-programs"><b class="demo-search">공고 원문과 조건을 함께<span class="demo-search-dots" aria-hidden="true">···</span></b><div class="demo-program" data-demo-card><strong>지역별 수출보험료 지원</strong><span>지역·지원 대상 확인</span><em>공고 원문 확인 ↗</em></div><div class="demo-program" data-demo-card><strong>해외 전시회 참가 지원</strong><span>업종·신청 기간 확인</span><em>공고 원문 확인 ↗</em></div><p>공고 예시 · 확인된 조건과 더 확인할 조건을 구분합니다.</p></div>
+<div class="src">화면 구성 예시 · 신청 자격과 선정 여부는 공고 기관이 확인합니다.</div><div class="demo-composer-wrap"><div class="demo-composer" role="img" aria-label="지원사업 AI 질문 입력창 예시"><span class="demo-composer-placeholder">지원사업에 대해 더 물어보세요</span><div class="demo-composer-tools" aria-hidden="true"><span class="demo-attach">+</span><span class="demo-send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18V6m-5 5 5-5 5 5"/></svg></span></div></div></div></div>
     </div>
   </div>
 </div></section>
 
 
-<section id="security" data-section="security"><div class="w">
-  <div class="head rv">
-    <div><div class="label">보안</div><h2>수출 거래 정보는<br>회사의 자산입니다</h2></div>
-  </div>
-  <div class="sec rv">
-    <div><b>AI 요청과 담당자 승인</b><span>AI가 정보와 초안을 준비하고, 담당자가 확인·승인합니다.</span></div>
-    <div><b>외부 AI 처리</b><span>{{publicCopy.securitySummary}}</span></div>
-    <div><b>저장·삭제 기준</b><span><a href="https://app.trops.kr/privacy">공식 개인정보처리방침 확인</a></span></div>
-    <div><b>서비스 이용 조건</b><span><a href="https://app.trops.kr/terms">공식 이용약관 확인</a></span></div>
-  </div>
-</div></section>
 
-<!--
-  🔴 **신청하기 · 실증 참여** 〔2026-10-05 · 대표 지시 「랜딩 신청 입구를 지금 하나로 합쳐줘」〕.
-     실증 참여 → 앱 `POST /api/pilot-apply`(form_version: 3). 계약 정본 = trops_a docs/02-design/features/onboarding-signup-v3.design.md §4.
-  🔄 **출시 소식 받기를 걷었습니다** 〔2026-10-06 · 대표 결정〕 — 이 구획은 실증 참여 하나만 받습니다.
-     출시 알림은 /contact 의 「출시 알림」 신청이 그대로 받습니다(privacy.html §02 「문의 · 견적 요청 · 출시 알림 신청」).
-     ⛔ 이 구획에 출시 소식 폼을 되살리지 마십시오 — test/pilot-apply-form.test.js 가 막습니다.
-  🔄 **이 구획은 오늘부터 섭니다** — 종전에는 방침 2차 개정 시행일까지 숨었고 그동안 옛 신청 폼(#apply)이 받았습니다.
-     옛 폼과 「실증 신청」 · 「가입하기」 두 버튼은 걷었고 신청 버튼은 전부 「신청하기」 → #join 입니다.
-     ⛔ 옛 폼이나 별도 버튼을 되살리지 마십시오 — 같은 곳으로 가는 문이 둘이 됩니다.
-     ⚠️ 옛 주소 `#apply`(앱 접수 메일의 소개 링크 등)는 아래 스크립트가 이 구획으로 데려옵니다.
-  🔴 **새 칸은 방침 2차 개정 시행일(한국 날짜 0시)부터 섭니다** — 날짜는 site.config.json `pilotApply.newFieldsFrom` 하나입니다.
-     `data-from-rev2` 자리는 그날부터 보이고 받습니다 — **마크업의 기본은 숨김 · 잠김**이라 스크립트가 없으면 서지 않습니다.
-     `data-until-rev2` 는 그 전날까지만 보이는 글(지금 방침에 맞춘 수집·이용 안내)입니다.
-     지금 받는 칸 = 지금 시행 중인 두 방침에 함께 적힌 것뿐입니다:
-       실증 참여 — 회사명 · 업종 · 이메일 · 요청하신 업무 · 소개 코드 · 들어오신 경로
-                   (앱 방침 2026-10-01 판 제2조 「시범 참여 신청」 · privacy.html §02 「시범 참여 신청」)
-     ⚠️ 앱도 같은 날짜 전에는 새 칸이 와도 저장하지 않습니다(두 겹 · trops_a lib/legal/privacy-rev2.ts).
-  ⚠️ 업종 · 규모 `value` 는 앱의 정본 어휘입니다(trops_a lib/organization/onboarding.ts SECTOR_CHOICES · SIZE_BAND_CHOICES).
--->
-<!-- ⚠️ 계측 영역 이름은 `apply` 그대로입니다 — 옛 신청 구획의 시계열과 신청 접수 사건(`apply-success` → `apply` · assets/track.js)을 잇습니다. -->
-<section id="join" class="tint" data-section="apply"><div class="w">
-  <div class="jwrap">
-    <div class="jintro rv">
-      <div class="label">신청하기</div>
-      <!-- 🔄 「원하시는 방법을 골라 주세요」 → 참여를 청하는 제목 〔2026-10-05 · 대표 결정〕 — 초대·선정 방식이라
-           「바로 써 보세요」류의 약속은 쓰지 않습니다(신청 = 함께 만들 기업을 찾는 일). -->
-      <h2>함께 만들어 갈<br>수출 기업을 찾습니다</h2>
-      <p class="lead">초대 방식으로 실증에 참여할 기업을 모십니다. 소개해 주시면 먼저 연락드립니다.</p>
-      <div class="fit">
-        <div>✓ 담당자 한두 명이 수출 업무를 모두 맡는 회사</div>
-        <div>✓ 새 바이어, 새 국가와 외상으로 거래하는 회사</div>
-        <div class="x">– 수출 전담팀과 ERP가 이미 있는 회사에는 필요하지 않습니다</div>
-      </div>
-      <div class="jtail">
-        <p class="pre">먼저 우리 수출 거래부터 점검해 보시겠어요? <a href="https://app.trops.kr/quick-check" data-track="apply-precheck">1분 진단 · 가입 없이</a></p>
-        <!-- 🔴 **대표 소개는 이름·직함 한 줄과 /about 링크뿐입니다** 〔2026-09-29 · 대표 결정〕 — 옛 신청 구획에서 옮겼습니다.
-             시안의 경력 세 줄(자격 · 전 직장 · 멘토 · 선정 이력)은 두 기록과 부딪힙니다 —
-             ① 「회사 자신에 대한 말은 /about 으로, 랜딩에 되돌리지 않는다」(scripts/build-static.js about 등재 주석)
-             ② 기관 이름을 신뢰 신호로 쓰던 문구를 걷어낸 이력(test/landing-invariants.test.js ①).
-             ⚠️ 이름은 토큰입니다(site.config.json) — 글자로 적으면 test/site-config.test.js 가 막습니다. -->
-        <div class="maker2"><span class="pf" aria-hidden="true"></span><div><b>{{biz.ceo}} · TROPS 대표</b><a href="/about" data-track="apply-about">회사 소개 →</a></div></div>
-      </div>
-    </div>
-    <div class="jcard jmain rv">
-      <h3>실증 참여</h3>
-      <p class="jl">초대받은 기업과 수출 실무 도구를 함께 실증합니다. 초대 기간에는 무료입니다.</p>
-      <form class="f" id="joinPilotForm" novalidate>
-        <!-- 진행 막대(애니메이션 B · 2026-10-06) — 필수 칸을 채울수록 찹니다. 숨긴 채로 오고, 스크립트가 신청 스위치가 켜졌을 때만 세웁니다.
-             화면 읽기 프로그램에는 칸마다 「필수」가 이미 있어 막대는 들려주지 않습니다(aria-hidden). -->
-        <div class="jprog" id="pilotProg" aria-hidden="true" hidden><span class="jprog-bar"><i></i></span><span class="jprog-n">필수 항목 <b>0</b> / <span class="jprog-t">0</span></span></div>
-        <div class="req" id="reqBox" hidden>요청하신 업무 <b id="reqText"></b><span>승인해 드릴 때 이 업무부터 시작할 수 있게 준비해 둡니다.</span></div>
-        <div class="hp" aria-hidden="true"><label>웹사이트<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
-        <input type="hidden" name="requested_work">
-        <input type="hidden" name="referral_code">
-        <!-- 🔴 동의 문구의 판 — 화면의 수집·이용 안내가 둘이라 판도 둘입니다(앱이 동의 기록에 그대로 적습니다).
-                value = 지금 방침에 맞춘 글(`data-until-rev2`)의 판 · data-rev2-value = 방침 2차 개정 시행일부터의 글의 판.
-                ⚠️ 글을 고치면 그 판 이름도 바꿉니다(test/pilot-apply-form.test.js). -->
-        <input type="hidden" name="notice_version" value="pilot-apply-2026-10-07" data-rev2-value="pilot-apply-2026-10-13">
-        <div class="fld"><label>회사명<span class="star">*</span><input name="company_name" maxlength="120" autocomplete="organization" placeholder="주식회사 ○○" required></label><div class="err">회사명을 입력해 주세요.</div></div>
-        <div class="two">
-          <div class="fld"><label>업종<span class="star">*</span><select name="industry" required><option value="">선택</option><option value="manufacturing">제조</option><option value="trade">무역·도소매</option><option value="service">서비스</option><option value="other">기타</option></select></label><div class="err">업종을 선택해 주세요.</div></div>
-          <div class="fld" data-from-rev2 hidden><label>규모<span class="star">*</span><select name="company_size_band" required disabled><option value="">선택</option><option value="small">중소기업</option><option value="medium">중견기업</option></select></label><div class="err">규모를 선택해 주세요.</div></div>
-        </div>
-        <div class="two" data-from-rev2 hidden>
-          <div class="fld"><label>이름<span class="star">*</span><input name="contact_name" maxlength="80" autocomplete="name" required disabled></label><div class="err">이름을 입력해 주세요.</div></div>
-          <div class="fld"><label>직급<input name="job_title" maxlength="60" autocomplete="organization-title" disabled></label></div>
-        </div>
-        <div class="fld"><label>이메일<span class="star">*</span><input name="email" type="email" maxlength="254" autocomplete="email" inputmode="email" placeholder="name@company.com" required></label><div class="err">이메일을 입력해 주세요.</div><p class="hint">접수 메일이 이 주소로 가고, 계정을 만드실 때도 같은 주소를 씁니다.</p></div>
-        <div class="fld" data-from-rev2 hidden><label>전화<span class="star">*</span><input name="phone" type="tel" maxlength="40" autocomplete="tel" inputmode="tel" placeholder="010-0000-0000" required disabled></label><div class="err">연락받으실 전화번호를 입력해 주세요.</div></div>
-        <div class="fld addr" data-from-rev2 hidden><label>주소<span class="addrrow"><input name="address" maxlength="250" readonly placeholder="주소 검색을 눌러 고릅니다" disabled><button type="button" class="btn-2 btn-s" data-addr-search disabled>주소 검색</button></span></label>
-          <input name="address_detail" maxlength="50" placeholder="상세 주소(선택)" aria-label="상세 주소" disabled>
-          <input type="hidden" name="postal_code" disabled>
-        </div>
-        <div class="fld cons">
-          <details class="cd">
-            <summary>실증 참여 안내</summary>
-            <p class="cdp">신청을 받으면 접수 메일을 보내 드립니다. 담당자가 참여 가능 여부를 확인해 승인하면 이메일로 알려 드리고, 신청하신 이메일의 계정으로 시작하면 적어 주신 회사 정보가 미리 채워져 있습니다. 실증 기간에는 이용 경험을 여쭙는 연락을 드릴 수 있습니다.</p>
-          </details>
-          <label class="agree"><input type="checkbox" name="consents.program_notice" value="true" required><span>실증 참여 안내를 확인했습니다(필수).</span></label>
-        </div>
-        <div class="fld cons">
-          <details class="cd">
-            <summary>수집·이용 내용 보기</summary>
-            <dl data-until-rev2>
-              <dt>받는 항목</dt><dd>회사명 · 업종 · 이메일, 요청하신 업무와 받으신 소개 코드(있을 때), 들어오신 경로(채널 코드 · 광고 표지)</dd>
-              <dt>쓰는 곳</dt><dd>실증 참여 신청 접수 · 초대 안내 · 연락, 가입 뒤 회사 기본 정보와 요청 업무 미리 채움, 실증 운영 안내, 소개 수 집계, 신청 경로 집계</dd>
-              <dt>보관</dt><dd>{{publicCopy.retention}}</dd>
-              <dt>메일</dt><dd>접수 안내와 실증 운영 연락에 이메일을 사용합니다. 메일이 도착하지 않으면 문의해 주세요.</dd>
-            </dl>
-            <dl data-from-rev2 hidden>
-              <dt>받는 항목</dt><dd>회사명 · 업종 · 규모 · 이름 · 이메일 · 전화, 적으신 경우 직급 · 주소(우편번호), 요청하신 업무와 받으신 소개 코드(있을 때), 들어오신 경로</dd>
-              <dt>쓰는 곳</dt><dd>실증 참여 신청 접수 · 초대 안내 · 연락, 가입 뒤 회사 정보와 담당자 정보 미리 채움, 실증 운영 안내</dd>
-              <dt>보관</dt><dd>실증 종료 또는 동의 철회 때까지이며 최대 1년입니다. 가입하시면 회원 정보로 옮겨집니다.</dd>
-            </dl>
-          </details>
-          <label class="agree"><input type="checkbox" name="consents.collection" value="true" required><span>개인정보 수집·이용에 동의합니다(필수). 자세한 내용은 <a href="https://app.trops.kr/privacy">개인정보처리방침</a>에 있습니다.</span></label>
-        </div>
-        <fieldset class="opt" data-from-rev2 hidden disabled>
-          <legend>광고성 정보 수신(선택)</legend>
-          <label class="agree"><input type="checkbox" name="consents.newsletter" value="true"><span>TROPS 소식지를 받겠습니다.</span></label>
-          <label class="agree"><input type="checkbox" name="consents.support_info" value="true"><span>정부 수출 지원사업 정보를 받겠습니다.</span></label>
-          <p class="hint">동의하지 않아도 실증에 참여하실 수 있습니다. 받으신 메일 아래의 수신 거부 링크나 contact@theo-ne.com 으로 언제든 멈출 수 있습니다.</p>
-        </fieldset>
-        <p class="ferr" role="alert" hidden></p>
-        <!-- 🔴 제출 버튼은 숨긴 채로 옵니다 — 스크립트가 site.config.json `pilotApply` 스위치를 읽고 켜져 있을 때만 세웁니다. -->
-        <button class="btn" type="submit" data-track="join-pilot-submit" data-js-submit hidden>실증 참여 신청</button>
-        <p class="note" id="pilotOff">온라인 신청을 사용할 수 없는 경우 상담 문의는 <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a> 으로 보내 주십시오.</p>
-        <p class="after">나머지 정보는 승인 뒤 화면에서 입력하실 수 있습니다.</p>
-      </form>
-      <!-- 🔴 완료 화면 — 앱 응답 201 에서만 뜹니다. 접수 사실과 다음 연락만 말합니다(순번 · 소개 링크는 싣지 않습니다 · 2026-10-03).
-           🔄 2026-10-07 — 신청하면서 가입: 앱이 계정 만들기 화면 주소(account_url)를 주면 둘째 글과 버튼이 서고 잠시 뒤 그리로 갑니다.
-              주소가 없으면(앱이 아직 그 길을 열지 않았다) 첫째 글 그대로입니다 — 없는 화면을 약속하지 않습니다. -->
-      <div class="done" hidden>
-        <svg class="ok" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24"/><path d="M15 27l7 7 15-15"/></svg>
-        <div class="label">신청 완료</div>
-        <h3 tabindex="-1">신청이 접수되었습니다</h3>
-        <p data-done-wait>담당자가 참여 가능 여부를 확인한 뒤 이메일로 안내드립니다.</p>
-        <div data-done-account hidden>
-          <p>이제 계정을 만들어 주세요. 계정을 만들어 두시면 승인되는 대로 바로 시작하실 수 있습니다. 잠시 뒤 계정 만들기 화면으로 이동합니다.</p>
-          <p><a class="btn" data-track="join-account" data-done-account-link href="https://app.trops.kr/pilot/account">계정 만들기</a></p>
-        </div>
-      </div>
-    </div>
-  </div>
-</div></section>
+
+
+
+
+
+
+
+
+
+
 
 <section id="resources" data-section="resources"><div class="w">
-  <div class="head rv">
-    <div><div class="label">자료</div><h2>가입 없이 읽는<br>수출 실무 안내</h2></div>
-    <p>수출 서류 21건과 지원사업을 정리했습니다.</p>
-  </div>
-  <div class="res rv">
-    <a href="https://app.trops.kr/guide/claim-notice" data-track="res-claim-notice"><span>무역보험</span><b>사고통지 기한</b><em>언제까지, 어떻게 알려야 하는지</em></a>
-    <a href="https://app.trops.kr/guide/export-insurance" data-track="res-export-insurance"><span>무역보험</span><b>단기수출보험</b><em>상품과 조건, 가입 전에 볼 것</em></a>
-    <a href="https://app.trops.kr/guide/payment-recovery" data-track="res-payment-recovery"><span>대금</span><b>대금 회수</b><em>대금을 받지 못했을 때의 절차</em></a>
-    <a href="https://app.trops.kr/guide/support" data-track="res-support"><span>지원사업</span><b>보험료 지원사업</b><em>17개 시도 안내</em></a>
-    <a href="https://app.trops.kr/guide/proforma-invoice" data-track="res-proforma-invoice"><span>서류</span><b>견적서(PI)</b><em>작성 항목과 방법</em></a>
-    <a href="https://app.trops.kr/guide" data-track="res-guide"><span>전체</span><b>수출 서류 21건</b><em>안내 전체 보기 →</em></a>
-    <a href="mailto:contact@theo-ne.com?subject=TROPS%20교육%20문의" data-track="res-edu"><span>교육</span><b>수출 실무 교육</b><em>무역보험 서류를 AI로 준비하는 법 · 기관·기업 출강 문의</em></a>
-  </div>
-</div></section>
+<div class="head"><div><h2>수출 서류와 절차 안내</h2></div></div>
+<div class="res">
+<a data-track="resource-documents" href="https://app.trops.kr/guide"><span>서류</span><b>수출 서류 안내</b><em>서류별 작성 항목과 쓰는 때 →</em></a>
+<a data-track="resource-support" href="https://app.trops.kr/guide/support"><span>지원사업</span><b>수출보험료 지원 안내</b><em>지역별 보험료 지원 정보 →</em></a>
+<a data-track="resource-all" href="https://app.trops.kr/guide"><span>전체 자료</span><b>수출 실무 안내</b><em>서류와 절차 안내 전체 보기 →</em></a>
+</div></div></section>
 
-<section id="faq" class="tint" data-section="faq"><div class="w">
-  <div class="label">자주 묻는 질문</div>
-  <h2 class="faq-h">자주 묻는 질문</h2>
-  <!-- 🔴 **FAQ 14문항 — v3 시안 그대로** 〔2026-09-29〕 · 이용 안내 5 + 무역보험 9 · 질문 끝은 「~나요?」.
-       ⚠️ 시안과 다른 곳 셋(대표 결정): 「초대는 어떤 순서로…」 의 소개 문장(「소개해 주시면 먼저
-          연락드립니다」) · 「1분 … 무료인가요?」 의 「보여 드립니다」(알림 약속 0건 검사) ·
-          「… 대신해 주나요?」 끝에 면책 두 축 문장(test/disclaimer-parity.test.js 세 축).
-       🔴 같은 질문·답이 <head> JSON-LD `FAQPage` 에 **같은 순서 · 같은 글자**로 있습니다 —
-          test/faq-structured-data.test.js 가 막습니다. 한쪽만 고치지 마십시오.
-       ⛔ 환불 조건을 여기 적지 마십시오 — 환불규정 한 곳이 말합니다(같은 검사).
-       ⚠️ 모양은 `details > summary + div.a > p` 입니다 — 그 검사가 읽는 모양이고, 무리 제목(.fg)은
-          검사 대상이 아닙니다.
-       🔄 종전 규칙 「도메인 질문이 앞, TROPS 질문이 뒤」(2026-09-05)는 v3 에서 바뀌었습니다 — 이용 안내
-          무리가 앞입니다(대표 지시 「질문은 시안의 14개」). 종전 답에 달려 있던 약관 근거 주석
-          (수출통지 제16조 · 보험료지원 게시판)은 그 문장과 함께 걷혔습니다 — 옛 판 `git show c892810:index.html`.
-       ⚠️ 「답은 이 사이트가 이미 하는 말에서만 가져온다」는 그대로 지킵니다 — FAQ 는 LLM 이 통째로
-          인용하는 자리라, 여기서 새로 약속하면 그 약속이 가장 널리 퍼집니다. -->
-  <div class="faq rv">
-    <div class="fg">이용 안내</div>
-    <details><summary>실증 신청은 무엇인가요?</summary><div class="a"><p>초대받은 기업과 수출 실무 도구를 실증하는 과정입니다. 신청이 접수되면 담당자가 참여 가능 여부와 제공 기능을 확인해 안내합니다.</p></div></details>
-    <details><summary>초대는 어떤 순서로 이루어지나요?</summary><div class="a"><p>신청 순서와 회사 상황(담당자 수, 거래 방식)을 함께 보고 정합니다. 다른 수출기업을 소개해 주시면 먼저 연락드립니다.</p></div></details>
-    <details><summary>비용이 드나요?</summary><div class="a"><p>초대 기간에는 무료이며 카드 등록도 필요 없습니다. 요금이 정해지면 미리 안내해 드립니다. 무역보험 준비 패키지는 수출 거래 건별로 따로 안내합니다.</p></div></details>
-    <details><summary>TROPS AI는 무엇을 해 주나요?</summary><div class="a"><p>{{publicCopy.coreSummary}} {{publicCopy.detail}} {{publicCopy.integrationSummary}}</p></div></details>
-    <details><summary>우리 회사 정보는 안전한가요?</summary><div class="a"><p>{{publicCopy.securitySummary}}</p></div></details>
-    <div class="fg">무역보험</div>
-    <details><summary>무역보험이란 무엇인가요?</summary><div class="a"><p>수출 거래에서 수입자의 신용 문제나 수입국 사정으로 대금을 받지 못할 때 손실을 보상하는 정책보험입니다. 한국무역보험공사가 운영합니다.</p></div></details>
-    <details><summary>무역보험 보상비율은 몇 퍼센트인가요?</summary><div class="a"><p>보험 상품과 계약 조건에 따라 다릅니다. 실제 비율은 보험증권과 약관에 적힌 내용을 따릅니다.</p></div></details>
-    <details><summary>무역보험 보험금 청구에는 어떤 서류가 필요한가요?</summary><div class="a"><p>보험금 청구서와 함께 수출 사실과 채권 발생을 보여 주는 서류, 사고 경위와 회수 노력을 보여 주는 자료 등이 필요합니다. 구체적인 목록은 보험 상품과 약관에 따라 다릅니다.</p></div></details>
-    <details><summary>단기수출보험 사고발생 통지는 언제까지 해야 하나요?</summary><div class="a"><p>단기수출보험(선적후) 개별보험은 결제만기일로부터 1개월 이내에 서면으로 통지하도록 정하고 있습니다. 실제 조건은 보험증권과 약관에 따릅니다.</p></div></details>
-    <details><summary>수출보험료 지원사업은 어디서 확인할 수 있나요?</summary><div class="a"><p>지자체와 지원기관이 보험료 일부를 지원하는 사업을 운영합니다. TROPS의 수출절차 안내에서 지역별로 확인하실 수 있습니다.</p></div></details>
-    <details><summary>TROPS 1분 수출 준비 진단은 무료인가요?</summary><div class="a"><p>무료이며 가입 없이 이용하실 수 있습니다. 수출 거래 조건을 고르면 대금 회수 대비 점수와 먼저 볼 영역을 보여 드립니다.</p></div></details>
-    <details><summary>TROPS는 어떤 서비스인가요?</summary><div class="a"><p>{{publicCopy.definition}}입니다. {{publicCopy.audience}} {{publicCopy.detail}} TROPS Web과 업무도구 연동을 통해 학습 부담과 재입력을 줄이는 방향으로 실증하고 있습니다.</p></div></details>
-    <details><summary>TROPS가 무역보험 가입을 대신해 주나요?</summary><div class="a"><p>대신 가입해 드리지 않습니다. 보험 인수·지급 심사나 가입 대행, 특정 상품 추천을 하지 않으며, 가입 가능 여부와 조건은 해당 기관이 약관과 심사 기준에 따라 결정합니다. 법률 자문과 계약서에 대한 법률적 검토도 제공하지 않으며, 미수금 회수를 보장하지 않습니다.</p></div></details>
-    <details><summary>무역보험 준비 패키지는 얼마인가요?</summary><div class="a"><p>작성할 서류 종수에 따라 달라집니다. 자료를 보내 주시면 금액과 소요 기간을 안내해 드리고, 확인하신 뒤 결제하시면 됩니다.</p></div></details>
-  </div>
-</div></section>
+<section id="faq" class="tint" data-section="faq"><div class="w"><div class="label">FAQ</div><h2 class="faq-h">자주 묻는 질문</h2><div class="faq"><details><summary>TROPS는 어떤 서비스인가요?</summary><div class="a"><p>TROPS는 중소기업을 위한 수출 실무 서비스입니다. 수출 서류 초안과 거래별 기한·다음 할 일을 관리하고, 우리 회사에 맞는 지원사업을 찾을 수 있습니다.</p></div></details><details><summary>TROPS는 어떻게 시작하나요?</summary><div class="a"><p>app.trops.kr에서 가입한 뒤 회사를 만들고 필요한 업무를 선택합니다. 계약서가 없어도 서류 작성이나 지원사업 찾기부터 시작할 수 있습니다. <a href="https://app.trops.kr/">앱에서 확인하기 →</a></p></div></details><details><summary>어떤 수출 서류를 만들 수 있나요?</summary><div class="a"><p>견적서(PI), 상업송장(CI), 포장명세서(PL) 등의 초안을 준비할 수 있습니다. 회사·거래 정보를 반영한 뒤 담당자가 항목과 값을 확인하고 발행하거나 내려받습니다. 제출 전에는 제출처의 요구사항도 확인하세요.</p></div></details><details><summary>수출 거래의 기한과 다음 할 일은 어떻게 확인하나요?</summary><div class="a"><p>거래별로 서류와 진행 상황, 관련 기한을 함께 확인합니다. 선적이나 입금처럼 외부에서 일어난 일은 담당자가 확인해 기록합니다.</p></div></details><details><summary>TROPS AI는 수출 지원사업을 어떻게 찾아주나요?</summary><div class="a"><p>회사 지역·업종 등을 바탕으로 관련 공고를 근거와 함께 제안하고, 확인된 조건과 더 확인할 조건을 구분합니다. 신청 자격과 선정 여부는 공고 기관이 결정합니다.</p></div></details><details><summary>지원사업 신청 서류 작성도 도와주나요?</summary><div class="a"><p>관련 공고와 원문을 확인한 뒤 신청 서류 작성을 문의할 수 있습니다. 모든 공고의 신청서를 자동으로 작성하거나 대신 제출하는 방식은 아닙니다.</p></div></details><details><summary>이용 요금과 무료 이용 조건은 어디서 확인하나요?</summary><div class="a"><p>현재 적용되는 요금, 무료 이용 기간과 유료 전환 조건은 앱에서 확인할 수 있습니다. <a href="https://app.trops.kr/">앱에서 확인하기 →</a></p></div></details><details><summary>회사 정보와 수출 자료는 어떻게 처리하나요?</summary><div class="a"><p>개인정보의 수집·이용, 외부 AI 처리, 보관과 삭제 기준은 앱의 공식 개인정보처리방침에서 확인할 수 있습니다. <a href="https://app.trops.kr/privacy">개인정보처리방침 →</a></p></div></details></div></div></section>
 
-<section class="fin" data-section="final"><div class="w">
-  <div class="final rv">
-    <div class="tag-en">Trade Ops, Solved.</div>
-    <h2>담당자 한 명으로도<br>빈틈없는 수출 관리</h2>
-    <a class="btn" href="#join" data-track="final-join">신청하기</a>
-  </div>
-</div></section>
+<section class="fin" data-section="final"><div class="w"><div class="compact-final"><h2>지금 필요한 수출 업무부터 시작하세요</h2><a class="btn" href="https://app.trops.kr/" data-track="final-start">TROPS 시작하기</a></div></div></section>
 
 </main>
 
-<footer data-section="footer"><div class="w">
-  <div class="cols">
-    <div>
-      <a class="logo" href="/"><i></i>TROPS</a>
-      <!-- 🔴 **면책은 시안의 목록이 아니라 지금 문단입니다** 〔2026-09-29 · 대표 결정〕 — 세 축(법률 자문 ·
-           보험 인수·대행·추천 · 회수 보장)을 «부정문으로» 다 들어야 합니다(test/disclaimer-parity.test.js).
-           시안의 명사 목록은 세 축 모두 그 검사를 통과하지 못했습니다.
-           ⚠️ 이 블록 안에 다른 div 를 넣지 마십시오 — 검사가 첫 닫는 div 까지를 집습니다. -->
-      <div class="nd"><b>TROPS가 하지 않는 일</b>법률 자문과 계약서에 대한 법률적 검토를 제공하지 않습니다(변호사법·외국법자문사법). 보험 인수·지급 심사나 가입 대행, 특정 상품 추천을 하지 않으며, 가입 가능 여부와 조건은 해당 기관이 약관과 심사 기준에 따라 결정합니다. 미수금 회수를 보장하지 않습니다.</div>
-    </div>
-    <div><b>제품</b><ul><li><a href="#product">TROPS AI</a></li><li><a href="#product">거래·기한 관리 · 업무도구 연동</a></li><li><a href="#service">무역보험 준비 패키지</a></li><li><a href="#check">1분 수출 준비 진단</a></li><li><a href="#calc">업무 시간 계산기</a></li><li><a href="mailto:contact@theo-ne.com?subject=TROPS%20교육%20문의">수출 실무 교육</a></li></ul></div>
-    <div><b>자료</b><ul><li><a href="https://app.trops.kr/guide">수출절차 안내</a></li><li><a href="https://app.trops.kr/guide/support">보험료 지원사업</a></li><li><a href="https://app.trops.kr/guide/glossary">무역 용어</a></li></ul></div>
-    <!-- 🔄 「문의 · 교육 · 파트너」를 /contact 로 되돌렸습니다 〔2026-09-30 · 대표 결정〕 — v3 에서 랜딩 → /contact 길이 0 이었습니다. -->
-    <div><b>회사</b><ul><li><a href="#join" data-track="footer-join">신청하기</a></li><li><a href="/about">회사 소개</a></li><li><a href="#security">보안</a></li><li><a href="/contact" data-track="footer-contact">문의 · 교육 · 파트너</a></li></ul></div>
-  </div>
-  <!-- 🔴 사업자정보는 site.config.json 이 원본이고 이 푸터는 `summary` 티어 넷입니다(scripts/build-static.js).
-       ⚠️ 통신판매업신고번호·전화는 **의도적으로 없습니다** — 그 토큰 이름을 이 주석에도 적지 마십시오
-          (test/site-config.test.js 가 원문을 훑어 「쓰는 토큰」을 셉니다).
-       🔴 정책 링크는 클린 주소(`.html` 없음) · 라벨은 그 문서가 스스로 부르는 이름입니다
-          (test/page-essentials.test.js). 이용약관은 앱 도메인의 정본을 가리킵니다.
-       🔴 「English」 의 hreflang 은 assets/lang-switch.js 가 보고 lang 쿠키를 심는 표지입니다. -->
-  <div class="legal">
+<footer data-section="footer"><div class="w"><div class="compact-footer"><div><a class="logo" href="#main"><i></i>TROPS</a><p>수출 실무를 더 쉽게</p></div><div class="footer-links"><a href="/about">회사 소개</a><a href="/contact" data-track="footer-contact">문의 · 교육 · 파트너</a><a href="https://app.trops.kr/guide">수출 실무 자료</a></div></div><div class="trust-line"><span>회사 정보와 자료의 처리 기준을 확인하세요.</span><a href="https://app.trops.kr/privacy">개인정보처리방침 ↗</a><a href="https://app.trops.kr/terms">이용약관 ↗</a></div><details class="scope-note"><summary>서비스 제공 범위</summary><p>TROPS는 서류 준비와 기록 관리를 돕습니다. 법률 자문과 계약서에 대한 법률적 검토를 제공하지 않습니다. 보험 인수·지급 심사나 가입 대행, 특정 상품 추천을 하지 않으며, 가입 가능 여부와 조건은 해당 기관이 약관과 심사 기준에 따라 결정합니다. 미수금 회수를 보장하지 않습니다.</p></details><div class="legal">
     <div>{{biz.companyName}} · 대표 {{biz.ceo}} · 사업자등록번호 {{biz.registrationNo}} · {{biz.address}} · <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a></div>
     <div class="fl"><a href="https://app.trops.kr/terms">이용약관</a><a href="https://app.trops.kr/privacy">개인정보처리방침</a><a href="/refund">환불규정</a><a href="/en" hreflang="en" lang="en">English</a></div>
     <div>© 2026 TROPS. All rights reserved.</div>
   </div>
 </div></footer>
 
+
+
+
+
+
+
+
 <script>
-(function(){
-  'use strict';
-  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var $ = function(id){ return document.getElementById(id); };
+const tabs=[...document.querySelectorAll('.tabs button')];
+function selectTab(i,focus=false){tabs.forEach((b,k)=>{const on=k===i;b.classList.toggle('on',on);b.setAttribute('aria-selected',String(on));b.tabIndex=on?0:-1;const p=document.getElementById(b.dataset.t);p.classList.toggle('on',on);p.inert=!on;p.setAttribute('aria-hidden',String(!on));});if(focus)tabs[i].focus();}
+tabs.forEach((b,i)=>{b.addEventListener('click',()=>selectTab(i));b.addEventListener('keydown',e=>{let n=null;if(e.key==='ArrowRight')n=(i+1)%tabs.length;if(e.key==='ArrowLeft')n=(i+tabs.length-1)%tabs.length;if(e.key==='Home')n=0;if(e.key==='End')n=tabs.length-1;if(n!==null){e.preventDefault();selectTab(n,true);}});});
+const nav=document.querySelector('nav');addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>8),{passive:true});
 
-  /* ── 공지 닫기 · nav 그림자 ── */
-  var an = $('announce');
-  if (an) an.querySelector('.ax').addEventListener('click', function(){ an.parentNode.removeChild(an); });
-  var nv = document.querySelector('nav');
-  window.addEventListener('scroll', function(){ nv.classList.toggle('scrolled', window.scrollY > 8); }, { passive: true });
-
-  /* ── 스크롤 등장 — 관찰을 못 하는 브라우저는 곧바로 다 보여 줍니다 ── */
-  var reveal = document.querySelectorAll('.rv,.tl');
-  if (!('IntersectionObserver' in window) || reduce) {
-    [].forEach.call(reveal, function(el){ el.classList.add('in'); });
-  } else {
-    var io = new IntersectionObserver(function(es){
-      es.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-    }, { threshold: .15 });
-    [].forEach.call(reveal, function(el){ io.observe(el); });
-  }
-
-  /* ── 계산기 ── */
-  var cs = ['c1','c2','c3','c4','c5'].map($);
-  var round1 = function(n){ return (Math.round(n * 10) / 10).toLocaleString(); };
-  function calc(){
-    var n = +cs[0].value, d = +cs[1].value, m = +cs[2].value, f = +cs[3].value, r = +cs[4].value / 100;
-    $('o1').textContent = n + '건'; $('o2').textContent = d + '종';
-    $('o3').textContent = m + '분'; $('o4').textContent = f + '분'; $('o5').textContent = Math.round(r * 100) + '%';
-    var tot = n * (d * m + f) / 60, sv = tot * r;
-    $('r1').textContent = round1(tot);
-    $('r2').textContent = round1(sv);
-    $('r3').textContent = Math.round(sv * 12).toLocaleString();
-    $('r4').textContent = Math.round(sv * 12 / 8).toLocaleString();
-  }
-  cs.forEach(function(c){ c.addEventListener('input', calc); });
-  calc();
-
-  /*
-   * ── 앱 화면의 날짜 — 오늘을 기준으로 채웁니다(Asia/Seoul) ──
-   * 요약 줄은 앱 `todayShortDateLine` 꼴(「9월 29일(화)」), 오늘 확인 줄은 앱이 쓰는 ISO 날짜입니다.
-   * 스크립트가 없으면 마크업에 적힌 날짜가 그대로 보입니다(예시라 틀려도 해가 없습니다).
-   */
-  try {
-    var seoul = function(offsetDays){
-      var d = new Date(Date.now() + offsetDays * 864e5);
-      var p = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
-      return p;
-    };
-    var today = seoul(0).split('-');
-    var wd = ['일','월','화','수','목','금','토'][new Date(Date.UTC(+today[0], +today[1] - 1, +today[2])).getUTCDay()];
-    $('mockDate').textContent = (+today[1]) + '월 ' + (+today[2]) + '일(' + wd + ')';
-    $('mockShip').textContent = seoul(-2);
-    $('mockDue').textContent = seoul(3);
-  } catch (e) { /* 날짜를 못 만들면 적힌 예시 날짜를 둡니다 */ }
-
-  /*
-   * ── 입력칸 — 안내 문구는 앱 그대로(「오늘은 어떤 수출 업무를 도와 드릴까요?」) ──
-   * 예시 타이핑은 그 안내 문구와 번갈아 나옵니다(시안의 예시 다섯). 움직임 줄이기면 안내 문구만 둡니다.
-   * 보내기는 앱처럼 비어 있으면 흐립니다 · Cmd/Ctrl+Enter 로도 보냅니다(앱 ai-console 과 같습니다).
-   * ⚠️ 보낸 문장을 신청 폼으로 넘기는 일(carry)은 아래 «신청하기» 스크립트가 맡습니다 〔2026-10-05 · 옛 신청 폼을 걷으며 옮김〕.
-   */
-  var inp = $('askInput'), sendBtn = $('askSend');
-  var GREETING = inp.getAttribute('placeholder');
-  var ex = ['베트남 바이어 견적서 만들어 줘', '이번 달 들어올 돈 알려 줘', '필리핀 건 선적서류 초안 만들어 줘', '수출통지 기한 언제까지야?', 'LA로 20ft 운송 견적 요청해 줘'];
-  inp.addEventListener('input', function(){ sendBtn.disabled = !inp.value.trim(); });
-  if (!reduce) {
-    var ei = 0, ci = 0, del = false;
-    var tick = function(){
-      if (document.activeElement === inp || inp.value) { inp.placeholder = GREETING; setTimeout(tick, 1200); return; }
-      var t = ex[ei];
-      if (!del) {
-        ci++; inp.placeholder = '예) ' + t.slice(0, ci);
-        if (ci === t.length) { del = true; setTimeout(tick, 1600); return; }
-      } else {
-        ci--; inp.placeholder = '예) ' + t.slice(0, ci);
-        if (ci === 0) { del = false; ei = (ei + 1) % ex.length; inp.placeholder = GREETING; setTimeout(tick, 2600); return; }
-      }
-      setTimeout(tick, del ? 28 : 70);
-    };
-    setTimeout(tick, 2600);   /* 처음에는 앱의 안내 문구를 먼저 보여 줍니다 */
-  }
-
-  /*
-   * ── 제품 탭 — 6초마다 자동으로 넘깁니다 ──
-   * ⚠️ 시안과 한 곳이 다릅니다: 방문자가 탭을 직접 고르면 자동 넘김을 **멈춥니다**(시안은 다시 켰습니다).
-   *    스스로 움직이는 내용은 멈출 수 있어야 하고, 직접 고른 것은 읽겠다는 뜻이기 때문입니다.
-   *    마우스를 올리거나 키보드 포커스가 들어와도 잠시 멈춥니다.
-   */
-  var tabsEl = document.querySelector('.tabs'), tb = [].slice.call(document.querySelectorAll('.tabs button'));
-  var cur = 0, timer = null, stopped = reduce;
-  function show(i, focus){
-    tb.forEach(function(x, k){
-      var on = k === i;
-      x.classList.toggle('on', on); x.setAttribute('aria-selected', on); x.tabIndex = on ? 0 : -1;
-      var pane = $(x.dataset.t);
-      pane.classList.toggle('on', on); pane.inert = !on; pane.setAttribute('aria-hidden', !on);
-    });
-    var b = tb[i].querySelector('.bar');
-    if (b) { b.style.animation = 'none'; void b.offsetWidth; b.style.animation = ''; }
-    if (focus) tb[i].focus();
-  }
-  function auto(){
-    clearInterval(timer);
-    if (stopped) return;
-    timer = setInterval(function(){ cur = (cur + 1) % tb.length; show(cur); }, 6000);
-  }
-  function pick(i, focus){ cur = i; stopped = true; clearInterval(timer); tabsEl.classList.add('stopped'); show(i, focus); }
-  if (reduce) tabsEl.classList.add('stopped');
-  tb.forEach(function(b, i){
-    b.addEventListener('click', function(){ pick(i); });
-    b.addEventListener('keydown', function(e){
-      if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); pick((i + 1) % tb.length, true); }
-      if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); pick((i - 1 + tb.length) % tb.length, true); }
-    });
+</script><script id="premium-interactions">
+(()=>{
+ const motion=matchMedia('(prefers-reduced-motion: reduce)');
+ const fine=matchMedia('(min-width: 861px) and (pointer: fine)');
+ const ease='cubic-bezier(.22,1,.36,1)';
+ const animate=(el,frames,options)=>{if(!el||motion.matches)return null;return el.animate(frames,{duration:650,easing:ease,...options});};
+ const heroItems=[...document.querySelectorAll('.hero h1,.hero>.w>.lead,.hero>.w>.free,.hero .cta')];
+ heroItems.forEach((el,i)=>animate(el,[{opacity:0,transform:'translateY(18px)',filter:'blur(3px)'},{opacity:1,transform:'translateY(0)',filter:'blur(0)'}],{delay:i*85,duration:720}));
+ const figure=document.querySelector('.static-workspace'),image=figure?.querySelector('.workspace-preview');
+ animate(image,[{opacity:0,transform:'translateY(28px) scale(.985)'},{opacity:1,transform:'translateY(0) scale(1)'}],{delay:240,duration:950});
+ const observed=[...document.querySelectorAll('#product .product-nav,#product .screen,#resources .head,#resources .res a,#faq .label,#faq h2,#faq .faq,.compact-final')];
+ const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(!e.isIntersecting)return;const i=e.target.parentElement.classList.contains('res')?[...e.target.parentElement.children].indexOf(e.target):0;animate(e.target,[{opacity:0,transform:'translateY(22px)'},{opacity:1,transform:'translateY(0)'}],{duration:700,delay:i*85});observer.unobserve(e.target);}),{threshold:.12});observed.forEach(el=>observer.observe(el));
+ let scheduled=false;
+ function scrollFrame(){scheduled=false;if(!image)return;if(motion.matches||!fine.matches){image.style.transform='';return;}const box=figure.getBoundingClientRect();if(box.bottom<0||box.top>innerHeight)return;const progress=Math.max(0,Math.min(1,(innerHeight-box.top)/(innerHeight+box.height)));const y=(.5-progress)*14;image.style.transform=`translate3d(0,${y}px,0)`;}
+ addEventListener('scroll',()=>{if(!scheduled){scheduled=true;requestAnimationFrame(scrollFrame);}},{passive:true});motion.addEventListener('change',()=>{document.getAnimations().forEach(a=>a.finish());scrollFrame();});
+ const tabs=document.querySelector('.tabs');
+ function indicator(){const active=tabs?.querySelector('[aria-selected="true"]');if(active){tabs.style.setProperty('--indicator-top',active.offsetTop+'px');tabs.style.setProperty('--indicator-height',active.offsetHeight+'px');}}
+ if(tabs){new MutationObserver(indicator).observe(tabs,{subtree:true,attributes:true,attributeFilter:['aria-selected']});new ResizeObserver(indicator).observe(tabs);document.fonts.ready.then(indicator);indicator();}
+ document.querySelectorAll('#resources .res em').forEach(el=>{el.textContent=el.textContent.replace(/\s*→$/,'');const arrow=document.createElement('span');arrow.className='card-arrow';arrow.textContent='→';arrow.setAttribute('aria-hidden','true');el.append(arrow);});
+ document.querySelectorAll('#faq details').forEach(detail=>{
+  const summary=detail.querySelector('summary');let animation=null;let expanded=detail.open;
+  summary.addEventListener('click',event=>{
+   if(motion.matches)return;
+   event.preventDefault();const start=detail.getBoundingClientRect().height;animation?.cancel();expanded=!expanded;
+   detail.open=true;const end=expanded?detail.scrollHeight:summary.getBoundingClientRect().height;
+   animation=detail.animate([{height:start+'px'},{height:end+'px'}],{duration:320,easing:ease});
+   animation.onfinish=()=>{detail.open=expanded;animation=null;};
   });
-  var sc = document.querySelector('.screen');
-  [tabsEl, sc].forEach(function(el){
-    el.addEventListener('mouseenter', function(){ clearInterval(timer); tabsEl.classList.add('paused'); });
-    el.addEventListener('mouseleave', function(){ tabsEl.classList.remove('paused'); auto(); });
-    el.addEventListener('focusin', function(){ clearInterval(timer); tabsEl.classList.add('paused'); });
-    el.addEventListener('focusout', function(){ tabsEl.classList.remove('paused'); auto(); });
-  });
-  auto();
+ });
 })();
-</script>
-<!-- 🔴 익명 집계 〔2026-09-01〕 — 개인 식별값 없음(privacy.html §01). -->
-<script>
-/* ══════════════ 신청하기 · 실증 참여 ══════════════
- * 🔄 2026-10-06 · 대표 결정 — 출시 소식 받기(앱 leads 접수)를 걷었습니다. 이 구획은 실증 참여 하나만 보냅니다.
- * 🔄 2026-10-05 · 대표 지시 — 이 구획이 랜딩의 «유일한» 신청 입구입니다(옛 #apply 폼 · 「실증 신청」 버튼을 걷었습니다).
- *    오늘부터 섭니다. 옛 주소 `#apply` 로 오면 이 구획으로 데려옵니다.
- * 🔴 새 칸이 서는 날 = site.config.json `pilotApply.newFieldsFrom`(한국 날짜 · 방침 2차 개정 시행일).
- *    그 전: `data-from-rev2` 자리는 숨김 · 잠김 그대로이고, 보내는 본문에도 그 칸을 싣지 않습니다.
- *    그날부터: 그 자리가 서고 `data-until-rev2`(지금 방침에 맞춘 안내 글)가 내려가며, 동의 문구의 판이 바뀝니다.
- * ⚠️ 날짜는 브라우저 시계로 봅니다(한국 시간으로 바꿔서) — 시계가 틀린 기기에서는 하루 어긋날 수 있습니다.
- *    ① 시계가 빠른 기기: 앱이 같은 날짜 전에는 새 칸을 «저장하지 않고» 나머지만 받습니다(두 겹 · 신청은 잃지 않습니다).
- *    ② 시계가 늦은 기기: 앱이 새 필수 칸을 요구하면(400) 그 자리에서 새 칸을 열고 채워 달라고 말합니다.
- * ⚠️ 보낼 곳과 켜고 끄는 스위치는 site.config.json `pilotApply` 입니다 — 운영 주소(trops.kr · www)는 production 칸,
- *    그 밖(Vercel 미리보기 · 로컬)은 preview 칸.
- * ⛔ 이 줄들에 true 를 손으로 적지 마십시오 — 토큰을 따옴표 안에 둡니다(빌드 없이 열면 «꺼짐»입니다).
- */
-(function(){
-  'use strict';
-  var $ = function(id){ return document.getElementById(id); };
-  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var REV2_FROM = '{{pilotApply.newFieldsFrom}}';
-  var kstToday = new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
-  var REV2 = /^\d{4}-\d{2}-\d{2}$/.test(REV2_FROM) && kstToday >= REV2_FROM;
-  var ON_PROD = /^(www\.)?trops\.kr$/.test(location.hostname);
-  var PILOT = ON_PROD
-    ? { enabled: '{{pilotApply.productionEnabled}}' === 'true', endpoint: '{{pilotApply.productionEndpoint}}' }
-    : { enabled: '{{pilotApply.previewEnabled}}' === 'true', endpoint: '{{pilotApply.previewEndpoint}}' };
-  var MAIL = 'contact@theo-ne.com';
-  var section = $('join');
-  var pf = $('joinPilotForm');
-
-  /* ── 채움 판정 — 제출 검사(ui.check)와 진행 막대가 같은 기준을 씁니다 ── */
-  function filled(el){
-    return el.type === 'checkbox' ? el.checked
-      : el.type === 'email' ? /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(el.value.trim())
-      : !!el.value.trim();
-  }
-  /* ── 진행 막대(애니메이션 B) — 필수 칸 중 채운 몫. 잠긴 칸(10-13 전의 새 칸)은 세지 않습니다. 막대가 숨어 있으면 셈하지 않습니다. ── */
-  var prog = $('pilotProg');
-  function progress(){
-    if (!prog || prog.hidden) return;
-    var req = [].filter.call(pf.querySelectorAll('[required]'), function(el){ return !el.disabled; });
-    var n = req.filter(filled).length, total = req.length;
-    prog.querySelector('i').style.transform = 'scaleX(' + (total ? n / total : 0) + ')';
-    prog.querySelector('b').textContent = n;
-    prog.querySelector('.jprog-t').textContent = total;
-    prog.classList.toggle('full', total > 0 && n === total);
-  }
-
-  /* ── 방침 2차 개정 시행일 — 새 칸을 세우거나 잠급니다 ── */
-  var CONTROLS = 'input,select,textarea,button,fieldset';
-  function setOn(el, on){
-    el.hidden = !on;
-    if (el.matches(CONTROLS)) el.disabled = !on;
-    [].forEach.call(el.querySelectorAll(CONTROLS), function(c){ c.disabled = !on; });
-  }
-  function applyPhase(rev2){
-    REV2 = rev2;
-    [].forEach.call(section.querySelectorAll('[data-from-rev2]'), function(el){ setOn(el, rev2); });
-    [].forEach.call(section.querySelectorAll('[data-until-rev2]'), function(el){ setOn(el, !rev2); });
-    var nv = pf.elements.notice_version;
-    if (!nv.dataset.beforeValue) nv.dataset.beforeValue = nv.value;
-    nv.value = rev2 ? nv.dataset.rev2Value : nv.dataset.beforeValue;
-    progress();
-  }
-  applyPhase(REV2);
-
-  /* ── 제출 버튼 · 진행 막대 — 스위치가 켜졌을 때만 세웁니다(마크업의 기본은 숨김) ── */
-  if (PILOT.enabled) {
-    pf.querySelector('[data-js-submit]').hidden = false;
-    $('pilotOff').hidden = true;
-    prog.hidden = false;
-    pf.addEventListener('input', progress);
-    pf.addEventListener('change', progress);
-    progress();
-  }
-
-  /* ── 옛 주소 #apply → 이 구획 ── */
-  if (location.hash === '#apply') {
-    try { history.replaceState(null, '', location.pathname + location.search + '#join'); } catch (e) { /* 주소를 못 바꿔도 이동은 합니다 */ }
-    section.scrollIntoView();
-  }
-
-  /* ── 공통 — 칸 오류 · 폼 아래 오류 · 완료 화면 ── */
-  function ui(form){
-    var err = form.querySelector('.ferr');
-    return {
-      clear: function(){
-        err.hidden = true; err.textContent = '';
-        [].forEach.call(form.querySelectorAll('.fld'), function(w){ w.classList.remove('bad'); });
-      },
-      check: function(){
-        var ok = true;
-        /* 잠긴 칸(새 칸이 아직 서지 않은 자리)은 재지 않습니다. */
-        [].forEach.call(form.querySelectorAll('[required]'), function(el){
-          if (el.disabled) return;
-          if (!filled(el)) { var w = el.closest('.fld'); if (w) w.classList.add('bad'); ok = false; }
-        });
-        if (!ok) { var first = form.querySelector('.fld.bad input,.fld.bad select'); if (first) first.focus(); }
-        return ok;
-      },
-      show: function(message){ err.textContent = message; err.hidden = false; },
-      done: function(){
-        form.hidden = true;
-        var d = form.parentNode.querySelector('.done');
-        d.hidden = false;
-        var h = d.querySelector('h3'); if (h) h.focus();
-      }
-    };
-  }
-  var v = function(form, n){ var el = form.elements[n]; return el && !el.disabled ? String(el.value || '').trim() : ''; };
-  var on = function(form, n){ var el = form.elements[n]; return !!(el && !el.disabled && el.checked); };
-
-  function post(url, body){
-    var controller = new AbortController();
-    var timeout = setTimeout(function(){ controller.abort(); }, 20000);
-    return fetch(url, {
-      signal: controller.signal, method: 'POST',
-      headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
-    }).then(function(res){
-      return res.json()['catch'](function(){ return null; }).then(function(data){ return { status: res.status, data: data }; });
-    }).then(function(r){ clearTimeout(timeout); return r; }, function(e){ clearTimeout(timeout); throw e; });
-  }
-  /* 시계가 늦은 기기 — 앱이 새 필수 칸(규모 · 이름 · 전화)을 요구하면 새 칸을 엽니다. */
-  var REV2_REQUIRED = ['company_size_band', 'contact_name', 'phone'];
-  function asksForNewFields(status, data){
-    if (REV2 || status !== 400 || !data) return false;
-    if (data.error === 'required') return true;
-    var fields = (data.error && data.error.fields) || [];
-    return fields.some(function(f){ return REV2_REQUIRED.indexOf(f.field) > -1; });
-  }
-  function failText(status, data){
-    var err = (data && data.error) || {};
-    var code = typeof err === 'string' ? err : (err.code || '');
-    if (status === 400 && err && err.fields && err.fields.length) return err.fields.map(function(f){ return f.message; }).join(' ');
-    if (status === 400) return '적은 내용을 확인해 주세요.';
-    if (status === 403) return '이 주소에서는 보낼 수 없습니다. ' + MAIL + ' 으로 보내 주십시오.';
-    if (status === 409) return (err && err.message) || '이미 초대했거나 가입한 신청이라 내용을 바꿀 수 없습니다.';
-    if (status === 413) return '적은 내용이 너무 깁니다. 요청하신 업무를 줄여 다시 보내 주세요.';
-    if (status === 429) return '요청이 잠시 몰려 받지 못했습니다. 잠시 뒤 다시 보내 주세요.';
-    if (status === 503 && (code === 'closed' || code === 'not_effective')) return '지금은 신청을 받지 않고 있습니다. ' + MAIL + ' 으로 보내 주십시오.';
-    if (status === 503) return '지금 신청을 저장하지 못했습니다. 잠시 뒤 다시 보내 주세요.';
-    return '보내지 못했습니다. 잠시 뒤 다시 시도해 주시거나 ' + MAIL + ' 으로 보내 주십시오.';
-  }
-  /* 🔴 201 이 아니면 «접수되었습니다»로 말하지 않습니다 — 저장이 안 됐는데 받았다고 하는 것이 가장 나쁜 실패입니다. */
-  function wire(form, label, build, isDone, ready){
-    var u = ui(form), btn = form.querySelector('button[type="submit"]'), opened = Date.now(), sending = false;
-    form.addEventListener('submit', function(e){
-      e.preventDefault();
-      if (sending || !ready()) return;
-      u.clear();
-      if (!u.check()) return;
-      sending = true; btn.disabled = true; btn.textContent = '보내는 중…';
-      /* 앱은 폼을 연 지 3초가 안 된 제출을 봇으로 봅니다(계약 2-1 `elapsed_ms` 3000 이상) — 모자란 만큼 기다렸다 보냅니다. */
-      var wait = Math.max(0, 3200 - (Date.now() - opened));
-      setTimeout(function(){
-        post(build.url, build.body(Date.now() - opened)).then(function(r){
-          if (isDone(r)) { u.done(); if (window.tropsEvent) window.tropsEvent(build.event); if (build.after) build.after(r.data); return; }
-          if (asksForNewFields(r.status, r.data)) {
-            applyPhase(true);
-            u.show('신청 항목이 새로 열렸습니다. 추가된 칸을 채워 다시 보내 주세요.');
-            u.check();
-            return;
-          }
-          u.show(failText(r.status, r.data));
-        })['catch'](function(){
-          u.show('접수 결과를 확인하지 못했습니다. 입력 내용은 유지됩니다. 다시 보내기 전 ' + MAIL + ' 으로 문의하실 수 있습니다.');
-        }).then(function(){ sending = false; btn.disabled = false; btn.textContent = label; });
-      }, wait);
-    });
-  }
-
-  /*
-   * 🔴 **들어오신 경로** 〔2026-09-30 · 대표 결정 「어느 채널로 와서 신청했는지」〕 — 앱 계약 2-1 `acquisition`.
-   *    ref          = 채널 코드 `?from=` — 그 방문의 첫 값(assets/track.js `tropsVisit().from`)
-   *    utm_*        = 지금 주소의 광고 표지(`?utm_source=` …)
-   *    landing_path = 이 페이지 경로
-   * ⚠️ 소개 코드(`?ref=TR-…`)는 여기가 아니라 `referral_code` 입니다 — 앱의 `acquisition.ref` 는 «채널» 칸이라
-   *    이름만 같습니다. ⛔ 둘을 섞지 마십시오.
-   * ⚠️ utm 은 **지금 주소에서만** 읽습니다 — 저장해 두지 않습니다(새 저장 칸은 방침이 적어야 합니다).
-   * ⚠️ 앱은 일곱 키 밖을 버리고 값마다 200자에서 자릅니다 — 여기서도 200자에서 자릅니다. 경로 정보가 하나도 없으면
-   *    `acquisition` 을 싣지 않습니다.
-   */
-  function acquisition(){
-    var out = {}, any = false, q = null;
-    try { q = new URLSearchParams(location.search); } catch (e) { q = null; }
-    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(function(k){
-      var val = q ? String(q.get(k) || '').trim() : '';
-      if (val) { out[k] = val.slice(0, 200); any = true; }
-    });
-    var from = (window.tropsVisit && window.tropsVisit().from) || '';
-    if (from) { out.ref = String(from).slice(0, 200); any = true; }
-    if (!any) return null;
-    out.landing_path = location.pathname.slice(0, 200);
-    return out;
-  }
-
-  /* ── 실증 참여 → /api/pilot-apply (form_version 3) ── */
-  /*
-   * 소개 코드 — `?ref=` 로 받습니다. 계약 모양(영문·숫자·하이픈 4~32자)이 아니면 담지 않습니다
-   * (그대로 보내면 400 입니다). 대문자로 맞추는 것은 앱도 합니다.
-   * ⚠️ 저장소에 두지 않습니다 — 새 저장 키는 방침이 적어야 하는 항목이 됩니다.
-   */
-  try {
-    var rp = (new URLSearchParams(location.search).get('ref') || '').trim();
-    if (/^[A-Za-z0-9-]{4,32}$/.test(rp)) pf.elements.referral_code.value = rp.toUpperCase();
-  } catch (e) { /* 주소를 못 읽으면 소개 코드 없이 받습니다 */ }
-  /* 🔄 2026-10-07 — 신청하면서 가입. 앱이 준 계정 만들기 화면 주소는 «신청을 보낸 그 앱»의 /pilot/account 일 때만 씁니다
-     (응답에 실린 주소를 그대로 믿고 다른 곳으로 보내지 않습니다). 맞지 않거나 없으면 완료 글만 남습니다. */
-  function accountUrlOf(raw){
-    try {
-      if (typeof raw !== 'string' || raw.length > 600) return null;
-      var u = new URL(raw), app = new URL(PILOT.endpoint, location.href);
-      return u.protocol === 'https:' && u.origin === app.origin && u.pathname === '/pilot/account' ? u.href : null;
-    } catch (e) { return null; }
-  }
-  wire(pf, '실증 참여 신청', {
-    url: PILOT.endpoint, event: 'apply-success',
-    after: function(data){
-      var url = accountUrlOf(data && data.account_url);
-      if (!url) return;
-      var d = pf.parentNode.querySelector('.done');
-      var box = d.querySelector('[data-done-account]'), wait = d.querySelector('[data-done-wait]'), link = d.querySelector('[data-done-account-link]');
-      link.href = url; box.hidden = false; wait.hidden = true;
-      /* 완료 표시와 계측이 나갈 틈을 준 뒤 옮깁니다. 막히면 버튼이 남습니다. */
-      setTimeout(function(){ location.assign(url); }, 1800);
-    },
-    body: function(elapsed){
-      var body = {
-        form_version: 3,
-        company_name: v(pf, 'company_name'), email: v(pf, 'email'), industry: v(pf, 'industry'),
-        consents: { collection: on(pf, 'consents.collection'), program_notice: on(pf, 'consents.program_notice') },
-        notice_version: pf.elements.notice_version.value,
-        website: pf.elements.website.value, elapsed_ms: elapsed   /* 봇 방지 — 사람이면 빈 문자열 그대로 */
-      };
-      /* 방침 2차 개정 시행일부터 — 규모 · 이름 · 전화 · 직급 · 주소(우편번호) · 광고성 정보 선택 동의 둘 */
-      if (REV2) {
-        body.company_size_band = v(pf, 'company_size_band');
-        body.contact_name = v(pf, 'contact_name'); body.phone = v(pf, 'phone');
-        body.consents.newsletter = on(pf, 'consents.newsletter'); body.consents.support_info = on(pf, 'consents.support_info');
-        if (v(pf, 'job_title')) body.job_title = v(pf, 'job_title');
-        if (v(pf, 'address')) {
-          body.address = [v(pf, 'address'), v(pf, 'address_detail')].filter(Boolean).join(' ').slice(0, 300);
-          if (/^\d{5}$/.test(v(pf, 'postal_code'))) body.postal_code = v(pf, 'postal_code');
-        }
-      }
-      if (v(pf, 'requested_work')) body.requested_work = v(pf, 'requested_work');
-      if (v(pf, 'referral_code')) body.referral_code = v(pf, 'referral_code');
-      var acq = acquisition();
-      if (acq) body.acquisition = acq;
-      return body;
-    }
-  }, function(r){
-    return r.status === 201 && r.data && r.data.ok === true &&
-      typeof r.data.application_id === 'string' && r.data.application_id.length > 0 &&
-      (r.data.result === 'created' || r.data.result === 'updated');
-  }, function(){ return PILOT.enabled; });
-
-  /* 주소 검색 — 카카오(다음) 우편번호 서비스. 누를 때만 불러옵니다(새 칸이 선 뒤에만 누를 수 있습니다). */
-  var addrBtn = pf.querySelector('[data-addr-search]');
-  function openPostcode(){
-    new window.daum.Postcode({
-      oncomplete: function(d){
-        pf.elements.address.value = d.roadAddress || d.address || '';
-        pf.elements.postal_code.value = d.zonecode || '';
-        pf.elements.address_detail.focus();
-      }
-    }).open();
-  }
-  addrBtn.addEventListener('click', function(){
-    if (addrBtn.disabled) return;
-    if (window.daum && window.daum.Postcode) return openPostcode();
-    var s = document.createElement('script');
-    s.src = 'https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
-    s.onload = openPostcode;
-    s.onerror = function(){ ui(pf).show('주소 검색을 불러오지 못했습니다. 주소는 비워 두셔도 신청할 수 있습니다.'); };
-    document.head.appendChild(s);
-  });
-  pf.elements.address.addEventListener('click', function(){ addrBtn.click(); });
-
-  /*
-   * 화면 위 앱 입력창 · 명령 버튼 → 실증 참여 폼으로 요청 문장을 넘깁니다(requested_work · 500자).
-   * 명령 버튼은 **이름**을 넘깁니다. ⚠️ 앱은 누르면 입력창에 긴 요청문(`DEFAULT_AI_COMMANDS.prompt`)을
-   * 채우지만, 그 문장은 「연결한 수출 건의 …」처럼 거래가 이미 있다는 전제라 신청 단계에 맞지 않습니다.
-   */
-  function carry(q){
-    q = (q || '').trim().slice(0, 500);
-    if (q) {
-      pf.elements.requested_work.value = q;
-      $('reqText').textContent = '“' + q + '”';
-      $('reqBox').hidden = false;
-    }
-    section.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
-    var first = pf.elements.company_name;
-    if (first && !first.disabled) first.focus({ preventScroll: true });
-  }
-  var ask = $('ask'), askInput = $('askInput');
-  if (ask) ask.addEventListener('submit', function(e){ e.preventDefault(); carry(askInput && askInput.value); });
-  if (askInput) askInput.addEventListener('keydown', function(e){
-    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); if (askInput.value.trim()) carry(askInput.value); }
-  });
-  var plus = $('askPlus');
-  if (plus) plus.addEventListener('click', function(){ carry(askInput && askInput.value); });
-  [].forEach.call(document.querySelectorAll('.chips button[data-q]'), function(b){
-    b.addEventListener('click', function(){ carry(b.dataset.q); });
-  });
-})();
-</script>
+</script><script defer src="/assets/workspace-demo.js"></script>
+<script defer src="/assets/workspace-flow.js"></script>
+<script defer src="/assets/product-demo.js"></script>
 <script defer src="/assets/track.js"></script>
-<!-- 🔴 언어 전환 〔2026-09-19 복구〕 — en.html 에도 같은 줄이 있습니다. -->
 <script defer src="/assets/lang-switch.js"></script>
 </body></html>

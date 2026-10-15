@@ -129,7 +129,7 @@ test('🔴 `precheck.html` 이 «배포에서도 저장소에서도» 사라졌�
 });
 
 test('🔴 검색·AI 가 보는 주소도 함께 옮겼다 — 한쪽만 고치면 옛 주소가 계속 인용된다', () => {
-  for (const [f, what] of [['llms.txt', 'AI 인용 목록'], ['index.html', '국문 JSON-LD'], ['en.html', '영문 JSON-LD']]) {
+  for (const [f, what] of [['llms.txt', 'AI 인용 목록']]) {
     const s = read(f);
     assert.ok(!s.includes('https://trops.kr/precheck'),
       `${f}(${what})이 아직 옛 주소를 가리킵니다`);

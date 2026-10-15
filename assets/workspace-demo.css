@@ -1,0 +1,11 @@
+.workspace-preview{container-type:inline-size;position:relative;transform-origin:50% 0}
+.workspace-demo{position:absolute;z-index:2;left:26.9%;top:66.9%;width:50.5%;min-height:4.2%;background:#fff;text-align:left;font-size:.95cqw;line-height:1.6;letter-spacing:-.015em;color:var(--ink);pointer-events:none}
+.workspace-demo-label{display:none}
+.workspace-demo-text{white-space:pre-wrap;overflow-wrap:anywhere}
+.workspace-demo[data-state="typing"] .workspace-demo-text::after{content:"";display:inline-block;width:1px;height:1em;background:var(--accent);vertical-align:-.1em;margin-left:2px;animation:typing-caret .8s steps(1,end) infinite}
+@keyframes typing-caret{50%{opacity:0}}
+@media(max-width:860px){
+ .workspace-demo{position:relative;left:auto;top:auto;width:100%;min-height:124px;margin-top:16px;padding:18px 20px;background:#fff;border:1px solid var(--line);border-radius:14px;font-size:15px;line-height:1.7;box-shadow:0 6px 20px #131b2e06}
+ .workspace-demo-label{display:block;margin-bottom:12px;color:var(--sub);font-size:12px;font-weight:600;letter-spacing:0}
+}
+@media(prefers-reduced-motion:reduce){.workspace-preview{transform:none!important}.workspace-demo-text::after{display:none!important}}

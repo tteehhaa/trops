@@ -1,22 +1,11 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="icon" href="/favicon.ico" sizes="any">
-<!-- 🔴 **Google tag (gtag.js) — GA4** 〔2026-09-12〕. 구글이 주는 스니펫 그대로이고
-     **측정 ID 만 토큰**입니다(`site.config.json` 의 `analytics.gaId` 한 곳이 원본).
-     ⛔ **공용 `.js` 파일로 빼지 마십시오** 〔2026-09-12 실측〕 — 처음에 `assets/ga.js`
-        가 gtag.js 를 주입하게 만들었고 **수집은 정상**이었는데(`/g/collect` 204)
-        GA 화면은 「웹사이트에서 Google 태그가 감지되지 않았습니다」였습니다.
-        감지기는 실행된 DOM 이 아니라 **HTML 소스**에서 gtag.js 를 찾습니다.
-     ⚠️ 8장이 이 블록을 **문자 그대로 같게** 싣습니다. 한 장이라도 갈리면
-        `test/ga-policy.test.js` 가 red 입니다 — 고칠 때는 8장을 함께 고치십시오.
-     🔴 광고 두 값을 **false 로 못박습니다** — 방침 §01 이 「광고 기능(Google 신호
-        데이터 · 광고 맞춤설정)을 켜지 않았습니다」를 단정합니다. GA 콘솔 설정에
-        맡기면 그 문면이 저장소 밖 토글에 매달립니다(첫 배포에서 `npa=0` 이 나갔습니다).
-     🔴 **이 블록이 분석 쿠키(`_ga` · `_ga_<속성ID>`)를 심습니다.** 걷을 때는
-        `privacy.html` §01(셋째 예외) · §04 두 표 · §07 개정 고지와 짝인
-        `en-privacy.html` 의 같은 네 자리를 **함께** 걷으십시오.
-     ⛔ `test/track-section.test.js` 와 합치지 마십시오 — 그쪽은 쿠키 없는 자체 집계입니다. -->
+<link rel="icon" href="https://www.trops.kr/favicon.ico" sizes="any">
+
+
+
+
 <script async src="https://www.googletagmanager.com/gtag/js?id={{analytics.gaId}}"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -24,29 +13,15 @@
   gtag('js', new Date());
   gtag('config', '{{analytics.gaId}}', { allow_google_signals: false, allow_ad_personalization_signals: false });
 </script>
-<!-- 🔴 **국문 index.html 을 그대로 옮긴 영문판입니다** 〔2026-09-19 · 대표 지시 「라이브 국문 기준으로」〕.
-     2026-08-29 판(「A one-minute check of the export steps…」)이 9월 5일 국문 개편을 따라가지
-     못해, 두 장이 서로 다른 제품을 소개하고 있었습니다. 구조 · 선택자 · CSS · 영역 이름이
-     국문과 같습니다 — test/landing-invariants.test.js 가 두 장을 같은 선택자로 잽니다.
-     ⛔ 한쪽만 고치지 마십시오. 문구를 바꾸면 다른 쪽도 같은 배치에서 바꾸십시오.
-     ⚠️ **영문판만 다른 곳 셋** — 이유가 있습니다:
-        ① 상담 문의 · 출시 알림이 `/contact` 가 아니라 **mailto** 입니다(그 폼이 국문뿐입니다).
-        ② 푸터에 이용약관이 없습니다(국문 문서뿐 — index.html 푸터 주석 참조).
-        ③ em dash 를 쓰지 않습니다(test/i18n-parity.test.js).
-     ④ 무료 진단 버튼이 `/precheck` 가 아니라 **app.trops.kr/export-precheck/new** 입니다 —
-        `/precheck` 는 국문 전용 페이지라 영문 페이지가 거기로 가면 안 됩니다(test/i18n-parity ④).
-        `/precheck` 가 결과 뒤에 넘기는 곳이 바로 이 주소이고, `/en-precheck` 리다이렉트
-        (vercel.json)와 구판 en.html 도 여기로 보냈습니다.
-     ⚠️ app.trops.kr 화면은 아직 **국문**입니다. 영문 앱이 서기 전까지는 알고 받아들인 값입니다. -->
 <link rel="preconnect" href="https://app.trops.kr">
 <link rel="dns-prefetch" href="https://app.trops.kr">
-<title>{{publicCopy.headline}}</title>
-<meta name="description" content="{{publicCopy.audience}} {{publicCopy.detail}}">
-<!-- ⚠️ `/en` 입니다 — `.html` 이 아닙니다. vercel.json `cleanUrls:true` 라 정본은
-     확장자 없는 쪽이고, 바로 아래 hreflang 도 `/en` 을 가리킵니다. -->
+
+<title>{{publicCopy.headline}} | Export documents, deals and support programs</title>
+<meta name="description" content="TROPS helps small and midsize businesses prepare export document drafts, manage deal deadlines and payments, and find relevant support programs. Start in the app.">
 <link rel="canonical" href="https://trops.kr/en">
-<!-- 🔴 hreflang 은 **양쪽이 서로를 가리켜야** 검색엔진이 인정합니다. index.html <head> 에도
-     같은 3줄이 있습니다. ⛔ 한쪽만 고치지 마십시오. -->
+
+<meta name="naver-site-verification" content="82ea864b3d6cdf087f4568558ceb5ad495445c6f" />
+
 <link rel="alternate" hreflang="ko" href="https://trops.kr/">
 <link rel="alternate" hreflang="en" href="https://trops.kr/en">
 <link rel="alternate" hreflang="x-default" href="https://trops.kr/">
@@ -54,630 +29,865 @@
 <meta property="og:url" content="https://trops.kr/en">
 <meta property="og:site_name" content="TROPS">
 <meta property="og:locale" content="en_US">
-<!-- 국문 index.html 의 같은 자리와 같은 판단입니다(og:title 은 <title> 과 «일부러» 다릅니다). -->
+
 <meta property="og:title" content="{{publicCopy.headline}}">
-<meta property="og:description" content="{{publicCopy.audience}} {{publicCopy.detail}}">
+<meta property="og:description" content="TROPS helps small and midsize businesses prepare export document drafts, manage deal deadlines and payments, and find relevant support programs. Start in the app.">
 <meta name="twitter:card" content="summary_large_image">
-<!-- 🔴 og:image 는 절대 URL · `www.` 호스트입니다 — 이유는 index.html 의 같은 자리 주석을 보십시오.
-     ⚠️ 배포한 뒤 **카카오 캐시를 손으로 비워야** 새 카드가 보입니다 —
-        developers.kakao.com/tool/debugger/sharing 에서 URL 을 넣고 「초기화」. -->
+
+
 <meta property="og:image" content="https://www.trops.kr/img/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="TROPS logo">
 <meta name="twitter:image" content="https://www.trops.kr/img/og.png">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
-<script type="application/ld+json">
-{
+
+<style>
+
+:root{
+  --accent:#1D4ED8; --accent-deep:#1739A8; --accent-soft:#EFF4FE;
+  --ink:#131B2E; --sub:#5E6678; --mute:#6B7385;
+  --line:#E3E7EF; --line-soft:#EDF0F4;
+  --surface:#F6F7F9; --white:#FFFFFF;
+  --danger:#7A1515; --warn-bg:#FFF4D6; --warn-ink:#8A5A00; --bad-bg:#FDECEC; --bad-ink:#9F1D1D;
+  --dark:#121824; --dark-ink:#F4F5F7; --dark-sub:#B8BFCC; --dark-mute:#8C95A7; --dark-line:#2C3444;
+  --f:"Pretendard Variable","Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{font-family:var(--f);background:var(--white);color:var(--ink);font-size:16px;line-height:1.7;
+  letter-spacing:-0.015em;word-break:keep-all;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:3px}
+h1,h2,h3{text-wrap:balance}
+p,li{text-wrap:pretty}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+
+.w{max-width:1040px;margin:0 auto;padding:0 28px}
+section{padding:112px 0}
+.tint{background:var(--surface)}
+.label{font-size:14px;color:var(--mute);font-weight:600}
+.label+h2{margin-top:12px}
+h2{font-size:42px;line-height:1.22;letter-spacing:-0.04em;font-weight:700}
+.head{display:grid;grid-template-columns:1fr 1.3fr;gap:48px;align-items:end}
+.head p{font-size:17px;color:var(--sub)}
+
+
+.skip{position:absolute;left:-9999px;top:8px;padding:10px 16px;border-radius:6px;background:var(--ink);color:#fff;font-size:14px;z-index:20}
+.skip:focus{left:16px;color:#fff}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;background:var(--accent);color:#fff;
+  border:0;border-radius:6px;padding:13px 24px;font-size:15px;font-weight:600;line-height:1.2;
+  font-family:inherit;cursor:pointer;transition:background .2s ease}
+.btn:hover{background:var(--accent-deep)}
+.btn-2{display:inline-flex;align-items:center;justify-content:center;background:var(--white);color:var(--ink);
+  border:1px solid var(--line);border-radius:6px;padding:12px 22px;font-size:15px;font-weight:500;line-height:1.2;
+  font-family:inherit;cursor:pointer;transition:border-color .2s ease}
+.btn-2:hover{border-color:var(--accent)}
+.btn-s{padding:9px 16px;font-size:14px}
+
+
+.announce{position:relative;background:var(--ink);color:#fff;font-size:13.5px;text-align:center;padding:9px 48px}
+.announce a{color:#fff;text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:3px;margin-left:8px}
+.ax{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:0;color:inherit;
+  font-size:18px;line-height:1;padding:6px 8px;cursor:pointer;opacity:.7;font-family:inherit}
+.ax:hover{opacity:1}
+
+
+nav{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);transition:box-shadow .2s ease}
+nav.scrolled{box-shadow:0 6px 20px rgba(19,27,46,.06)}
+nav .w{display:grid;grid-template-columns:180px minmax(0,1fr) 180px;gap:24px;align-items:center;min-height:88px;max-width:1200px}
+.logo{display:inline-flex;align-items:center;gap:9px;font-size:17px;font-weight:700;letter-spacing:-.01em;text-decoration:none;color:var(--ink)}
+.logo i{width:18px;height:18px;background:url(/img/icon_primary.svg) center/contain no-repeat;display:block}
+nav .m{display:flex;justify-content:flex-end;align-items:center;gap:28px;font-size:17px;font-weight:500;color:var(--mute)}
+nav .m a{display:inline-flex;align-items:center;justify-content:center;min-height:48px;white-space:nowrap}
+nav .nav-right{justify-self:end}
+nav .nav-right .btn-s{min-height:44px;padding:12px 18px;font-size:15px;white-space:nowrap}
+nav .m a:hover{color:var(--ink)}
+.nav-right{display:flex;align-items:stretch;gap:10px;font-size:14.5px}
+.nav-right .ne{margin-left:5px}
+
+
+.hero{padding:104px 0 40px}
+.hero h1{font-size:66px;line-height:1.14;letter-spacing:-0.045em;font-weight:700}
+.hero .lead{font-size:19px;color:var(--sub);margin-top:24px;max-width:600px}
+.hero .cta{display:flex;gap:12px;margin-top:36px;flex-wrap:wrap}
+.hero .free{font-size:14px;color:var(--sub);margin-top:16px}
+
+
+.appfig{margin-top:64px}
+.appfig figcaption{margin-top:10px;text-align:center;font-size:12.5px;color:var(--mute)}
+.app{border:1px solid var(--line);border-radius:14px;background:var(--white);box-shadow:0 20px 50px rgba(19,27,46,.08);overflow:hidden}
+.app .bar{display:flex;gap:6px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--surface)}
+.app .bar i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.app .body{display:grid;grid-template-columns:200px 1fr}
+.app .ic{width:17px;height:17px;flex:none}
+.app .ic.sm{width:15px;height:15px}
+.app .side{display:flex;flex-direction:column;border-right:1px solid var(--line);padding:20px 16px;font-size:13.5px;color:var(--sub)}
+.app .side .brand{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.app .side .brand .mk{width:20px;height:20px;background:url(/img/icon_primary.svg) center/contain no-repeat;flex:none}
+.app .side .brand b{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+.app .side .brand .tg{margin-left:auto;width:16px;height:16px;color:var(--mute)}
+.app .side .org{font-size:12px;color:var(--mute);margin-bottom:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.app .side .org b{font-size:13px;font-weight:600;color:var(--ink)}
+.app .side .cap{font-size:10.5px;font-weight:600;letter-spacing:.1em;color:var(--mute);padding:12px 10px 4px}
+.app .side .org+.cap{padding-top:4px}
+.app .side .it{position:relative;display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:6px;font-weight:500;line-height:1.3}
+.app .side .it.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.app .side .it.mu{color:var(--mute)}
+.app .side .add{position:absolute;right:4px;top:50%;transform:translateY(-50%);display:flex;color:var(--mute)}
+.app .side .bottom{margin-top:auto;padding-top:10px;border-top:1px solid var(--line-soft)}
+.app .main{padding:28px 36px 32px}
+.app .stat{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 6px;font-size:13px;color:var(--sub)}
+.app .stat .dt,.app .stat .sp{color:var(--mute)}
+.app .stat b{color:var(--ink);font-weight:600}
+.app .title{font-size:30px;font-weight:600;text-align:center;margin-top:18px;letter-spacing:-0.02em}
+.app form{max-width:640px;margin:18px auto 0;border:1px solid var(--line);border-radius:12px;padding:16px 16px 12px;background:var(--white)}
+.app form:focus-within{border-color:var(--accent)}
+.app textarea{display:block;width:100%;min-height:48px;border:0;outline:0;resize:none;font-size:15px;line-height:1.6;font-family:inherit;background:transparent;color:var(--ink)}
+.app textarea::placeholder{color:var(--mute)}
+.app .ctl{display:flex;align-items:center;gap:8px;margin-top:12px}
+.app .plus{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--white);color:var(--sub);cursor:pointer}
+.app .plus:hover{background:var(--surface)}
+.app .send{margin-left:auto;background:var(--accent);color:#fff;border:0;border-radius:6px;padding:8px 18px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer}
+.app .send:disabled{opacity:.5;cursor:default}
+.app .chips{max-width:640px;margin:10px auto 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) 32px;gap:8px;align-items:center}
+.app .chips button{min-width:0;border:1px solid var(--line);border-radius:6px;padding:9px 8px;background:var(--white);color:var(--ink);font-size:13px;font-family:inherit;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.app .chips button:hover{background:var(--surface)}
+.app .chips .edit{font-size:13px;color:var(--accent);text-align:right}
+.app .today{max-width:640px;margin:22px auto 0}
+.app .today .th{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+.app .today .h{font-size:14px;font-weight:600}
+.app .today .h span{margin-left:8px;font-size:13px;font-weight:400;color:var(--mute)}
+.app .today .rec{font-size:13px;font-weight:600;color:var(--accent)}
+.app .today ol{list-style:none;margin-top:8px;border:1px solid var(--line);border-radius:10px;background:var(--white)}
+.app .today li{display:flex;align-items:center;gap:12px;padding:11px 14px}
+.app .today li+li{border-top:1px solid var(--line-soft)}
+.app .today li p{flex:1;min-width:0;font-size:13px;line-height:1.5;color:var(--sub)}
+.app .today li b{color:var(--ink);font-weight:600}
+.app .today li .k{color:#334155}
+.app .today .ob{flex:none;display:inline-flex;align-items:center;height:32px;padding:0 12px;border:1.5px solid var(--accent);border-radius:6px;font-size:12.5px;font-weight:600;color:var(--accent);background:var(--white)}
+
+
+.sample{display:inline-block;font-size:12px;color:var(--warn-ink);background:var(--warn-bg);border-radius:999px;padding:2px 10px;margin-left:8px;vertical-align:middle}
+
+
+.show{display:grid;grid-template-columns:360px minmax(0,1fr);gap:28px 40px;align-items:start}
+.product-nav{grid-column:1;grid-row:1}
+#product .head{display:block}
+#product .flow-note{font-size:15px;color:var(--sub);margin-top:16px}
+#product .tabs{margin-top:28px}
+.tabs button{position:relative;display:block;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);
+  padding:20px 0;font-family:inherit;cursor:pointer;color:var(--mute)}
+.tabs button:last-child{border-bottom:1px solid var(--line)}
+.tabs button b{display:block;font-size:22px;color:var(--mute);letter-spacing:-0.03em}
+.tabs button span{display:none;font-size:15px;color:var(--sub);margin-top:8px}
+.tabs button.on b{color:var(--ink)}
+.tabs button.on span{display:block}
+.tabs button:focus:not(:focus-visible){outline:none}
+.tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+.tabs button:focus-visible b{text-decoration:underline;text-underline-offset:6px}
+.tabs .bar{position:absolute;left:0;top:-1px;height:2px;width:0;background:var(--accent)}
+.tabs button.on .bar{animation:fill 6s linear forwards}
+.tabs.paused button.on .bar{animation-play-state:paused}
+.tabs.stopped button.on .bar{width:100%;animation:none}
+@keyframes fill{to{width:100%}}
+.screen{display:grid;grid-column:2;grid-row:1;min-width:0;border:1px solid var(--line);border-radius:14px;background:var(--white);box-shadow:0 12px 32px rgba(19,27,46,.06);padding:28px}
+.pane{grid-area:1/1;min-width:0;visibility:hidden;pointer-events:none}
+.pane.on{visibility:visible;pointer-events:auto;animation:fadein .45s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.pane .t{font-size:13px;color:var(--mute)}
+.pane .big{font-size:22px;font-weight:700;margin-top:4px;letter-spacing:-0.02em}
+.bubble{border-radius:12px;padding:12px 14px;font-size:14px;margin-top:12px;max-width:80%}
+.bubble.me{margin-left:auto;background:var(--accent-soft)}
+.bubble.ai{border:1px solid var(--line)}
+.bubble .pills{margin-top:10px;display:flex;gap:6px;flex-wrap:wrap}
+.tbl{width:100%;border-collapse:collapse;margin-top:14px;font-size:13.5px}
+.tbl th{text-align:left;font-weight:600;color:var(--mute);font-size:12.5px;padding:8px 6px;border-bottom:1px solid var(--line)}
+.tbl td{padding:10px 6px;border-bottom:1px solid var(--line)}
+.pill{display:inline-block;font-size:12px;border-radius:999px;padding:2px 9px;background:var(--accent-soft)}
+.pill.warn{background:var(--warn-bg);color:var(--warn-ink)}
+.pill.bad{background:var(--bad-bg);color:var(--bad-ink)}
+.pill.off{background:var(--surface);color:var(--mute);box-shadow:inset 0 0 0 1px var(--line)}
+
+.cmp{margin-top:14px;border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.cmp p{font-size:13px;color:var(--mute)}
+.cmp div{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.cmp i{display:grid;place-items:center;width:28px;height:28px;border:1px solid var(--line);border-radius:50%;font-style:normal;font-size:15px;color:var(--sub)}
+.cmp span{font-size:12.5px;font-weight:600;color:var(--white);background:var(--accent);opacity:.45;border-radius:8px;padding:6px 12px}
+.qk{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.qk span{border:1px solid var(--line);border-radius:10px;padding:9px 8px;font-size:13px;text-align:center;background:var(--white)}
+.qk .on{background:var(--accent);border-color:var(--accent);color:var(--white);font-weight:600}
+.qk svg{width:14px;height:14px;vertical-align:-2px;margin-right:5px}
+
+.pane .lede{font-size:14px;color:var(--sub);margin-top:6px}
+.tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:16px}
+.tools div{border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.tools b{display:block;font-size:14.5px}
+.tools .pill{margin-top:8px}
+.doc{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:14px}
+.doc div{border:1px solid var(--line);border-radius:10px;padding:14px;font-size:13px}
+.doc div b{display:block;font-size:15px;margin-bottom:6px}
+.preview{margin-top:20px;padding:16px;border:1px solid var(--line);border-radius:10px;background:var(--surface);font-size:14px}
+.preview b{display:block;font-size:15px}
+.preview p{margin-top:6px;color:var(--sub)}
+.preview .btn{margin-top:12px;cursor:default}
+.src{font-size:12.5px;color:var(--mute);margin-top:16px;border-top:1px dashed var(--line);padding-top:10px}
+
+
+.svc{background:var(--dark);color:var(--dark-ink)}
+.svc .label{color:#A9B1C2}
+.svc h2{color:var(--dark-ink)}
+.tl{display:grid;grid-template-columns:repeat(4,1fr);margin-top:64px;position:relative}
+.tl::before{content:"";position:absolute;left:7px;right:calc(25% - 7px);top:7px;height:1px;background:var(--dark-line)}
+.tl::after{content:"";position:absolute;z-index:1;left:0;top:0;width:15px;height:15px;border-radius:50%;background:var(--accent);opacity:0;pointer-events:none}
+.tl.in::after{animation:timeline-run 8s linear infinite}
+@keyframes timeline-run{0%,7%{left:0;opacity:1}19%,26%{left:25%;opacity:1}38%,45%{left:50%;opacity:1}57%,64%{left:75%;opacity:1}66%,97%{left:75%;opacity:0}100%{left:0;opacity:0}}
+.st{padding-right:24px;position:relative}
+.st .dot{width:15px;height:15px;border-radius:50%;background:var(--dark);border:2px solid var(--dark-mute);position:relative}
+.st .dot.on{background:var(--accent);border-color:var(--accent)}
+.st span{display:block;font-size:13px;color:var(--dark-mute);font-weight:600;margin-top:22px}
+.st b{display:block;font-size:22px;margin-top:6px;letter-spacing:-0.03em}
+.st em{display:block;font-style:normal;font-size:15px;color:var(--dark-sub);margin-top:10px;line-height:1.7}
+.opt{display:flex;justify-content:space-between;align-items:center;gap:32px;margin-top:64px;border:1px solid #3A4355;border-radius:14px;padding:30px 32px}
+.opt .ot{font-size:20px;font-weight:700}
+.opt p{font-size:15.5px;color:var(--dark-sub);margin-top:8px;max-width:620px}
+.opt .om{font-size:13px;color:var(--dark-mute);margin-top:12px}
+.opt .btn{white-space:nowrap}
+.svn{font-size:13.5px;color:var(--dark-mute);margin-top:22px}
+
+
+.qc{display:grid;grid-template-columns:1fr 1.15fr;gap:56px;align-items:center}
+.qt p{font-size:17px;color:var(--sub);margin-top:20px}
+.qb{display:flex;align-items:center;gap:14px;margin-top:28px;flex-wrap:wrap}
+.qb span{font-size:14px;color:var(--mute)}
+.qr{border:1px solid var(--line);border-radius:14px;background:var(--white);padding:26px 28px;box-shadow:0 14px 36px rgba(19,27,46,.07)}
+.qh{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--line);padding-bottom:14px}
+.qh span{font-size:13.5px;color:var(--mute);font-weight:600}
+.qh b{font-size:44px;letter-spacing:-0.04em}
+.qh small{font-size:15px;color:var(--mute);font-weight:500;margin-left:2px}
+.qrow{display:grid;grid-template-columns:110px 1fr 52px;column-gap:14px;row-gap:4px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.qn{font-size:14.5px;font-weight:600}
+.qn em{display:block;font-style:normal;font-size:12px;color:var(--mute);font-weight:400}
+.qbar{height:6px;border-radius:3px;background:var(--line-soft);overflow:hidden}
+.qbar i{display:block;height:100%;background:#8E97A8;border-radius:3px;transform-origin:left}
+.qbar i.ok{background:var(--ink)}
+.qbar i.bad{background:#C0392B}
+.qs{font-size:13.5px;font-weight:700;text-align:right}
+.qw{grid-column:2/4;font-size:13px;color:var(--sub)}
+.qf{font-size:12.5px;color:var(--mute);margin-top:12px}
+
+
+.calc{display:grid;grid-template-columns:1.2fr 1fr;gap:24px;margin-top:48px}
+.ci{border:1px solid var(--line);border-radius:14px;padding:28px;background:var(--white)}
+.ci label{display:block;font-size:15px;font-weight:600;margin-top:22px}
+.ci label:first-child{margin-top:0}
+.ci output{float:right;font-weight:700}
+.ci input[type=range]{width:100%;margin-top:10px;accent-color:var(--accent)}
+.co{border-radius:14px;padding:32px;background:var(--white);border:1px solid var(--line);display:flex;flex-direction:column}
+.co .k{font-size:14px;color:var(--sub)}
+.co .k+.k,.co .v+.k{margin-top:22px}
+.co .v{font-size:18px;margin-top:4px}
+.co .v b{font-size:56px;letter-spacing:-0.04em;margin-right:6px}
+.co .yr{margin-top:18px;font-size:15px;color:var(--sub);border-top:1px solid var(--line);padding-top:16px}
+.co .btn{align-self:flex-start;margin-top:24px}
+.cn{font-size:12.5px;color:var(--mute);margin-top:14px}
+
+
+.sec{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:56px}
+.sec div{border:1px solid var(--line);border-radius:14px;padding:26px;background:var(--white);transition:transform .2s ease,box-shadow .2s ease}
+.sec div:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(19,27,46,.07)}
+.sec b{display:block;font-size:17px}
+.sec span{display:block;font-size:14.5px;color:var(--sub);margin-top:8px}
+.sec b .soon{display:inline-block;font-size:12px;font-weight:500;color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:1px 8px;margin:0 0 0 6px;vertical-align:2px}
+
+
+.jwrap{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:56px;align-items:start}
+.jintro{position:sticky;top:96px}
+.jintro .lead{font-size:17px;color:var(--sub);margin-top:20px}
+.jintro .fit{margin-top:28px}
+.jintro .fit div{font-size:15px;padding:10px 0;border-top:1px solid var(--line)}
+.jintro .fit .x{color:var(--mute)}
+.jtail{margin-top:32px}
+.jtail .pre{font-size:15px}
+.jtail .pre a{font-weight:600;border-bottom:1px solid var(--ink)}
+.maker2{display:flex;gap:14px;align-items:center;margin-top:28px;border-top:1px solid var(--line);padding-top:22px}
+.maker2 .pf{width:44px;height:44px;border-radius:50%;background:var(--white) url(/img/icon_primary.svg) center/22px no-repeat;border:1px solid var(--line);flex:none}
+.maker2 b{display:block;font-size:15.5px}
+.maker2 a{display:inline-block;font-size:14px;color:var(--sub);margin-top:2px}
+.maker2 a:hover{color:var(--ink)}
+form.f{border:1px solid var(--line);border-radius:14px;padding:30px;background:var(--white)}
+.f label{display:block;font-size:14px;font-weight:600;margin-top:16px}
+.f .fld:first-of-type label{margin-top:0}
+.f .two .fld label{margin-top:16px}
+.f input,.f select{width:100%;margin-top:7px;padding:12px 13px;border:1px solid var(--line);border-radius:8px;font-size:15px;font-family:inherit;background:var(--white);color:var(--ink)}
+.f input:focus,.f select:focus{outline:2px solid var(--accent);outline-offset:1px}
+.f .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+.f .two:has(> [hidden]){grid-template-columns:1fr}
+.fs{border:0;margin:0;padding:0;min-width:0}
+.fs:disabled input,.fs:disabled select{background:var(--surface);color:var(--mute);cursor:not-allowed}
+.f .hint{font-size:12.5px;color:var(--mute);margin-top:5px}
+.f .cons details{margin-top:20px;font-size:13px;color:var(--sub)}
+.f .cons summary{cursor:pointer}
+.f .cons summary:hover{color:var(--ink)}
+.f .cons dl{margin-top:8px;display:grid;grid-template-columns:64px 1fr;gap:4px 10px;font-size:12.5px;line-height:1.6;color:var(--sub)}
+.f .cons dt{font-weight:600;color:var(--ink)}
+.f .cons.bad .agree{color:var(--danger)}
+.f .cons .agree{margin-top:12px}
+.f .agree a{text-decoration:underline;text-underline-offset:2px}
+.ferr{margin-top:16px;font-size:14px;color:var(--danger);background:var(--bad-bg);border-radius:8px;padding:10px 12px}
+.f .agree{display:flex;gap:8px;font-weight:400;font-size:13.5px;color:var(--sub);margin-top:20px}
+.f .agree input{width:auto;margin-top:4px;flex:none}
+.f .btn{width:100%;margin-top:22px;padding:14px}
+.f .after{font-size:13px;color:var(--mute);text-align:center;margin-top:12px}
+.star{color:var(--danger);margin-left:2px}
+.err{display:none;font-size:13px;color:var(--danger);margin-top:5px}
+.bad .err{display:block}
+.bad input,.bad select{border-color:var(--danger)}
+.req{margin-bottom:16px;font-size:14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.req span{display:block;color:var(--sub)}
+
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.note{margin-top:14px;font-size:14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--sub)}
+.note a{color:var(--ink);font-weight:600}
+.done{border:1px solid var(--line);border-radius:14px;padding:30px;background:var(--white)}
+.done h3{font-size:22px;margin-top:6px}
+.done p{font-size:15px;color:var(--sub);margin-top:16px}
+
+.jprog{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+.jprog-bar{flex:1;height:4px;border-radius:999px;background:var(--line);overflow:hidden}
+.jprog-bar i{display:block;height:100%;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .35s ease}
+.jprog-n{font-size:12.5px;color:var(--mute);white-space:nowrap}
+.jprog-n b{color:var(--ink);font-weight:600}
+.jprog.full .jprog-n,.jprog.full .jprog-n b{color:var(--accent)}
+.done .ok{display:block;width:52px;height:52px;margin-bottom:14px;fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.done .ok circle{stroke-dasharray:151;stroke-dashoffset:0}
+.done .ok path{stroke-dasharray:32;stroke-dashoffset:0}
+.js .done .ok circle{animation:draw-ring .6s ease both}
+.js .done .ok path{animation:draw-check .35s ease .5s both}
+@keyframes draw-ring{from{stroke-dashoffset:151}to{stroke-dashoffset:0}}
+@keyframes draw-check{from{stroke-dashoffset:32}to{stroke-dashoffset:0}}
+
+.jcard{border:1px solid var(--line);border-radius:14px;padding:28px;background:var(--white)}
+
+.jcard form.f,.jcard .done{border:0;border-radius:0;padding:0;background:none}
+.jcard h3{font-size:20px}
+.jcard .jl{font-size:15px;color:var(--sub);margin:8px 0 18px}
+
+.f .opt{display:block;border:0;padding:0;margin-top:18px}
+.f .opt legend{font-size:13.5px;font-weight:600}
+.f .opt .agree{margin-top:8px}
+.f .addrrow{display:flex;gap:8px;align-items:center}
+.f .addrrow input{flex:1}
+.f .addrrow .btn-s{margin-top:7px;flex:none}
+.f .addr input[name="address_detail"]{margin-top:8px}
+.f .cdp{margin-top:8px;font-size:12.5px;line-height:1.6;color:var(--sub)}
+
+
+.res{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px}
+.res a{border:1px solid var(--line);border-radius:14px;padding:24px;background:var(--white);display:block;transition:transform .2s ease,box-shadow .2s ease}
+.res a:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(19,27,46,.07)}
+.res span{font-size:12.5px;color:var(--mute);font-weight:600}
+.res b{display:block;font-size:19px;margin-top:6px;letter-spacing:-0.02em}
+.res em{display:block;font-style:normal;font-size:14.5px;color:var(--sub);margin-top:6px}
+
+
+.faq-h{font-size:38px}
+.faq{max-width:820px;margin-top:40px}
+.faq .fg{font-size:13.5px;font-weight:700;color:var(--mute);margin-top:34px;padding-bottom:6px;border-bottom:1px solid var(--ink)}
+.faq .fg:first-child{margin-top:0}
+.faq details{border-bottom:1px solid var(--line);padding:22px 0}
+.faq summary{font-size:17px;font-weight:600;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:16px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--mute)}
+.faq details[open] summary::after{content:"−"}
+.faq .a p{font-size:15.5px;color:var(--sub);margin-top:12px}
+
+
+.final{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:72px 56px;text-align:center}
+.final .tag-en{font-size:15px;font-weight:600;letter-spacing:.01em;color:var(--mute);margin-bottom:14px}
+.final .btn{margin-top:30px}
+
+
+footer{border-top:1px solid var(--line);padding:56px 0 72px;font-size:14px;color:var(--sub)}
+footer .cols{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:32px}
+footer .logo{margin-bottom:14px}
+footer b{display:block;color:var(--ink);font-weight:600;margin-bottom:10px}
+footer ul{list-style:none}
+footer li{padding:3px 0}
+footer a:hover{color:var(--ink)}
+footer .nd{font-size:13.5px;line-height:1.75}
+footer .nd b{font-size:13.5px}
+footer .legal{margin-top:40px;font-size:12.5px;color:var(--mute);line-height:1.9}
+footer .fl{display:flex;gap:16px;flex-wrap:wrap}
+
+
+.js .rv{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+.js .rv.in{opacity:1;transform:none}
+.js .tl::before{transform:scaleX(0);transform-origin:left;transition:transform 1.2s ease .2s}
+.js .tl.in::before{transform:scaleX(1)}
+.js .tl .st{opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease}
+.js .tl.in .st{opacity:1;transform:none}
+.js .tl.in .st:nth-child(2){transition-delay:.25s}
+.js .tl.in .st:nth-child(3){transition-delay:.5s}
+.js .tl.in .st:nth-child(4){transition-delay:.75s}
+.js .qbar i{transform:scaleX(0);transition:transform .9s ease}
+.js .qr.in .qbar i{transform:scaleX(1)}
+.js .app .today li{opacity:0;transform:translateY(6px);transition:opacity .4s ease,transform .4s ease}
+.js .app.in .today li{opacity:1;transform:none}
+.js .app.in .today li:nth-child(2){transition-delay:.35s}
+
+.bubble.ai{position:relative}
+.bubble .dots{position:absolute;left:14px;top:16px;display:flex;gap:4px;opacity:0;pointer-events:none}
+.bubble .dots i{width:6px;height:6px;border-radius:50%;background:var(--mute)}
+.js .show.in .pane.on .bubble.me{animation:rise .35s ease .1s both}
+.js .show.in .pane.on .bubble.ai{animation:rise .35s ease .45s both}
+.js .show.in .pane.on .bubble.ai .dots{animation:dots-on 1.05s steps(1,end) .45s both}
+.js .show.in .pane.on .bubble.ai .dots i{animation:blink .7s ease-in-out .45s 2 both}
+.js .show.in .pane.on .bubble.ai .dots i:nth-child(2){animation-delay:.6s}
+.js .show.in .pane.on .bubble.ai .dots i:nth-child(3){animation-delay:.75s}
+.js .show.in .pane.on .bubble.ai .say,.js .show.in .pane.on .bubble.ai .pills{animation:show .3s ease 1.5s both}
+.js .show.in .pane.on .qk .on{animation:ping 1.2s ease 1.9s 1}
+.js .show.in .pane.on .tbl tr:nth-child(n+2){animation:show .35s ease .15s both}
+.js .show.in .pane.on .tbl tr:nth-child(3){animation-delay:.3s}
+.js .show.in .pane.on .tbl tr:nth-child(4){animation-delay:.45s}
+.js .show.in .pane.on .preview{animation:rise .35s ease .6s both}
+.js .show.in .pane.on .pill.bad{animation:ping-bad 1.2s ease 1s 1}
+.js .show.in .pane.on .tools div{animation:rise .35s ease .1s both}
+.js .show.in .pane.on .tools div:nth-child(2){animation-delay:.18s}
+.js .show.in .pane.on .tools div:nth-child(3){animation-delay:.26s}
+.js .show.in .pane.on .tools div:nth-child(4){animation-delay:.34s}
+.js .show.in .pane.on .tools div:nth-child(5){animation-delay:.42s}
+.js .show.in .pane.on .tools div:nth-child(6){animation-delay:.5s}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes show{from{opacity:0}to{opacity:1}}
+@keyframes dots-on{from{opacity:1}to{opacity:0}}
+@keyframes blink{0%,100%{opacity:.3}50%{opacity:1}}
+@keyframes ping{from{box-shadow:0 0 0 0 rgba(29,78,216,.45)}to{box-shadow:0 0 0 12px rgba(29,78,216,0)}}
+@keyframes ping-bad{from{box-shadow:0 0 0 0 rgba(159,29,29,.35)}to{box-shadow:0 0 0 8px rgba(159,29,29,0)}}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .js .rv,.js .tl .st,.js .app .today li{opacity:1!important;transform:none!important}
+  .js .tl::before,.js .qbar i{transform:none!important}
+}
+
+
+@media(max-width:860px){
+  .w{padding:0 20px}
+  section{padding:72px 0}
+  h2,.faq-h{font-size:30px}
+  .hero{padding:64px 0 24px}
+  .hero h1{font-size:40px}
+  .hero .lead{font-size:16.5px}
+  .app .body{grid-template-columns:1fr}
+  .app .side{display:none}
+  .app .main{padding:22px 16px}
+  .app .title{font-size:22px}
+  .appfig{margin-top:40px}
+  .app .chips{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .app .chips .gap{display:none}
+  .app .chips .edit{grid-column:1/-1}
+  .app .today li{align-items:flex-start}
+  .head,.show,.qc,.calc,.f .two{grid-template-columns:1fr;gap:20px}
+  .jwrap{display:flex;flex-direction:column;gap:0}
+  .jintro{display:contents}
+  .jmain{order:2;margin-top:28px}
+  .jtail{order:3}
+  .product-nav,.screen{grid-column:1;grid-row:auto}
+  .qk,.tools{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .screen{padding:20px}
+  .bubble{max-width:94%}
+  #product .tbl{font-size:12px;overflow-wrap:anywhere;word-break:normal}
+  #product .tbl th,#product .tbl td{padding:10px 4px}
+  #product .tbl .pill{white-space:nowrap}
+  .qc{gap:28px}
+  .sec{grid-template-columns:1fr 1fr}
+  .doc{grid-template-columns:1fr}
+  .tl{grid-template-columns:1fr;gap:28px}
+  .tl::before,.tl::after{display:none}
+  .opt{flex-direction:column;align-items:flex-start}
+  .qrow{grid-template-columns:90px 1fr 46px}
+  .res{grid-template-columns:1fr}
+  footer .cols{grid-template-columns:1fr 1fr}
+  .final{padding:48px 22px}
+}
+@media(max-width:640px){
+  .an2{display:none}
+  .nav-right{gap:8px}
+  .nav-right .btn-s{padding:8px 12px;font-size:13.5px}
+  .nav-right .ne{display:none}
+  .sec{grid-template-columns:1fr}
+}
+</style>
+
+<script type="application/ld+json">{
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "Organization",
       "@id": "https://trops.kr/#org",
       "name": "{{biz.companyName}}",
-      "alternateName": "TROPS",
       "url": "https://trops.kr/",
-      "email": "contact@theo-ne.com",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "B269-11, 524 Bongeunsa-ro",
-        "addressLocality": "Gangnam-gu",
-        "addressRegion": "Seoul",
-        "addressCountry": "KR"
-      }
+      "email": "contact@theo-ne.com"
     },
     {
       "@type": "WebSite",
-      "@id": "https://trops.kr/en#site",
-      "url": "https://trops.kr/en",
+      "@id": "https://trops.kr/#site",
       "name": "TROPS",
+      "url": "https://trops.kr/",
       "inLanguage": "en",
       "publisher": {
         "@id": "https://trops.kr/#org"
       }
     },
     {
-      "@type": "Service",
-      "name": "Trade Insurance Prep Package",
-      "serviceType": "Trade insurance paperwork preparation",
-      "provider": {
+      "@type": "SoftwareApplication",
+      "name": "TROPS",
+      "url": "https://app.trops.kr/",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "description": "TROPS helps small and midsize businesses prepare export document drafts, manage deal deadlines and payments, and find relevant support programs. Start in the app.",
+      "publisher": {
         "@id": "https://trops.kr/#org"
-      },
-      "areaServed": {
-        "@type": "Country",
-        "name": "South Korea"
-      },
-      "audience": {
-        "@type": "BusinessAudience",
-        "name": "Small and midsize exporters"
-      },
-      "description": "A per-deal service that gets the documents needed to apply for trade insurance, such as Short-term Export Insurance, and to file a claim in place before shipment. It covers choosing the right coverage, checking the destination country's underwriting policy and buyer rating requirements, matching documents at the application, shipment and claim stages, and export notice and loss notice deadline preparation.",
-      "offers": {
-        "@type": "Offer",
-        "priceCurrency": "KRW",
-        "availability": "https://schema.org/InStock"
       }
-    },
-    {
-      "@type": "Service",
-      "name": "1-Minute Export Readiness Check",
-      "serviceType": "Export deal diagnostic",
-      "provider": {
-        "@id": "https://trops.kr/#org"
-      },
-      "url": "https://app.trops.kr/quick-check",
-      "areaServed": {
-        "@type": "Country",
-        "name": "South Korea"
-      },
-      "description": "Scores the risk of not getting paid on an export deal out of 100, across five factors: payment method, payment terms, destination, buyer history and trade insurance. Free, with no sign-up required.",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "KRW"
-      }
-    },
-    {
-      "@type": "Service",
-      "name": "Export Receivables Management",
-      "serviceType": "Export receivables and trade insurance policy schedule management",
-      "provider": {
-        "@id": "https://trops.kr/#org"
-      },
-      "areaServed": {
-        "@type": "Country",
-        "name": "South Korea"
-      },
-      "description": "Tracks payment due dates, outstanding receivables, trade insurance loss-notice deadlines and policy expirations deal by deal. In pilot for invited companies."
     },
     {
       "@type": "FAQPage",
+      "@id": "https://trops.kr/en#faq",
       "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "What is trade insurance?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Trade insurance protects exporters against risks such as not getting paid on an overseas sale. Short-term Export Insurance (post-shipment) from the Korea Trade Insurance Corporation (K-SURE) covers the loss when, after goods ship under an export contract with payment terms of two years or less, the exporter can’t collect payment from the buyer, or from the issuing bank in a letter of credit (L/C) transaction. It covers commercial risks, such as a buyer’s insolvency or payment default, and political risks that can arise in cross-border trade, such as war or restrictions on remittances."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What percentage of a loss does trade insurance cover?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Under K-SURE Short-term Export Insurance (post-shipment), the coverage ratio for standard exports and consignment processing trade is 100% for small and midsize companies, 97.5% for mid-market companies, and 95% for large companies. The ratio that actually applies can vary with K-SURE’s country underwriting policy and the terms set out in your policy. And a 100% coverage ratio doesn’t mean every unpaid amount is always paid in full. The actual claim payment reflects the amount of the loss, any excluded losses, and amounts received under other insurance or financing arrangements. To know what’s actually covered on a given deal, check your policy and its terms and conditions."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What documents do I need to file a trade insurance claim?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Short-term Export Insurance calls for different documents and procedures at each stage, from taking out a policy to filing a claim. When you apply, you go through a credit investigation of the buyer, a request for a coverage limit, and issuance of the policy. After shipment, you have to file an export notice within the required deadline. If the buyer doesn’t pay, you file a notice of loss and then submit your claim along with the supporting documents K-SURE requires. The exact documents can vary by type of coverage, deal structure and the nature of the loss, so check your policy terms and K-SURE’s guidance on loss notices and claims. The TROPS Trade Insurance Prep Package organizes the steps and documents you need to apply for trade insurance, deal by deal."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "When is the deadline to file a notice of loss under Short-term Export Insurance?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Under K-SURE Short-term Export Insurance (post-shipment), if payment isn’t received, you generally have to notify K-SURE of the loss in writing within one month of the payment due date. If you learn before the due date that something has happened that could lead to a loss, you also need to give notice within the required period. The export notice deadline after shipment matters too. Under an individual policy, you have to file the export notice within 10 business days of the export date; blanket policies use a different notice method and deadline. If you miss the deadline, as a rule that shipment isn’t covered, unless there is good cause for the delay. Procedures can vary by product and contract terms, so on an actual deal, check your policy terms and K-SURE’s guidance."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Where can I find export insurance premium subsidy programs?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "K-SURE publishes information on trade insurance and guarantee fee subsidy programs run with local governments, related agencies and banks. Some are group policies in which the local government is the policyholder; in others, a company takes out an individual policy and receives a premium subsidy. Eligible regions, eligible companies, covered insurance types and subsidy amounts vary by program, and a program may close once its budget runs out. It’s best to check K-SURE’s premium subsidy page for programs currently open and their terms. TROPS also points you to the subsidy announcements and application channels for where your company is based."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Is the TROPS 1-minute export readiness check free?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes. With no sign-up and just a few quick selections, you can see what to check first on this export. Based on what you enter, we show your results along with the basis for each item. If you’re preparing to apply for trade insurance, the separate Trade Insurance Prep Package is available. It works on a per-deal basis."
-          }
-        },
         {
           "@type": "Question",
           "name": "What is TROPS?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "{{publicCopy.definition}}. {{publicCopy.audience}} {{publicCopy.detail}} {{publicCopy.coreSummary}} {{publicCopy.integrationSummary}} TROPS Web and familiar work tools aim to reduce learning and repeated data entry."
+            "text": "TROPS is export operations software for small and midsize businesses. Prepare export document drafts, manage deal deadlines and next steps, and find relevant support programs."
           }
         },
         {
           "@type": "Question",
-          "name": "Does TROPS apply for trade insurance on my behalf?",
+          "name": "How do I start using TROPS?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. TROPS doesn’t underwrite insurance, review claims or apply for coverage on your behalf, and it doesn’t recommend specific products. Eligibility and terms are decided by the relevant institution, such as K-SURE, under its policy terms and review criteria. What TROPS does is get you ready to apply. For each deal, we check the eligibility requirements and prepare your deal information in application-ready form, a list of the documents a claim requires, and materials for internal approval. We also don’t provide legal advice or legal review of contracts, and we don’t guarantee that receivables will be collected."
+            "text": "Sign up at app.trops.kr, create your company and choose a task. You can start with documents or support programs before you have a signed contract. The app interface is currently in Korean. Open the app →"
           }
         },
         {
           "@type": "Question",
-          "name": "How much does the Trade Insurance Prep Package cost?",
+          "name": "Which export documents can I prepare?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Pricing depends on how many documents we prepare, so there’s no fixed price up front. It’s priced per deal. Send us an inquiry; scope, cost and timing are confirmed after reviewing your materials. The 1-minute export readiness check is free either way."
+            "text": "Prepare drafts such as proforma invoices (PI), commercial invoices (CI) and packing lists (PL). Review the company and deal information before issuing or downloading a document. Check the recipient’s requirements before submitting it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How can I track export deadlines and next steps?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "View documents, progress and deadlines together for each deal. Your team confirms and records events that happen outside TROPS, such as shipment or payment."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does TROPS AI find export support programs?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It suggests relevant notices using company information such as region and industry, with supporting reasons. Confirmed conditions and points to verify are shown separately. The issuing organization determines eligibility and selection."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I get help with support program applications?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "After reviewing the original notice, you can inquire about help preparing application documents. TROPS does not automatically write or submit applications for every program."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Where can I check pricing and free access terms?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Current pricing, free access periods and paid access terms are available in the app. Open the app →"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How are company information and export data processed?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "See the app’s official privacy notice for personal data collection and use, external AI processing, retention and deletion. Privacy Notice →"
           }
         }
       ]
     }
   ]
-}
-</script>
-<style>
-/* 라이브 trops.kr 디자인 시스템 토큰 — index.html 과 같은 값입니다. 한쪽만 고치지 마십시오. */
-:root{
-  --accent:#1D4ED8; --accent-deep:#1739A8; --accent-soft:#EFF4FE;
-  --ink:#0F172A; --ink-2:#475569; --ink-3:#94A3B8;
-  --line:#E2E8F0; --line-soft:#F1F5F9;
-  --surface:#F8FAFC; --white:#FFFFFF;
-  --danger:#DC2626;
-  --r-card:12px; --r-control:6px;
-  --f:"Pretendard Variable","Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-body{font-family:var(--f);background:var(--white);color:var(--ink);
-  font-size:16.5px;line-height:1.76;word-break:keep-all;
-  -webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
-a{color:inherit}:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:3px}
-.w{max-width:1040px;margin:0 auto;padding:0 28px}
-section{padding:96px 0}
-.band{background:var(--surface);border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft)}
-.center{text-align:center}
-/* 한국어 줄바꿈. 제목은 줄 길이를 고르게, 본문은 마지막 줄 한 단어 방지 */
-h1,h2,h3,.claim,.nm .t,.dcard .gn,.demolabel,.who-badge{text-wrap:balance}
-p,li,.sp .p,.nm .desc,.faq .a,.dr .rs,.dcard .gd,.demofoot p,.sec-sub,.lead{text-wrap:pretty}
-
-nav{border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);z-index:10}
-nav .w{display:flex;justify-content:space-between;align-items:center;height:64px}
-.nav-right{display:flex;align-items:center;gap:10px}
-.nav-right .ne{margin-left:5px}
-/* 좁은 화면에서는 진단 버튼 글자가 길어 줄이 접힙니다 — 앱 입구를 글자 링크로 되돌려 폭을 더 쓰지 않습니다. */
-@media(max-width:640px){
-  .nav-right{gap:12px}
-  .nav-right .nav-app{min-height:0;padding:0;border:0;background:none;font-weight:600;color:var(--ink-2)}
-  .nav-right .nav-app:hover{background:none;color:var(--ink)}
-  .nav-right .ne{display:none}
-}
-/* 🔴 **skip 링크** 〔2026-09-01 복원 · 대표 지시〕. 구판 index.html·en.html 과 **같은 값**입니다
-   (`.skip` 두 줄 · 문구 「본문으로 건너뛰기」). v11 원본에 이 요소가 없어 접근성 요소가
-   조용히 빠져 있었습니다 — 새로 지은 문구가 아니라 라이브에 있던 것을 되돌린 것입니다.
-   ⚠️ **`z-index` 만 구판(10)에서 20 으로 올렸습니다.** v11 의 `nav` 는 `position:sticky`
-      에 `z-index:10` 이라, 같은 10 이면 포커스된 skip 이 **나중에 그려지는 nav 뒤로
-      숨습니다**(구판 nav 에는 z-index 가 없어 문제가 없었습니다).
-      ⛔ 10 으로 되돌리지 마십시오 — 눌러도 보이지 않는 링크가 됩니다. */
-.skip{position:absolute;left:-9999px;top:8px;padding:10px 16px;border-radius:6px;background:var(--ink);color:#fff;font-size:14px;z-index:20}
-.skip:focus{left:16px;color:#fff}
-.logo{display:inline-flex;align-items:center;gap:9px;font-size:17px;font-weight:700;letter-spacing:-.01em;text-decoration:none;color:var(--ink)}
-.logo i{width:18px;height:18px;background:url(/img/icon_primary.svg) center/contain no-repeat;display:block}
-
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;
-  background:var(--accent);color:#fff;text-decoration:none;border:0;cursor:pointer;
-  font-family:inherit;font-size:15.5px;font-weight:700;letter-spacing:-.01em;
-  padding:0 24px;border-radius:var(--r-control);transition:all .2s ease}
-.btn:hover{background:var(--accent-deep);transform:translateY(-1px);box-shadow:0 6px 16px rgba(29,78,216,.2)}
-.btn-2{display:inline-flex;align-items:center;justify-content:center;min-height:44px;
-  background:var(--white);color:var(--accent);text-decoration:none;cursor:pointer;
-  font-family:inherit;font-size:15.5px;font-weight:700;padding:0 22px;
-  border:1px solid var(--line);border-radius:var(--r-control);transition:all .2s ease}
-.btn-2:hover{border-color:var(--accent);background:var(--accent-soft)}
-.btn-s{min-height:38px;font-size:14px;padding:0 16px}
-@media(prefers-reduced-motion:reduce){.btn,.btn-2{transition:background .15s}.btn:hover{transform:none;box-shadow:none}}
-
-h1{font-size:clamp(32px,4.5vw,52px);font-weight:700;letter-spacing:-.035em;line-height:1.32}
-h2.sec{font-size:clamp(24px,3vw,32px);font-weight:700;letter-spacing:-.03em;line-height:1.35;margin-bottom:12px}
-.sec-sub{font-size:16.5px;color:var(--ink-2);line-height:1.65;margin-bottom:44px}
-/* 🔴 섹션 아래 여백은 위 `.sec-sub` 에 붙어 있습니다 — 부제를 걷은 섹션은 그 44px 을
-   함께 잃습니다(3단계 섹션에서 12px 로 주저앉았습니다). 부제가 없는 제목이 그 몫을
-   스스로 집니다 — 부제를 다시 넣으면 이 규칙은 저절로 빠집니다.
-   ⛔ 이 여백을 영역 이름(추적용 속성) 선택자로 걸지 마십시오 — test/track-section.test.js 가
-      원문을 훑어 그 속성을 세기 때문에 「이름이 두 번 붙었다」로 읽힙니다. 주석에 그 속성을
-      리터럴로 적어도 같은 검사에 걸립니다 — 2026-09-05 에 둘 다 실제로 걸렸습니다. */
-.center h2.sec:last-child{margin-bottom:56px}
-
-/* 히어로 */
-.hero{padding:96px 0 88px;text-align:center;border-bottom:1px solid var(--line)}
-.eyebrow{display:table;margin:0 auto 20px;font-size:14px;font-weight:700;color:var(--accent);
-  background:var(--accent-soft);padding:7px 14px;border-radius:var(--r-control)}
-.hero h1{max-width:22ch;margin:0 auto}
-.hero .lead{max-width:42ch;margin:22px auto 0;font-size:18px;color:var(--ink-2);line-height:1.72}
-.hero .act{margin-top:36px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.hero .badge{margin-top:16px;font-size:14px;color:var(--ink-3)}
-
-/* 문제 */
-.problem-head{text-align:center;max-width:72ch;margin:0 auto 44px}
-.claim{font-size:clamp(22px,2.8vw,30px);font-weight:700;letter-spacing:-.03em;line-height:1.48}
-.claim em{font-style:normal;color:var(--accent)}
-.qb-stat{display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;padding-bottom:26px;border-bottom:1px solid var(--line)}
-.qb-stat .n{font-size:clamp(38px,5vw,52px);font-weight:700;letter-spacing:-.045em;color:var(--ink);line-height:1}
-.qb-stat .l{font-size:16px;color:var(--ink-2)}
-.qb-quote{margin-top:34px;display:grid;grid-template-columns:56px 1fr;gap:6px}
-.qb-quote .mark{font-size:56px;font-weight:700;color:#C7D5F5;line-height:.9;letter-spacing:-.04em}
-.qb-quote p{font-size:clamp(21px,2.9vw,30px);font-weight:700;letter-spacing:-.03em;line-height:1.5}
-.qb-quote em{font-style:normal;color:var(--accent)}
-.qb-src{margin-top:26px;padding-left:62px;font-size:13px;color:var(--ink-3);line-height:1.7}
-.nums{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.nm{background:var(--white);border:1px solid var(--line);border-radius:var(--r-card);padding:30px 26px}
-.nm .n{font-size:clamp(32px,4.2vw,42px);font-weight:700;letter-spacing:-.04em;color:var(--accent);line-height:1.05}
-.nm .t{margin-top:16px;font-size:16px;font-weight:700;color:var(--ink);line-height:1.6}
-.nm .desc{margin-top:8px;font-size:14.5px;color:var(--ink-2);line-height:1.68}
-.nm .s{margin-top:16px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:12.5px;color:var(--ink-3);line-height:1.55}
-
-/* 3단계 */
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.sp{border:1px solid var(--line);border-radius:var(--r-card);padding:30px 24px;display:flex;flex-direction:column;background:var(--white)}
-.sp.mid{border:2px solid var(--accent);box-shadow:0 12px 28px -6px rgba(29,78,216,.12)}
-.sp .no{font-size:13px;font-weight:700;color:var(--ink-3);letter-spacing:.02em}
-.sp.mid .no{color:var(--accent)}
-.sp h3{margin-top:12px;font-size:20px;font-weight:700;letter-spacing:-.02em}
-.sp .p{margin-top:10px;font-size:15px;color:var(--ink-2);line-height:1.68;min-height:76px}
-.sp .outs{margin-top:14px;list-style:none;flex:1}
-.sp .outs li{font-size:14px;color:var(--ink-2);padding:10px 0;border-top:1px solid var(--line-soft);
-  display:flex;align-items:flex-start;gap:8px;line-height:1.55}
-.sp .outs li::before{content:"✓";color:var(--accent);font-weight:700;font-size:13px;line-height:1.6}
-.sp .tag{margin-top:20px;font-size:13.5px;font-weight:700;color:var(--ink-3)}
-.sp.mid .tag{color:var(--accent)}
-.sp .go{margin-top:16px}
-.sp .go a{width:100%}
-
-/* 데모 */
-.demo{margin-top:88px;scroll-margin-top:88px;background:var(--surface);
-  border:1px solid var(--line-soft);border-radius:var(--r-card);padding:36px}
-.demohead{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:16px}
-.demolabel{font-size:14.5px;font-weight:700;color:var(--accent)}
-.demohead .hint{font-size:13px;color:var(--ink-3)}
-.dgrid{display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:start}
-.dcard{border:1px solid var(--line);border-radius:var(--r-card);padding:28px 24px;background:var(--white)}
-.dcard .sc{font-size:60px;font-weight:700;letter-spacing:-.045em;line-height:1;color:var(--ink)}
-.dcard .pts{margin-top:6px;font-size:14px;color:var(--ink-3)}
-.dcard .gn{margin-top:20px;padding-top:18px;border-top:1px solid var(--line-soft);font-size:16px;font-weight:700;line-height:1.5}
-.dcard .gd{margin-top:8px;font-size:14px;color:var(--ink-2);line-height:1.65}
-.dtab{border:1px solid var(--line);border-radius:var(--r-card);overflow:hidden;background:var(--white)}
-.dh,.dr{display:grid;grid-template-columns:88px 116px 1fr;gap:16px;align-items:start}
-.dh{padding:14px 20px;border-bottom:1px solid var(--line);font-size:13px;color:var(--ink-3);font-weight:700;background:var(--white);align-items:center}
-.dr{padding:16px 20px;border-bottom:1px solid var(--line-soft);font-size:14.5px}
-.dr:last-child{border-bottom:0}
-.dr .v{font-size:16.5px;font-weight:700;letter-spacing:-.02em}
-.dr .v small{font-size:12.5px;color:var(--ink-3)}
-.dr .bar{margin-top:6px;height:4px;background:var(--line-soft);border-radius:2px;overflow:hidden}
-.dr .bar i{display:block;height:100%;border-radius:2px}
-.dr .nm2{font-weight:700;font-size:15px}
-.dr .nm2 span{display:block;margin-top:2px;font-size:12.5px;font-weight:400;color:var(--ink-3)}
-.dr .rs{font-size:14px;color:var(--ink-2);line-height:1.6}
-.dr .rs span{display:block;margin-top:5px;font-size:12.5px;color:var(--ink-3);line-height:1.55}
-.hi{color:var(--accent)} .mi{color:var(--ink-2)} .lo{color:var(--danger)}
-.bg-hi{background:var(--accent)} .bg-mi{background:var(--ink-3)} .bg-lo{background:var(--danger)}
-.demofoot{margin-top:20px;padding:22px;background:var(--white);border:1px solid var(--line);
-  border-radius:var(--r-card);display:grid;grid-template-columns:1fr 1fr;gap:24px}
-.demofoot p{font-size:13px;color:var(--ink-2);line-height:1.7}
-.demofoot p b{display:block;color:var(--ink);font-weight:700;margin-bottom:4px}
-
-/* 대상 */
-.who{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.who-card{border:1px solid var(--line);border-radius:var(--r-card);padding:30px 26px;background:var(--white)}
-.who-card.fit{border-color:var(--accent)}
-.who-badge{display:inline-block;font-size:13.5px;font-weight:700;padding:5px 12px;border-radius:var(--r-control);margin-bottom:18px}
-.who-badge.yes{background:var(--accent-soft);color:var(--accent)}
-.who-badge.no{background:var(--line-soft);color:var(--ink-2)}
-.who-list{list-style:none}
-.who-list li{font-size:15px;color:var(--ink-2);line-height:1.68;margin-bottom:14px;display:flex;align-items:flex-start;gap:10px}
-.who-list li:last-child{margin-bottom:0}
-.who-list .ico{font-weight:700;font-size:15px;line-height:1.6;flex:none}
-.who-list .ico.yes{color:var(--accent)}
-.who-list .ico.no{color:var(--ink-3)}
-
-/* FAQ */
-.faq{border-top:1px solid var(--line)}
-.faq details{border-bottom:1px solid var(--line)}
-.faq summary{padding:20px 0;font-size:16.5px;font-weight:700;letter-spacing:-.02em;cursor:pointer;
-  list-style:none;display:flex;justify-content:space-between;align-items:center;gap:20px}
-.faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:"+";color:var(--ink-3);font-weight:700;font-size:18px;line-height:1}
-.faq details[open] summary::after{content:"–"}
-.faq .a{padding:0 0 22px;font-size:15.5px;color:var(--ink-2);line-height:1.78;max-width:68ch}
-/* ⚠️ 답변이 여러 문단이라 문단 사이 간격이 필요합니다 [2026-09-01 원고 교체].
-   전역 *{margin:0} 때문에 <p> 가 붙어 한 덩어리로 읽힙니다. 이 한 줄이 없으면
-   나눠 주신 문단 구분이 화면에서 사라집니다. 다른 스타일은 손대지 않았습니다. */
-.faq .a p+p{margin-top:12px}
-
-.fin{text-align:center;padding:100px 0}
-.fin h2.sec{margin:0 auto 12px}
-
-footer{background:var(--ink);color:#CBD5E1;padding:48px 0 54px;font-size:13.5px;line-height:1.82}
-footer .nd{max-width:68ch;margin-bottom:24px;color:#94A3B8}
-footer .nd b{display:block;color:#F1F5F9;font-size:14px;font-weight:700;margin-bottom:6px}
-footer a{color:#CBD5E1}
-footer .fl{margin-top:16px;display:flex;gap:20px;flex-wrap:wrap;color:#94A3B8}
-footer .cp{margin-top:18px;color:#64748B}
-
+}</script>
+<style>.faq-group{margin-top:32px}.faq-group h3{font-size:14px;color:var(--muted,#64748b);margin-bottom:8px}.rv,.tl{opacity:1!important;transform:none!important}.hero .cta{gap:0}nav .nav-right{gap:0}</style><style>
+section{padding:88px 0}.hero{padding-bottom:64px}.static-workspace img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:12px;box-shadow:0 20px 50px #131b2e0d}.static-workspace figcaption{margin-top:14px;font-size:12px;color:var(--mute)}
+#resources .res{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:stretch}#resources .head{align-items:center}#resources .res a{padding:26px 22px;grid-column:auto;background:var(--white);min-height:156px;display:flex;flex-direction:column;align-items:flex-start}#resources .res em{font-style:normal;margin-top:auto;padding-top:12px}
+.compact-final{display:flex;align-items:center;justify-content:space-between;gap:28px;padding:36px 0}.compact-final h2{font-size:28px;line-height:1.4}.compact-final .btn{flex-shrink:0}.fin{padding:28px 0}
+.compact-footer{display:flex;justify-content:space-between;align-items:center;gap:24px}.compact-footer p{font-size:13px;color:var(--mute);margin-top:8px}.footer-links{display:flex;gap:24px;font-size:13px;color:var(--sub)}.trust-line{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:12px;color:var(--sub);padding:24px 0 12px}.trust-line a{text-decoration:underline;text-underline-offset:3px}.scope-note{font-size:12px;color:var(--mute);padding:8px 0}.scope-note summary{cursor:pointer}.scope-note p{max-width:760px;margin-top:10px}.faq{max-width:820px}
+@media(max-width:860px){section{padding:60px 0}.hero{padding-bottom:40px}#resources .res{grid-template-columns:1fr}.compact-final{align-items:flex-start;flex-direction:column;gap:20px;padding:18px 0}.compact-final h2{font-size:24px}.compact-footer{align-items:flex-start;flex-direction:column}.footer-links{gap:16px;flex-wrap:wrap}.fin{padding:28px 0}.trust-line span{flex-basis:100%}}
+</style><style id="premium-motion">
+:root{--ease-out:cubic-bezier(.22,1,.36,1);--ease-soft:cubic-bezier(.2,.65,.3,1)}
+nav{background:rgba(255,255,255,.78);backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%);transition:background .35s,box-shadow .35s,border-color .35s}
+nav.scrolled{background:rgba(255,255,255,.92);box-shadow:0 4px 24px #131b2e09;border-bottom-color:#131b2e10}
+nav .m a{position:relative;transition:color .2s}nav .m a::after{content:"";position:absolute;bottom:6px;left:0;width:100%;height:1px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .25s var(--ease-out)}nav .m a:hover::after{transform:scaleX(1)}
+.hero{position:relative;padding-top:112px;overflow:clip;background:radial-gradient(ellipse 65% 45% at 67% 85%,#eaf0ff80,transparent)}
+.hero h1{font-size:clamp(40px,4.65vw,68px);letter-spacing:-.05em;line-height:1.16;max-width:1000px}
+.hero .lead{max-width:680px;line-height:1.75;margin-top:26px}.hero>.w>.free{color:var(--mute);font-size:13px;letter-spacing:-.01em}
+.btn{position:relative;overflow:hidden;isolation:isolate;box-shadow:0 3px 8px #1d4ed814;transition:transform .25s var(--ease-out),box-shadow .25s,background .25s}.btn::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(110deg,transparent 25%,#ffffff20 48%,transparent 72%);transform:translateX(-120%);transition:transform .65s var(--ease-out)}.btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px #1d4ed827}.btn:hover::after{transform:translateX(120%)}.btn:active{transform:translateY(0) scale(.98);box-shadow:0 2px 6px #1d4ed820}
+.static-workspace{position:relative;perspective:1200px;margin-top:62px}.static-workspace img{position:relative;z-index:1;border-radius:14px;box-shadow:0 32px 65px -26px #243b7138,0 2px 8px #131b2e05;transform-origin:50% 0;will-change:transform}
+.show .screen{border-color:#e0e6f0;box-shadow:0 20px 55px -20px #131b2e24;padding:32px;transition:box-shadow .4s}.show .screen:hover{box-shadow:0 25px 65px -20px #131b2e30}
+.pane{transition:opacity .3s var(--ease-soft),transform .45s var(--ease-out);opacity:0;transform:translateY(10px)}.pane.on{animation:none;opacity:1;transform:translateY(0)}
+.tabs{position:relative}.tabs button{transition:background .3s,padding-left .4s var(--ease-out)}.tabs button.on{padding-left:16px;background:linear-gradient(90deg,#eaf0ff80,transparent 85%)}.tabs button b{transition:color .3s}.tabs button span{line-height:1.7}.tabs .bar{display:none}.tabs::before{content:"";position:absolute;left:0;top:var(--indicator-top,0px);height:var(--indicator-height,80px);width:2px;border-radius:2px;background:var(--accent);z-index:1;transition:top .45s var(--ease-out),height .45s var(--ease-out)}
+#resources .res a{border-radius:12px;position:relative;transition:transform .35s var(--ease-out),border-color .3s,box-shadow .35s;background:#fff;min-height:164px}#resources .res a:hover{transform:translateY(-5px);border-color:#1d4ed845;box-shadow:0 16px 32px -16px #1d4ed82b}#resources .res a em{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%}.card-arrow{font-size:19px;line-height:1;transition:transform .3s var(--ease-out);color:var(--accent)}#resources .res a:hover .card-arrow{transform:translateX(4px)}
+.faq{max-width:100%;margin-top:36px}.faq details{padding:0;overflow:hidden;transition:border-color .3s}.faq summary{padding:24px 0;font-size:16px;line-height:1.6;align-items:center;transition:color .2s}.faq summary:hover,.faq details[open] summary{color:var(--accent)}.faq summary::after,.faq details[open] summary::after{content:"+";font-size:22px;font-weight:400;line-height:1;width:24px;text-align:center;flex-shrink:0;transform:rotate(0);transition:transform .3s var(--ease-out),color .3s}.faq details[open] summary::after{transform:rotate(45deg);color:var(--accent)}.faq .a{max-width:760px}.faq .a p{margin-top:0;padding:0 32px 24px 0;line-height:1.85;font-size:15px}.faq .a a{color:var(--accent);white-space:nowrap}
+.compact-final{border-top:1px solid var(--line-soft);padding:36px 0}.fin{background:linear-gradient(120deg,#fff,#f7f9ff)}.compact-final h2{max-width:600px;font-weight:600;letter-spacing:-.04em}
+@media(max-width:860px){.hero{padding-top:64px}.hero h1{font-size:40px;line-height:1.2}.hero .lead{font-size:16px}.static-workspace{margin-top:40px}.static-workspace img{border-radius:9px}.show .screen{padding:22px}.faq summary{font-size:15px;padding:21px 0}.faq .a p{font-size:14px}.compact-final h2{font-size:24px}.tabs button.on{padding-left:12px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.static-workspace img,.pane,.pane.on{transform:none!important;will-change:auto}.btn:hover,#resources .res a:hover{transform:none}}
+</style>
+<style id="spacing-refinement">
+section{padding:176px 0}
+.hero{padding-top:168px;padding-bottom:152px}
+.hero .lead{margin-top:40px}
+.hero>.w>.free{margin-top:24px}
+.hero .cta{margin-top:56px}
+.static-workspace{margin-top:200px}
+.label+h2{margin-top:24px}
+.show{grid-template-columns:320px minmax(0,1fr);gap:80px}
+#product .tabs{margin-top:60px}
+.tabs button{padding-top:36px;padding-bottom:36px}
+.tabs button span{margin-top:18px}
+.show .screen{padding:44px}
+.pane .big{margin-top:10px}
+.screen .tbl{margin-top:28px}
+.screen .preview{margin-top:28px;padding:22px}
+.screen .src{margin-top:24px}
+#resources .res{margin-top:80px;gap:28px}
+#resources .res a{padding:36px 28px;min-height:208px}
+#resources .res b{margin-top:18px}
+#resources .res em{padding-top:32px}
+.faq{margin-top:72px}
+.faq summary{padding:38px 0}
+.faq .a p{padding-bottom:38px}
+.fin{padding:104px 0}
+.compact-final{padding:44px 0;gap:48px}
+footer{padding-top:96px;padding-bottom:104px}
+.trust-line{padding-top:36px;padding-bottom:20px}
 @media(max-width:860px){
-  .pc-br{display:none}
-  section{padding:68px 0}
-  .hero{padding:68px 0 60px}
-  .fin{padding:72px 0}
-  .w{padding:0 20px}
-  .nums{grid-template-columns:1fr}
-  .steps{grid-template-columns:1fr}
-  .sp .p{min-height:0}
-  .who{grid-template-columns:1fr}
-  .dgrid{grid-template-columns:1fr}
-  .demofoot{grid-template-columns:1fr;gap:18px}
-  .dh{display:none}
-  .dr{grid-template-columns:1fr;gap:10px;padding:20px 18px;border-bottom:1px solid var(--line)}
-  .dr:last-child{border-bottom:0}
-  .qb-quote{grid-template-columns:34px 1fr}
-  .qb-quote .mark{font-size:38px}
-  .qb-src{padding-left:0}
-  .demo{margin-top:56px;padding:20px}
+ .w{padding-left:24px;padding-right:24px}
+ section{padding:120px 0}
+ .hero{padding-top:112px;padding-bottom:104px}
+ .hero .lead{margin-top:32px;line-height:1.85}
+ .hero>.w>.free{margin-top:24px;line-height:1.8}
+ .hero .cta{margin-top:44px}
+ .static-workspace{margin-top:140px}
+ .label+h2{margin-top:20px}
+ .show{grid-template-columns:1fr;gap:56px}
+ #product .tabs{margin-top:44px}
+ .tabs button{padding-top:30px;padding-bottom:30px}
+ .show .screen{padding:28px 24px}
+ .screen .preview{padding:18px}
+ #resources .head{gap:32px}
+ #resources .res{margin-top:52px;gap:28px}
+ #resources .res a{padding:32px;min-height:184px}
+ .faq{margin-top:52px}
+ .faq summary{padding:32px 0}
+ .faq .a p{padding-bottom:34px}
+ .fin{padding:72px 0}
+ .compact-final{padding:28px 0;gap:36px}
+ .compact-footer{gap:40px}
+ footer{padding-top:80px;padding-bottom:88px}
 }
-</style></head><body>
+</style><link rel="stylesheet" href="/assets/workspace-flow.css">
+<link rel="stylesheet" href="/assets/product-demo.css">
+<style id="navigation-layout">
+html{scroll-padding-top:112px}
+#workspace-flow{scroll-margin-top:24px}
+@media(max-width:1000px){
+ nav .w{grid-template-columns:1fr auto;gap:4px 20px;padding-top:14px;padding-bottom:8px}
+ nav .m{grid-column:1/-1;grid-row:2;justify-content:center;gap:28px;flex-wrap:wrap}
+ nav .nav-right{grid-column:2;grid-row:1}
+ html{scroll-padding-top:148px}
+}
+@media(max-width:600px){
+ nav .w{padding-left:20px;padding-right:20px;gap:8px 16px}
+ nav .m{justify-content:space-between;column-gap:8px;row-gap:0;font-size:14px}
+ nav .m a{min-height:44px}
+ nav .nav-right .btn-s{font-size:14px;padding:10px 14px}
+ html{scroll-padding-top:164px}
+}
+</style>
+<link rel="stylesheet" href="/assets/workspace-demo.css">
+</head><body>
 
 <a class="skip" href="#main">Skip to content</a>
 
-<nav data-section="nav"><div class="w">
-  <a class="logo" href="/en"><i></i>TROPS</a>
-  <!-- 🔴 **기존 고객 자리** 〔2026-09-05 · 대표 지시〕.
-       🔄 **조용한 「Log in」 글자 링크를 외곽선 버튼 「Open app」으로 바꿨습니다** 〔2026-10-03 · 대표 결정〕 —
-          국문 랜딩과 같은 무게입니다(앱 입구는 외곽선, 진단은 채운 주 버튼). 640px 이하에서는 글자 링크로 돌아갑니다.
-       ⚠️ `nav-app` 은 index · about · contact 와 **같은 이름 · 같은 목적지(앱 루트)**입니다 — 한 장만 옮기지 마십시오. -->
+
+
+
+<nav data-section="nav" aria-label="Main navigation"><div class="w">
+  <a class="logo" href="https://www.trops.kr/"><i></i>TROPS</a>
+  <div class="m"><a href="#product">Product</a><a href="#workspace-flow">How it works</a><a href="#resources">Resources</a><a href="#faq">FAQ</a><a href="mailto:contact@theo-ne.com" data-track="nav-contact">Contact</a></div>
+
+
+
   <div class="nav-right">
-    <a class="btn-2 btn-s nav-app" href="https://app.trops.kr/" data-track="nav-app">Open app<span class="ne" aria-hidden="true">↗&#xFE0E;</span></a>
-    <a class="btn btn-s" href="/#join" data-track="nav-precheck">Apply for the pilot (Korean)</a>
+
+    <a class="btn btn-s" href="https://app.trops.kr/" data-track="nav-start">Start with TROPS</a>
   </div>
 </div></nav>
 
 <main id="main">
 
 <header class="hero" data-section="hero"><div class="w">
-  <span class="eyebrow">{{publicCopy.audience}}</span>
   <h1>{{publicCopy.headline}}</h1>
   <p class="lead">{{publicCopy.detail}}</p>
-  <div class="act">
-    <a class="btn" href="/#join" data-track="hero-precheck">Apply for the pilot (Korean)</a>
-    <a class="btn-2" href="mailto:contact@theo-ne.com?subject=TROPS%20inquiry" data-track="hero-consult">Talk to us</a>
+  <p class="free">{{publicCopy.audience}}</p>
+  <div class="cta">
+    <a class="btn" href="https://app.trops.kr/" data-track="hero-start">Start with TROPS</a>
+
   </div>
-  <p class="badge">Free · 1 minute · No sign-up required</p>
+
+
+
+
+  <figure class="appfig static-workspace" id="demo"><div class="workspace-preview"><img src="/assets/img/workspace-overview.png" decoding="async" fetchpriority="high" width="1440" height="900" alt="Actual TROPS guest home in Korean: three task cards and the TROPS AI request box"><div class="workspace-demo" data-request="Prepare a quote for my buyer." data-state="ready"><span class="workspace-demo-label">TROPS AI · Example request</span><span class="sr">Prepare a quote for my buyer.</span><span class="workspace-demo-text" aria-hidden="true">Prepare a quote for my buyer.</span></div></div><figcaption>TROPS guest home · Sign in to continue your selected task · App interface is in Korean</figcaption></figure>
+  <div class="workspace-flow" id="workspace-flow" role="region" aria-labelledby="workspace-flow-title"><h2 id="workspace-flow-title">From export documents to payments, keep your work connected.</h2><p>Start with the materials you have and ask AI for the help you need.</p><ol><li><span class="flow-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H5v20h14V7ZM14 2v6h5M8 12h8M8 16h6"/></svg></span><h3>Add your materials</h3><p>Quotes, purchase orders and buyer requests</p></li><li><span class="flow-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V3h8v4M3 12h18M10 12v3h4v-3"/></svg></span><h3>Organize deals and documents</h3><p>Check extracted details and prepare documents</p></li><li><span class="flow-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M5 9h1M18 15h1"/></svg></span><h3>Track payments</h3><p>Amounts due and payment records by deal</p></li></ol></div>
 </div></header>
 
-<section data-section="problem"><div class="w">
-  <div class="problem-head">
-    <p class="claim">Get the right documents in order before you ship, <br class="pc-br"><em>and you can act fast if a buyer doesn’t pay.</em></p>
-  </div>
-  <div class="nums">
-    <div class="nm">
-      <div class="n">KRW 1.46 trillion</div>
-      <div class="t">in unrecovered export receivables (as of December 2025)</div>
-      <div class="desc">Only 1.9% of those receivables have a better-than-even chance of being collected. <br class="pc-br">Once a payment goes bad, the money rarely comes back.</div>
-    </div>
-    <div class="nm">
-      <div class="n">44%</div>
-      <div class="t">of short-term export insurance loss notices were sent back over the past two years</div>
-      <div class="desc">Even with a policy in place and the notice filed, <br class="pc-br">gaps in procedure or paperwork can leave you without coverage.</div>
-    </div>
-  </div>
-</div></section>
 
-<section class="band" data-section="voice"><div class="w">
-  <div class="qb-stat">
-    <span class="n">77%</span>
-    <span class="l">of document and customs inquiries were about “export procedures”</span>
-  </div>
-  <blockquote class="qb-quote">
-    <span class="mark">“</span>
-    <p>What if we ship and the buyer never pays? <br class="pc-br">What exporters struggle with most is <em>the export process itself.</em></p>
-  </blockquote>
-  <p class="qb-src">Our analysis of 500 featured advisory cases from the Business Support Group, Ministry of SMEs and Startups. <br class="pc-br">Of 206 cases involving documents or customs, 158 were questions about export procedures.</p>
-</div></section>
+<section id="product" class="tint" data-section="product"><div class="w">
 
-<section data-section="steps"><div class="w">
-  <div class="center">
-    <h2 class="sec">Export tools and availability</h2>
-    <p>{{publicCopy.coreSummary}}</p><p>{{publicCopy.integrationSummary}}</p>
-  </div>
-  <div class="steps">
-    <div class="sp">
-      <div class="no">Stage 1 · Before shipment</div>
-      <h3>1-Minute Export Readiness Check</h3>
-      <div class="p">Shows what to check first on this export.</div>
-      <ul class="outs">
-        <li>Export readiness score, with an explanation</li>
-        <li>What to address first</li>
-        <li>Readiness checklist</li>
-      </ul>
-      <div class="tag">Available · Free · No account needed</div>
-      <div class="go"><a class="btn-2" href="https://app.trops.kr/quick-check" data-track="step1-precheck">Start the check</a></div>
-    </div>
-    <div class="sp mid">
-      <div class="no">Stage 2 · Contract and shipment</div>
-      <h3>Trade Insurance Prep Package</h3>
-      <div class="p">We line up the application steps and paperwork for your trade insurance.</div>
-      <ul class="outs">
-        <li>List of documents needed to apply</li>
-        <li>One-page summary for internal approval and reporting</li>
-        <li>Review of national and local premium subsidy programs</li>
-      </ul>
-      <div class="tag">Available · Inquiry and scope review</div>
-      <!-- 🔴 `?from=landing` 은 도메인을 넘는 유일한 출처 단서입니다 — index.html 의 같은 자리 주석을 보십시오.
-           ⚠️ 국문과 **같은 값**입니다. 영문을 따로 세려면 앱이 새 값을 받는지 먼저 확인하십시오. -->
-      <div class="go"><a class="btn" href="https://app.trops.kr/insurance/quick?from=landing" data-track="step2-quote">Learn more</a></div>
-    </div>
-    <div class="sp">
-      <div class="no">Stage 3 · After shipment</div>
-      <h3>Export Receivables Management</h3>
-      <div class="p">Tracks payment due dates, loss-notice deadlines and policy expiration dates.</div>
-      <ul class="outs">
-        <li>Payment due dates and notice deadlines in the web app</li>
-        <li>Outstanding receivables and insurance coverage at a glance</li>
-        <li>Policy expiration tracking</li>
-      </ul>
-      <div class="tag">{{publicCopy.coreStatus}}</div>
-      <div class="go"><a class="btn-2" href="mailto:contact@theo-ne.com?subject=Notify%20me%20when%20TROPS%20receivables%20management%20launches" data-track="step3-notify">Ask about pilot availability</a></div>
-    </div>
-  </div>
+  <div class="show rv">
+    <div class="product-nav">
+      <div class="head"><div class="label">Product</div><h2>Your export essentials,<br>in one place</h2></div>
 
-  <div class="demo" id="demo" data-section="demo">
-    <p>Screen example</p>
-    <div class="demohead">
-      <div class="demolabel">1-Minute Export Readiness Check result (sample)</div>
-    </div>
-    <div class="dgrid">
-      <div class="dcard">
-        <div class="sc">55</div>
-        <div class="pts">out of 100</div>
-      </div>
-      <div class="dtab">
-        <div class="dh"><div>Score</div><div>Factor</div><div>Why</div></div>
-        <div class="dr">
-          <div><div class="v mi">11<small>/20</small></div><div class="bar"><i class="bg-mi" style="width:55%"></i></div></div>
-          <div class="nm2">Destination<span>United Arab Emirates</span></div>
-          <div class="rs">The country sits in a higher-risk region.</div>
-        </div>
-        <div class="dr">
-          <div><div class="v mi">6<small>/15</small></div><div class="bar"><i class="bg-mi" style="width:40%"></i></div></div>
-          <div class="nm2">Buyer history</div>
-          <div class="rs">Not enough verifiable trading history.</div>
-        </div>
-        <div class="dr">
-          <div><div class="v hi">25<small>/30</small></div><div class="bar"><i class="bg-hi" style="width:83%"></i></div></div>
-          <div class="nm2">Payment method</div>
-          <div class="rs">A relatively secure way to get paid.</div>
-        </div>
-        <div class="dr">
-          <div><div class="v mi">8<small>/20</small></div><div class="bar"><i class="bg-mi" style="width:40%"></i></div></div>
-          <div class="nm2">Payment terms</div>
-          <div class="rs">The collection period runs long.</div>
-        </div>
-        <div class="dr">
-          <div><div class="v lo">5<small>/15</small></div><div class="bar"><i class="bg-lo" style="width:33%"></i></div></div>
-          <div class="nm2">Trade insurance</div>
-          <div class="rs">Needs to be set up before shipment.</div>
-        </div>
+      <div class="tabs" role="tablist" aria-label="Product features">
+        <button type="button" class="on" data-t="p1" role="tab" id="tab1" aria-controls="p1" aria-selected="true" tabindex="0"><i class="bar"></i><b>Export documents</b><span>Prepare document drafts using your company and deal information.</span></button>
+
+        <button type="button" data-t="p2" role="tab" id="tab2" aria-controls="p2" aria-selected="false" tabindex="-1"><i class="bar"></i><b>Deals and deadlines</b><span>Keep documents, deadlines and next steps together for each deal.</span></button>
+        <button type="button" data-t="p3" role="tab" id="tab3" aria-controls="p3" aria-selected="false" tabindex="-1"><i class="bar"></i><b>Support program AI</b><span>Find relevant support programs with the reasons they may fit.</span></button>
       </div>
     </div>
-  </div>
-</div></section>
-
-<section class="band" data-section="fit"><div class="w">
-  <div class="center">
-    <h2 class="sec">Who it’s for</h2>
-    <p class="sec-sub">See whether TROPS is the right fit for your company</p>
-  </div>
-  <div class="who">
-    <div class="who-card fit">
-      <span class="who-badge yes">A good fit</span>
-      <ul class="who-list">
-        <li><span class="ico yes">✓</span> Companies in the early or growth stage of exporting</li>
-        <li><span class="ico yes">✓</span> One or two people handle all the export work</li>
-        <li><span class="ico yes">✓</span> Selling on credit terms to new buyers or in new markets</li>
-      </ul>
+    <div class="screen">
+      <p class="src">Workspace example</p>
+      <div class="pane on" id="p1" role="tabpanel" aria-labelledby="tab1">
+<div class="t">Export documents</div><div class="big">Your documents, together</div>
+<table class="tbl"><tr><th>Document</th><th>When you need it</th><th>Action</th></tr>
+<tr><td>Proforma invoice · PI</td><td>Discussing a deal</td><td><span class="pill">Draft</span></td></tr>
+<tr><td>Commercial invoice · CI</td><td>Preparing a shipment</td><td><span class="pill">Draft</span></td></tr>
+<tr><td>Packing list · PL</td><td>Recording packing details</td><td><span class="pill">Draft</span></td></tr></table>
+<div class="preview product-demo demo-document"><b>Connect company and deal details</b><div class="demo-fields"><div><span>Document</span><strong data-demo-field>Proforma invoice · PI</strong></div><div><span>Deal details</span><strong data-demo-field>Buyer · Items · Quantity</strong></div><div><span>Terms</span><strong data-demo-field>Unit price · Payment terms</strong></div></div><span class="demo-complete">✓ Draft ready · Review details</span><p>Review the draft before issuing or downloading it.</p></div>
+<div class="src">Check the source and instructions for each document.</div></div>
+<div class="pane" id="p2" inert aria-hidden="true" role="tabpanel" aria-labelledby="tab2">
+        <div class="t">Payments expected this month</div><div class="big">USD 72,000 · 2 deals</div>
+        <div class="demo-timeline" aria-label="Illustrative deal progress"><span data-demo-stage>Contract</span><i aria-hidden="true">→</i><span data-demo-stage>Shipment</span><i aria-hidden="true">→</i><span data-demo-stage>Payment</span></div>
+<table class="tbl"><tr><th>Deal</th><th>Buyer</th><th>Stage</th><th>Next deadline</th></tr>
+          <tr data-demo-deal="0"><td>TR-0008</td><td>Vietnam · Hanoi Trading</td><td><span class="pill">Shipped</span></td><td>Shipment notice <span class="pill warn">D-4</span></td></tr>
+          <tr data-demo-deal="1"><td>TR-0006</td><td>Philippines · Manila Supply</td><td><span class="pill warn">Awaiting payment</span></td><td>Payment due <span class="pill bad">Today</span></td></tr>
+          <tr><td>TR-0005</td><td>USA · Ohio Parts</td><td><span class="pill">Contract</span></td><td>-</td></tr></table>
+        <div class="preview demo-next-task"><b>What to check first</b><p>Confirm payment for the Philippines deal due today, and prepare the Vietnam shipment notice.</p></div>
+        <div class="src">Illustrative deals · Actual deadlines depend on deal terms and applicable rules.</div>
+      </div>
+      <div class="pane" id="p3" inert aria-hidden="true" role="tabpanel" aria-labelledby="tab3">
+<div class="t">TROPS AI · Support programs</div><div class="big">Find programs for your company</div>
+<div class="bubble me">Find export support programs for our company.</div>
+<div class="bubble ai"><span class="say">We use your region and industry to identify relevant notices and conditions to check.</span></div>
+<div class="preview product-demo demo-programs"><b class="demo-search">Original notices and conditions<span class="demo-search-dots" aria-hidden="true">···</span></b><div class="demo-program" data-demo-card><strong>Regional export insurance support</strong><span>Check region and eligibility</span><em>Original notice ↗</em></div><div class="demo-program" data-demo-card><strong>Overseas exhibition support</strong><span>Check industry and application dates</span><em>Original notice ↗</em></div><p>Illustrative notices · Separate confirmed conditions from points to verify.</p></div>
+<div class="src">Illustrative screen · The issuing organization determines eligibility and selection.</div><div class="demo-composer-wrap"><div class="demo-composer" role="img" aria-label="Support program AI question composer example"><span class="demo-composer-placeholder">Ask a follow-up about support programs</span><div class="demo-composer-tools" aria-hidden="true"><span class="demo-attach">+</span><span class="demo-send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18V6m-5 5 5-5 5 5"/></svg></span></div></div></div></div>
     </div>
-    <div class="who-card">
-      <span class="who-badge no">Not the right fit yet</span>
-      <ul class="who-list">
-        <li><span class="ico no">✕</span> You have a dedicated export team and a trade insurance specialist</li>
-        <li><span class="ico no">✕</span> Your ERP already tracks export receivables and deadlines</li>
-        <li><span class="ico no">✕</span> You’re only looking for a consultation</li>
-      </ul>
-    </div>
   </div>
 </div></section>
 
-<section data-section="faq"><div class="w">
-  <div class="center">
-    <h2 class="sec">Frequently asked questions</h2>
-    <p class="sec-sub">Common questions about the 1-minute export readiness check, trade insurance prep, and the deadlines that follow shipment</p>
-  </div>
-  <!-- 🔴 아래 문항은 <head> JSON-LD `FAQPage` 에 **같은 순서·같은 글자**로 있어야 합니다 —
-       test/faq-structured-data.test.js 가 국문·영문 두 장을 잽니다.
-       ⚠️ 근거 주석(약관 조항 · 보험료 지원 게시판 · 되살리지 말 것)은 index.html 의 같은 문항에
-          있습니다. 영문은 그 문장을 옮긴 것이라 **더 세게 말하지 않습니다**
-          (「as a rule」·「unless」를 빼면 약관보다 센 말이 됩니다). -->
-  <div class="faq">
-    <details><summary>What is trade insurance?</summary>
-      <div class="a"><p>Trade insurance protects exporters against risks such as not getting paid on an overseas sale.</p><p>Short-term Export Insurance (post-shipment) from the Korea Trade Insurance Corporation (K-SURE) covers the loss when, after goods ship under an export contract with payment terms of two years or less, the exporter can’t collect payment from the buyer, or from the issuing bank in a letter of credit (L/C) transaction.</p><p>It covers commercial risks, such as a buyer’s insolvency or payment default, and political risks that can arise in cross-border trade, such as war or restrictions on remittances.</p></div>
-    </details>
-    <details><summary>What percentage of a loss does trade insurance cover?</summary>
-      <div class="a"><p>Under K-SURE Short-term Export Insurance (post-shipment), the coverage ratio for standard exports and consignment processing trade is 100% for small and midsize companies, 97.5% for mid-market companies, and 95% for large companies.</p><p>The ratio that actually applies can vary with K-SURE’s country underwriting policy and the terms set out in your policy. And a 100% coverage ratio doesn’t mean every unpaid amount is always paid in full. The actual claim payment reflects the amount of the loss, any excluded losses, and amounts received under other insurance or financing arrangements.</p><p>To know what’s actually covered on a given deal, check your policy and its terms and conditions.</p></div>
-    </details>
-    <details><summary>What documents do I need to file a trade insurance claim?</summary>
-      <div class="a"><p>Short-term Export Insurance calls for different documents and procedures at each stage, from taking out a policy to filing a claim.</p><p>When you apply, you go through a credit investigation of the buyer, a request for a coverage limit, and issuance of the policy. After shipment, you have to file an export notice within the required deadline. If the buyer doesn’t pay, you file a notice of loss and then submit your claim along with the supporting documents K-SURE requires.</p><p>The exact documents can vary by type of coverage, deal structure and the nature of the loss, so check your policy terms and K-SURE’s guidance on loss notices and claims.</p><p>The TROPS Trade Insurance Prep Package organizes the steps and documents you need to apply for trade insurance, deal by deal.</p></div>
-    </details>
-    <details><summary>When is the deadline to file a notice of loss under Short-term Export Insurance?</summary>
-      <div class="a"><p>Under K-SURE Short-term Export Insurance (post-shipment), if payment isn’t received, you generally have to notify K-SURE of the loss in writing within one month of the payment due date. If you learn before the due date that something has happened that could lead to a loss, you also need to give notice within the required period.</p><p>The export notice deadline after shipment matters too. Under an individual policy, you have to file the export notice within 10 business days of the export date; blanket policies use a different notice method and deadline. If you miss the deadline, as a rule that shipment isn’t covered, unless there is good cause for the delay.</p><p>Procedures can vary by product and contract terms, so on an actual deal, check your policy terms and K-SURE’s guidance.</p></div>
-    </details>
-    <details><summary>Where can I find export insurance premium subsidy programs?</summary>
-      <div class="a"><p>K-SURE publishes information on trade insurance and guarantee fee subsidy programs run with local governments, related agencies and banks. Some are group policies in which the local government is the policyholder; in others, a company takes out an individual policy and receives a premium subsidy.</p><p>Eligible regions, eligible companies, covered insurance types and subsidy amounts vary by program, and a program may close once its budget runs out. It’s best to check K-SURE’s premium subsidy page for programs currently open and their terms.</p><p>TROPS also points you to the subsidy announcements and application channels for where your company is based.</p></div>
-    </details>
-    <details><summary>Is the TROPS 1-minute export readiness check free?</summary>
-      <div class="a"><p>Yes. With no sign-up and just a few quick selections, you can see what to check first on this export.</p><p>Based on what you enter, we show your results along with the basis for each item.</p><p>If you’re preparing to apply for trade insurance, the separate Trade Insurance Prep Package is available. It works on a per-deal basis.</p></div>
-    </details>
-    <details><summary>What is TROPS?</summary>
-      <div class="a"><p>{{publicCopy.definition}}. {{publicCopy.audience}} {{publicCopy.detail}}</p><p>{{publicCopy.coreSummary}} {{publicCopy.integrationSummary}}</p><p>TROPS Web and familiar work tools aim to reduce learning and repeated data entry.</p></div>
-    </details>
-    <details><summary>Does TROPS apply for trade insurance on my behalf?</summary>
-      <div class="a"><p>No. TROPS doesn’t underwrite insurance, review claims or apply for coverage on your behalf, and it doesn’t recommend specific products. Eligibility and terms are decided by the relevant institution, such as K-SURE, under its policy terms and review criteria.</p><p>What TROPS does is get you ready to apply. For each deal, we check the eligibility requirements and prepare your deal information in application-ready form, a list of the documents a claim requires, and materials for internal approval.</p><p>We also don’t provide legal advice or legal review of contracts, and we don’t guarantee that receivables will be collected.</p></div>
-    </details>
-    <details><summary>How much does the Trade Insurance Prep Package cost?</summary>
-      <div class="a"><p>Pricing depends on how many documents we prepare, so there’s no fixed price up front. It’s priced per deal.</p><p>Send us an inquiry; scope, cost and timing are confirmed after reviewing your materials.</p><p>The 1-minute export readiness check is free either way.</p></div>
-    </details>
-  </div>
-</div></section>
 
-<section class="fin band" data-section="final"><div class="w">
-  <h2 class="sec">Export with confidence. Start with TROPS.</h2>
-  <div style="margin-top:32px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-    <a class="btn" href="/#join" data-track="final-precheck">Apply for the pilot (Korean)</a>
-    <a class="btn-2" href="mailto:contact@theo-ne.com?subject=TROPS%20inquiry" data-track="final-consult">Talk to us</a>
-  </div>
-</div></section>
+
+
+
+
+
+
+
+
+
+
+
+
+<section id="resources" data-section="resources"><div class="w">
+<div class="head"><div><h2>Export documents and procedures</h2></div></div>
+<div class="res">
+<a data-track="resource-documents" href="https://app.trops.kr/guide"><span>Document</span><b>Export document guides</b><em>What to include and when to use it →</em></a>
+<a data-track="resource-support" href="https://app.trops.kr/guide/support"><span>Support programs</span><b>Insurance premium support</b><em>Regional premium support information →</em></a>
+<a data-track="resource-all" href="https://app.trops.kr/guide"><span>All resources</span><b>Export operations guides</b><em>Browse all document and procedure guides →</em></a>
+</div></div></section>
+
+<section id="faq" class="tint" data-section="faq"><div class="w"><div class="label">FAQ</div><h2 class="faq-h">Frequently asked questions</h2><div class="faq"><details><summary>What is TROPS?</summary><div class="a"><p>TROPS is export operations software for small and midsize businesses. Prepare export document drafts, manage deal deadlines and next steps, and find relevant support programs.</p></div></details><details><summary>How do I start using TROPS?</summary><div class="a"><p>Sign up at app.trops.kr, create your company and choose a task. You can start with documents or support programs before you have a signed contract. The app interface is currently in Korean. <a href="https://app.trops.kr/">Open the app →</a></p></div></details><details><summary>Which export documents can I prepare?</summary><div class="a"><p>Prepare drafts such as proforma invoices (PI), commercial invoices (CI) and packing lists (PL). Review the company and deal information before issuing or downloading a document. Check the recipient’s requirements before submitting it.</p></div></details><details><summary>How can I track export deadlines and next steps?</summary><div class="a"><p>View documents, progress and deadlines together for each deal. Your team confirms and records events that happen outside TROPS, such as shipment or payment.</p></div></details><details><summary>How does TROPS AI find export support programs?</summary><div class="a"><p>It suggests relevant notices using company information such as region and industry, with supporting reasons. Confirmed conditions and points to verify are shown separately. The issuing organization determines eligibility and selection.</p></div></details><details><summary>Can I get help with support program applications?</summary><div class="a"><p>After reviewing the original notice, you can inquire about help preparing application documents. TROPS does not automatically write or submit applications for every program.</p></div></details><details><summary>Where can I check pricing and free access terms?</summary><div class="a"><p>Current pricing, free access periods and paid access terms are available in the app. <a href="https://app.trops.kr/">Open the app →</a></p></div></details><details><summary>How are company information and export data processed?</summary><div class="a"><p>See the app’s official privacy notice for personal data collection and use, external AI processing, retention and deletion. <a href="https://app.trops.kr/privacy">Privacy Notice →</a></p></div></details></div></div></section>
+
+<section class="fin" data-section="final"><div class="w"><div class="compact-final"><h2>Start with the export task you need today</h2><a class="btn" href="https://app.trops.kr/" data-track="final-start">Start with TROPS</a></div></div></section>
 
 </main>
 
-<footer data-section="footer"><div class="w">
-<div class="nd"><b>What TROPS doesn’t do</b>We don’t provide legal advice or legal review of contracts (under Korea’s Attorney-at-Law Act and Foreign Legal Consultant Act). We don’t underwrite insurance, review claims, apply for coverage on your behalf or recommend specific products; eligibility and terms are decided by the relevant institution under its policy terms and review criteria. We don’t guarantee that receivables will be collected.</div>
-<!-- 🔴 사업자정보는 site.config.json 이 원본입니다 — 토큰만 씁니다(test/site-config.test.js).
-     ⚠️ 통신판매업신고번호 줄은 **의도적으로 없습니다** — 국문 랜딩과 같은 판단입니다. -->
-<div>{{biz.companyName}} · CEO {{biz.ceo}} · Business Registration No. {{biz.registrationNo}} · {{biz.address}}</div>
-<div><a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a></div>
-<!-- 🔴 라벨은 그 문서가 스스로 부르는 이름입니다(Privacy Notice · Refund Policy — test/page-essentials.test.js).
-     ⚠️ 이용약관은 넣지 않았습니다 — 그 문서가 국문뿐입니다(index.html 푸터 주석).
-     🔴 언어 전환 링크에는 `hreflang="ko"` 를 답니다 — assets/lang-switch.js 가 그 선언을 보고
-        누를 때 `lang=ko` 쿠키를 심습니다. ⛔ 떼지 마십시오: 떼면 `lang=en` 쿠키를 가진 방문자가
-        「한국어」를 눌러도 middleware.js 가 다시 /en 으로 돌려보냅니다(2026-09-19 실측 · 모바일 신고). -->
-<div class="fl"><a href="https://app.trops.kr/terms">Terms of Service (Korean)</a><a href="https://app.trops.kr/privacy">Privacy Notice (Korean)</a><a href="/en-refund">Refund Policy</a><a href="/" hreflang="ko" lang="ko">한국어</a></div>
-<div class="cp">© 2026 TROPS. All rights reserved.</div>
+<footer data-section="footer"><div class="w"><div class="compact-footer"><div><a class="logo" href="#main"><i></i>TROPS</a><p>Export work made easier</p></div><div class="footer-links"><a href="mailto:contact@theo-ne.com" data-track="footer-contact">Contact · Training · Partners</a><a href="https://app.trops.kr/guide">Export resources</a></div></div><div class="trust-line"><span>See how company information and documents are handled.</span><a href="https://app.trops.kr/privacy">Privacy Notice ↗</a><a href="https://app.trops.kr/terms">Terms of Service ↗</a></div><details class="scope-note"><summary>Service scope</summary><p>We don’t provide legal advice or legal review of contracts (under Korea’s Attorney-at-Law Act and Foreign Legal Consultant Act). We don’t underwrite insurance, review claims, apply for coverage on your behalf or recommend specific products; eligibility and terms are decided by the relevant institution under its policy terms and review criteria. We don’t guarantee that receivables will be collected.</p></details><div class="legal">
+    <div>{{biz.companyName}} · CEO {{biz.ceo}} · Business registration no. {{biz.registrationNo}} · {{biz.address}} · <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a></div>
+    <div class="fl"><a href="https://app.trops.kr/terms">Terms of Service</a><a href="https://app.trops.kr/privacy">Privacy Notice</a><a href="/en-refund">Refund Policy</a><a href="/" hreflang="ko" lang="ko">한국어</a></div>
+    <div>© 2026 TROPS. All rights reserved.</div>
+  </div>
 </div></footer>
-<!-- 🔴 익명 집계 〔2026-09-01〕 — 개인 식별값 없음(en-privacy.html §01). -->
+
+
+
+
+
+
+
+
+<script>
+const tabs=[...document.querySelectorAll('.tabs button')];
+function selectTab(i,focus=false){tabs.forEach((b,k)=>{const on=k===i;b.classList.toggle('on',on);b.setAttribute('aria-selected',String(on));b.tabIndex=on?0:-1;const p=document.getElementById(b.dataset.t);p.classList.toggle('on',on);p.inert=!on;p.setAttribute('aria-hidden',String(!on));});if(focus)tabs[i].focus();}
+tabs.forEach((b,i)=>{b.addEventListener('click',()=>selectTab(i));b.addEventListener('keydown',e=>{let n=null;if(e.key==='ArrowRight')n=(i+1)%tabs.length;if(e.key==='ArrowLeft')n=(i+tabs.length-1)%tabs.length;if(e.key==='Home')n=0;if(e.key==='End')n=tabs.length-1;if(n!==null){e.preventDefault();selectTab(n,true);}});});
+const nav=document.querySelector('nav');addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>8),{passive:true});
+
+</script><script id="premium-interactions">
+(()=>{
+ const motion=matchMedia('(prefers-reduced-motion: reduce)');
+ const fine=matchMedia('(min-width: 861px) and (pointer: fine)');
+ const ease='cubic-bezier(.22,1,.36,1)';
+ const animate=(el,frames,options)=>{if(!el||motion.matches)return null;return el.animate(frames,{duration:650,easing:ease,...options});};
+ const heroItems=[...document.querySelectorAll('.hero h1,.hero>.w>.lead,.hero>.w>.free,.hero .cta')];
+ heroItems.forEach((el,i)=>animate(el,[{opacity:0,transform:'translateY(18px)',filter:'blur(3px)'},{opacity:1,transform:'translateY(0)',filter:'blur(0)'}],{delay:i*85,duration:720}));
+ const figure=document.querySelector('.static-workspace'),image=figure?.querySelector('.workspace-preview');
+ animate(image,[{opacity:0,transform:'translateY(28px) scale(.985)'},{opacity:1,transform:'translateY(0) scale(1)'}],{delay:240,duration:950});
+ const observed=[...document.querySelectorAll('#product .product-nav,#product .screen,#resources .head,#resources .res a,#faq .label,#faq h2,#faq .faq,.compact-final')];
+ const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(!e.isIntersecting)return;const i=e.target.parentElement.classList.contains('res')?[...e.target.parentElement.children].indexOf(e.target):0;animate(e.target,[{opacity:0,transform:'translateY(22px)'},{opacity:1,transform:'translateY(0)'}],{duration:700,delay:i*85});observer.unobserve(e.target);}),{threshold:.12});observed.forEach(el=>observer.observe(el));
+ let scheduled=false;
+ function scrollFrame(){scheduled=false;if(!image)return;if(motion.matches||!fine.matches){image.style.transform='';return;}const box=figure.getBoundingClientRect();if(box.bottom<0||box.top>innerHeight)return;const progress=Math.max(0,Math.min(1,(innerHeight-box.top)/(innerHeight+box.height)));const y=(.5-progress)*14;image.style.transform=`translate3d(0,${y}px,0)`;}
+ addEventListener('scroll',()=>{if(!scheduled){scheduled=true;requestAnimationFrame(scrollFrame);}},{passive:true});motion.addEventListener('change',()=>{document.getAnimations().forEach(a=>a.finish());scrollFrame();});
+ const tabs=document.querySelector('.tabs');
+ function indicator(){const active=tabs?.querySelector('[aria-selected="true"]');if(active){tabs.style.setProperty('--indicator-top',active.offsetTop+'px');tabs.style.setProperty('--indicator-height',active.offsetHeight+'px');}}
+ if(tabs){new MutationObserver(indicator).observe(tabs,{subtree:true,attributes:true,attributeFilter:['aria-selected']});new ResizeObserver(indicator).observe(tabs);document.fonts.ready.then(indicator);indicator();}
+ document.querySelectorAll('#resources .res em').forEach(el=>{el.textContent=el.textContent.replace(/\s*→$/,'');const arrow=document.createElement('span');arrow.className='card-arrow';arrow.textContent='→';arrow.setAttribute('aria-hidden','true');el.append(arrow);});
+ document.querySelectorAll('#faq details').forEach(detail=>{
+  const summary=detail.querySelector('summary');let animation=null;let expanded=detail.open;
+  summary.addEventListener('click',event=>{
+   if(motion.matches)return;
+   event.preventDefault();const start=detail.getBoundingClientRect().height;animation?.cancel();expanded=!expanded;
+   detail.open=true;const end=expanded?detail.scrollHeight:summary.getBoundingClientRect().height;
+   animation=detail.animate([{height:start+'px'},{height:end+'px'}],{duration:320,easing:ease});
+   animation.onfinish=()=>{detail.open=expanded;animation=null;};
+  });
+ });
+})();
+</script><script defer src="/assets/workspace-demo.js"></script>
+<script defer src="/assets/workspace-flow.js"></script>
+<script defer src="/assets/product-demo.js"></script>
 <script defer src="/assets/track.js"></script>
-<!-- 🔴 언어 전환 〔2026-09-19 복구〕 — 2026-08-29 랜딩 교체가 이 줄을 걷어, 「한국어」 링크가 쿠키를
-     심지 못했습니다. ⛔ 지우지 마십시오(위 푸터 주석). -->
 <script defer src="/assets/lang-switch.js"></script>
 </body></html>

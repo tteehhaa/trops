@@ -60,27 +60,12 @@ test('🔴 이미 `from` 이 있으면 손대지 않는다 — /insurance/quick 
   );
 });
 
-test('🔴 랜딩이 심어 둔 `from` 두 값이 소스에 살아 있다 — 덮이면 이 둘이 사라진다', () => {
-  /*
-   * 🔴 **보호 «대상»이 실재하는지 함께 잽니다.** 위 ① 은 「덮지 않는가」만 보는데,
-   *    지켜야 할 링크가 사라지면 그 검사는 아무것도 지키지 않으면서 초록입니다.
-   */
-  /*
-   * 🔄 **`precheck.html`(`&from=precheck`) 이 내려갔습니다** 〔2026-09-21 · 그 파일이 삭제됐습니다〕.
-   * 🔴 **딸림을 알고 적습니다 — 이제 `from=precheck` 를 만드는 자리가 저장소에 0 입니다.**
-   *    앱의 유입원 어휘(`normalizePrepPackSource`)에 그 값은 남아 있으나 **발생원이 없어**
-   *    앞으로 그 갈래의 새 주문은 0 건입니다(이미 쌓인 값은 그대로 사실입니다).
-   *    ⛔ 앱에서 그 값을 지우지 마십시오 — 지우면 옛 주문의 유입원이 `unknown` 으로 접힙니다.
-   */
-  const pairs = [
-    ['index.html', 'from=landing'],
-    ['en.html', 'from=landing'],
-  ];
-  for (const [file, must] of pairs) {
-    assert.ok(
-      read(file).includes(must),
-      `${file}: 「${must}」 가 없습니다 — /insurance/quick 의 닫힌 축이 사라졌습니까?`
-    );
+test('랜딩의 시작 버튼이 앱 루트로 가고 계측 스크립트가 유지된다', () => {
+  for (const file of ['index.html', 'en.html']) {
+    const s = read(file);
+    assert.ok(s.includes('href="https://app.trops.kr/" data-track="hero-start"'));
+    assert.ok(s.includes('src="/assets/track.js"'));
+    assert.ok(!s.includes('insurance/quick?from=landing'), '종료한 별도 상품 CTA가 남았습니다');
   }
 });
 

@@ -105,27 +105,12 @@ const pickFaq = (q) => (html) => {
  * ⚠️ 새 페이지가 이 셋을 «전부» 말하기 시작하면 여기 한 줄을 더하십시오.
  *    ⛔ 부분 면책 자리는 더하지 마십시오(파일 머리주석 참조).
  */
+// Scope is now a single disclosure in each landing footer, plus the company page.
+const pickScope = (html) => (strip(html).match(/<details class="scope-note">[\s\S]*?<\/details>/) || [])[0];
 const SURFACES = [
-  { file: 'index.html', locale: 'ko', name: '랜딩 푸터 「TROPS가 하지 않는 일」', pick: pickNd },
-  /*
-   * 🔄 질문 글자가 v3 FAQ 로 바뀌었습니다 〔2026-09-29〕 — 「…대신해 줍니까?」 → 「…대신해 주나요?」.
-   *    자리는 같습니다. ⚠️ 시안의 답은 보험 축만 들었고, 대표 결정으로 법률 자문 · 회수 보장 문장을
-   *    답 끝에 덧붙여 세 축을 채웠습니다 — 그 문장을 걷으면 여기가 red 입니다.
-   */
-  {
-    file: 'index.html',
-    locale: 'ko',
-    name: '랜딩 FAQ 「가입을 대신해 주나요」',
-    pick: pickFaq('TROPS가 무역보험 가입을 대신해 주나요?'),
-  },
-  { file: 'en.html', locale: 'en', name: '영문 랜딩 푸터 「What TROPS doesn’t do」', pick: pickNd },
-  {
-    file: 'en.html',
-    locale: 'en',
-    name: '영문 랜딩 FAQ 「apply … on my behalf」',
-    pick: pickFaq('Does TROPS apply for trade insurance on my behalf?'),
-  },
-  { file: 'about.html', locale: 'ko', name: '회사 소개 02 「선을 긋는 영역」', pick: pickDeny },
+  { file: 'index.html', locale: 'ko', name: '랜딩 제공 범위', pick: pickScope },
+  { file: 'en.html', locale: 'en', name: 'Landing service scope', pick: pickScope },
+  { file: 'about.html', locale: 'ko', name: '회사 소개 제공 범위', pick: pickDeny },
 ];
 
 /* ══ ① 선언한 자리가 실제로 있다 ═════════════════════════════════════ */
@@ -204,7 +189,7 @@ test('🔴 살아 있는 어느 페이지도 면책의 «반대»를 약속하�
 /* ══ ④ [대조] 검출기가 실제로 문다 ═══════════════════════════════════ */
 
 test('[대조] 대상이 0건이 아니고 두 언어를 다 본다 — 빈 목록은 조용한 초록이다', () => {
-  assert.ok(SURFACES.length >= 5, `면책 자리를 ${SURFACES.length}곳만 선언했습니다`);
+  assert.ok(SURFACES.length >= 3, `면책 자리를 ${SURFACES.length}곳만 선언했습니다`);
   for (const locale of ['ko', 'en']) {
     assert.ok(
       SURFACES.some((s) => s.locale === locale),

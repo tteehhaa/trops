@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="https://www.trops.kr/favicon.ico" sizes="any">
+
+
+
+
+<link rel="preconnect" href="https://app.trops.kr">
+<link rel="dns-prefetch" href="https://app.trops.kr">
+
+<title>수출 실무를 더 쉽게, TROPS AI | 수출 서류·거래 관리·지원사업</title>
+<meta name="description" content="TROPS는 중소기업의 수출 서류 작성, 거래별 기한·대금 관리와 맞춤 지원사업 찾기를 돕는 수출 실무 서비스입니다. 앱에서 가입하고 필요한 업무를 시작하세요.">
+<link rel="canonical" href="https://trops.kr/">
+
+<meta name="naver-site-verification" content="82ea864b3d6cdf087f4568558ceb5ad495445c6f" />
+
+<link rel="alternate" hreflang="ko" href="https://trops.kr/">
+<link rel="alternate" hreflang="en" href="https://trops.kr/en">
+<link rel="alternate" hreflang="x-default" href="https://trops.kr/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://trops.kr/">
+<meta property="og:site_name" content="TROPS">
+<meta property="og:locale" content="ko_KR">
+
+<meta property="og:title" content="수출 실무를 더 쉽게, TROPS AI">
+<meta property="og:description" content="TROPS는 중소기업의 수출 서류 작성, 거래별 기한·대금 관리와 맞춤 지원사업 찾기를 돕는 수출 실무 서비스입니다. 앱에서 가입하고 필요한 업무를 시작하세요.">
+<meta name="twitter:card" content="summary_large_image">
+
+
+<meta property="og:image" content="https://www.trops.kr/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="TROPS 로고">
+<meta name="twitter:image" content="https://www.trops.kr/img/og.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+
+<style>
+
+:root{
+  --accent:#1D4ED8; --accent-deep:#1739A8; --accent-soft:#EFF4FE;
+  --ink:#131B2E; --sub:#5E6678; --mute:#6B7385;
+  --line:#E3E7EF; --line-soft:#EDF0F4;
+  --surface:#F6F7F9; --white:#FFFFFF;
+  --danger:#7A1515; --warn-bg:#FFF4D6; --warn-ink:#8A5A00; --bad-bg:#FDECEC; --bad-ink:#9F1D1D;
+  --dark:#121824; --dark-ink:#F4F5F7; --dark-sub:#B8BFCC; --dark-mute:#8C95A7; --dark-line:#2C3444;
+  --f:"Pretendard Variable","Pretendard","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{font-family:var(--f);background:var(--white);color:var(--ink);font-size:16px;line-height:1.7;
+  letter-spacing:-0.015em;word-break:keep-all;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:3px}
+h1,h2,h3{text-wrap:balance}
+p,li{text-wrap:pretty}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+
+.w{max-width:1040px;margin:0 auto;padding:0 28px}
+section{padding:112px 0}
+.tint{background:var(--surface)}
+.label{font-size:14px;color:var(--mute);font-weight:600}
+.label+h2{margin-top:12px}
+h2{font-size:42px;line-height:1.22;letter-spacing:-0.04em;font-weight:700}
+.head{display:grid;grid-template-columns:1fr 1.3fr;gap:48px;align-items:end}
+.head p{font-size:17px;color:var(--sub)}
+
+
+.skip{position:absolute;left:-9999px;top:8px;padding:10px 16px;border-radius:6px;background:var(--ink);color:#fff;font-size:14px;z-index:20}
+.skip:focus{left:16px;color:#fff}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;background:var(--accent);color:#fff;
+  border:0;border-radius:6px;padding:13px 24px;font-size:15px;font-weight:600;line-height:1.2;
+  font-family:inherit;cursor:pointer;transition:background .2s ease}
+.btn:hover{background:var(--accent-deep)}
+.btn-2{display:inline-flex;align-items:center;justify-content:center;background:var(--white);color:var(--ink);
+  border:1px solid var(--line);border-radius:6px;padding:12px 22px;font-size:15px;font-weight:500;line-height:1.2;
+  font-family:inherit;cursor:pointer;transition:border-color .2s ease}
+.btn-2:hover{border-color:var(--accent)}
+.btn-s{padding:9px 16px;font-size:14px}
+
+
+.announce{position:relative;background:var(--ink);color:#fff;font-size:13.5px;text-align:center;padding:9px 48px}
+.announce a{color:#fff;text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:3px;margin-left:8px}
+.ax{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:0;color:inherit;
+  font-size:18px;line-height:1;padding:6px 8px;cursor:pointer;opacity:.7;font-family:inherit}
+.ax:hover{opacity:1}
+
+
+nav{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);transition:box-shadow .2s ease}
+nav.scrolled{box-shadow:0 6px 20px rgba(19,27,46,.06)}
+nav .w{display:flex;justify-content:space-between;align-items:center;height:64px}
+.logo{display:inline-flex;align-items:center;gap:9px;font-size:17px;font-weight:700;letter-spacing:-.01em;text-decoration:none;color:var(--ink)}
+.logo i{width:18px;height:18px;background:url(/img/icon_primary.svg) center/contain no-repeat;display:block}
+nav .m{display:flex;gap:28px;font-size:14.5px;color:var(--sub)}
+nav .m a:hover{color:var(--ink)}
+.nav-right{display:flex;align-items:stretch;gap:10px;font-size:14.5px}
+.nav-right .ne{margin-left:5px}
+
+
+.hero{padding:104px 0 40px}
+.hero h1{font-size:66px;line-height:1.14;letter-spacing:-0.045em;font-weight:700}
+.hero .lead{font-size:19px;color:var(--sub);margin-top:24px;max-width:600px}
+.hero .cta{display:flex;gap:12px;margin-top:36px;flex-wrap:wrap}
+.hero .free{font-size:14px;color:var(--sub);margin-top:16px}
+
+
+.appfig{margin-top:64px}
+.appfig figcaption{margin-top:10px;text-align:center;font-size:12.5px;color:var(--mute)}
+.app{border:1px solid var(--line);border-radius:14px;background:var(--white);box-shadow:0 20px 50px rgba(19,27,46,.08);overflow:hidden}
+.app .bar{display:flex;gap:6px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--surface)}
+.app .bar i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.app .body{display:grid;grid-template-columns:200px 1fr}
+.app .ic{width:17px;height:17px;flex:none}
+.app .ic.sm{width:15px;height:15px}
+.app .side{display:flex;flex-direction:column;border-right:1px solid var(--line);padding:20px 16px;font-size:13.5px;color:var(--sub)}
+.app .side .brand{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.app .side .brand .mk{width:20px;height:20px;background:url(/img/icon_primary.svg) center/contain no-repeat;flex:none}
+.app .side .brand b{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+.app .side .brand .tg{margin-left:auto;width:16px;height:16px;color:var(--mute)}
+.app .side .org{font-size:12px;color:var(--mute);margin-bottom:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.app .side .org b{font-size:13px;font-weight:600;color:var(--ink)}
+.app .side .cap{font-size:10.5px;font-weight:600;letter-spacing:.1em;color:var(--mute);padding:12px 10px 4px}
+.app .side .org+.cap{padding-top:4px}
+.app .side .it{position:relative;display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:6px;font-weight:500;line-height:1.3}
+.app .side .it.on{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.app .side .it.mu{color:var(--mute)}
+.app .side .add{position:absolute;right:4px;top:50%;transform:translateY(-50%);display:flex;color:var(--mute)}
+.app .side .bottom{margin-top:auto;padding-top:10px;border-top:1px solid var(--line-soft)}
+.app .main{padding:28px 36px 32px}
+.app .stat{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 6px;font-size:13px;color:var(--sub)}
+.app .stat .dt,.app .stat .sp{color:var(--mute)}
+.app .stat b{color:var(--ink);font-weight:600}
+.app .title{font-size:30px;font-weight:600;text-align:center;margin-top:18px;letter-spacing:-0.02em}
+.app form{max-width:640px;margin:18px auto 0;border:1px solid var(--line);border-radius:12px;padding:16px 16px 12px;background:var(--white)}
+.app form:focus-within{border-color:var(--accent)}
+.app textarea{display:block;width:100%;min-height:48px;border:0;outline:0;resize:none;font-size:15px;line-height:1.6;font-family:inherit;background:transparent;color:var(--ink)}
+.app textarea::placeholder{color:var(--mute)}
+.app .ctl{display:flex;align-items:center;gap:8px;margin-top:12px}
+.app .plus{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--white);color:var(--sub);cursor:pointer}
+.app .plus:hover{background:var(--surface)}
+.app .send{margin-left:auto;background:var(--accent);color:#fff;border:0;border-radius:6px;padding:8px 18px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer}
+.app .send:disabled{opacity:.5;cursor:default}
+.app .chips{max-width:640px;margin:10px auto 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) 32px;gap:8px;align-items:center}
+.app .chips button{min-width:0;border:1px solid var(--line);border-radius:6px;padding:9px 8px;background:var(--white);color:var(--ink);font-size:13px;font-family:inherit;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.app .chips button:hover{background:var(--surface)}
+.app .chips .edit{font-size:13px;color:var(--accent);text-align:right}
+.app .today{max-width:640px;margin:22px auto 0}
+.app .today .th{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+.app .today .h{font-size:14px;font-weight:600}
+.app .today .h span{margin-left:8px;font-size:13px;font-weight:400;color:var(--mute)}
+.app .today .rec{font-size:13px;font-weight:600;color:var(--accent)}
+.app .today ol{list-style:none;margin-top:8px;border:1px solid var(--line);border-radius:10px;background:var(--white)}
+.app .today li{display:flex;align-items:center;gap:12px;padding:11px 14px}
+.app .today li+li{border-top:1px solid var(--line-soft)}
+.app .today li p{flex:1;min-width:0;font-size:13px;line-height:1.5;color:var(--sub)}
+.app .today li b{color:var(--ink);font-weight:600}
+.app .today li .k{color:#334155}
+.app .today .ob{flex:none;display:inline-flex;align-items:center;height:32px;padding:0 12px;border:1.5px solid var(--accent);border-radius:6px;font-size:12.5px;font-weight:600;color:var(--accent);background:var(--white)}
+
+
+.sample{display:inline-block;font-size:12px;color:var(--warn-ink);background:var(--warn-bg);border-radius:999px;padding:2px 10px;margin-left:8px;vertical-align:middle}
+
+
+.show{display:grid;grid-template-columns:360px minmax(0,1fr);gap:28px 40px;align-items:start}
+.product-nav{grid-column:1;grid-row:1}
+#product .head{display:block}
+#product .flow-note{font-size:15px;color:var(--sub);margin-top:16px}
+#product .tabs{margin-top:28px}
+.tabs button{position:relative;display:block;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);
+  padding:20px 0;font-family:inherit;cursor:pointer;color:var(--mute)}
+.tabs button:last-child{border-bottom:1px solid var(--line)}
+.tabs button b{display:block;font-size:22px;color:var(--mute);letter-spacing:-0.03em}
+.tabs button span{display:none;font-size:15px;color:var(--sub);margin-top:8px}
+.tabs button.on b{color:var(--ink)}
+.tabs button.on span{display:block}
+.tabs button:focus:not(:focus-visible){outline:none}
+.tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+.tabs button:focus-visible b{text-decoration:underline;text-underline-offset:6px}
+.tabs .bar{position:absolute;left:0;top:-1px;height:2px;width:0;background:var(--accent)}
+.tabs button.on .bar{animation:fill 6s linear forwards}
+.tabs.paused button.on .bar{animation-play-state:paused}
+.tabs.stopped button.on .bar{width:100%;animation:none}
+@keyframes fill{to{width:100%}}
+.screen{display:grid;grid-column:2;grid-row:1;min-width:0;border:1px solid var(--line);border-radius:14px;background:var(--white);box-shadow:0 12px 32px rgba(19,27,46,.06);padding:28px}
+.pane{grid-area:1/1;min-width:0;visibility:hidden;pointer-events:none}
+.pane.on{visibility:visible;pointer-events:auto;animation:fadein .45s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.pane .t{font-size:13px;color:var(--mute)}
+.pane .big{font-size:22px;font-weight:700;margin-top:4px;letter-spacing:-0.02em}
+.bubble{border-radius:12px;padding:12px 14px;font-size:14px;margin-top:12px;max-width:80%}
+.bubble.me{margin-left:auto;background:var(--accent-soft)}
+.bubble.ai{border:1px solid var(--line)}
+.bubble .pills{margin-top:10px;display:flex;gap:6px;flex-wrap:wrap}
+.tbl{width:100%;border-collapse:collapse;margin-top:14px;font-size:13.5px}
+.tbl th{text-align:left;font-weight:600;color:var(--mute);font-size:12.5px;padding:8px 6px;border-bottom:1px solid var(--line)}
+.tbl td{padding:10px 6px;border-bottom:1px solid var(--line)}
+.pill{display:inline-block;font-size:12px;border-radius:999px;padding:2px 9px;background:var(--accent-soft)}
+.pill.warn{background:var(--warn-bg);color:var(--warn-ink)}
+.pill.bad{background:var(--bad-bg);color:var(--bad-ink)}
+.pill.off{background:var(--surface);color:var(--mute);box-shadow:inset 0 0 0 1px var(--line)}
+
+.cmp{margin-top:14px;border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.cmp p{font-size:13px;color:var(--mute)}
+.cmp div{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.cmp i{display:grid;place-items:center;width:28px;height:28px;border:1px solid var(--line);border-radius:50%;font-style:normal;font-size:15px;color:var(--sub)}
+.cmp span{font-size:12.5px;font-weight:600;color:var(--white);background:var(--accent);opacity:.45;border-radius:8px;padding:6px 12px}
+.qk{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.qk span{border:1px solid var(--line);border-radius:10px;padding:9px 8px;font-size:13px;text-align:center;background:var(--white)}
+.qk .on{background:var(--accent);border-color:var(--accent);color:var(--white);font-weight:600}
+.qk svg{width:14px;height:14px;vertical-align:-2px;margin-right:5px}
+
+.pane .lede{font-size:14px;color:var(--sub);margin-top:6px}
+.tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:16px}
+.tools div{border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.tools b{display:block;font-size:14.5px}
+.tools .pill{margin-top:8px}
+.doc{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:14px}
+.doc div{border:1px solid var(--line);border-radius:10px;padding:14px;font-size:13px}
+.doc div b{display:block;font-size:15px;margin-bottom:6px}
+.preview{margin-top:20px;padding:16px;border:1px solid var(--line);border-radius:10px;background:var(--surface);font-size:14px}
+.preview b{display:block;font-size:15px}
+.preview p{margin-top:6px;color:var(--sub)}
+.preview .btn{margin-top:12px;cursor:default}
+.src{font-size:12.5px;color:var(--mute);margin-top:16px;border-top:1px dashed var(--line);padding-top:10px}
+
+
+.svc{background:var(--dark);color:var(--dark-ink)}
+.svc .label{color:#A9B1C2}
+.svc h2{color:var(--dark-ink)}
+.tl{display:grid;grid-template-columns:repeat(4,1fr);margin-top:64px;position:relative}
+.tl::before{content:"";position:absolute;left:7px;right:calc(25% - 7px);top:7px;height:1px;background:var(--dark-line)}
+.tl::after{content:"";position:absolute;z-index:1;left:0;top:0;width:15px;height:15px;border-radius:50%;background:var(--accent);opacity:0;pointer-events:none}
+.tl.in::after{animation:timeline-run 8s linear infinite}
+@keyframes timeline-run{0%,7%{left:0;opacity:1}19%,26%{left:25%;opacity:1}38%,45%{left:50%;opacity:1}57%,64%{left:75%;opacity:1}66%,97%{left:75%;opacity:0}100%{left:0;opacity:0}}
+.st{padding-right:24px;position:relative}
+.st .dot{width:15px;height:15px;border-radius:50%;background:var(--dark);border:2px solid var(--dark-mute);position:relative}
+.st .dot.on{background:var(--accent);border-color:var(--accent)}
+.st span{display:block;font-size:13px;color:var(--dark-mute);font-weight:600;margin-top:22px}
+.st b{display:block;font-size:22px;margin-top:6px;letter-spacing:-0.03em}
+.st em{display:block;font-style:normal;font-size:15px;color:var(--dark-sub);margin-top:10px;line-height:1.7}
+.opt{display:flex;justify-content:space-between;align-items:center;gap:32px;margin-top:64px;border:1px solid #3A4355;border-radius:14px;padding:30px 32px}
+.opt .ot{font-size:20px;font-weight:700}
+.opt p{font-size:15.5px;color:var(--dark-sub);margin-top:8px;max-width:620px}
+.opt .om{font-size:13px;color:var(--dark-mute);margin-top:12px}
+.opt .btn{white-space:nowrap}
+.svn{font-size:13.5px;color:var(--dark-mute);margin-top:22px}
+
+
+.qc{display:grid;grid-template-columns:1fr 1.15fr;gap:56px;align-items:center}
+.qt p{font-size:17px;color:var(--sub);margin-top:20px}
+.qb{display:flex;align-items:center;gap:14px;margin-top:28px;flex-wrap:wrap}
+.qb span{font-size:14px;color:var(--mute)}
+.qr{border:1px solid var(--line);border-radius:14px;background:var(--white);padding:26px 28px;box-shadow:0 14px 36px rgba(19,27,46,.07)}
+.qh{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--line);padding-bottom:14px}
+.qh span{font-size:13.5px;color:var(--mute);font-weight:600}
+.qh b{font-size:44px;letter-spacing:-0.04em}
+.qh small{font-size:15px;color:var(--mute);font-weight:500;margin-left:2px}
+.qrow{display:grid;grid-template-columns:110px 1fr 52px;column-gap:14px;row-gap:4px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.qn{font-size:14.5px;font-weight:600}
+.qn em{display:block;font-style:normal;font-size:12px;color:var(--mute);font-weight:400}
+.qbar{height:6px;border-radius:3px;background:var(--line-soft);overflow:hidden}
+.qbar i{display:block;height:100%;background:#8E97A8;border-radius:3px;transform-origin:left}
+.qbar i.ok{background:var(--ink)}
+.qbar i.bad{background:#C0392B}
+.qs{font-size:13.5px;font-weight:700;text-align:right}
+.qw{grid-column:2/4;font-size:13px;color:var(--sub)}
+.qf{font-size:12.5px;color:var(--mute);margin-top:12px}
+
+
+.calc{display:grid;grid-template-columns:1.2fr 1fr;gap:24px;margin-top:48px}
+.ci{border:1px solid var(--line);border-radius:14px;padding:28px;background:var(--white)}
+.ci label{display:block;font-size:15px;font-weight:600;margin-top:22px}
+.ci label:first-child{margin-top:0}
+.ci output{float:right;font-weight:700}
+.ci input[type=range]{width:100%;margin-top:10px;accent-color:var(--accent)}
+.co{border-radius:14px;padding:32px;background:var(--white);border:1px solid var(--line);display:flex;flex-direction:column}
+.co .k{font-size:14px;color:var(--sub)}
+.co .k+.k,.co .v+.k{margin-top:22px}
+.co .v{font-size:18px;margin-top:4px}
+.co .v b{font-size:56px;letter-spacing:-0.04em;margin-right:6px}
+.co .yr{margin-top:18px;font-size:15px;color:var(--sub);border-top:1px solid var(--line);padding-top:16px}
+.co .btn{align-self:flex-start;margin-top:24px}
+.cn{font-size:12.5px;color:var(--mute);margin-top:14px}
+
+
+.sec{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:56px}
+.sec div{border:1px solid var(--line);border-radius:14px;padding:26px;background:var(--white);transition:transform .2s ease,box-shadow .2s ease}
+.sec div:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(19,27,46,.07)}
+.sec b{display:block;font-size:17px}
+.sec span{display:block;font-size:14.5px;color:var(--sub);margin-top:8px}
+.sec b .soon{display:inline-block;font-size:12px;font-weight:500;color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:1px 8px;margin:0 0 0 6px;vertical-align:2px}
+
+
+.jwrap{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:56px;align-items:start}
+.jintro{position:sticky;top:96px}
+.jintro .lead{font-size:17px;color:var(--sub);margin-top:20px}
+.jintro .fit{margin-top:28px}
+.jintro .fit div{font-size:15px;padding:10px 0;border-top:1px solid var(--line)}
+.jintro .fit .x{color:var(--mute)}
+.jtail{margin-top:32px}
+.jtail .pre{font-size:15px}
+.jtail .pre a{font-weight:600;border-bottom:1px solid var(--ink)}
+.maker2{display:flex;gap:14px;align-items:center;margin-top:28px;border-top:1px solid var(--line);padding-top:22px}
+.maker2 .pf{width:44px;height:44px;border-radius:50%;background:var(--white) url(/img/icon_primary.svg) center/22px no-repeat;border:1px solid var(--line);flex:none}
+.maker2 b{display:block;font-size:15.5px}
+.maker2 a{display:inline-block;font-size:14px;color:var(--sub);margin-top:2px}
+.maker2 a:hover{color:var(--ink)}
+form.f{border:1px solid var(--line);border-radius:14px;padding:30px;background:var(--white)}
+.f label{display:block;font-size:14px;font-weight:600;margin-top:16px}
+.f .fld:first-of-type label{margin-top:0}
+.f .two .fld label{margin-top:16px}
+.f input,.f select{width:100%;margin-top:7px;padding:12px 13px;border:1px solid var(--line);border-radius:8px;font-size:15px;font-family:inherit;background:var(--white);color:var(--ink)}
+.f input:focus,.f select:focus{outline:2px solid var(--accent);outline-offset:1px}
+.f .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+.f .two:has(> [hidden]){grid-template-columns:1fr}
+.fs{border:0;margin:0;padding:0;min-width:0}
+.fs:disabled input,.fs:disabled select{background:var(--surface);color:var(--mute);cursor:not-allowed}
+.f .hint{font-size:12.5px;color:var(--mute);margin-top:5px}
+.f .cons details{margin-top:20px;font-size:13px;color:var(--sub)}
+.f .cons summary{cursor:pointer}
+.f .cons summary:hover{color:var(--ink)}
+.f .cons dl{margin-top:8px;display:grid;grid-template-columns:64px 1fr;gap:4px 10px;font-size:12.5px;line-height:1.6;color:var(--sub)}
+.f .cons dt{font-weight:600;color:var(--ink)}
+.f .cons.bad .agree{color:var(--danger)}
+.f .cons .agree{margin-top:12px}
+.f .agree a{text-decoration:underline;text-underline-offset:2px}
+.ferr{margin-top:16px;font-size:14px;color:var(--danger);background:var(--bad-bg);border-radius:8px;padding:10px 12px}
+.f .agree{display:flex;gap:8px;font-weight:400;font-size:13.5px;color:var(--sub);margin-top:20px}
+.f .agree input{width:auto;margin-top:4px;flex:none}
+.f .btn{width:100%;margin-top:22px;padding:14px}
+.f .after{font-size:13px;color:var(--mute);text-align:center;margin-top:12px}
+.star{color:var(--danger);margin-left:2px}
+.err{display:none;font-size:13px;color:var(--danger);margin-top:5px}
+.bad .err{display:block}
+.bad input,.bad select{border-color:var(--danger)}
+.req{margin-bottom:16px;font-size:14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.req span{display:block;color:var(--sub)}
+
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.note{margin-top:14px;font-size:14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;color:var(--sub)}
+.note a{color:var(--ink);font-weight:600}
+.done{border:1px solid var(--line);border-radius:14px;padding:30px;background:var(--white)}
+.done h3{font-size:22px;margin-top:6px}
+.done p{font-size:15px;color:var(--sub);margin-top:16px}
+
+.jprog{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+.jprog-bar{flex:1;height:4px;border-radius:999px;background:var(--line);overflow:hidden}
+.jprog-bar i{display:block;height:100%;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .35s ease}
+.jprog-n{font-size:12.5px;color:var(--mute);white-space:nowrap}
+.jprog-n b{color:var(--ink);font-weight:600}
+.jprog.full .jprog-n,.jprog.full .jprog-n b{color:var(--accent)}
+.done .ok{display:block;width:52px;height:52px;margin-bottom:14px;fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.done .ok circle{stroke-dasharray:151;stroke-dashoffset:0}
+.done .ok path{stroke-dasharray:32;stroke-dashoffset:0}
+.js .done .ok circle{animation:draw-ring .6s ease both}
+.js .done .ok path{animation:draw-check .35s ease .5s both}
+@keyframes draw-ring{from{stroke-dashoffset:151}to{stroke-dashoffset:0}}
+@keyframes draw-check{from{stroke-dashoffset:32}to{stroke-dashoffset:0}}
+
+.jcard{border:1px solid var(--line);border-radius:14px;padding:28px;background:var(--white)}
+
+.jcard form.f,.jcard .done{border:0;border-radius:0;padding:0;background:none}
+.jcard h3{font-size:20px}
+.jcard .jl{font-size:15px;color:var(--sub);margin:8px 0 18px}
+
+.f .opt{display:block;border:0;padding:0;margin-top:18px}
+.f .opt legend{font-size:13.5px;font-weight:600}
+.f .opt .agree{margin-top:8px}
+.f .addrrow{display:flex;gap:8px;align-items:center}
+.f .addrrow input{flex:1}
+.f .addrrow .btn-s{margin-top:7px;flex:none}
+.f .addr input[name="address_detail"]{margin-top:8px}
+.f .cdp{margin-top:8px;font-size:12.5px;line-height:1.6;color:var(--sub)}
+
+
+.res{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px}
+.res a{border:1px solid var(--line);border-radius:14px;padding:24px;background:var(--white);display:block;transition:transform .2s ease,box-shadow .2s ease}
+.res a:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(19,27,46,.07)}
+.res a:last-child{grid-column:1/-1;background:var(--surface)}
+.res span{font-size:12.5px;color:var(--mute);font-weight:600}
+.res b{display:block;font-size:19px;margin-top:6px;letter-spacing:-0.02em}
+.res em{display:block;font-style:normal;font-size:14.5px;color:var(--sub);margin-top:6px}
+
+
+.faq-h{font-size:38px}
+.faq{max-width:820px;margin-top:40px}
+.faq .fg{font-size:13.5px;font-weight:700;color:var(--mute);margin-top:34px;padding-bottom:6px;border-bottom:1px solid var(--ink)}
+.faq .fg:first-child{margin-top:0}
+.faq details{border-bottom:1px solid var(--line);padding:22px 0}
+.faq summary{font-size:17px;font-weight:600;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:16px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";color:var(--mute)}
+.faq details[open] summary::after{content:"−"}
+.faq .a p{font-size:15.5px;color:var(--sub);margin-top:12px}
+
+
+.final{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:72px 56px;text-align:center}
+.final .tag-en{font-size:15px;font-weight:600;letter-spacing:.01em;color:var(--mute);margin-bottom:14px}
+.final .btn{margin-top:30px}
+
+
+footer{border-top:1px solid var(--line);padding:56px 0 72px;font-size:14px;color:var(--sub)}
+footer .cols{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:32px}
+footer .logo{margin-bottom:14px}
+footer b{display:block;color:var(--ink);font-weight:600;margin-bottom:10px}
+footer ul{list-style:none}
+footer li{padding:3px 0}
+footer a:hover{color:var(--ink)}
+footer .nd{font-size:13.5px;line-height:1.75}
+footer .nd b{font-size:13.5px}
+footer .legal{margin-top:40px;font-size:12.5px;color:var(--mute);line-height:1.9}
+footer .fl{display:flex;gap:16px;flex-wrap:wrap}
+
+
+.js .rv{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+.js .rv.in{opacity:1;transform:none}
+.js .tl::before{transform:scaleX(0);transform-origin:left;transition:transform 1.2s ease .2s}
+.js .tl.in::before{transform:scaleX(1)}
+.js .tl .st{opacity:0;transform:translateY(10px);transition:opacity .5s ease,transform .5s ease}
+.js .tl.in .st{opacity:1;transform:none}
+.js .tl.in .st:nth-child(2){transition-delay:.25s}
+.js .tl.in .st:nth-child(3){transition-delay:.5s}
+.js .tl.in .st:nth-child(4){transition-delay:.75s}
+.js .qbar i{transform:scaleX(0);transition:transform .9s ease}
+.js .qr.in .qbar i{transform:scaleX(1)}
+.js .app .today li{opacity:0;transform:translateY(6px);transition:opacity .4s ease,transform .4s ease}
+.js .app.in .today li{opacity:1;transform:none}
+.js .app.in .today li:nth-child(2){transition-delay:.35s}
+
+.bubble.ai{position:relative}
+.bubble .dots{position:absolute;left:14px;top:16px;display:flex;gap:4px;opacity:0;pointer-events:none}
+.bubble .dots i{width:6px;height:6px;border-radius:50%;background:var(--mute)}
+.js .show.in .pane.on .bubble.me{animation:rise .35s ease .1s both}
+.js .show.in .pane.on .bubble.ai{animation:rise .35s ease .45s both}
+.js .show.in .pane.on .bubble.ai .dots{animation:dots-on 1.05s steps(1,end) .45s both}
+.js .show.in .pane.on .bubble.ai .dots i{animation:blink .7s ease-in-out .45s 2 both}
+.js .show.in .pane.on .bubble.ai .dots i:nth-child(2){animation-delay:.6s}
+.js .show.in .pane.on .bubble.ai .dots i:nth-child(3){animation-delay:.75s}
+.js .show.in .pane.on .bubble.ai .say,.js .show.in .pane.on .bubble.ai .pills{animation:show .3s ease 1.5s both}
+.js .show.in .pane.on .qk .on{animation:ping 1.2s ease 1.9s 1}
+.js .show.in .pane.on .tbl tr:nth-child(n+2){animation:show .35s ease .15s both}
+.js .show.in .pane.on .tbl tr:nth-child(3){animation-delay:.3s}
+.js .show.in .pane.on .tbl tr:nth-child(4){animation-delay:.45s}
+.js .show.in .pane.on .preview{animation:rise .35s ease .6s both}
+.js .show.in .pane.on .pill.bad{animation:ping-bad 1.2s ease 1s 1}
+.js .show.in .pane.on .tools div{animation:rise .35s ease .1s both}
+.js .show.in .pane.on .tools div:nth-child(2){animation-delay:.18s}
+.js .show.in .pane.on .tools div:nth-child(3){animation-delay:.26s}
+.js .show.in .pane.on .tools div:nth-child(4){animation-delay:.34s}
+.js .show.in .pane.on .tools div:nth-child(5){animation-delay:.42s}
+.js .show.in .pane.on .tools div:nth-child(6){animation-delay:.5s}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes show{from{opacity:0}to{opacity:1}}
+@keyframes dots-on{from{opacity:1}to{opacity:0}}
+@keyframes blink{0%,100%{opacity:.3}50%{opacity:1}}
+@keyframes ping{from{box-shadow:0 0 0 0 rgba(29,78,216,.45)}to{box-shadow:0 0 0 12px rgba(29,78,216,0)}}
+@keyframes ping-bad{from{box-shadow:0 0 0 0 rgba(159,29,29,.35)}to{box-shadow:0 0 0 8px rgba(159,29,29,0)}}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .js .rv,.js .tl .st,.js .app .today li{opacity:1!important;transform:none!important}
+  .js .tl::before,.js .qbar i{transform:none!important}
+}
+
+
+@media(max-width:860px){
+  .w{padding:0 20px}
+  nav .m{display:none}
+  section{padding:72px 0}
+  h2,.faq-h{font-size:30px}
+  .hero{padding:64px 0 24px}
+  .hero h1{font-size:40px}
+  .hero .lead{font-size:16.5px}
+  .app .body{grid-template-columns:1fr}
+  .app .side{display:none}
+  .app .main{padding:22px 16px}
+  .app .title{font-size:22px}
+  .appfig{margin-top:40px}
+  .app .chips{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .app .chips .gap{display:none}
+  .app .chips .edit{grid-column:1/-1}
+  .app .today li{align-items:flex-start}
+  .head,.show,.qc,.calc,.f .two{grid-template-columns:1fr;gap:20px}
+  .jwrap{display:flex;flex-direction:column;gap:0}
+  .jintro{display:contents}
+  .jmain{order:2;margin-top:28px}
+  .jtail{order:3}
+  .product-nav,.screen{grid-column:1;grid-row:auto}
+  .qk,.tools{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .screen{padding:20px}
+  .bubble{max-width:94%}
+  #product .tbl{font-size:12px;overflow-wrap:anywhere;word-break:normal}
+  #product .tbl th,#product .tbl td{padding:10px 4px}
+  #product .tbl .pill{white-space:nowrap}
+  .qc{gap:28px}
+  .sec{grid-template-columns:1fr 1fr}
+  .doc{grid-template-columns:1fr}
+  .tl{grid-template-columns:1fr;gap:28px}
+  .tl::before,.tl::after{display:none}
+  .opt{flex-direction:column;align-items:flex-start}
+  .qrow{grid-template-columns:90px 1fr 46px}
+  .res{grid-template-columns:1fr}
+  footer .cols{grid-template-columns:1fr 1fr}
+  .final{padding:48px 22px}
+}
+@media(max-width:640px){
+  .an2{display:none}
+  .nav-right{gap:8px}
+  .nav-right .btn-s{padding:8px 12px;font-size:13.5px}
+  .nav-right .ne{display:none}
+  .sec{grid-template-columns:1fr}
+}
+</style>
+
+<meta name="robots" content="noindex,nofollow">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Organization", "@id": "https://trops.kr/#org", "name": "주식회사 테오네", "url": "https://trops.kr/", "email": "contact@theo-ne.com"}, {"@type": "WebSite", "@id": "https://trops.kr/#site", "name": "TROPS", "url": "https://trops.kr/", "inLanguage": "ko-KR", "publisher": {"@id": "https://trops.kr/#org"}}, {"@type": "SoftwareApplication", "name": "TROPS", "url": "https://app.trops.kr/", "applicationCategory": "BusinessApplication", "operatingSystem": "Web", "description": "TROPS는 중소기업의 수출 서류 작성, 거래별 기한·대금 관리와 맞춤 지원사업 찾기를 돕는 수출 실무 서비스입니다. 앱에서 가입하고 필요한 업무를 시작하세요.", "publisher": {"@id": "https://trops.kr/#org"}}, {"@type": "FAQPage", "@id": "https://trops.kr/#faq", "mainEntity": [{"@type": "Question", "name": "TROPS는 어떤 서비스인가요?", "acceptedAnswer": {"@type": "Answer", "text": "TROPS는 수출 전담 인력이 부족한 중소기업을 위한 수출 실무 서비스입니다. 수출 서류 초안, 거래별 기한과 다음 할 일, 회사에 맞는 지원사업을 한곳에서 확인할 수 있습니다."}}, {"@type": "Question", "name": "TROPS는 어떻게 시작하나요?", "acceptedAnswer": {"@type": "Answer", "text": "app.trops.kr에서 가입하고 시작합니다. 앱에서 계정과 회사를 만들고 필요한 업무를 선택합니다."}}, {"@type": "Question", "name": "수출 계약서가 없어도 시작할 수 있나요?", "acceptedAnswer": {"@type": "Answer", "text": "계약서가 없어도 시작할 수 있습니다. 견적서 작성이나 지원사업 찾기처럼 지금 필요한 업무를 선택하세요. 서류를 만들 때 필요한 회사·거래 정보를 입력합니다."}}, {"@type": "Question", "name": "수출 서류는 어떤 것을 작성할 수 있나요?", "acceptedAnswer": {"@type": "Answer", "text": "견적서(PI), 상업송장(CI), 포장명세서(PL) 등 수출 업무에 쓰는 서류 초안을 준비할 수 있습니다. 서류별로 필요한 항목을 입력하고 내용을 확인한 뒤 발행하거나 내려받습니다."}}, {"@type": "Question", "name": "TROPS에서 만든 서류를 바로 제출해도 되나요?", "acceptedAnswer": {"@type": "Answer", "text": "서류 초안은 담당자의 확인이 필요합니다. 회사·바이어·품목·금액·거래 조건을 확인하고, 제출처에서 요구하는 양식과 항목에 맞는지 점검한 뒤 사용하세요."}}, {"@type": "Question", "name": "수출 거래의 기한과 다음 할 일은 어떻게 확인하나요?", "acceptedAnswer": {"@type": "Answer", "text": "거래별로 서류와 진행 상황, 관련 기한을 함께 확인합니다. 결제일이나 선적 일정처럼 입력한 사실을 바탕으로 관리하며, 실제 선적이나 입금처럼 외부에서 일어난 일은 담당자가 확인해 기록합니다."}}, {"@type": "Question", "name": "TROPS AI는 수출 지원사업을 어떻게 찾아주나요?", "acceptedAnswer": {"@type": "Answer", "text": "TROPS AI는 회사 지역·업종 등 회사 정보를 바탕으로 관련 지원사업을 근거와 함께 제안합니다. 확인된 조건과 더 확인할 조건을 구분하고 공고 원문으로 연결합니다. 제안이 신청 자격이나 선정을 보장하지는 않습니다."}}, {"@type": "Question", "name": "지원사업 신청 서류도 자동으로 작성해 주나요?", "acceptedAnswer": {"@type": "Answer", "text": "현재 지원사업은 관련 공고 찾기, 공고 원문 연결, 신청 서류 작성 문의까지 제공합니다. 모든 공고의 신청서를 자동으로 작성하거나 대신 제출하는 서비스는 아닙니다."}}, {"@type": "Question", "name": "TROPS 이용 요금과 무료 이용 조건은 어디서 확인하나요?", "acceptedAnswer": {"@type": "Answer", "text": "현재 적용되는 요금과 무료 이용 기간, 유료 전환 조건은 앱에서 확인할 수 있습니다. 이용을 시작하기 전 앱에 표시된 조건을 확인하세요."}}, {"@type": "Question", "name": "1분 수출 준비 진단은 가입 없이 이용할 수 있나요?", "acceptedAnswer": {"@type": "Answer", "text": "1분 수출 준비 진단은 무료로, 가입 없이 이용할 수 있습니다. 선택한 수출국과 결제 조건 등을 바탕으로 점수와 먼저 확인할 항목을 보여 주는 참고용 진단입니다."}}, {"@type": "Question", "name": "수출 서류와 회사 정보는 어떻게 처리하나요?", "acceptedAnswer": {"@type": "Answer", "text": "개인정보의 수집·이용, 외부 AI 처리, 보관과 삭제 기준은 app.trops.kr의 공식 개인정보처리방침에서 확인할 수 있습니다. 자료를 입력하기 전에 해당 기준을 확인하세요."}}, {"@type": "Question", "name": "TROPS가 무역보험 가입이나 보험금 지급을 결정하나요?", "acceptedAnswer": {"@type": "Answer", "text": "TROPS는 거래 관련 서류 준비와 기록 관리를 돕습니다. 무역보험 가입 가능 여부, 인수 조건, 보험금 지급은 해당 기관이 약관과 심사 기준에 따라 결정합니다. TROPS는 가입 대행, 특정 보험 상품 추천, 법률 자문 또는 미수금 회수 보장을 제공하지 않습니다."}}]}]}</script>
+<style>.faq-group{margin-top:32px}.faq-group h3{font-size:14px;color:var(--muted,#64748b);margin-bottom:8px}.rv,.tl{opacity:1!important;transform:none!important}.preview-flag{position:fixed;bottom:16px;left:16px;z-index:1000;background:#111827;color:white;border-radius:8px;padding:9px 14px;font-size:12px;box-shadow:0 3px 16px #0002}.hero .cta{gap:0}nav .nav-right{gap:0}.preview-flag button{margin-left:12px;color:inherit;background:none;border:0;cursor:pointer}</style></head><body>
+
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+
+
+
+
+<nav data-section="nav" aria-label="주 메뉴"><div class="w">
+  <a class="logo" href="https://www.trops.kr/"><i></i>TROPS</a>
+  <div class="m">
+    <a href="#product">제품</a>
+    <a href="#service">대금 관리</a>
+    <a href="#faq">자주 묻는 질문</a>
+    <a href="#security">보안</a>
+    <a href="#resources">자료</a>
+  </div>
+  
+  
+  
+  <div class="nav-right">
+    
+    <a class="btn btn-s" href="https://app.trops.kr/" data-track="nav-join">TROPS 시작하기</a>
+  </div>
+</div></nav>
+
+<main id="main">
+
+<header class="hero" data-section="hero"><div class="w">
+  <h1>수출 실무를 더 쉽게, TROPS AI</h1>
+  <p class="lead">거래별 서류와 기한, 다음 할 일을 연결하고 우리 회사에 맞는 지원사업을 찾습니다.</p>
+  <p class="free">수출 전담 인력이 부족한 중소기업을 위해 만듭니다.</p>
+  <div class="cta">
+    <a class="btn" href="https://app.trops.kr/" data-track="hero-join">TROPS 시작하기</a>
+    
+  </div>
+  <p class="free">앱에서 가입하고 시작하세요</p>
+
+  
+  
+  <figure class="appfig">
+  <div class="app rv">
+    <div class="bar" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="body">
+      <div class="side" aria-hidden="true">
+        <div class="brand"><span class="mk"></span><b>TROPS</b><svg class="ic tg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="m16 15-3-3 3-3"/></svg></div>
+        <div class="org"><b>○○무역</b> · 소유자</div>
+        <div class="cap">업무</div>
+        <div class="it on"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>홈</span></div>
+        <div class="it"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></svg><span>수출 거래</span><span class="add"><svg class="ic sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span></div>
+        <div class="it"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg><span>서류</span></div>
+        <div class="it"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg><span>운송</span><span class="add"><svg class="ic sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span></div>
+        <div class="it"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg><span>대금·보험</span></div>
+        <div class="it"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/><path d="m21.854 2.147-10.94 10.939"/></svg><span>보내기</span></div>
+        <div class="cap">기준 정보</div>
+        <div class="it"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 2v2"/><path d="M7 21v-2a2 2 0 012-2h6a2 2 0 012 2v2"/><path d="M8 2v2"/><circle cx="12" cy="10" r="3"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg><span>바이어</span><span class="add"><svg class="ic sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span></div>
+        <div class="it"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z"/><path d="m7 16.5-4.74-2.85"/><path d="m7 16.5 5-3"/><path d="M7 16.5v5.17"/><path d="M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z"/><path d="m17 16.5-5-3"/><path d="m17 16.5 4.74-2.85"/><path d="M17 16.5v5.17"/><path d="M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z"/><path d="M12 8 7.26 5.15"/><path d="m12 8 4.74-2.85"/><path d="M12 13.5V8"/></svg><span>수출 품목</span><span class="add"><svg class="ic sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></span></div>
+        <div class="cap">참고</div>
+        <div class="it mu"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v16"/><path d="M20.001 19A2 2 0 0022 17V5a2 2 0 00-1.999-2L16 3.002A5 5 0 0012 5a5 5 0 00-4-2H4a2 2 0 00-2 2v12a2 2 0 001.999 2H8a5 5 0 014 2 5 5 0 014-2z"/></svg><span>수출 정보</span></div>
+        <div class="bottom">
+          <div class="it"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 12h4"/><path d="M10 8h4"/><path d="M14 21v-3a2 2 0 0 0-4 0v3"/><path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2"/><path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"/></svg><span>회사</span></div>
+          <div class="it"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.925 20.056a6 6 0 0 0-11.851.001"/><circle cx="12" cy="11" r="4"/><circle cx="12" cy="12" r="10"/></svg><span>내 정보</span></div>
+        </div>
+      </div>
+      <div class="main">
+        <p class="stat"><span class="dt" id="mockDate">9월 29일(화)</span><span class="sp">·</span>이달 수출 예정 <b>3</b><span class="sp">·</span>진행 <b>2</b><span class="sp">·</span>받을 돈 <b>USD 108,000</b><span class="sp">·</span>이달 들어올 돈 <b>USD 72,000</b></p>
+        <div class="title">TROPS AI</div>
+        <form id="ask">
+          <label><span class="sr">TROPS AI 에게 요청</span><textarea name="q" id="askInput" rows="2" maxlength="500" placeholder="오늘은 어떤 수출 업무를 도와 드릴까요?"></textarea></label>
+          <div class="ctl">
+            <button type="button" class="plus" id="askPlus" aria-label="앱에서 자료 넣기 · 수출 건 연결" data-track="hero-plus"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+            <button type="submit" class="send" id="askSend" disabled data-track="hero-ask">보내기</button>
+          </div>
+        </form>
+        <div class="chips" role="group" aria-label="자주 쓰는 명령">
+          <button type="button" data-q="신규 수출 건 등록" title="신규 수출 건 등록" data-track="hero-cmd-1">신규 수출 건 등록</button>
+          <button type="button" data-q="견적서(PI) 작성" title="견적서(PI) 작성" data-track="hero-cmd-2">견적서(PI) 작성</button>
+          <button type="button" data-q="선적서류(CI, PL) 초안 작성" title="선적서류(CI, PL) 초안 작성" data-track="hero-cmd-3">선적서류(CI, PL) 초안 작성</button>
+          <span class="gap" aria-hidden="true"></span>
+          <button type="button" data-q="운송 견적 요청" title="운송 견적 요청" data-track="hero-cmd-4">운송 견적 요청</button>
+          <button type="button" data-q="선적 통보 보내기" title="선적 통보 보내기" data-track="hero-cmd-5">선적 통보 보내기</button>
+          <button type="button" data-q="대금 확인" title="대금 확인" data-track="hero-cmd-6">대금 확인</button>
+          <span class="edit" aria-hidden="true">편집</span>
+        </div>
+        <div class="today">
+          <div class="th"><div class="h">오늘 확인<span>2건</span></div><span class="rec" aria-hidden="true">기록 보기</span></div>
+          <ol>
+            <li><p><b>Hanoi Trading</b><span class="k"> · 선적 통보</span><span> · 실제 선적 <span id="mockShip">2026-09-27</span> · 바이어에게 알릴 메일</span></p><span class="ob" aria-hidden="true">통보 준비</span></li>
+            <li><p><b>Manila Supply</b><span class="k"> · 받을 돈 USD 36,000</span><span> · 만기 <span id="mockDue">2026-10-02</span> · 3일 남음 · 받을 금액</span></p><span class="ob" aria-hidden="true">대금 확인</span></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+  <figcaption>화면 예시 · 실제 업무는 앱에서 시작합니다.</figcaption>
+  </figure>
+</div></header>
+
+
+<section id="product" class="tint" data-section="product"><div class="w">
+  
+  <div class="show rv">
+    <div class="product-nav">
+      <div class="head"><div class="label">제품</div><h2>수출 거래 한 건을<br>처음부터 끝까지</h2></div>
+      <p class="flow-note">수출 서류와 거래별 할 일, 회사에 맞는 지원사업을 한곳에서 확인하세요.</p>
+      <div class="tabs" role="tablist" aria-label="제품 기능">
+        <button type="button" class="on" data-t="p1" role="tab" id="tab1" aria-controls="p1" aria-selected="true" tabindex="0"><i class="bar"></i><b>수출 서류</b><span>회사·거래 정보를 반영해 필요한 서류 초안을 준비합니다.</span></button>
+        
+        <button type="button" data-t="p2" role="tab" id="tab2" aria-controls="p2" aria-selected="false" tabindex="-1"><i class="bar"></i><b>거래·기한 관리</b><span>거래별 서류와 기한, 다음 할 일을 함께 확인합니다.</span></button>
+        <button type="button" data-t="p3" role="tab" id="tab3" aria-controls="p3" aria-selected="false" tabindex="-1"><i class="bar"></i><b>지원사업 AI</b><span>우리 회사에 맞는 지원사업을 근거와 함께 찾습니다.</span></button>
+      </div>
+    </div>
+    <div class="screen">
+      <p class="src">화면 예시</p>
+      <div class="pane on" id="p1" role="tabpanel" aria-labelledby="tab1">
+<div class="t">수출 서류</div><div class="big">필요한 서류를 한곳에서</div>
+<table class="tbl"><tr><th>서류</th><th>쓰는 때</th><th>작업</th></tr>
+<tr><td>견적서 · PI</td><td>바이어와 협의할 때</td><td><span class="pill">초안 작성</span></td></tr>
+<tr><td>상업송장 · CI</td><td>선적을 준비할 때</td><td><span class="pill">초안 작성</span></td></tr>
+<tr><td>포장명세서 · PL</td><td>포장 정보를 정리할 때</td><td><span class="pill">초안 작성</span></td></tr></table>
+<div class="preview"><b>회사·거래 정보를 연결합니다</b><p>초안의 항목과 값을 확인한 뒤 발행하고 내려받습니다.</p></div>
+<div class="src">서류별 출처와 작성 안내를 함께 확인하세요.</div></div>
+<div class="pane" id="p2" inert aria-hidden="true" role="tabpanel" aria-labelledby="tab2">
+        <div class="t">이달 들어올 돈</div><div class="big">USD 72,000 · 2건</div>
+        <table class="tbl"><tr><th>거래</th><th>바이어</th><th>단계</th><th>다음 기한</th></tr>
+          <tr><td>TR-0008</td><td>베트남 · Hanoi Trading</td><td><span class="pill">선적 완료</span></td><td>수출통지 <span class="pill warn">D-4</span></td></tr>
+          <tr><td>TR-0006</td><td>필리핀 · Manila Supply</td><td><span class="pill warn">결제 대기</span></td><td>결제기일 <span class="pill bad">오늘</span></td></tr>
+          <tr><td>TR-0005</td><td>미국 · Ohio Parts</td><td><span class="pill">계약</span></td><td>-</td></tr></table>
+        <div class="preview"><b>먼저 확인할 기한</b><p>오늘 결제기일인 필리핀 건의 입금 여부를 확인하고, 베트남 건의 수출통지 자료를 준비합니다.</p></div>
+        <div class="src">근거: 적용 약관 기준 · 선적일부터 영업일로 계산</div>
+      </div>
+      <div class="pane" id="p3" inert aria-hidden="true" role="tabpanel" aria-labelledby="tab3">
+<div class="t">TROPS AI · 지원사업</div><div class="big">우리 회사에 맞는 공고 찾기</div>
+<div class="bubble me">우리 회사가 확인할 수출 지원사업을 찾아줘.</div>
+<div class="bubble ai"><span class="say">회사 지역과 업종을 바탕으로 관련 공고와 확인할 조건을 정리합니다.</span></div>
+<div class="preview"><b>공고 원문과 조건을 함께</b><p>확인된 조건과 더 확인할 조건을 나누어 보고, 신청 서류 작성은 문의로 이어갑니다.</p></div>
+<div class="src">화면 구성 예시 · 신청 자격과 선정 여부는 공고 기관이 확인합니다.</div></div>
+    </div>
+  </div>
+</div></section>
+
+<section id="service" class="svc" data-section="service"><div class="w">
+  <div class="head rv">
+    <div><div class="label">대금 관리</div><h2>선적 이후의 서류와 기한도<br>거래에 연결합니다</h2></div>
+  </div>
+  
+  <p class="flow-note">수출 서류와 거래별 할 일, 회사에 맞는 지원사업을 한곳에서 확인하세요.</p>
+  <div class="tl rv">
+    <div class="st"><div class="dot"></div><span>선적 전</span><b>무역보험</b><em>가입이 필요한지, 무엇을 준비할지 안내합니다.</em></div>
+    <div class="st"><div class="dot"></div><span>선적 직후</span><b>수출통지</b><em>통지 기한을 계산해 미리 보여 드립니다.</em></div>
+    <div class="st"><div class="dot"></div><span>결제일 전</span><b>대금 확인</b><em>입금 예정일을 모아 보고, 지연을 먼저 짚어 드립니다.</em></div>
+    <div class="st"><div class="dot"></div><span>늦어지면</span><b>사고 통지</b><em>보상에 필요한 서류를 미리 챙겨 둡니다.</em></div>
+  </div>
+  <div class="opt rv">
+    <div>
+      <div class="ot">무역보험 서류가 처음이라면</div>
+      <p>한국무역보험공사 양식이 필요한 서류는 제출할 수 있도록 준비해 드립니다.</p>
+      <div class="om">사용 가능 · 상담 접수 · 수출 거래 건별 · 자료 확인 후 비용 안내</div>
+    </div>
+    
+    <a class="btn" href="https://app.trops.kr/insurance/quick?from=landing" data-track="step2-quote">서류 맡기기</a>
+  </div>
+  <p class="svn">가입 여부와 조건은 한국무역보험공사가 정합니다. TROPS는 서류 준비를 도울 뿐, 가입 대행이나 보험 추천은 하지 않습니다.</p>
+</div></section>
+
+<section id="check" data-section="check"><div class="w">
+  <div class="qc">
+    <div class="qt rv">
+      <div class="label">1분 진단</div>
+      <h2>이번 수출 거래,<br>대금 받을 준비는 몇 점일까</h2>
+      <p>수출국과 결제 조건만 고르면 점수와 먼저 챙길 것을 보여 드립니다.</p>
+      <div class="qb"><a class="btn" href="https://app.trops.kr/quick-check" data-track="check-start">1분 진단 시작</a><span>사용 가능 · 무료 · 가입 없이</span></div>
+    </div>
+    
+    <div class="qr rv" id="demo">
+      <div class="qh"><span>화면 예시 · 진단 결과</span><b>55<small>/100</small></b></div>
+      <div class="qrow"><div class="qn">목적국<span class="sr">: </span><em>아랍에미리트</em></div><div class="qbar"><i style="width:55%"></i></div><div class="qs">11/20</div><div class="qw">위험도가 높은 권역에 속한 국가입니다</div></div>
+      <div class="qrow"><div class="qn">상대방 이력</div><div class="qbar"><i style="width:40%"></i></div><div class="qs">6/15</div><div class="qw">확인할 수 있는 거래 이력이 부족합니다</div></div>
+      <div class="qrow"><div class="qn">대금 조건</div><div class="qbar"><i class="ok" style="width:83%"></i></div><div class="qs">25/30</div><div class="qw">비교적 안전한 결제 방식입니다</div></div>
+      <div class="qrow"><div class="qn">결제 기한</div><div class="qbar"><i style="width:40%"></i></div><div class="qs">8/20</div><div class="qw">대금 회수 기간이 긴 편입니다</div></div>
+      <div class="qrow"><div class="qn">무역보험</div><div class="qbar"><i class="bad" style="width:33%"></i></div><div class="qs">5/15</div><div class="qw">선적 전 준비가 필요합니다</div></div>
+      <div class="qf">점수는 고른 조건만으로 계산한 참고값입니다</div>
+    </div>
+  </div>
+</div></section>
+
+
+
+
+<section id="security" data-section="security"><div class="w">
+  <div class="head rv">
+    <div><div class="label">보안</div><h2>수출 거래 정보는<br>회사의 자산입니다</h2></div>
+  </div>
+  <div class="sec rv">
+    <div><b>AI 요청과 담당자 승인</b><span>AI가 정보와 초안을 준비하고, 담당자가 확인·승인합니다.</span></div>
+    <div><b>외부 AI 처리</b><span>AI 기능은 외부 AI 처리사로 정보가 전송될 수 있습니다. 전송 항목·처리위탁·저장·삭제 기준은 앱의 공식 개인정보처리방침에서 확인해 주세요.</span></div>
+    <div><b>저장·삭제 기준</b><span><a href="https://app.trops.kr/privacy">공식 개인정보처리방침 확인</a></span></div>
+    <div><b>서비스 이용 조건</b><span><a href="https://app.trops.kr/terms">공식 이용약관 확인</a></span></div>
+  </div>
+</div></section>
+
+
+
+
+
+<section id="resources" data-section="resources"><div class="w">
+  <div class="head rv">
+    <div><div class="label">자료</div><h2>가입 없이 읽는<br>수출 실무 안내</h2></div>
+    <p>수출 서류 21건과 지원사업을 정리했습니다.</p>
+  </div>
+  <div class="res rv">
+    <a href="https://app.trops.kr/guide/claim-notice" data-track="res-claim-notice"><span>무역보험</span><b>사고통지 기한</b><em>언제까지, 어떻게 알려야 하는지</em></a>
+    <a href="https://app.trops.kr/guide/export-insurance" data-track="res-export-insurance"><span>무역보험</span><b>단기수출보험</b><em>상품과 조건, 가입 전에 볼 것</em></a>
+    <a href="https://app.trops.kr/guide/payment-recovery" data-track="res-payment-recovery"><span>대금</span><b>대금 회수</b><em>대금을 받지 못했을 때의 절차</em></a>
+    <a href="https://app.trops.kr/guide/support" data-track="res-support"><span>지원사업</span><b>보험료 지원사업</b><em>17개 시도 안내</em></a>
+    <a href="https://app.trops.kr/guide/proforma-invoice" data-track="res-proforma-invoice"><span>서류</span><b>견적서(PI)</b><em>작성 항목과 방법</em></a>
+    <a href="https://app.trops.kr/guide" data-track="res-guide"><span>전체</span><b>수출 서류 21건</b><em>안내 전체 보기 →</em></a>
+    <a href="mailto:contact@theo-ne.com?subject=TROPS%20교육%20문의" data-track="res-edu"><span>교육</span><b>수출 실무 교육</b><em>무역보험 서류를 AI로 준비하는 법 · 기관·기업 출강 문의</em></a>
+  </div>
+</div></section>
+
+<section id="faq" class="tint" data-section="faq"><div class="w"><div class="label">자주 묻는 질문</div><h2 class="faq-h">TROPS, 궁금한 점을 확인하세요</h2><div class="faq"><div class="faq-group"><h3 class="fg">서비스와 시작 방법</h3><details><summary>TROPS는 어떤 서비스인가요?</summary><div class="a"><p>TROPS는 수출 전담 인력이 부족한 중소기업을 위한 수출 실무 서비스입니다. 수출 서류 초안, 거래별 기한과 다음 할 일, 회사에 맞는 지원사업을 한곳에서 확인할 수 있습니다.</p></div></details><details><summary>TROPS는 어떻게 시작하나요?</summary><div class="a"><p>app.trops.kr에서 가입하고 시작합니다. 앱에서 계정과 회사를 만들고 필요한 업무를 선택합니다. <a href="https://app.trops.kr/">TROPS 시작하기 →</a></p></div></details><details><summary>수출 계약서가 없어도 시작할 수 있나요?</summary><div class="a"><p>계약서가 없어도 시작할 수 있습니다. 견적서 작성이나 지원사업 찾기처럼 지금 필요한 업무를 선택하세요. 서류를 만들 때 필요한 회사·거래 정보를 입력합니다.</p></div></details></div><div class="faq-group"><h3 class="fg">서류와 거래 관리</h3><details><summary>수출 서류는 어떤 것을 작성할 수 있나요?</summary><div class="a"><p>견적서(PI), 상업송장(CI), 포장명세서(PL) 등 수출 업무에 쓰는 서류 초안을 준비할 수 있습니다. 서류별로 필요한 항목을 입력하고 내용을 확인한 뒤 발행하거나 내려받습니다.</p></div></details><details><summary>TROPS에서 만든 서류를 바로 제출해도 되나요?</summary><div class="a"><p>서류 초안은 담당자의 확인이 필요합니다. 회사·바이어·품목·금액·거래 조건을 확인하고, 제출처에서 요구하는 양식과 항목에 맞는지 점검한 뒤 사용하세요.</p></div></details><details><summary>수출 거래의 기한과 다음 할 일은 어떻게 확인하나요?</summary><div class="a"><p>거래별로 서류와 진행 상황, 관련 기한을 함께 확인합니다. 결제일이나 선적 일정처럼 입력한 사실을 바탕으로 관리하며, 실제 선적이나 입금처럼 외부에서 일어난 일은 담당자가 확인해 기록합니다.</p></div></details></div><div class="faq-group"><h3 class="fg">지원사업과 이용 안내</h3><details><summary>TROPS AI는 수출 지원사업을 어떻게 찾아주나요?</summary><div class="a"><p>TROPS AI는 회사 지역·업종 등 회사 정보를 바탕으로 관련 지원사업을 근거와 함께 제안합니다. 확인된 조건과 더 확인할 조건을 구분하고 공고 원문으로 연결합니다. 제안이 신청 자격이나 선정을 보장하지는 않습니다.</p></div></details><details><summary>지원사업 신청 서류도 자동으로 작성해 주나요?</summary><div class="a"><p>현재 지원사업은 관련 공고 찾기, 공고 원문 연결, 신청 서류 작성 문의까지 제공합니다. 모든 공고의 신청서를 자동으로 작성하거나 대신 제출하는 서비스는 아닙니다.</p></div></details><details><summary>TROPS 이용 요금과 무료 이용 조건은 어디서 확인하나요?</summary><div class="a"><p>현재 적용되는 요금과 무료 이용 기간, 유료 전환 조건은 앱에서 확인할 수 있습니다. 이용을 시작하기 전 앱에 표시된 조건을 확인하세요.</p></div></details><details><summary>1분 수출 준비 진단은 가입 없이 이용할 수 있나요?</summary><div class="a"><p>1분 수출 준비 진단은 무료로, 가입 없이 이용할 수 있습니다. 선택한 수출국과 결제 조건 등을 바탕으로 점수와 먼저 확인할 항목을 보여 주는 참고용 진단입니다.</p></div></details><details><summary>수출 서류와 회사 정보는 어떻게 처리하나요?</summary><div class="a"><p>개인정보의 수집·이용, 외부 AI 처리, 보관과 삭제 기준은 app.trops.kr의 공식 개인정보처리방침에서 확인할 수 있습니다. 자료를 입력하기 전에 해당 기준을 확인하세요. <a href="https://app.trops.kr/privacy">개인정보처리방침 →</a></p></div></details><details><summary>TROPS가 무역보험 가입이나 보험금 지급을 결정하나요?</summary><div class="a"><p>TROPS는 거래 관련 서류 준비와 기록 관리를 돕습니다. 무역보험 가입 가능 여부, 인수 조건, 보험금 지급은 해당 기관이 약관과 심사 기준에 따라 결정합니다. TROPS는 가입 대행, 특정 보험 상품 추천, 법률 자문 또는 미수금 회수 보장을 제공하지 않습니다.</p></div></details></div></div></div></section>
+
+<section class="fin" data-section="final"><div class="w">
+  <div class="final rv">
+    <div class="tag-en">Trade Ops, Solved.</div>
+    <h2>담당자 한 명으로도<br>빈틈없는 수출 관리</h2>
+    <a class="btn" href="https://app.trops.kr/" data-track="final-join">TROPS 시작하기</a>
+  </div>
+</div></section>
+
+</main>
+
+<footer data-section="footer"><div class="w">
+  <div class="cols">
+    <div>
+      <a class="logo" href="https://www.trops.kr/"><i></i>TROPS</a>
+      
+      <div class="nd"><b>TROPS가 하지 않는 일</b>법률 자문과 계약서에 대한 법률적 검토를 제공하지 않습니다(변호사법·외국법자문사법). 보험 인수·지급 심사나 가입 대행, 특정 상품 추천을 하지 않으며, 가입 가능 여부와 조건은 해당 기관이 약관과 심사 기준에 따라 결정합니다. 미수금 회수를 보장하지 않습니다.</div>
+    </div>
+    <div><b>제품</b><ul><li><a href="#product">수출 서류</a></li><li><a href="#product">거래·기한 관리 · 지원사업 AI</a></li><li><a href="#service">무역보험 준비 패키지</a></li><li><a href="#check">1분 수출 준비 진단</a></li><li><a href="mailto:contact@theo-ne.com?subject=TROPS%20교육%20문의">수출 실무 교육</a></li></ul></div>
+    <div><b>자료</b><ul><li><a href="https://app.trops.kr/guide">수출절차 안내</a></li><li><a href="https://app.trops.kr/guide/support">보험료 지원사업</a></li><li><a href="https://app.trops.kr/guide/glossary">무역 용어</a></li></ul></div>
+    
+    <div><b>회사</b><ul><li><a href="https://app.trops.kr/" data-track="footer-join">TROPS 시작하기</a></li><li><a href="https://www.trops.kr/about">회사 소개</a></li><li><a href="#security">보안</a></li><li><a href="https://www.trops.kr/contact" data-track="footer-contact">문의 · 교육 · 파트너</a></li></ul></div>
+  </div>
+  
+  <div class="legal">
+    <div>주식회사 테오네 · 대표 범하나 · 사업자등록번호 625-81-04032 · 서울특별시 강남구 봉은사로 524, B층 269-11호(삼성동) · <a href="mailto:contact@theo-ne.com">contact@theo-ne.com</a></div>
+    <div class="fl"><a href="https://app.trops.kr/terms">이용약관</a><a href="https://app.trops.kr/privacy">개인정보처리방침</a><a href="https://www.trops.kr/refund">환불규정</a><a href="https://www.trops.kr/en" hreflang="en" lang="en">English</a></div>
+    <div>© 2026 TROPS. All rights reserved.</div>
+  </div>
+</div></footer>
+
+
+
+
+
+
+
+<div class="preview-flag">랜딩 정리 시안 · 미배포<button type="button" aria-label="시안 표시 닫기" onclick="this.parentElement.remove()">×</button></div>
+<script>
+const tabs=[...document.querySelectorAll('.tabs button')];
+function selectTab(i,focus=false){tabs.forEach((b,k)=>{const on=k===i;b.classList.toggle('on',on);b.setAttribute('aria-selected',String(on));b.tabIndex=on?0:-1;const p=document.getElementById(b.dataset.t);p.classList.toggle('on',on);p.inert=!on;p.setAttribute('aria-hidden',String(!on));});if(focus)tabs[i].focus();}
+tabs.forEach((b,i)=>{b.addEventListener('click',()=>selectTab(i));b.addEventListener('keydown',e=>{let n=null;if(e.key==='ArrowRight')n=(i+1)%tabs.length;if(e.key==='ArrowLeft')n=(i+tabs.length-1)%tabs.length;if(e.key==='Home')n=0;if(e.key==='End')n=tabs.length-1;if(n!==null){e.preventDefault();selectTab(n,true);}});});
+const nav=document.querySelector('nav');addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>8),{passive:true});
+const input=document.getElementById('askInput');if(input){input.readOnly=true;input.placeholder='실제 업무는 TROPS 앱에서 시작하세요';input.setAttribute('aria-label','화면 예시 · 실제 업무는 TROPS 앱에서 시작하세요');}
+document.querySelectorAll('.hero button').forEach(b=>{b.disabled=false;b.addEventListener('click',()=>location.href='https://app.trops.kr/');});
+</script></body></html>

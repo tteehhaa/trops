@@ -1,0 +1,33 @@
+.workspace-flow{margin-top:80px;text-align:left;border-top:1px solid var(--line);padding-top:48px}
+.workspace-flow ol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:48px;list-style:none;margin-top:36px}
+.workspace-flow li{position:relative;min-width:0;text-align:center;--flow-delay:0s}
+.workspace-flow li:nth-child(2){--flow-delay:2.4s}
+.workspace-flow li:nth-child(3){--flow-delay:4.8s}
+.workspace-flow li+li::before{content:'→';position:absolute;left:-24px;top:20px;transform:translate(-50%,-50%);z-index:1;display:grid;place-items:center;width:32px;height:24px;background:var(--white);color:var(--mute);font-size:20px;line-height:1}
+.workspace-flow li:not(:last-child)::after{content:'';position:absolute;left:calc(50% + 36px);top:19px;width:calc(100% - 24px);height:2px;background-color:var(--line);background-image:linear-gradient(90deg,transparent 35%,var(--accent) 50%,transparent 65%);background-size:300% 100%;background-position:100% 0}
+.workspace-flow .flow-icon{position:relative;display:grid;place-items:center;width:40px;height:40px;border-radius:10px;background:var(--accent-soft);color:var(--accent);margin:0 auto 16px;box-shadow:0 0 0 1px transparent}
+.workspace-flow svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.workspace-flow h3{font-size:17px;font-weight:600;letter-spacing:-.02em}
+.workspace-flow li p{margin-top:8px;color:var(--sub);font-size:14px;line-height:1.8}
+html[lang="en"] .workspace-flow h2{font-size:clamp(24px,2.5vw,32px);font-weight:600;letter-spacing:-.04em;line-height:1.45}
+.workspace-flow>p{margin-top:14px;color:var(--sub);font-size:16px}
+.workspace-flow.is-flowing .flow-icon{animation:flow-step 7.2s ease-in-out infinite;animation-delay:var(--flow-delay)}
+.workspace-flow.is-flowing li:not(:last-child)::after{animation:flow-connection 7.2s linear infinite;animation-delay:var(--flow-delay)}
+.workspace-flow.is-flowing li+li::before{animation:flow-arrow 7.2s ease-in-out infinite;animation-delay:calc(var(--flow-delay) - 2.4s)}
+@keyframes flow-step{0%,30%,100%{background:var(--accent-soft);color:var(--accent);box-shadow:0 0 0 1px transparent;transform:translateY(0)}8%,24%{background:var(--accent);color:#fff;box-shadow:0 0 0 6px var(--accent-soft);transform:translateY(-2px)}}
+@keyframes flow-connection{0%,16%{background-position:100% 0}36%,100%{background-position:0% 0}}
+@keyframes flow-arrow{0%,16%,36%,100%{color:var(--mute)}22%,30%{color:var(--accent)}}
+@media(max-width:860px){
+ .workspace-flow{margin-top:48px;padding-top:32px}
+ .workspace-flow>p{font-size:14px}
+ .workspace-flow ol{grid-template-columns:1fr;gap:40px;margin-top:28px}
+ .workspace-flow li{display:grid;grid-template-columns:40px minmax(0,1fr);column-gap:16px;text-align:left}
+ .workspace-flow .flow-icon{grid-row:1/3;margin:0}
+ .workspace-flow li+li::before{content:'↓';left:20px;top:-20px;width:24px;height:24px}
+ .workspace-flow li:not(:last-child)::after{left:19px;top:50px;width:2px;height:calc(100% - 20px);background-image:linear-gradient(180deg,transparent 35%,var(--accent) 50%,transparent 65%);background-size:100% 300%;background-position:0 100%}
+ .workspace-flow h3{font-size:16px}
+ .workspace-flow li p{font-size:13px;margin-top:4px}
+ .workspace-flow.is-flowing li:not(:last-child)::after{animation-name:flow-connection-down}
+}
+@keyframes flow-connection-down{0%,16%{background-position:0 100%}36%,100%{background-position:0 0%}}
+@media(prefers-reduced-motion:reduce){.workspace-flow .flow-icon,.workspace-flow li::before,.workspace-flow li::after{animation:none!important;transform:none}.workspace-flow li+li::before{transform:translate(-50%,-50%)}}
