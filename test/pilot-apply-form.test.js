@@ -32,13 +32,23 @@ test('회사 소개도 앱으로 바로 연결되고 실증 모집을 하지 않
   assert.ok(!/href="\/#join"|실증에 참여|초대 방식/.test(h));
 });
 
+/*
+ * 🔄 **「핵심 기능 세 개」를 세는 자리가 탭에서 기능 블록으로 옮겨 갔습니다** 〔2026-10-16 · 대표 결정〕
+ *    토스페이먼츠형 히어로와 함께 제품 탭 세 개를 01·02·03 블록(`<ol class="features">`)으로 펼쳤습니다 —
+ *    스크롤만 하는 방문자가 첫 탭(수출 서류)만 보고 지나가던 문제를 없애려는 것입니다.
+ * 🔴 축은 그대로입니다 — 「제품 구획에 핵심 기능이 정확히 세 개」. 세는 대상만 `role="tab"` → `<li class="feature"` 입니다.
+ * ⛔ 탭이 되살아나지 않게 `role="tab"` 0 도 함께 잽니다(블록과 탭이 한 장에 겹치면 같은 기능이 두 번 보입니다).
+ */
 test('자료 카드 세 개와 핵심 기능 세 개가 유지된다', () => {
   for (const file of ['index.html', 'en.html']) {
     const h = body(file);
     const section = h.match(/<section id="resources"[\s\S]*?<\/section>/)?.[0];
     assert.ok(section);
     assert.equal((section.match(/<a\b/g) || []).length, 3);
-    assert.equal((h.match(/role="tab"/g) || []).length, 3);
+    const product = h.match(/<section id="product"[\s\S]*?<\/section>/)?.[0];
+    assert.ok(product, file + ': 제품 구획을 찾지 못했습니다');
+    assert.equal((product.match(/<li class="feature"/g) || []).length, 3, file + ': 제품 기능 블록이 세 개가 아닙니다');
+    assert.equal((h.match(/role="tab"/g) || []).length, 0, file + ': 제품 탭이 남아 있습니다');
     assert.ok(!h.includes('필요할 때 찾아보세요'));
     assert.ok(!h.includes('가입 없이 읽을 수 있습니다.'));
   }
