@@ -264,7 +264,7 @@ form{padding-block:clamp(8px,1.5vw,16px) clamp(48px,6vw,72px)}
       <div class="fld wide" id="f-email">
         <label for="email">연락처<span class="req" aria-hidden="true">*</span></label>
         <input id="email" name="email" type="email" autocomplete="email" inputmode="email" required>
-        <p class="hint" id="email-hint">회신은 이 주소로 드립니다.</p>
+        <p class="hint" id="email-hint">회신은 이 주소로 드려요.</p>
       </div>
     </div>
   </fieldset>
@@ -304,9 +304,9 @@ form{padding-block:clamp(8px,1.5vw,16px) clamp(48px,6vw,72px)}
         <label for="policy">무역보험 증권 보유 여부</label>
         <select id="policy" name="policy">
           <option value="">선택하지 않음</option>
-          <option>보유하고 있습니다</option>
-          <option>신청해 두었습니다</option>
-          <option>보유하고 있지 않습니다</option>
+          <option>보유하고 있어요</option>
+          <option>신청해 두었어요</option>
+          <option>보유하고 있지 않아요</option>
         </select>
       </div>
     </div>
@@ -316,7 +316,7 @@ form{padding-block:clamp(8px,1.5vw,16px) clamp(48px,6vw,72px)}
     <legend>문의 내용</legend>
     <div class="grid2">
       <div class="fld wide">
-        <label for="inquiry">어떤 건인지 적어 주십시오</label>
+        <label for="inquiry">어떤 건인지 적어 주세요</label>
         <textarea id="inquiry" name="inquiry" rows="6"></textarea>
       </div>
     </div>
@@ -415,7 +415,7 @@ form{padding-block:clamp(8px,1.5vw,16px) clamp(48px,6vw,72px)}
     consult: {
       eyebrow: '상담 문의',
       title: '문의하기',
-      lead: '수출 절차·서류·일정에 대해 궁금하신 점을 적어 주십시오. 영업일 기준으로 회신드립니다.',
+      lead: '수출 절차·서류·일정에 대해 궁금한 점을 적어 주세요. 영업일 기준으로 회신드려요.',
       quote: false,
       items: '회사명, 담당자 이름, 이메일 주소, 문의 내용'
     },
@@ -453,14 +453,14 @@ form{padding-block:clamp(8px,1.5vw,16px) clamp(48px,6vw,72px)}
        */
       eyebrow: '견적 요청',
       title: '견적 요청하기',
-      lead: '거래 개요를 함께 주시면 필요한 범위와 일정을 정리해 회신드립니다.',
+      lead: '거래 개요를 함께 주시면 필요한 범위와 일정을 정리해 회신드려요.',
       quote: true,
       items: '회사명, 담당자 이름, 이메일 주소, 문의 내용, 거래 개요(계약금액·목적국·결제조건·무역보험 증권 보유 여부)'
     },
     notify: {
       eyebrow: '출시 알림',
       title: '출시 알림 받기',
-      lead: '준비되는 대로 이 주소로 안내해 드립니다. 다른 용도로 쓰지 않습니다.',
+      lead: '준비되는 대로 이 주소로 안내해 드려요. 다른 용도로는 쓰지 않아요.',
       quote: false,
       notifyOnly: true,
       items: '이메일 주소'
@@ -517,7 +517,7 @@ form{padding-block:clamp(8px,1.5vw,16px) clamp(48px,6vw,72px)}
     $('fs-inquiry').hidden = true;
     $('name').required = false;
     document.querySelector('#f-email label').textContent = '이메일';
-    $('email-hint').textContent = '이 주소로만 안내를 보냅니다.';
+    $('email-hint').textContent = '이 주소로만 안내를 보내요.';
     $('fs-who').querySelector('legend').textContent = '받으실 주소';
   }
 
@@ -566,24 +566,24 @@ form{padding-block:clamp(8px,1.5vw,16px) clamp(48px,6vw,72px)}
     var name = ($('name').value || '').trim();
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      say('bad', '이메일 주소를 다시 확인해 주십시오.');
+      say('bad', '이메일 주소를 다시 확인해 주세요.');
       $('email').focus();
       return;
     }
     if (!kind.notifyOnly && !name) {
-      say('bad', '담당자 이름을 적어 주십시오.');
+      say('bad', '담당자 이름을 적어 주세요.');
       $('name').focus();
       return;
     }
     if (!$('consent').checked) {
-      say('bad', '개인정보 수집·이용에 동의하셔야 접수할 수 있습니다.');
+      say('bad', '개인정보 수집·이용에 동의하셔야 접수할 수 있어요.');
       $('consent').focus();
       return;
     }
 
     sending = true;
     submit.disabled = true;
-    note.textContent = '보내는 중입니다…';
+    note.textContent = '보내는 중이에요…';
     result.hidden = true;
 
     /*
@@ -640,8 +640,8 @@ form{padding-block:clamp(8px,1.5vw,16px) clamp(48px,6vw,72px)}
          *    **함께** 고치십시오.
          */
         say('ok', kind.notifyOnly
-          ? '등록되었습니다. 준비되는 대로 적어 주신 주소로 안내해 드리겠습니다.'
-          : '접수되었습니다. 확인 후 적어 주신 주소로 회신드리겠습니다.');
+          ? '등록했어요. 준비되는 대로 적어 주신 주소로 안내해 드릴게요.'
+          : '접수했어요. 확인 후 적어 주신 주소로 회신드릴게요.');
         /*
          * 🔴 **성공하면 폼 «전체»를 내립니다** 〔2026-09-01 · 대표 실사용 지적〕.
          *    종전에는 `.actions`(버튼 줄)만 내려서, 접수가 끝났는데도 이메일 칸과 동의
@@ -657,14 +657,14 @@ form{padding-block:clamp(8px,1.5vw,16px) clamp(48px,6vw,72px)}
       }
       /* 서버가 왜 막았는지 알려 주는 경우가 있습니다(동의 누락 등) — 그대로 옮기지 않고
          사람이 할 수 있는 말로 바꿉니다. */
-      throw new Error(res.status === 400 ? '입력값을 다시 확인해 주십시오.' : '보내지 못했습니다.');
+      throw new Error(res.status === 400 ? '입력값을 다시 확인해 주세요.' : '보내지 못했어요.');
     }).catch(function(err){
       clearTimeout(timeout);
       sending = false;
       submit.disabled = false;
       note.textContent = '';
-      say('bad', (err && err.name === 'AbortError' ? '접수 결과를 확인하지 못했습니다. 입력 내용은 유지됩니다.' : '보내지 못했습니다. 입력 내용을 확인해 주세요.') +
-        ' 잠시 뒤 다시 시도해 주시거나 contact@theo-ne.com 으로 보내 주십시오.');
+      say('bad', (err && err.name === 'AbortError' ? '접수 결과를 확인하지 못했어요. 입력 내용은 그대로 남아 있어요.' : '보내지 못했어요. 입력 내용을 확인해 주세요.') +
+        ' 잠시 뒤 다시 시도하거나 contact@theo-ne.com 으로 보내 주세요.');
     });
   });
 })();
