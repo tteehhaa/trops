@@ -145,7 +145,8 @@ test('🔴 랜딩이 「알려드립니다」로 알림을 약속하지 않는�
    *    변경 «고지»라 뜻이 다르고, 법령이 요구하는 문장입니다.
    */
   for (const f of LANDINGS) {
-    const hits = (body(f).match(/알려\s*드립니다/g) || []).length;
+    // 🔄 2026-10-16 해요체 — 「알려 드려요」도 같은 약속입니다.
+    const hits = (body(f).match(/알려\s*드(립니다|려요)/g) || []).length;
     assert.strictEqual(hits, 0, f + ' 에 알림 약속 문면이 ' + hits + '곳 있습니다');
   }
 });
