@@ -1,8 +1,19 @@
-#product .screen{grid-template-rows:auto 1fr}
-#product .screen>.src{grid-area:1/1;margin:0 0 18px;padding:0;border:0}
-#product .pane{grid-area:2/1}
-#product #p3{display:flex;flex-direction:column}
-#product .demo-composer-wrap{margin-top:auto;padding-top:22px}
+#product .features{list-style:none;display:grid;gap:120px;margin-top:88px}
+#product .feature{display:grid;grid-template-columns:300px minmax(0,1fr);gap:72px;align-items:start}
+#product .feature-copy{position:sticky;top:152px;min-width:0;padding-top:40px}
+#product .feature-num{display:inline-flex;align-items:center;justify-content:center;min-width:40px;height:28px;padding:0 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-size:13px;font-weight:700;letter-spacing:.02em}
+#product .feature-copy h3{margin-top:18px;font-size:28px;line-height:1.35;letter-spacing:-.035em;font-weight:700}
+#product .feature-copy p{margin-top:14px;font-size:16px;line-height:1.8;color:var(--sub)}
+#product .feature-screen{min-width:0;padding:44px;border:1px solid #e0e6f0;border-radius:14px;background:var(--white);box-shadow:0 20px 55px -20px #131b2e24;transition:box-shadow .4s}
+#product .feature-screen:hover{box-shadow:0 25px 65px -20px #131b2e30}
+#product .feature-screen>.src{margin:0 0 18px;padding:0;border:0}
+#product .feature-pane{min-width:0}
+#product .feature-pane .t{font-size:13px;color:var(--mute)}
+#product .feature-pane .big{margin-top:10px;font-size:22px;font-weight:700;letter-spacing:-0.02em}
+#product .feature-pane .tbl{margin-top:28px}
+#product .feature-pane .preview{margin-top:28px;padding:22px}
+#product .feature-pane .src{margin-top:24px}
+#product .demo-composer-wrap{padding-top:22px}
 #product .demo-composer{padding:15px 16px 12px;border:1px solid var(--line);border-radius:14px;background:var(--white);box-shadow:0 4px 16px #131b2e06}
 #product .demo-composer-placeholder{display:block;color:var(--mute);font-size:13px;line-height:1.6}
 #product .demo-composer-tools{display:flex;align-items:center;justify-content:space-between;margin-top:14px}
@@ -45,5 +56,6 @@
 @keyframes demo-task{0%,40%,100%{box-shadow:inset 3px 0 transparent}52%,86%{box-shadow:inset 3px 0 var(--accent)}}
 @keyframes demo-card{0%,8%,100%{opacity:.2;transform:translateY(8px)}24%,88%{opacity:1;transform:none}}
 @keyframes demo-search{0%,100%{opacity:.25}50%{opacity:1}}
-@media(max-width:600px){#product .demo-fields>div{grid-template-columns:76px minmax(0,1fr);gap:8px;font-size:12px}#product .demo-timeline{gap:5px;padding:10px 8px;font-size:11px}#product .demo-timeline span{padding:5px}#product .demo-program{grid-template-columns:minmax(0,1fr);gap:6px}#product .demo-program strong{grid-column:auto}#product .demo-program em{font-size:11px}}
-@media(prefers-reduced-motion:reduce){#product .pane [data-demo-field],#product .pane [data-demo-card],#product .pane [data-demo-stage],#product .pane [data-demo-deal],#product .pane .demo-complete,#product .pane .demo-next-task,#product .pane .demo-search-dots{animation:none!important;clip-path:none;opacity:1;transform:none}}
+@media(max-width:860px){#product .features{gap:80px;margin-top:52px}#product .feature{grid-template-columns:minmax(0,1fr);gap:28px}#product .feature-copy{position:static;padding-top:0}#product .feature-copy h3{margin-top:14px;font-size:24px}#product .feature-copy p{font-size:15px}#product .feature-screen{padding:28px 24px}#product .feature-pane .preview{padding:18px}}
+@media(max-width:600px){#product .feature-screen{padding:22px 16px}#product .demo-fields>div{grid-template-columns:76px minmax(0,1fr);gap:8px;font-size:12px}#product .demo-timeline{gap:5px;padding:10px 8px;font-size:11px}#product .demo-timeline span{padding:5px}#product .demo-program{grid-template-columns:minmax(0,1fr);gap:6px}#product .demo-program strong{grid-column:auto}#product .demo-program em{font-size:11px}}
+@media(prefers-reduced-motion:reduce){#product .feature-screen{transition:none}#product .feature-pane [data-demo-field],#product .feature-pane [data-demo-card],#product .feature-pane [data-demo-stage],#product .feature-pane [data-demo-deal],#product .feature-pane .demo-complete,#product .feature-pane .demo-next-task,#product .feature-pane .demo-search-dots{animation:none!important;clip-path:none;opacity:1;transform:none}}

@@ -260,27 +260,30 @@ test('표면 배경 토큰이 살아 있다 — 섹션 교차의 값이 흩어�
   }
 });
 
-/* ══ ⑥ 회사 소개 01 ↔ 랜딩 제품 탭 ════════════════════════════════════════ */
+/* ══ ⑥ 회사 소개 01 ↔ 랜딩 제품 기능 블록 ══════════════════════════════════ */
 
-test('🔴 회사 소개 01 의 제품 이름이 랜딩 제품 탭과 같다 — 이름 · 순서', () => {
+test('🔴 회사 소개 01 의 제품 이름이 랜딩 제품 기능 블록과 같다 — 이름 · 순서', () => {
   /*
    * 🔴 **신설 2026-10-03 · 대표 결정.** 회사 소개 01 「무엇을 하는 회사인가」는 v3 랜딩(2026-09-30) 뒤에도
    *    옛 세 단계(무료 · 유료 · 준비 중)를 들고 있었습니다 — 랜딩이 이미 제품으로 소개하는 대금 관리를
    *    「준비 중」으로 적은 채였고, 두 장을 묶는 검사가 없어 아무도 못 봤습니다.
-   * ⚠️ 이름과 순서만 맞댑니다 — 설명 문장은 장마다 달라도 됩니다(랜딩은 탭, 회사 소개는 읽는 글).
-   * ⛔ 탭이나 칸을 못 찾으면 red 입니다 — 빈 목록끼리 같다고 통과하는 «조용한 초록»을 막습니다.
+   * 🔄 **2026-10-16 · 대표 결정 — 제품 탭을 01·02·03 기능 블록으로 펼쳤습니다**(토스페이먼츠형 히어로와 같은 배치).
+   *    이름을 읽는 자리가 `<div class="tabs">` 의 `<button role="tab"><b>` 에서 `<ol class="features">` 의
+   *    `<h3>` 로 옮겨 갔습니다. ⛔ 축은 바꾸지 않았습니다 — 이름 · 순서가 회사 소개 01 과 같다.
+   * ⚠️ 이름과 순서만 맞댑니다 — 설명 문장은 장마다 달라도 됩니다(랜딩은 기능 블록, 회사 소개는 읽는 글).
+   * ⛔ 블록이나 칸을 못 찾으면 red 입니다 — 빈 목록끼리 같다고 통과하는 «조용한 초록»을 막습니다.
    */
   const strip = (h) => h.replace(/<!--[\s\S]*?-->/g, '');
   const landing = strip(read('index.html'));
-  const tabs = (landing.match(/<div class="tabs"[\s\S]*?<\/div>/) || [''])[0];
-  const tabNames = [...tabs.matchAll(/<button[^>]*role="tab"[^>]*>[\s\S]*?<b>([^<]+)<\/b>/g)].map((m) => m[1].trim());
+  const features = (landing.match(/<ol class="features"[\s\S]*?<\/ol>/) || [''])[0];
+  const featureNames = [...features.matchAll(/<li class="feature"[^>]*>[\s\S]*?<h3[^>]*>([^<]+)<\/h3>/g)].map((m) => m[1].trim());
   const about = strip(read('about.html'));
   const sec = (about.match(/<section aria-labelledby="h-what">[\s\S]*?<\/section>/) || [''])[0];
   const cardNames = [...sec.matchAll(/<div class="fs">\s*<h3>([^<]+)<\/h3>/g)].map((m) => m[1].trim());
-  assert.ok(tabNames.length >= 2, '랜딩 제품 탭을 찾지 못했습니다 — 검사가 낡았습니다');
+  assert.ok(featureNames.length >= 2, '랜딩 제품 기능 블록을 찾지 못했습니다 — 검사가 낡았습니다');
   assert.ok(cardNames.length >= 2, '회사 소개 01 의 제품 칸을 찾지 못했습니다 — 검사가 낡았습니다');
-  assert.deepStrictEqual(cardNames, tabNames,
-    '회사 소개 01 의 제품 이름이 랜딩 제품 탭과 다릅니다 — 한쪽만 고치지 마십시오');
+  assert.deepStrictEqual(cardNames, featureNames,
+    '회사 소개 01 의 제품 이름이 랜딩 제품 기능 블록과 다릅니다 — 한쪽만 고치지 마십시오');
   /* 옛 상태 꼬리표가 되살아나지 않는다 — 랜딩에 없는 단계 구분을 이 장만 들지 않습니다. */
   assert.ok(!sec.includes('준비 중'), '회사 소개 01 에 「준비 중」이 되살아났습니다 — 랜딩의 지금 상태와 맞추십시오');
 });

@@ -176,32 +176,8 @@ nav .m a:hover{color:var(--ink)}
 .sample{display:inline-block;font-size:12px;color:var(--warn-ink);background:var(--warn-bg);border-radius:999px;padding:2px 10px;margin-left:8px;vertical-align:middle}
 
 
-.show{display:grid;grid-template-columns:360px minmax(0,1fr);gap:28px 40px;align-items:start}
-.product-nav{grid-column:1;grid-row:1}
 #product .head{display:block}
 #product .flow-note{font-size:15px;color:var(--sub);margin-top:16px}
-#product .tabs{margin-top:28px}
-.tabs button{position:relative;display:block;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);
-  padding:20px 0;font-family:inherit;cursor:pointer;color:var(--mute)}
-.tabs button:last-child{border-bottom:1px solid var(--line)}
-.tabs button b{display:block;font-size:22px;color:var(--mute);letter-spacing:-0.03em}
-.tabs button span{display:none;font-size:15px;color:var(--sub);margin-top:8px}
-.tabs button.on b{color:var(--ink)}
-.tabs button.on span{display:block}
-.tabs button:focus:not(:focus-visible){outline:none}
-.tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
-.tabs button:focus-visible b{text-decoration:underline;text-underline-offset:6px}
-.tabs .bar{position:absolute;left:0;top:-1px;height:2px;width:0;background:var(--accent)}
-.tabs button.on .bar{animation:fill 6s linear forwards}
-.tabs.paused button.on .bar{animation-play-state:paused}
-.tabs.stopped button.on .bar{width:100%;animation:none}
-@keyframes fill{to{width:100%}}
-.screen{display:grid;grid-column:2;grid-row:1;min-width:0;border:1px solid var(--line);border-radius:14px;background:var(--white);box-shadow:0 12px 32px rgba(19,27,46,.06);padding:28px}
-.pane{grid-area:1/1;min-width:0;visibility:hidden;pointer-events:none}
-.pane.on{visibility:visible;pointer-events:auto;animation:fadein .45s ease}
-@keyframes fadein{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.pane .t{font-size:13px;color:var(--mute)}
-.pane .big{font-size:22px;font-weight:700;margin-top:4px;letter-spacing:-0.02em}
 .bubble{border-radius:12px;padding:12px 14px;font-size:14px;margin-top:12px;max-width:80%}
 .bubble.me{margin-left:auto;background:var(--accent-soft)}
 .bubble.ai{border:1px solid var(--line)}
@@ -499,9 +475,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
   .jintro{display:contents}
   .jmain{order:2;margin-top:28px}
   .jtail{order:3}
-  .product-nav,.screen{grid-column:1;grid-row:auto}
   .qk,.tools{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .screen{padding:20px}
   .bubble{max-width:94%}
   #product .tbl{font-size:12px;overflow-wrap:anywhere;word-break:normal}
   #product .tbl th,#product .tbl td{padding:10px 4px}
@@ -645,14 +619,11 @@ nav .m a{position:relative;transition:color .2s}nav .m a::after{content:"";posit
 .hero .lead{max-width:680px;line-height:1.75;margin-top:26px}.hero>.w>.free{color:var(--mute);font-size:13px;letter-spacing:-.01em}
 .btn{position:relative;overflow:hidden;isolation:isolate;box-shadow:0 3px 8px #1d4ed814;transition:transform .25s var(--ease-out),box-shadow .25s,background .25s}.btn::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(110deg,transparent 25%,#ffffff20 48%,transparent 72%);transform:translateX(-120%);transition:transform .65s var(--ease-out)}.btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px #1d4ed827}.btn:hover::after{transform:translateX(120%)}.btn:active{transform:translateY(0) scale(.98);box-shadow:0 2px 6px #1d4ed820}
 .static-workspace{position:relative;perspective:1200px;margin-top:62px}.static-workspace img{position:relative;z-index:1;border-radius:14px;box-shadow:0 32px 65px -26px #243b7138,0 2px 8px #131b2e05;transform-origin:50% 0;will-change:transform}
-.show .screen{border-color:#e0e6f0;box-shadow:0 20px 55px -20px #131b2e24;padding:32px;transition:box-shadow .4s}.show .screen:hover{box-shadow:0 25px 65px -20px #131b2e30}
-.pane{transition:opacity .3s var(--ease-soft),transform .45s var(--ease-out);opacity:0;transform:translateY(10px)}.pane.on{animation:none;opacity:1;transform:translateY(0)}
-.tabs{position:relative}.tabs button{transition:background .3s,padding-left .4s var(--ease-out)}.tabs button.on{padding-left:16px;background:linear-gradient(90deg,#eaf0ff80,transparent 85%)}.tabs button b{transition:color .3s}.tabs button span{line-height:1.7}.tabs .bar{display:none}.tabs::before{content:"";position:absolute;left:0;top:var(--indicator-top,0px);height:var(--indicator-height,80px);width:2px;border-radius:2px;background:var(--accent);z-index:1;transition:top .45s var(--ease-out),height .45s var(--ease-out)}
 #resources .res a{border-radius:12px;position:relative;transition:transform .35s var(--ease-out),border-color .3s,box-shadow .35s;background:#fff;min-height:164px}#resources .res a:hover{transform:translateY(-5px);border-color:#1d4ed845;box-shadow:0 16px 32px -16px #1d4ed82b}#resources .res a em{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%}.card-arrow{font-size:19px;line-height:1;transition:transform .3s var(--ease-out);color:var(--accent)}#resources .res a:hover .card-arrow{transform:translateX(4px)}
 .faq{max-width:100%;margin-top:36px}.faq details{padding:0;overflow:hidden;transition:border-color .3s}.faq summary{padding:24px 0;font-size:16px;line-height:1.6;align-items:center;transition:color .2s}.faq summary:hover,.faq details[open] summary{color:var(--accent)}.faq summary::after,.faq details[open] summary::after{content:"+";font-size:22px;font-weight:400;line-height:1;width:24px;text-align:center;flex-shrink:0;transform:rotate(0);transition:transform .3s var(--ease-out),color .3s}.faq details[open] summary::after{transform:rotate(45deg);color:var(--accent)}.faq .a{max-width:760px}.faq .a p{margin-top:0;padding:0 32px 24px 0;line-height:1.85;font-size:15px}.faq .a a{color:var(--accent);white-space:nowrap}
 .compact-final{border-top:1px solid var(--line-soft);padding:36px 0}.fin{background:linear-gradient(120deg,#fff,#f7f9ff)}.compact-final h2{max-width:600px;font-weight:600;letter-spacing:-.04em}
-@media(max-width:860px){.hero{padding-top:64px}.hero h1{font-size:40px;line-height:1.2}.hero .lead{font-size:16px}.static-workspace{margin-top:40px}.static-workspace img{border-radius:9px}.show .screen{padding:22px}.faq summary{font-size:15px;padding:21px 0}.faq .a p{font-size:14px}.compact-final h2{font-size:24px}.tabs button.on{padding-left:12px}}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.static-workspace img,.pane,.pane.on{transform:none!important;will-change:auto}.btn:hover,#resources .res a:hover{transform:none}}
+@media(max-width:860px){.hero{padding-top:64px}.hero h1{font-size:40px;line-height:1.2}.hero .lead{font-size:16px}.static-workspace{margin-top:40px}.static-workspace img{border-radius:9px}.faq summary{font-size:15px;padding:21px 0}.faq .a p{font-size:14px}.compact-final h2{font-size:24px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.static-workspace img{transform:none!important;will-change:auto}.btn:hover,#resources .res a:hover{transform:none}}
 </style>
 <style id="spacing-refinement">
 section{padding:176px 0}
@@ -662,15 +633,6 @@ section{padding:176px 0}
 .hero .cta{margin-top:56px}
 .static-workspace{margin-top:200px}
 .label+h2{margin-top:24px}
-.show{grid-template-columns:320px minmax(0,1fr);gap:80px}
-#product .tabs{margin-top:60px}
-.tabs button{padding-top:36px;padding-bottom:36px}
-.tabs button span{margin-top:18px}
-.show .screen{padding:44px}
-.pane .big{margin-top:10px}
-.screen .tbl{margin-top:28px}
-.screen .preview{margin-top:28px;padding:22px}
-.screen .src{margin-top:24px}
 #resources .res{margin-top:80px;gap:28px}
 #resources .res a{padding:36px 28px;min-height:208px}
 #resources .res b{margin-top:18px}
@@ -691,11 +653,6 @@ footer{padding-top:96px;padding-bottom:104px}
  .hero .cta{margin-top:44px}
  .static-workspace{margin-top:140px}
  .label+h2{margin-top:20px}
- .show{grid-template-columns:1fr;gap:56px}
- #product .tabs{margin-top:44px}
- .tabs button{padding-top:30px;padding-bottom:30px}
- .show .screen{padding:28px 24px}
- .screen .preview{padding:18px}
  #resources .head{gap:32px}
  #resources .res{margin-top:52px;gap:28px}
  #resources .res a{padding:32px;min-height:184px}
@@ -727,6 +684,7 @@ html{scroll-padding-top:112px}
 }
 </style>
 <link rel="stylesheet" href="/assets/workspace-demo.css">
+<link rel="stylesheet" href="/assets/start-picker.css">
 </head><body>
 
 <a class="skip" href="#main">Skip to content</a>
@@ -752,6 +710,7 @@ html{scroll-padding-top:112px}
   <h1>{{publicCopy.headline}}</h1>
   <p class="lead">{{publicCopy.detail}}</p>
   <p class="free">{{publicCopy.audience}}</p>
+  <div class="start-picker" role="group" aria-labelledby="start-picker-title"><div class="start-picker-head"><p class="start-picker-q" id="start-picker-title">Where would you like to start?</p><p class="start-picker-note">Sign up or sign in, then continue with the task you picked. The app interface is in Korean.</p></div><ul class="start-tasks"><li><a class="start-task" href="https://app.trops.kr/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fdocuments%252Fproforma" data-track="hero-task-quote" data-start-task="quote"><span class="start-task-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 2H5v20h14V7ZM14 2v6h5M8 12h8M8 16h6"/></svg></span><b>Create a quote</b><span class="start-task-desc">A proforma invoice (PI) draft with your company details</span><span class="start-task-go" aria-hidden="true">→</span></a></li><li><a class="start-task" href="https://app.trops.kr/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fsupport" data-track="hero-task-support" data-start-task="support"><span class="start-task-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V10m4.7 11V10m4.6 11V10M19 21V10M2.5 10 12 4l9.5 6"/></svg></span><b>Find support programs</b><span class="start-task-desc">Notices that fit your region and industry, with links</span><span class="start-task-go" aria-hidden="true">→</span></a></li><li><a class="start-task" href="https://app.trops.kr/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fhome" data-track="hero-task-upload" data-start-task="upload"><span class="start-task-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4M4 14v5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/></svg></span><b>Upload documents</b><span class="start-task-desc">Deal and document fields filled from your files and buyer requests</span><span class="start-task-go" aria-hidden="true">→</span></a></li></ul></div>
   <div class="cta">
     <a class="btn" href="https://app.trops.kr/" data-track="hero-start">Start with TROPS</a>
 
@@ -767,28 +726,22 @@ html{scroll-padding-top:112px}
 
 <section id="product" class="tint" data-section="product"><div class="w">
 
-  <div class="show rv">
-    <div class="product-nav">
-      <div class="head"><div class="label">Product</div><h2>Your export essentials,<br>in one place</h2></div>
-
-      <div class="tabs" role="tablist" aria-label="Product features">
-        <button type="button" class="on" data-t="p1" role="tab" id="tab1" aria-controls="p1" aria-selected="true" tabindex="0"><i class="bar"></i><b>Export documents</b><span>Prepare document drafts using your company and deal information.</span></button>
-
-        <button type="button" data-t="p2" role="tab" id="tab2" aria-controls="p2" aria-selected="false" tabindex="-1"><i class="bar"></i><b>Deals and deadlines</b><span>Keep documents, deadlines and next steps together for each deal.</span></button>
-        <button type="button" data-t="p3" role="tab" id="tab3" aria-controls="p3" aria-selected="false" tabindex="-1"><i class="bar"></i><b>Support program AI</b><span>Find relevant support programs with the reasons they may fit.</span></button>
-      </div>
-    </div>
-    <div class="screen">
-      <p class="src">Workspace example</p>
-      <div class="pane on" id="p1" role="tabpanel" aria-labelledby="tab1">
+  <div class="head"><div class="label">Product</div><h2>Your export essentials,<br>in one place</h2></div>
+  <ol class="features" aria-label="Product features">
+    <li class="feature" data-feature="documents">
+      <div class="feature-copy"><span class="feature-num" aria-hidden="true">01</span><h3>Export documents</h3><p>Prepare document drafts using your company and deal information.</p></div>
+      <div class="feature-screen"><p class="src">Workspace example</p><div class="feature-pane">
 <div class="t">Export documents</div><div class="big">Your documents, together</div>
 <table class="tbl"><tr><th>Document</th><th>When you need it</th><th>Action</th></tr>
 <tr><td>Proforma invoice · PI</td><td>Discussing a deal</td><td><span class="pill">Draft</span></td></tr>
 <tr><td>Commercial invoice · CI</td><td>Preparing a shipment</td><td><span class="pill">Draft</span></td></tr>
 <tr><td>Packing list · PL</td><td>Recording packing details</td><td><span class="pill">Draft</span></td></tr></table>
 <div class="preview product-demo demo-document"><b>Connect company and deal details</b><div class="demo-fields"><div><span>Document</span><strong data-demo-field>Proforma invoice · PI</strong></div><div><span>Deal details</span><strong data-demo-field>Buyer · Items · Quantity</strong></div><div><span>Terms</span><strong data-demo-field>Unit price · Payment terms</strong></div></div><span class="demo-complete">✓ Draft ready · Review details</span><p>Review the draft before issuing or downloading it.</p></div>
-<div class="src">Check the source and instructions for each document.</div></div>
-<div class="pane" id="p2" inert aria-hidden="true" role="tabpanel" aria-labelledby="tab2">
+<div class="src">Check the source and instructions for each document.</div></div></div>
+    </li>
+    <li class="feature" data-feature="deals">
+      <div class="feature-copy"><span class="feature-num" aria-hidden="true">02</span><h3>Deals and deadlines</h3><p>Keep documents, deadlines and next steps together for each deal.</p></div>
+      <div class="feature-screen"><p class="src">Workspace example</p><div class="feature-pane">
         <div class="t">Payments expected this month</div><div class="big">USD 72,000 · 2 deals</div>
         <div class="demo-timeline" aria-label="Illustrative deal progress"><span data-demo-stage>Contract</span><i aria-hidden="true">→</i><span data-demo-stage>Shipment</span><i aria-hidden="true">→</i><span data-demo-stage>Payment</span></div>
 <table class="tbl"><tr><th>Deal</th><th>Buyer</th><th>Stage</th><th>Next deadline</th></tr>
@@ -796,16 +749,18 @@ html{scroll-padding-top:112px}
           <tr data-demo-deal="1"><td>TR-0006</td><td>Philippines · Manila Supply</td><td><span class="pill warn">Awaiting payment</span></td><td>Payment due <span class="pill bad">Today</span></td></tr>
           <tr><td>TR-0005</td><td>USA · Ohio Parts</td><td><span class="pill">Contract</span></td><td>-</td></tr></table>
         <div class="preview demo-next-task"><b>What to check first</b><p>Confirm payment for the Philippines deal due today, and prepare the Vietnam shipment notice.</p></div>
-        <div class="src">Illustrative deals · Actual deadlines depend on deal terms and applicable rules.</div>
-      </div>
-      <div class="pane" id="p3" inert aria-hidden="true" role="tabpanel" aria-labelledby="tab3">
+        <div class="src">Illustrative deals · Actual deadlines depend on deal terms and applicable rules.</div></div></div>
+    </li>
+    <li class="feature" data-feature="support">
+      <div class="feature-copy"><span class="feature-num" aria-hidden="true">03</span><h3>Support program AI</h3><p>Find relevant support programs with the reasons they may fit.</p></div>
+      <div class="feature-screen"><p class="src">Workspace example</p><div class="feature-pane">
 <div class="t">TROPS AI · Support programs</div><div class="big">Find programs for your company</div>
 <div class="bubble me">Find export support programs for our company.</div>
 <div class="bubble ai"><span class="say">We use your region and industry to identify relevant notices and conditions to check.</span></div>
 <div class="preview product-demo demo-programs"><b class="demo-search">Original notices and conditions<span class="demo-search-dots" aria-hidden="true">···</span></b><div class="demo-program" data-demo-card><strong>Regional export insurance support</strong><span>Check region and eligibility</span><em>Original notice ↗</em></div><div class="demo-program" data-demo-card><strong>Overseas exhibition support</strong><span>Check industry and application dates</span><em>Original notice ↗</em></div><p>Illustrative notices · Separate confirmed conditions from points to verify.</p></div>
-<div class="src">Illustrative screen · The issuing organization determines eligibility and selection.</div><div class="demo-composer-wrap"><div class="demo-composer" role="img" aria-label="Support program AI question composer example"><span class="demo-composer-placeholder">Ask a follow-up about support programs</span><div class="demo-composer-tools" aria-hidden="true"><span class="demo-attach">+</span><span class="demo-send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18V6m-5 5 5-5 5 5"/></svg></span></div></div></div></div>
-    </div>
-  </div>
+<div class="src">Illustrative screen · The issuing organization determines eligibility and selection.</div><div class="demo-composer-wrap"><div class="demo-composer" role="img" aria-label="Support program AI question composer example"><span class="demo-composer-placeholder">Ask a follow-up about support programs</span><div class="demo-composer-tools" aria-hidden="true"><span class="demo-attach">+</span><span class="demo-send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 18V6m-5 5 5-5 5 5"/></svg></span></div></div></div></div></div>
+    </li>
+  </ol>
 </div></section>
 
 
@@ -850,9 +805,6 @@ html{scroll-padding-top:112px}
 
 
 <script>
-const tabs=[...document.querySelectorAll('.tabs button')];
-function selectTab(i,focus=false){tabs.forEach((b,k)=>{const on=k===i;b.classList.toggle('on',on);b.setAttribute('aria-selected',String(on));b.tabIndex=on?0:-1;const p=document.getElementById(b.dataset.t);p.classList.toggle('on',on);p.inert=!on;p.setAttribute('aria-hidden',String(!on));});if(focus)tabs[i].focus();}
-tabs.forEach((b,i)=>{b.addEventListener('click',()=>selectTab(i));b.addEventListener('keydown',e=>{let n=null;if(e.key==='ArrowRight')n=(i+1)%tabs.length;if(e.key==='ArrowLeft')n=(i+tabs.length-1)%tabs.length;if(e.key==='Home')n=0;if(e.key==='End')n=tabs.length-1;if(n!==null){e.preventDefault();selectTab(n,true);}});});
 const nav=document.querySelector('nav');addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>8),{passive:true});
 
 </script><script id="premium-interactions">
@@ -861,18 +813,15 @@ const nav=document.querySelector('nav');addEventListener('scroll',()=>nav.classL
  const fine=matchMedia('(min-width: 861px) and (pointer: fine)');
  const ease='cubic-bezier(.22,1,.36,1)';
  const animate=(el,frames,options)=>{if(!el||motion.matches)return null;return el.animate(frames,{duration:650,easing:ease,...options});};
- const heroItems=[...document.querySelectorAll('.hero h1,.hero>.w>.lead,.hero>.w>.free,.hero .cta')];
+ const heroItems=[...document.querySelectorAll('.hero h1,.hero>.w>.lead,.hero>.w>.free,.hero .start-picker,.hero .cta')];
  heroItems.forEach((el,i)=>animate(el,[{opacity:0,transform:'translateY(18px)',filter:'blur(3px)'},{opacity:1,transform:'translateY(0)',filter:'blur(0)'}],{delay:i*85,duration:720}));
  const figure=document.querySelector('.static-workspace'),image=figure?.querySelector('.workspace-preview');
  animate(image,[{opacity:0,transform:'translateY(28px) scale(.985)'},{opacity:1,transform:'translateY(0) scale(1)'}],{delay:240,duration:950});
- const observed=[...document.querySelectorAll('#product .product-nav,#product .screen,#resources .head,#resources .res a,#faq .label,#faq h2,#faq .faq,.compact-final')];
+ const observed=[...document.querySelectorAll('#product .head,#product .feature,#resources .head,#resources .res a,#faq .label,#faq h2,#faq .faq,.compact-final')];
  const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(!e.isIntersecting)return;const i=e.target.parentElement.classList.contains('res')?[...e.target.parentElement.children].indexOf(e.target):0;animate(e.target,[{opacity:0,transform:'translateY(22px)'},{opacity:1,transform:'translateY(0)'}],{duration:700,delay:i*85});observer.unobserve(e.target);}),{threshold:.12});observed.forEach(el=>observer.observe(el));
  let scheduled=false;
  function scrollFrame(){scheduled=false;if(!image)return;if(motion.matches||!fine.matches){image.style.transform='';return;}const box=figure.getBoundingClientRect();if(box.bottom<0||box.top>innerHeight)return;const progress=Math.max(0,Math.min(1,(innerHeight-box.top)/(innerHeight+box.height)));const y=(.5-progress)*14;image.style.transform=`translate3d(0,${y}px,0)`;}
  addEventListener('scroll',()=>{if(!scheduled){scheduled=true;requestAnimationFrame(scrollFrame);}},{passive:true});motion.addEventListener('change',()=>{document.getAnimations().forEach(a=>a.finish());scrollFrame();});
- const tabs=document.querySelector('.tabs');
- function indicator(){const active=tabs?.querySelector('[aria-selected="true"]');if(active){tabs.style.setProperty('--indicator-top',active.offsetTop+'px');tabs.style.setProperty('--indicator-height',active.offsetHeight+'px');}}
- if(tabs){new MutationObserver(indicator).observe(tabs,{subtree:true,attributes:true,attributeFilter:['aria-selected']});new ResizeObserver(indicator).observe(tabs);document.fonts.ready.then(indicator);indicator();}
  document.querySelectorAll('#resources .res em').forEach(el=>{el.textContent=el.textContent.replace(/\s*→$/,'');const arrow=document.createElement('span');arrow.className='card-arrow';arrow.textContent='→';arrow.setAttribute('aria-hidden','true');el.append(arrow);});
  document.querySelectorAll('#faq details').forEach(detail=>{
   const summary=detail.querySelector('summary');let animation=null;let expanded=detail.open;
