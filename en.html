@@ -116,7 +116,6 @@ nav .m a:hover{color:var(--ink)}
 .hero h1{font-size:66px;line-height:1.14;letter-spacing:-0.045em;font-weight:700}
 .hero .lead{font-size:19px;color:var(--sub);margin-top:24px;max-width:600px}
 .hero .cta{display:flex;gap:12px;margin-top:36px;flex-wrap:wrap}
-.hero .free{font-size:14px;color:var(--sub);margin-top:16px}
 
 
 .appfig{margin-top:64px}
@@ -616,7 +615,7 @@ nav.scrolled{background:rgba(255,255,255,.92);box-shadow:0 4px 24px #131b2e09;bo
 nav .m a{position:relative;transition:color .2s}nav .m a::after{content:"";position:absolute;bottom:6px;left:0;width:100%;height:1px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .25s var(--ease-out)}nav .m a:hover::after{transform:scaleX(1)}
 .hero{position:relative;padding-top:112px;overflow:clip;background:radial-gradient(ellipse 65% 45% at 67% 85%,#eaf0ff80,transparent)}
 .hero h1{font-size:clamp(40px,4.65vw,68px);letter-spacing:-.05em;line-height:1.16;max-width:1000px}
-.hero .lead{max-width:680px;line-height:1.75;margin-top:26px}.hero>.w>.free{color:var(--mute);font-size:13px;letter-spacing:-.01em}
+.hero .lead{max-width:680px;line-height:1.75;margin-top:26px}
 .btn{position:relative;overflow:hidden;isolation:isolate;box-shadow:0 3px 8px #1d4ed814;transition:transform .25s var(--ease-out),box-shadow .25s,background .25s}.btn::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(110deg,transparent 25%,#ffffff20 48%,transparent 72%);transform:translateX(-120%);transition:transform .65s var(--ease-out)}.btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px #1d4ed827}.btn:hover::after{transform:translateX(120%)}.btn:active{transform:translateY(0) scale(.98);box-shadow:0 2px 6px #1d4ed820}
 .static-workspace{position:relative;perspective:1200px;margin-top:62px}.static-workspace img{position:relative;z-index:1;border-radius:14px;box-shadow:0 32px 65px -26px #243b7138,0 2px 8px #131b2e05;transform-origin:50% 0;will-change:transform}
 #resources .res a{border-radius:12px;position:relative;transition:transform .35s var(--ease-out),border-color .3s,box-shadow .35s;background:#fff;min-height:164px}#resources .res a:hover{transform:translateY(-5px);border-color:#1d4ed845;box-shadow:0 16px 32px -16px #1d4ed82b}#resources .res a em{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%}.card-arrow{font-size:19px;line-height:1;transition:transform .3s var(--ease-out);color:var(--accent)}#resources .res a:hover .card-arrow{transform:translateX(4px)}
@@ -629,7 +628,6 @@ nav .m a{position:relative;transition:color .2s}nav .m a::after{content:"";posit
 section{padding:176px 0}
 .hero{padding-top:168px;padding-bottom:152px}
 .hero .lead{margin-top:40px}
-.hero>.w>.free{margin-top:24px}
 .hero .cta{margin-top:56px}
 .static-workspace{margin-top:200px}
 .label+h2{margin-top:24px}
@@ -649,7 +647,6 @@ footer{padding-top:96px;padding-bottom:104px}
  section{padding:120px 0}
  .hero{padding-top:112px;padding-bottom:104px}
  .hero .lead{margin-top:32px;line-height:1.85}
- .hero>.w>.free{margin-top:24px;line-height:1.8}
  .hero .cta{margin-top:44px}
  .static-workspace{margin-top:140px}
  .label+h2{margin-top:20px}
@@ -709,8 +706,7 @@ html{scroll-padding-top:112px}
 <header class="hero" data-section="hero"><div class="w">
   <h1>{{publicCopy.headline}}</h1>
   <p class="lead">{{publicCopy.detail}}</p>
-  <p class="free">{{publicCopy.audience}}</p>
-  <div class="start-picker" role="group" aria-labelledby="start-picker-title"><div class="start-picker-head"><p class="start-picker-q" id="start-picker-title">Where would you like to start?</p><p class="start-picker-note">Sign up or sign in, then continue with the task you picked. The app interface is in Korean.</p></div><ul class="start-tasks"><li><a class="start-task" href="https://app.trops.kr/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fdocuments%252Fproforma" data-track="hero-task-quote" data-start-task="quote"><span class="start-task-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 2H5v20h14V7ZM14 2v6h5M8 12h8M8 16h6"/></svg></span><b>Create a quote</b><span class="start-task-desc">A proforma invoice (PI) draft with your company details</span><span class="start-task-go" aria-hidden="true">→</span></a></li><li><a class="start-task" href="https://app.trops.kr/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fsupport" data-track="hero-task-support" data-start-task="support"><span class="start-task-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V10m4.7 11V10m4.6 11V10M19 21V10M2.5 10 12 4l9.5 6"/></svg></span><b>Find support programs</b><span class="start-task-desc">Notices that fit your region and industry, with links</span><span class="start-task-go" aria-hidden="true">→</span></a></li><li><a class="start-task" href="https://app.trops.kr/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fhome" data-track="hero-task-upload" data-start-task="upload"><span class="start-task-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4M4 14v5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/></svg></span><b>Upload documents</b><span class="start-task-desc">Deal and document fields filled from your files and buyer requests</span><span class="start-task-go" aria-hidden="true">→</span></a></li></ul></div>
+  <div class="start-picker" role="group" aria-labelledby="start-picker-title"><div class="start-picker-head"><p class="start-picker-q" id="start-picker-title">Where would you like to start?</p></div><ul class="start-tasks"><li><a class="start-task" href="https://app.trops.kr/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fdocuments%252Fproforma" data-track="hero-task-quote" data-start-task="quote"><span class="start-task-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 2H5v20h14V7ZM14 2v6h5M8 12h8M8 16h6"/></svg></span><b>Create a quote</b><span class="start-task-desc">A proforma invoice (PI) draft with your company details</span><span class="start-task-go" aria-hidden="true">→</span></a></li><li><a class="start-task" href="https://app.trops.kr/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fsupport" data-track="hero-task-support" data-start-task="support"><span class="start-task-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V10m4.7 11V10m4.6 11V10M19 21V10M2.5 10 12 4l9.5 6"/></svg></span><b>Find support programs</b><span class="start-task-desc">Notices that fit your region and industry, with links</span><span class="start-task-go" aria-hidden="true">→</span></a></li><li><a class="start-task" href="https://app.trops.kr/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fhome" data-track="hero-task-upload" data-start-task="upload"><span class="start-task-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4M4 14v5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/></svg></span><b>Upload documents</b><span class="start-task-desc">Deal and document fields filled from your files and buyer requests</span><span class="start-task-go" aria-hidden="true">→</span></a></li></ul></div>
   <div class="cta">
     <a class="btn" href="https://app.trops.kr/" data-track="hero-start">Start with TROPS</a>
 
@@ -813,7 +809,7 @@ const nav=document.querySelector('nav');addEventListener('scroll',()=>nav.classL
  const fine=matchMedia('(min-width: 861px) and (pointer: fine)');
  const ease='cubic-bezier(.22,1,.36,1)';
  const animate=(el,frames,options)=>{if(!el||motion.matches)return null;return el.animate(frames,{duration:650,easing:ease,...options});};
- const heroItems=[...document.querySelectorAll('.hero h1,.hero>.w>.lead,.hero>.w>.free,.hero .start-picker,.hero .cta')];
+ const heroItems=[...document.querySelectorAll('.hero h1,.hero>.w>.lead,.hero .start-picker,.hero .cta')];
  heroItems.forEach((el,i)=>animate(el,[{opacity:0,transform:'translateY(18px)',filter:'blur(3px)'},{opacity:1,transform:'translateY(0)',filter:'blur(0)'}],{delay:i*85,duration:720}));
  const figure=document.querySelector('.static-workspace'),image=figure?.querySelector('.workspace-preview');
  animate(image,[{opacity:0,transform:'translateY(28px) scale(.985)'},{opacity:1,transform:'translateY(0) scale(1)'}],{delay:240,duration:950});
