@@ -391,10 +391,19 @@ const CHECKS = [
      * ⚠️ `font-weight` 를 재지 않습니다 — `<b>` 의 기본 굵기를 쓰고 규칙이 선언하지 않습니다.
      * ⚠️ `id` 는 그대로 둡니다 — 배포 기록 문서들이 이 이름으로 가리킵니다.
      */
-    label: 'V5 · 소제목 계층이 정의돼 있다 (.tabs button b · 22px/−0.03em)',
-    page: '/',
-    check: (html) => sameRule(html, 'index.html', '.tabs button b',
-      ['font-size', 'letter-spacing']),
+    /*
+     * 🔄 **다섯 번째 재조준 — 제품 탭이 01·02·03 블록이 됐습니다** 〔2026-10-16 · PR #30〕.
+     *    `.tabs button b` 는 그 배포로 사라졌고(탭 0), H2 바로 아래 제목은 기능 블록의
+     *    `<h3>`(`#product .feature-copy h3` · 28px · 1.35 · −0.035em · 700)입니다.
+     *    배포 직후 이 항목만 「검사가 낡았습니다」로 red 였습니다(15/16 — 화면 사고가 아니었습니다).
+     * 🔴 **그 규칙은 페이지 안이 아니라 `assets/product-demo.css` 에 있습니다** — 그래서 잴 곳도
+     *    배포된 그 파일(`/assets/product-demo.css`)이고, 기대값의 출처도 소스의 같은 파일입니다.
+     *    `assets/` 는 주석 제거 없이 통째 복사되므로(build-static `STATIC.dirs`) 두 쪽 글자가 같아야 합니다.
+     * ✅ 이번 규칙은 굵기 · 줄 간격까지 선언하므로 네 값(TYPO)을 다 잽니다.
+     */
+    label: 'V5 · 소제목 계층이 정의돼 있다 (#product .feature-copy h3 · 28px/1.35/−0.035em/700)',
+    page: '/assets/product-demo.css',
+    check: (css) => sameRule(css, 'assets/product-demo.css', '#product .feature-copy h3', TYPO),
   },
   /*
    * 🔴 **`V5-로드맵헤딩` 을 삭제했습니다** 〔2026-09-01 · 대표 지시〕.
