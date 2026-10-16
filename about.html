@@ -174,7 +174,7 @@ nav .w{display:flex;justify-content:space-between;align-items:center;height:64px
       ⛔ 가운데로 맞추지 마십시오. 긴 문단이 가운데 정렬이면 줄 시작점이 매번 달라집니다. */
 .hero{padding:96px 0 76px;border-bottom:1px solid var(--line-soft)}
 .hero .rule{width:46px;height:4px;border-radius:2px;background:var(--accent);margin-bottom:26px}
-.eyebrow{display:block;font-size:13.5px;font-weight:700;color:var(--accent);letter-spacing:.06em;margin-bottom:14px}
+.hero-sub{margin-top:14px;font-size:clamp(21px,2.6vw,28px);font-weight:700;letter-spacing:-.03em;line-height:1.36;color:var(--ink);max-width:24ch}
 .hero h1{font-size:clamp(30px,4.4vw,46px);font-weight:800;letter-spacing:-.04em;line-height:1.26;max-width:20ch}
 .hero .lead{max-width:44ch;margin-top:24px;font-size:19px;font-weight:600;color:var(--ink);line-height:1.66}
 .hero .lead-2{max-width:60ch;margin-top:16px;font-size:16.5px;color:var(--ink-2);line-height:1.78}
@@ -337,8 +337,11 @@ footer .cp{margin-top:18px;color:#64748B}
 
 <header class="hero"><div class="w">
   <div class="rule"></div>
-  <span class="eyebrow">회사 소개</span>
-  <h1>{{publicCopy.headline}}</h1>
+  <!-- 🔄 **큰 제목을 「회사 소개」로 바꿨습니다** 〔2026-10-17 · IA 점검 4차 «누른 이름과 열린 화면 제목» · 대표 승인〕 —
+       점검에서 「회사 소개」를 누르면 큰 제목이 「수출 실무를 더 쉽게, TROPS AI」라 다른 곳에 온 듯했습니다(작은 꼬리표만 「회사 소개」).
+       한 줄 약속(`publicCopy.headline`)은 바로 아래 부제로 남깁니다 — 랜딩 h1 과 같은 문장이라는 연결은 그대로입니다. -->
+  <h1>회사 소개</h1>
+  <p class="hero-sub">{{publicCopy.headline}}</p>
   <p class="lead">{{publicCopy.detail}}</p>
   <!-- 🔴 상호는 **토큰**입니다 — 값은 `site.config.json` 한 곳이 원본이고
        `test/site-config.test.js` 가 하드코딩을 막습니다(주석에 값을 적어도 걸립니다). -->

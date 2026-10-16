@@ -29,6 +29,13 @@
  *   ⑧ 앱 입구 이름 하나 — 회사 소개 「신청하기」·「앱 열기 ↗」, 문의 「앱 열기 ↗」가 모두 같은 앱 루트로 갔습니다(개선 3).
  *      한 이름 「TROPS 시작하기」로 맞췄습니다. ⚠️ 집계 이름(`nav-join` · `nav-app`)은 **그대로**입니다 — 이름을 바꾸면
  *      그 시계열이 끊깁니다(`assets/track.js` 머리주석).
+ *   ⑨ 회사 소개 큰 제목 〔🔄 2026-10-17 · 다시 점검한 뒤 대표 승인〕 — 「회사 소개」를 누르면 큰 제목이
+ *      「수출 실무를 더 쉽게, TROPS AI」였습니다(작은 꼬리표만 「회사 소개」 · «누른 이름과 열린 화면 제목»).
+ *      큰 제목을 「회사 소개」로, 한 줄 약속(`publicCopy.headline`)은 바로 아래 부제로 옮겼습니다.
+ *   ⑩ 영문 마감 «Start with TROPS» 옆 한국어 예고 〔🔄 2026-10-17〕 — ⑥의 예고는 업무 카드에만 있어 마지막 버튼은
+ *      아무 말 없이 한국어 화면으로 갔습니다(개선 6). ⚠️ 맨 위 메뉴 버튼에는 싣지 않았습니다 — 자리가 좁고 그 치수는
+ *      앱 저장소 `landing-entry-header` 가 잽니다. ⛔ `hreflang="ko"` 로 대신하지 마십시오 — 그 속성을 누르면
+ *      `assets/lang-switch.js` 가 국문 쿠키를 심습니다(언어 전환 링크 전용 · `i18n-parity.test.js`).
  *
  * ⛔ **이 저장소에서 할 수 없는 것 — 앱 쪽 작업입니다(이 파일이 재지 않습니다)**
  *    · 요금을 누구나 볼 수 있는 화면(보고서 개선 1 의 근본 해결) — 랜딩은 금액을 직접 싣지 않습니다(`price-exposure.test.js`).
@@ -180,4 +187,22 @@ test('⑧ 회사 소개 · 문의 머리의 앱 입구가 「TROPS 시작하기�
   assert.ok(contactNav.includes('<a class="nav-login" href="https://app.trops.kr/" data-track="nav-app">TROPS 시작하기</a>'),
     'contact.html: 머리의 앱 입구가 「TROPS 시작하기」(nav-login · nav-app) 가 아닙니다');
   assert.ok(!contactNav.includes('앱 열기'), 'contact.html: 머리에 「앱 열기」가 남아 있습니다');
+});
+
+test('⑨ 회사 소개의 큰 제목이 누른 이름 「회사 소개」다 — 한 줄 약속은 부제로 남는다', () => {
+  const hero = block(body('about.html'), /<header class="hero"[\s\S]*?<\/header>/, 'about.html 의 첫 화면');
+  const h1 = [...hero.matchAll(/<h1[^>]*>([\s\S]*?)<\/h1>/g)].map((m) => m[1].trim());
+  assert.deepEqual(h1, ['회사 소개'], 'about.html: 큰 제목이 「회사 소개」 하나가 아닙니다 — ' + JSON.stringify(h1));
+  assert.ok(hero.includes('<p class="hero-sub">{{publicCopy.headline}}</p>'),
+    'about.html: 한 줄 약속(publicCopy.headline)이 부제로 남아 있지 않습니다');
+  assert.ok(!hero.includes('class="eyebrow"'), 'about.html: 큰 제목과 같은 말을 하는 작은 꼬리표가 되살아났습니다');
+});
+
+test('⑩ 영문 마감 «Start with TROPS» 옆에 한국어 화면 예고가 있다 — 국문에는 없다', () => {
+  const fin = (file) => block(body(file), /<section class="fin"[\s\S]*?<\/section>/, file + ' 의 마감 CTA');
+  assert.ok(fin('en.html').includes('<p class="final-note">The app interface is in Korean.</p>'),
+    'en.html: 마감 CTA 에 한국어 화면 예고가 없습니다');
+  assert.ok(!fin('index.html').includes('final-note'), 'index.html: 마감 CTA 에 영문 전용 예고가 들어왔습니다');
+  assert.ok(!/<a[^>]*href="https:\/\/app\.trops\.kr\/"[^>]*hreflang=/.test(read('en.html')),
+    'en.html: 앱 링크에 hreflang 이 붙었습니다 — 그 속성은 언어 전환 링크 전용입니다');
 });
