@@ -164,7 +164,7 @@ test('② 구획 표시 스크립트가 있고 aria-current 를 보이는 구획
 
 test('⑥ 영문 업무 카드만 한국어 화면 예고를 싣는다', () => {
   const picker = (file) => block(block(body(file), /<header class="hero"[\s\S]*?<\/header>/, file + ' 의 hero'),
-    /<div class="start-picker"[\s\S]*?<\/ul><\/div>/, file + ' 의 업무 카드');
+    /<div class="start-picker"[\s\S]*?<\/ul>(?:<p class="start-picker-more">[\s\S]*?<\/p>)?<\/div>/, file + ' 의 업무 카드');
   assert.ok(picker('en.html').includes('<p class="start-picker-note">The app interface is in Korean.</p>'),
     'en.html: 업무 카드에 한국어 화면 예고가 없습니다');
   assert.ok(!picker('index.html').includes('start-picker-note'), 'index.html: 업무 카드에 안내 줄이 되살아났습니다(PR #32 대표 지시로 걷음)');

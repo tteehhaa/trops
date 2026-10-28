@@ -29,6 +29,15 @@
  *    이미지」). 세 갈래는 **링크**입니다 — 자유 입력은 앱이 받을 자리가 없고, 적은 글이 주소에 남아
  *    기록에 찍히므로 이번에 싣지 않았습니다.
  * ⚠️ 시작 버튼 `hero-start` 는 앱 루트 그대로입니다(`landing-invariants.test.js` · `from-source.test.js`).
+ *
+ * 🔄 **세 갈래를 바꿨습니다** 〔2026-10-28 · 대표 결정 — IR 덱 «수출팀 없는 회사의 AI 수출팀»에 맞춤〕
+ *    수출 1건 올리기(회사 홈) · 받을 돈 보기(받을 돈) · 서류 만들기(견적서) 순서입니다. 지원사업은 카드에서
+ *    내려 **카드 아래 작은 링크**가 됐습니다(같은 링크 · 같은 집계 이름 `hero-task-support`).
+ *    · 받을 돈(`/organizations/{org}/receivables`)은 앱 비로그인 홈 카드에는 없지만 앱 «대금·보험» 메뉴의 주소라
+ *      앱 `guestGoTarget` 이 그대로 받고, 로그인 화면이 «대금·보험» 화면으로 간다고 알려 줍니다(앱 수정 0).
+ *    · 링크 모양은 여전히 앱 `guestLoginHrefFor` 와 같습니다(아래 ①). 다만 **카드 구성은 이제 앱 홈과 다릅니다** —
+ *      앱 `START_TASKS` 를 이 순서로 맞추고 히어로 아래 화면 사진을 다시 찍는 일은 앱 저장소 몫으로 남았습니다.
+ *      그날 아래 ③에 «앱 START_TASKS 순서 = 랜딩 순서» 검사를 되살리십시오.
  */
 
 'use strict';
@@ -52,41 +61,49 @@ const APP = 'https://app.trops.kr';
  */
 const TASKS = [
   {
-    key: 'quote',
-    target: '/organizations/{org}/documents/proforma',
-    href: APP + '/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fdocuments%252Fproforma',
-  },
-  {
-    key: 'support',
-    target: '/organizations/{org}/support',
-    href: APP + '/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fsupport',
-  },
-  {
     key: 'upload',
     target: '/organizations/{org}/home',
     href: APP + '/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fhome',
   },
+  {
+    key: 'receivables',
+    target: '/organizations/{org}/receivables',
+    href: APP + '/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Freceivables',
+  },
+  {
+    key: 'quote',
+    target: '/organizations/{org}/documents/proforma',
+    href: APP + '/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fdocuments%252Fproforma',
+  },
 ];
+
+/** 지원사업 — 카드가 아니라 카드 아래 작은 링크입니다(2026-10-28). 링크 모양과 집계 이름은 카드 시절 그대로입니다. */
+const SUPPORT = {
+  key: 'support',
+  target: '/organizations/{org}/support',
+  href: APP + '/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fsupport',
+};
 
 /** 앱 `guestLoginHrefFor(target)` 과 같은 만들기 — `/login?next=` + `encodeURIComponent('/?go=' + encodeURIComponent(target))`. */
 const hrefFor = (target) => APP + '/login?next=' + encodeURIComponent('/?go=' + encodeURIComponent(target));
 
 /** 태그의 속성을 순서와 무관하게 읽습니다 — 속성 순서를 바꿨다고 red 가 되지 않게. */
 const attrs = (tag) => Object.fromEntries([...tag.matchAll(/([a-z-]+)="([^"]*)"/g)].map((m) => [m[1], m[2]]));
+const count = (s, needle) => s.split(needle).length - 1;
 const startTaskTags = (html) => [...html.matchAll(/<a\b[^>]*class="start-task"[^>]*>/g)].map((m) => m[0]);
 const heroOf = (file) => body(file).match(/<header class="hero"[\s\S]*?<\/header>/)?.[0];
 
 /* ══ ① 정본 표가 스스로 맞는다 ═══════════════════════════════════════════════ */
 
 test('[대조] 세 갈래의 링크와 «고른 일»이 서로 맞는다 — 손으로 적은 두 값이 갈리지 않는다', () => {
-  for (const t of TASKS) {
+  for (const t of [...TASKS, SUPPORT]) {
     assert.equal(hrefFor(t.target), t.href, t.key + ': 링크와 고른 일이 다릅니다');
     /* 앱 `guestGoTarget` 이 받는 모양 — 같은 사이트 상대 경로 · 홈 자체/쿼리/조각이 아님 · 300자 이하. */
     assert.ok(t.target.startsWith('/') && !t.target.startsWith('//'), t.key + ': 같은 사이트 상대 경로가 아닙니다');
     assert.ok(t.target !== '/' && !t.target.startsWith('/?') && !t.target.startsWith('/#'), t.key + ': 앱이 «고른 일 없음»으로 버립니다');
     assert.ok(t.target.length <= 300, t.key + ': 앱이 받는 길이(300자)를 넘습니다');
   }
-  assert.deepEqual(TASKS.map((t) => t.key), ['quote', 'support', 'upload']);
+  assert.deepEqual(TASKS.map((t) => t.key), ['upload', 'receivables', 'quote']);
 });
 
 /* ══ ② 국·영문 히어로가 세 갈래를 싣는다 ═════════════════════════════════════ */
@@ -130,6 +147,17 @@ for (const file of LANDINGS) {
     }
   });
 
+  test(`🔴 ${file} 지원사업은 카드 아래 작은 링크 하나로 남는다 — 같은 링크 · 같은 집계 이름`, () => {
+    const hero = heroOf(file) || '';
+    const more = hero.match(/<p class="start-picker-more">[\s\S]*?<\/p>/)?.[0];
+    assert.ok(more, file + ': 카드 아래 지원사업 링크(start-picker-more)가 없습니다');
+    const links = [...more.matchAll(/<a\b[^>]*>/g)].map((m) => attrs(m[0]));
+    assert.equal(links.length, 1, file + ': 작은 링크 줄의 링크가 ' + links.length + '개입니다');
+    assert.equal(links[0].href, SUPPORT.href, file + ': 지원사업 링크가 앱 정본과 다릅니다');
+    assert.equal(links[0]['data-track'], 'hero-task-support', file + ': 지원사업 집계 이름이 바뀌었습니다 — 시계열이 끊깁니다');
+    assert.equal(count(body(file), 'data-track="hero-task-support"'), 1, file + ': 지원사업 링크가 두 자리에 있습니다');
+  });
+
   test(`${file} 시작 버튼(hero-start)은 앱 루트 그대로다`, () => {
     const hero = heroOf(file) || '';
     assert.ok(/<a\b[^>]*href="https:\/\/app\.trops\.kr\/"[^>]*data-track="hero-start"/.test(hero),
@@ -153,7 +181,10 @@ const GUEST_PREVIEW_TS = path.join(APP_ROOT, 'lib', 'frame', 'guest-preview.ts')
 const HAS_APP = fs.existsSync(START_TASKS_TS) && fs.existsSync(GUEST_PREVIEW_TS);
 const SKIP = HAS_APP ? false : '이웃 저장소 ../trops_a 가 없습니다 — 앱 대조를 건너뜁니다';
 
-test('🔴 [앱 대조] 세 갈래의 목적지가 앱 startTaskTarget 과 같다 — 지원사업은 «켜짐» 갈래', { skip: SKIP }, () => {
+const LEDGER_NAV_TS = path.join(APP_ROOT, 'lib', 'constants', 'ledger-nav.ts');
+const byKey = (k) => TASKS.find((t) => t.key === k);
+
+test('🔴 [앱 대조] 갈래의 목적지가 앱 startTaskTarget 과 같다 — 지원사업은 «켜짐» 갈래', { skip: SKIP }, () => {
   const src = fs.readFileSync(START_TASKS_TS, 'utf8');
   const fn = src.match(/export function startTaskTarget\([\s\S]*?\n\}/)?.[0];
   assert.ok(fn, 'startTaskTarget 를 찾지 못했습니다 — 앱 쪽 모양이 바뀌었습니다');
@@ -161,15 +192,20 @@ test('🔴 [앱 대조] 세 갈래의 목적지가 앱 startTaskTarget 과 같�
   const support = fn.match(/if \(key === "support"\) return supportInsideOpen\(env\) \? "([^"]+)" : "([^"]+)";/);
   const upload = fn.match(/\n\s*return "([^"]+)";\s*\n\}$/)?.[1];
   assert.ok(quote && support && upload, '갈래 목적지 셋을 읽지 못했습니다 — 앱 쪽 모양이 바뀌었습니다');
-  assert.equal(TASKS[0].target, quote, '견적서 갈래가 앱과 다릅니다');
-  assert.equal(TASKS[1].target, support[1], '지원사업 갈래가 앱의 «켜짐» 목적지와 다릅니다');
+  assert.equal(byKey('quote').target, quote, '서류 만들기 갈래가 앱 견적서 목적지와 다릅니다');
+  assert.equal(SUPPORT.target, support[1], '지원사업 링크가 앱의 «켜짐» 목적지와 다릅니다');
   assert.equal(support[2], '/guide/support', '지원사업 «꺼짐» 갈래가 바뀌었습니다 — 머리주석의 대체 경로도 고치십시오');
-  assert.equal(TASKS[2].target, upload, '자료 올리기 갈래가 앱과 다릅니다');
+  assert.equal(byKey('upload').target, upload, '수출 1건 올리기 갈래가 앱 자료 올리기 목적지와 다릅니다');
+  /* ⚠️ 앱 START_TASKS 순서 대조는 걷었습니다(2026-10-28 · 머리주석 🔄) — 앱 카드를 맞추는 날 되살리십시오. */
+});
 
-  /* 앱 홈의 갈래 순서 = 랜딩 순서 — 「여기서 고른 둘째」가 앱에서도 둘째입니다. */
-  const list = src.match(/export const START_TASKS[\s\S]*?\];/)?.[0] || '';
-  const keys = [...list.matchAll(/\{ key: "(\w+)"/g)].map((m) => m[1]);
-  assert.deepEqual(keys, TASKS.map((t) => t.key), '앱 START_TASKS 순서가 랜딩과 다릅니다');
+test('🔴 [앱 대조] 받을 돈 갈래가 앱 «대금·보험» 메뉴 주소다 — 로그인 뒤 그 화면으로 이어진다', { skip: SKIP }, () => {
+  const src = fs.readFileSync(LEDGER_NAV_TS, 'utf8');
+  const O = src.match(/const O = "([^"]+)";/)?.[1];
+  assert.ok(O, 'ledger-nav.ts 의 회사 자리표(O)를 읽지 못했습니다 — 앱 쪽 모양이 바뀌었습니다');
+  const payment = src.match(/id: "ledgerPayment", label: "([^"]+)", group: "core", href: `\$\{O\}([^`]+)`/);
+  assert.ok(payment, '«대금·보험» 메뉴 줄을 읽지 못했습니다 — 앱 쪽 모양이 바뀌었습니다');
+  assert.equal(byKey('receivables').target, O + payment[2], '받을 돈 갈래가 앱 «' + payment[1] + '» 메뉴 주소와 다릅니다');
 });
 
 test('🔴 [앱 대조] 앱이 같은 모양으로 링크를 만든다 — /?go= · /login?next=', { skip: SKIP }, () => {

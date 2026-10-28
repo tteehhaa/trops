@@ -31,3 +31,8 @@ html[lang="en"] .workspace-flow h2{font-size:clamp(24px,2.5vw,32px);font-weight:
 }
 @keyframes flow-connection-down{0%,16%{background-position:0 100%}36%,100%{background-position:0 0%}}
 @media(prefers-reduced-motion:reduce){.workspace-flow .flow-icon,.workspace-flow li::before,.workspace-flow li::after{animation:none!important;transform:none}.workspace-flow li+li::before{transform:translate(-50%,-50%)}}
+.flow-proof{max-width:760px;margin:56px auto 0;padding:18px 24px;border-radius:14px;background:var(--accent-soft);text-align:center}
+.flow-proof p{font-size:16px;line-height:1.7;letter-spacing:-.015em;color:var(--ink)}
+.flow-proof strong{font-weight:700;color:var(--accent);white-space:nowrap}
+.flow-proof small{display:block;margin-top:6px;font-size:12px;color:var(--mute)}
+@media(max-width:860px){.flow-proof{margin-top:40px;padding:16px 18px;text-align:left}.flow-proof p{font-size:14.5px}}

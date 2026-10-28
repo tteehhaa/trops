@@ -16,8 +16,8 @@
 <link rel="preconnect" href="https://app.trops.kr">
 <link rel="dns-prefetch" href="https://app.trops.kr">
 
-<title>{{publicCopy.headline}} | Export documents, deals and support programs</title>
-<meta name="description" content="TROPS helps small and midsize businesses prepare export document drafts, manage deal deadlines and payments, and find relevant support programs. Start in the app.">
+<title>{{publicCopy.headline}} | Export documents, cross-checks and payments</title>
+<meta name="description" content="TROPS is the AI export team for small businesses without one. Upload the files you already use, and TROPS takes each export deal step by step, from contract to payment.">
 <link rel="canonical" href="https://trops.kr/en">
 
 <meta name="naver-site-verification" content="82ea864b3d6cdf087f4568558ceb5ad495445c6f" />
@@ -30,8 +30,8 @@
 <meta property="og:site_name" content="TROPS">
 <meta property="og:locale" content="en_US">
 
-<meta property="og:title" content="{{publicCopy.headline}}">
-<meta property="og:description" content="TROPS helps small and midsize businesses prepare export document drafts, manage deal deadlines and payments, and find relevant support programs. Start in the app.">
+<meta property="og:title" content="{{publicCopy.headline}} | Export documents, cross-checks and payments">
+<meta property="og:description" content="TROPS is the AI export team for small businesses without one. Upload the files you already use, and TROPS takes each export deal step by step, from contract to payment.">
 <meta name="twitter:card" content="summary_large_image">
 
 
@@ -525,7 +525,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
       "url": "https://app.trops.kr/",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web",
-      "description": "TROPS helps small and midsize businesses prepare export document drafts, manage deal deadlines and payments, and find relevant support programs. Start in the app.",
+      "description": "TROPS is the AI export team for small businesses without one. Upload the files you already use, and TROPS takes each export deal step by step, from contract to payment.",
       "publisher": {
         "@id": "https://trops.kr/#org"
       }
@@ -539,7 +539,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
           "name": "What is TROPS?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "TROPS is export operations software for small and midsize businesses. Prepare export document drafts, manage deal deadlines and next steps, and find relevant support programs."
+            "text": "TROPS is the AI export team for small businesses without one. Upload the files you already use, and TROPS takes each export deal step by step from contract to payment, cross-checking documents and flagging differences. Your team reviews documents before issuing them. You can also find support programs relevant to your company."
           }
         },
         {
@@ -556,6 +556,22 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "Prepare drafts such as proforma invoices (PI), commercial invoices (CI) and packing lists (PL). Review the company and deal information before issuing or downloading a document. Check the recipient’s requirements before submitting it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can TROPS cross-check documents made elsewhere?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Upload the Excel or Word files you already use, or documents you received, and TROPS compares fields that should match across documents, such as company names, bank accounts and delivery terms, and flags differences before you send anything. Your team does the final check and sends the documents."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does TROPS handle tax, accounting or legal work?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Tax, accounting and legal work is handled by partner firms under a separate contract with the customer. TROPS does not give legal advice or act as a tax representative; it helps you prepare documents and keep records."
           }
         },
         {
@@ -683,6 +699,7 @@ html{scroll-padding-top:112px}
 </style>
 <link rel="stylesheet" href="/assets/workspace-demo.css">
 <link rel="stylesheet" href="/assets/start-picker.css">
+<link rel="stylesheet" href="/assets/partners.css">
 </head><body>
 
 <a class="skip" href="#main">Skip to content</a>
@@ -707,7 +724,7 @@ html{scroll-padding-top:112px}
 <header class="hero" data-section="hero"><div class="w">
   <h1>{{publicCopy.headline}}</h1>
   <p class="lead">{{publicCopy.detail}}</p>
-  <div class="start-picker" role="group" aria-labelledby="start-picker-title"><div class="start-picker-head"><p class="start-picker-q" id="start-picker-title">Where would you like to start?</p><p class="start-picker-note">The app interface is in Korean.</p></div><ul class="start-tasks"><li><a class="start-task" href="https://app.trops.kr/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fdocuments%252Fproforma" data-track="hero-task-quote" data-start-task="quote"><span class="start-task-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 2H5v20h14V7ZM14 2v6h5M8 12h8M8 16h6"/></svg></span><b>Create a quote</b><span class="start-task-desc">A proforma invoice (PI) draft with your company details</span><span class="start-task-go" aria-hidden="true">→</span></a></li><li><a class="start-task" href="https://app.trops.kr/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fsupport" data-track="hero-task-support" data-start-task="support"><span class="start-task-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V10m4.7 11V10m4.6 11V10M19 21V10M2.5 10 12 4l9.5 6"/></svg></span><b>Find support programs</b><span class="start-task-desc">Notices that fit your region and industry, with links</span><span class="start-task-go" aria-hidden="true">→</span></a></li><li><a class="start-task" href="https://app.trops.kr/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fhome" data-track="hero-task-upload" data-start-task="upload"><span class="start-task-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4M4 14v5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/></svg></span><b>Upload documents</b><span class="start-task-desc">Deal and document fields filled from your files and buyer requests</span><span class="start-task-go" aria-hidden="true">→</span></a></li></ul></div>
+  <div class="start-picker" role="group" aria-labelledby="start-picker-title"><div class="start-picker-head"><p class="start-picker-q" id="start-picker-title">Where would you like to start?</p><p class="start-picker-note">The app interface is in Korean.</p></div><ul class="start-tasks"><li><a class="start-task" href="https://app.trops.kr/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fhome" data-track="hero-task-upload" data-start-task="upload"><span class="start-task-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4M4 14v5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/></svg></span><b>Upload an export deal</b><span class="start-task-desc">Your Excel, Word and received files, as they are</span><span class="start-task-go" aria-hidden="true">→</span></a></li><li><a class="start-task" href="https://app.trops.kr/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Freceivables" data-track="hero-task-receivables" data-start-task="receivables"><span class="start-task-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M5 9h1M18 15h1"/></svg></span><b>See money owed to you</b><span class="start-task-desc">Due dates and payments by deal</span><span class="start-task-go" aria-hidden="true">→</span></a></li><li><a class="start-task" href="https://app.trops.kr/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fdocuments%252Fproforma" data-track="hero-task-quote" data-start-task="quote"><span class="start-task-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 2H5v20h14V7ZM14 2v6h5M8 12h8M8 16h6"/></svg></span><b>Create documents</b><span class="start-task-desc">From a proforma invoice (PI) to shipping documents</span><span class="start-task-go" aria-hidden="true">→</span></a></li></ul><p class="start-picker-more">Looking for export support programs? <a href="https://app.trops.kr/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fsupport" data-track="hero-task-support">Find support programs →</a></p></div>
   <div class="cta">
     <a class="btn" href="https://app.trops.kr/" data-track="hero-start">Start with TROPS</a>
 
@@ -717,7 +734,7 @@ html{scroll-padding-top:112px}
 
 
   <figure class="appfig static-workspace" id="demo"><div class="workspace-preview"><img src="/assets/img/workspace-overview.png" decoding="async" fetchpriority="high" width="1440" height="900" alt="Actual TROPS guest home in Korean: three task cards and the TROPS AI request box"><div class="workspace-demo" data-request="Prepare a quote for my buyer." data-state="ready"><span class="workspace-demo-label">TROPS AI · Example request</span><span class="sr">Prepare a quote for my buyer.</span><span class="workspace-demo-text" aria-hidden="true">Prepare a quote for my buyer.</span></div></div><figcaption>TROPS guest home · Sign in to continue your selected task · App interface is in Korean</figcaption></figure>
-  <div class="workspace-flow" id="workspace-flow" role="region" aria-labelledby="workspace-flow-title"><h2 id="workspace-flow-title">From export documents to payments, keep your work connected.</h2><p>Start with the materials you have and ask AI for the help you need.</p><ol><li><span class="flow-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H5v20h14V7ZM14 2v6h5M8 12h8M8 16h6"/></svg></span><h3>Add your materials</h3><p>Quotes, purchase orders and buyer requests</p></li><li><span class="flow-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V3h8v4M3 12h18M10 12v3h4v-3"/></svg></span><h3>Organize deals and documents</h3><p>Check extracted details and prepare documents</p></li><li><span class="flow-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M5 9h1M18 15h1"/></svg></span><h3>Track payments</h3><p>Amounts due and payment records by deal</p></li></ol></div>
+  <div class="workspace-flow" id="workspace-flow" role="region" aria-labelledby="workspace-flow-title"><h2 id="workspace-flow-title">From export documents to payments, keep your work connected.</h2><p>Start with the materials you have and ask AI for the help you need.</p><ol><li><span class="flow-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H5v20h14V7ZM14 2v6h5M8 12h8M8 16h6"/></svg></span><h3>Add your materials</h3><p>Quotes, purchase orders and buyer requests</p></li><li><span class="flow-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V3h8v4M3 12h18M10 12v3h4v-3"/></svg></span><h3>Organize deals and documents</h3><p>Check extracted details and prepare documents</p></li><li><span class="flow-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M5 9h1M18 15h1"/></svg></span><h3>Track payments</h3><p>Amounts due and payment records by deal</p></li></ol><div class="flow-proof"><p>Bring documents made elsewhere and TROPS cross-checks them against each other. On a customer’s live deal, it found <strong>7 mismatches</strong> before anything was sent.</p><small>October 2026 · Review of one customer’s actual deal documents</small></div></div>
 </div></header>
 
 
@@ -781,7 +798,9 @@ html{scroll-padding-top:112px}
 <a data-track="resource-glossary" href="https://app.trops.kr/guide/glossary"><span>Terms</span><b>Confusing export terms</b><em>Common terms from export documents, explained (Korean) →</em></a>
 </div></div></section>
 
-<section id="faq" class="tint" data-section="faq"><div class="w"><div class="label">FAQ</div><h2 class="faq-h">Frequently asked questions</h2><div class="faq"><details><summary>What is TROPS?</summary><div class="a"><p>TROPS is export operations software for small and midsize businesses. Prepare export document drafts, manage deal deadlines and next steps, and find relevant support programs.</p></div></details><details><summary>How do I start using TROPS?</summary><div class="a"><p>Sign up at app.trops.kr, create your company and choose a task. You can start with documents or support programs before you have a signed contract. The app interface is currently in Korean. <a href="https://app.trops.kr/">Start with TROPS →</a></p></div></details><details><summary>Which export documents can I prepare?</summary><div class="a"><p>Prepare drafts such as proforma invoices (PI), commercial invoices (CI) and packing lists (PL). Review the company and deal information before issuing or downloading a document. Check the recipient’s requirements before submitting it.</p></div></details><details><summary>How can I track export deadlines and next steps?</summary><div class="a"><p>View documents, progress and deadlines together for each deal. Your team confirms and records events that happen outside TROPS, such as shipment or payment.</p></div></details><details><summary>How does TROPS AI find export support programs?</summary><div class="a"><p>It suggests relevant notices using company information such as region and industry, with supporting reasons. Confirmed conditions and points to verify are shown separately. The issuing organization determines eligibility and selection.</p></div></details><details><summary>Can I get help with support program applications?</summary><div class="a"><p>After reviewing the original notice, you can inquire about help preparing application documents. TROPS does not automatically write or submit applications for every program.</p></div></details><details><summary>Where can I check pricing and free access terms?</summary><div class="a"><p>Current pricing, free access periods and paid access terms are available in the app. <a href="https://app.trops.kr/">Sign in, then open the plan page in your account menu →</a></p></div></details><details><summary>How are company information and export data processed?</summary><div class="a"><p>See the app’s official privacy notice for personal data collection and use, external AI processing, retention and deletion. <a href="https://app.trops.kr/privacy">Privacy Notice →</a></p></div></details></div></div></section>
+<section id="partners" class="partners" data-section="partners"><div class="w"><div class="partners-in"><div class="pt-row pt-partners"><h2>Our partners</h2><div class="pt-body"><ul class="partner-logos" aria-label="Partners"><li>Accounting firm</li><li>Tax and accounting firm</li><li>Law office</li></ul><p class="partner-note">Tax, accounting and legal work is handled by each partner under a separate contract with the customer.</p></div></div><div class="pt-row pt-programs"><h2>Programs · Data · Policy</h2><dl class="pt-list"><div><dt>Program</dt><dd><b>Selected for KAIST OverEdge 2026</b></dd></div><div><dt>Data</dt><dd><b>Uses public data from Korea Trade Insurance Corporation (K-SURE)</b></dd></div><div><dt>Policy</dt><dd><b>Outstanding entry, 1st “Everyone’s Idea” contest, Korea’s Ministry of Intellectual Property</b><span>“Triple Financial Safety Net”: a policy proposal to stop BEC (business email compromise) fraud before money is sent (2026)</span><small>TROPS’s payment verification steps grew out of this proposal.</small></dd></div></dl></div></div></div></section>
+
+<section id="faq" class="tint" data-section="faq"><div class="w"><div class="label">FAQ</div><h2 class="faq-h">Frequently asked questions</h2><div class="faq"><details><summary>What is TROPS?</summary><div class="a"><p>TROPS is the AI export team for small businesses without one. Upload the files you already use, and TROPS takes each export deal step by step from contract to payment, cross-checking documents and flagging differences. Your team reviews documents before issuing them. You can also find support programs relevant to your company.</p></div></details><details><summary>How do I start using TROPS?</summary><div class="a"><p>Sign up at app.trops.kr, create your company and choose a task. You can start with documents or support programs before you have a signed contract. The app interface is currently in Korean. <a href="https://app.trops.kr/">Start with TROPS →</a></p></div></details><details><summary>Which export documents can I prepare?</summary><div class="a"><p>Prepare drafts such as proforma invoices (PI), commercial invoices (CI) and packing lists (PL). Review the company and deal information before issuing or downloading a document. Check the recipient’s requirements before submitting it.</p></div></details><details><summary>Can TROPS cross-check documents made elsewhere?</summary><div class="a"><p>Yes. Upload the Excel or Word files you already use, or documents you received, and TROPS compares fields that should match across documents, such as company names, bank accounts and delivery terms, and flags differences before you send anything. Your team does the final check and sends the documents.</p></div></details><details><summary>Does TROPS handle tax, accounting or legal work?</summary><div class="a"><p>No. Tax, accounting and legal work is handled by partner firms under a separate contract with the customer. TROPS does not give legal advice or act as a tax representative; it helps you prepare documents and keep records.</p></div></details><details><summary>How can I track export deadlines and next steps?</summary><div class="a"><p>View documents, progress and deadlines together for each deal. Your team confirms and records events that happen outside TROPS, such as shipment or payment.</p></div></details><details><summary>How does TROPS AI find export support programs?</summary><div class="a"><p>It suggests relevant notices using company information such as region and industry, with supporting reasons. Confirmed conditions and points to verify are shown separately. The issuing organization determines eligibility and selection.</p></div></details><details><summary>Can I get help with support program applications?</summary><div class="a"><p>After reviewing the original notice, you can inquire about help preparing application documents. TROPS does not automatically write or submit applications for every program.</p></div></details><details><summary>Where can I check pricing and free access terms?</summary><div class="a"><p>Current pricing, free access periods and paid access terms are available in the app. <a href="https://app.trops.kr/">Sign in, then open the plan page in your account menu →</a></p></div></details><details><summary>How are company information and export data processed?</summary><div class="a"><p>See the app’s official privacy notice for personal data collection and use, external AI processing, retention and deletion. <a href="https://app.trops.kr/privacy">Privacy Notice →</a></p></div></details></div></div></section>
 
 <section class="fin" data-section="final"><div class="w"><div class="compact-final"><div><h2>Start with the export task you need today</h2><p class="final-note">The app interface is in Korean.</p></div><a class="btn" href="https://app.trops.kr/" data-track="final-start">Start with TROPS</a></div></div></section>
 
