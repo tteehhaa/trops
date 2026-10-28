@@ -691,8 +691,10 @@
                 고치고 나머지를 놓친 것이고, 그동안 같은 회사의 페이지들이 서로 다른 회사를
                 소개하고 있었습니다. test/naming-consistency.test.js 가 이제 국문 7개 · 영문 4개
                 **전부**를 셉니다(종전에는 index·precheck 둘뿐이라 이 누락을 못 봤습니다).
-             ⚠️ 고치실 때 한 곳만 고치지 마십시오. -->
-        <span class="footer-meta">1분 수출 준비 진단 · 수출 거래관리 · 수출 채권관리 · contact@theo-ne.com</span>
+             ⚠️ 고치실 때 한 곳만 고치지 마십시오.
+             🔄 「1분 수출 준비 진단」을 걷었습니다 〔2026-10-28 · 대표 결정 — 그 진단은 제품에서 없어졌습니다〕.
+                국문 privacy · 영문 en-privacy · en-refund 가 같은 날 함께 고쳤습니다(test/i18n-parity.test.js ⑥). -->
+        <span class="footer-meta">수출 거래관리 · 수출 채권관리 · contact@theo-ne.com</span>
       </div>
 
       <!-- 🔴 **라벨과 목적지가 어긋나 있었습니다** 〔2026-08-30 · 인계문서 ⓓ〕. 라벨이
@@ -704,12 +706,16 @@
            ⛔ 라벨만 두고 목적지를 바꾸거나 그 반대로 하지 마십시오. 어긋나는 순간
               같은 사고가 그대로 돌아옵니다.
            ⚠️ 위 .footer-meta 태그라인은 **건드리지 않았습니다** — 그것은 회사 소개 문구이고
-              test/naming-consistency.test.js 가 국문 7개·영문 4개를 한 문자열로 셉니다. -->
+              test/naming-consistency.test.js 가 국문 7개·영문 4개를 한 문자열로 셉니다.
+      🔄 **그 링크를 걷고 「TROPS 홈」을 넣었습니다** 〔2026-10-28 · 대표 결정 — 1분 진단은 제품에서 없어졌고
+           앱 `/quick-check` 는 앱 홈으로 넘어갑니다〕. 위 「링크를 빼면 나갈 곳이 하나도 남지 않는다」는 사유가
+           그대로라, privacy.html 푸터와 같은 「TROPS 홈」(`/`)으로 그 자리를 채웠습니다.
+           ⛔ 1분 진단 링크를 되살리지 마십시오. -->
       <nav class="footer-links" aria-label="정책">
-        <a href="https://app.trops.kr/quick-check">1분 수출 준비 진단</a>
         <a href="/refund">환불규정</a>
         <a href="https://app.trops.kr/privacy">개인정보처리방침</a>
         <a href="https://app.trops.kr/terms">이용약관</a>
+        <a href="/">TROPS 홈</a>
       </nav>
 
       <dl class="footer-biz" aria-label="사업자정보">

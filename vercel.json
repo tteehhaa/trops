@@ -47,12 +47,12 @@
     },
     {
       "source": "/check",
-      "destination": "https://app.trops.kr/quick-check",
+      "destination": "https://app.trops.kr/",
       "permanent": false
     },
     {
       "source": "/precheck",
-      "destination": "https://app.trops.kr/quick-check",
+      "destination": "https://app.trops.kr/",
       "permanent": true
     },
     {

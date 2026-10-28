@@ -15,6 +15,12 @@
  *    `tests/fixtures/quick-check/landing-score-source.js`). 그 인계 문서가 적어 둔 조건
  *    「지워도 되는 날 = 앱이 랜딩 원본과의 대조를 그만두는 날」이 충족된 것입니다.
  *
+ *    ⓓ 2026-10-28 — **1분 수출 준비 진단 자체가 제품에서 없어졌습니다**(대표 결정). 앱
+ *       `/quick-check` 도 같은 날 내려가고 그 옛 주소는 앱 홈으로 넘어갑니다. 그래서 ⑥ 의
+ *       목적지를 앱 홈으로 바꿨고, «보이는 자리»(소개 · 바닥글 · `llms.txt`)에 그 이름과
+ *       주소가 0 인지를 ⑦ 이 잽니다. ④ 는 그대로입니다 — 방침 본문은 시행일이 붙은 문안이라
+ *       대표가 따로 고치며, 그때 ④ 를 함께 고치십시오.
+ *
  * ⛔ **되살리려면 순서가 있습니다** — 페이지를 다시 세우기 전에 앱 `/quick-check` 를 먼저
  *    끄십시오(두 지면이 같은 표에 쓰면 「앱 1분 진단 응답 수」를 셀 수 없습니다). 전송을
  *    다시 켤 때는 앱 `tests/quick-check/landing-contract.test.ts` 를 먼저 읽으십시오 —
@@ -88,26 +94,34 @@ test('🔴 `assets/track.js` 는 그대로 산다 — 전송을 껐다고 계측
   );
 });
 
-/* ══ ⑥ 주소 처분 — /precheck 는 앱으로 넘어간다 ═════════════════════════════ */
+/* ══ ⑥ 주소 처분 — /precheck 는 앱 홈으로 넘어간다 ══════════════════════════ */
 
 const VERCEL = JSON.parse(read('vercel.json'));
 const APP_QUICK = 'https://app.trops.kr/quick-check';
+/** 🔄 2026-10-28 — 1분 진단이 없어져 옛 주소 둘의 목적지가 앱 홈이 됐습니다. */
+const APP_HOME = 'https://app.trops.kr/';
 
-test('🔴 `/precheck` 가 앱으로 «영구» 이동한다 — 색인을 옮기는 것이 목적이다', () => {
+test('🔴 `/precheck` 가 앱 홈으로 «영구» 이동한다 — 옛 메일 링크도 어딘가에 닿는다', () => {
   /*
    * 🔴 **`permanent: true` 가 이 파일에서 이 규칙뿐이다**(나머지는 `false`).
    *    같은 배치에서 `llms.txt`·JSON-LD 두 장의 주소도 함께 옮겼으므로, 검색·AI 가
    *    옛 주소를 계속 물어 오지 않게 «영구»가 맞습니다.
+   * 🔄 **목적지가 앱 1분 진단 → 앱 홈** 〔2026-10-28 · 대표 결정〕. 진단 화면이 없어졌지만
+   *    확인 메일의 `/precheck?r=<token>` 같은 옛 링크가 남아 있어, 규칙은 지우지 않고
+   *    목적지만 옮겼습니다. ⛔ 규칙을 지우지 마십시오 — 지우면 그 링크가 404 에 닿습니다.
    * ⚠️ 영구는 브라우저가 캐시합니다 — 되돌리려면 `false` 판을 한 번 배포해야 합니다.
    */
   const r = (VERCEL.redirects || []).find((x) => x.source === '/precheck');
-  assert.ok(r, 'vercel.json 에 /precheck 리다이렉트가 없습니다 — 옛 페이지가 다시 뜹니다');
-  assert.strictEqual(r.destination, APP_QUICK, '/precheck 의 목적지가 앱 1분 진단이 아닙니다');
+  assert.ok(r, 'vercel.json 에 /precheck 리다이렉트가 없습니다 — 옛 링크가 404 에 닿습니다');
+  assert.strictEqual(r.destination, APP_HOME, '/precheck 의 목적지가 앱 홈이 아닙니다');
   assert.strictEqual(r.permanent, true, '/precheck 는 영구 이동이어야 합니다(색인을 옮깁니다)');
 
   const c = (VERCEL.redirects || []).find((x) => x.source === '/check');
-  assert.ok(c && c.destination === APP_QUICK,
-    '/check 가 여전히 /precheck 를 가리킵니다 — 이중 리다이렉트가 됩니다');
+  assert.ok(c && c.destination === APP_HOME,
+    '/check 가 앱 홈을 가리키지 않습니다 — 없어진 화면이나 이중 리다이렉트로 갑니다');
+
+  assert.ok(!(VERCEL.redirects || []).some((x) => x.destination === APP_QUICK),
+    'vercel.json 이 아직 없어진 앱 1분 진단 주소로 보냅니다 — 앱이 한 번 더 튕깁니다');
 });
 
 test('🔴 `precheck.html` 이 «배포에서도 저장소에서도» 사라졌다', () => {
@@ -128,11 +142,45 @@ test('🔴 `precheck.html` 이 «배포에서도 저장소에서도» 사라졌�
     'precheck.html 이 되살아났습니다 — 진입원 0 인 페이지가 다시 섰습니다');
 });
 
-test('🔴 검색·AI 가 보는 주소도 함께 옮겼다 — 한쪽만 고치면 옛 주소가 계속 인용된다', () => {
+test('🔴 검색·AI 가 보는 목록에 옛 주소도 없어진 진단도 없다', () => {
+  /*
+   * 🔄 2026-10-28 — 종전에는 「앱 1분 진단 주소가 «있다»」를 쟀습니다. 진단이 없어져
+   *    방향을 뒤집었습니다: 남아 있으면 AI 가 없는 화면을 계속 권합니다.
+   */
   for (const [f, what] of [['llms.txt', 'AI 인용 목록']]) {
     const s = read(f);
     assert.ok(!s.includes('https://trops.kr/precheck'),
       `${f}(${what})이 아직 옛 주소를 가리킵니다`);
-    assert.ok(s.includes(APP_QUICK), `${f}(${what})에 앱 1분 진단 주소가 없습니다`);
+    assert.ok(!s.includes('quick-check'), `${f}(${what})이 아직 없어진 앱 1분 진단 주소를 싣습니다`);
+    assert.ok(!s.includes('1분 수출 준비 진단'), `${f}(${what})이 아직 없어진 1분 진단을 소개합니다`);
+  }
+});
+
+/* ══ ⑦ 보이는 자리에 없어진 진단이 없다 〔2026-10-28〕 ══════════════════════════ */
+
+test('🔴 배포되는 어느 페이지도 없어진 앱 1분 진단으로 링크하지 않는다', () => {
+  /*
+   * 🔴 페이지 목록은 빌드 분류표에서 읽습니다(사본 0). 주석은 걷습니다 — 이 저장소는
+   *    주석에 옛 주소를 기록으로 인용합니다.
+   * ⚠️ 방침 본문(privacy · en-privacy · refund · en-refund)의 «이름»은 이 검사가 보지
+   *    않습니다 — 시행일이 붙은 문안이라 대표가 따로 고칩니다(머리주석 ⓓ). 주소는 그
+   *    본문에도 0 이라 함께 잽니다.
+   */
+  const { STATIC } = require('../scripts/build-static.js');
+  const offenders = STATIC.html.map((e) => e.file).filter((f) => strip(read(f)).includes('quick-check'));
+  assert.deepStrictEqual(offenders, [],
+    '없어진 앱 1분 진단으로 가는 링크가 남았습니다: ' + offenders.join(' · '));
+});
+
+test('🔴 회사 소개와 바닥글이 없어진 진단을 소개하지 않는다', () => {
+  const about = strip(read('about.html'));
+  assert.ok(!about.includes('1분 수출 준비 진단'), 'about.html 이 아직 1분 진단을 «함께 제공하는 것»으로 소개합니다');
+
+  /* 바닥글 태그라인 — 정책 페이지 넷만 싣습니다(랜딩 · 소개 · 문의는 0). */
+  const META = /<span class="footer-meta">([^<]*)<\/span>/;
+  for (const f of ['privacy.html', 'refund.html', 'en-privacy.html', 'en-refund.html']) {
+    const m = strip(read(f)).match(META);
+    assert.ok(m, f + ' 의 바닥글 태그라인을 찾지 못했습니다 — 이 검사가 아무것도 재지 않습니다');
+    assert.ok(!/1분|1-minute/i.test(m[1]), f + ' 바닥글 태그라인에 없어진 진단이 남았습니다: ' + m[1]);
   }
 });
