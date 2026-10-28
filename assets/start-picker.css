@@ -14,6 +14,9 @@
 .start-task:hover .start-task-go{transform:translate(4px,-50%)}
 .start-task:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:12px}
 .hero .start-picker+.cta{margin-top:36px}
+.start-picker-more{margin-top:14px;padding:0 4px;font-size:13.5px;line-height:1.6;color:var(--mute)}
+.start-picker-more a{margin-left:4px;font-weight:600;color:var(--accent)}
+.start-picker-more a:hover{text-decoration:underline}
 @media(max-width:860px){
  .start-picker{margin-top:40px;padding:18px 14px;border-radius:14px}
  .start-picker-head{padding:0 4px}

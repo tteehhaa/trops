@@ -16,8 +16,8 @@
 <link rel="preconnect" href="https://app.trops.kr">
 <link rel="dns-prefetch" href="https://app.trops.kr">
 
-<title>{{publicCopy.headline}} | 수출 서류·거래 관리·지원사업</title>
-<meta name="description" content="TROPS는 중소기업의 수출 서류 작성, 거래별 기한·대금 관리와 맞춤 지원사업 찾기를 돕는 수출 실무 서비스예요. 앱에서 가입하고 필요한 업무를 시작하세요.">
+<title>{{publicCopy.headline}} | 수출 서류·대조·대금</title>
+<meta name="description" content="TROPS는 수출팀이 없는 중소기업을 위한 AI 수출팀이에요. 쓰던 서류를 올리면 수출 한 건을 계약부터 대금까지 순서대로 챙겨요.">
 <link rel="canonical" href="https://trops.kr/">
 
 <meta name="naver-site-verification" content="82ea864b3d6cdf087f4568558ceb5ad495445c6f" />
@@ -30,8 +30,8 @@
 <meta property="og:site_name" content="TROPS">
 <meta property="og:locale" content="ko_KR">
 
-<meta property="og:title" content="{{publicCopy.headline}}">
-<meta property="og:description" content="TROPS는 중소기업의 수출 서류 작성, 거래별 기한·대금 관리와 맞춤 지원사업 찾기를 돕는 수출 실무 서비스예요. 앱에서 가입하고 필요한 업무를 시작하세요.">
+<meta property="og:title" content="{{publicCopy.headline}} | 수출 서류·대조·대금">
+<meta property="og:description" content="TROPS는 수출팀이 없는 중소기업을 위한 AI 수출팀이에요. 쓰던 서류를 올리면 수출 한 건을 계약부터 대금까지 순서대로 챙겨요.">
 <meta name="twitter:card" content="summary_large_image">
 
 
@@ -525,7 +525,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
       "url": "https://app.trops.kr/",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web",
-      "description": "TROPS는 중소기업의 수출 서류 작성, 거래별 기한·대금 관리와 맞춤 지원사업 찾기를 돕는 수출 실무 서비스예요. 앱에서 가입하고 필요한 업무를 시작하세요.",
+      "description": "TROPS는 수출팀이 없는 중소기업을 위한 AI 수출팀이에요. 쓰던 서류를 올리면 수출 한 건을 계약부터 대금까지 순서대로 챙겨요.",
       "publisher": {
         "@id": "https://trops.kr/#org"
       }
@@ -539,7 +539,7 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
           "name": "TROPS는 어떤 서비스인가요?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "TROPS는 중소기업을 위한 수출 실무 서비스예요. 수출 서류 초안과 거래별 기한·다음 할 일을 관리하고, 우리 회사에 맞는 지원사업을 찾을 수 있어요."
+            "text": "TROPS는 수출팀이 없는 중소기업을 위한 AI 수출팀이에요. 쓰던 서류를 올리면 수출 한 건을 계약부터 대금까지 순서대로 챙기고, 서류끼리 대조해 다른 곳을 표시해요. 서류는 담당자가 확인한 뒤 발행해요. 우리 회사에 맞는 지원사업도 찾을 수 있어요."
           }
         },
         {
@@ -556,6 +556,22 @@ footer .fl{display:flex;gap:16px;flex-wrap:wrap}
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "견적서(PI), 상업송장(CI), 포장명세서(PL) 등의 초안을 준비할 수 있어요. 회사·거래 정보를 반영한 뒤 담당자가 항목과 값을 확인하고 발행하거나 내려받아요. 제출 전에는 제출처의 요구사항도 확인하세요."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "다른 곳에서 만든 서류도 대조할 수 있나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "네. 쓰던 엑셀·워드나 받은 서류를 올리면 회사명·계좌·인도 조건처럼 서류마다 겹치는 항목을 서로 맞춰 보고, 다른 곳을 발송 전에 표시해요. 최종 확인과 발송은 담당자가 해요."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "세무·회계·법률 업무도 TROPS가 하나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "아니요. 세무·회계·법률 업무는 신성회계법인·유민세무회계·한경재 법률사무소 같은 파트너가 고객과 별도 계약으로 맡아요. TROPS는 법률 자문이나 세무 대리를 하지 않고, 서류 준비와 기록 관리를 도와요."
           }
         },
         {
@@ -683,6 +699,7 @@ html{scroll-padding-top:112px}
 </style>
 <link rel="stylesheet" href="/assets/workspace-demo.css">
 <link rel="stylesheet" href="/assets/start-picker.css">
+<link rel="stylesheet" href="/assets/partners.css">
 </head><body>
 
 <a class="skip" href="#main">본문으로 건너뛰기</a>
@@ -707,7 +724,7 @@ html{scroll-padding-top:112px}
 <header class="hero" data-section="hero"><div class="w">
   <h1>{{publicCopy.headline}}</h1>
   <p class="lead">{{publicCopy.detail}}</p>
-  <div class="start-picker" role="group" aria-labelledby="start-picker-title"><div class="start-picker-head"><p class="start-picker-q" id="start-picker-title">어떤 업무부터 시작할까요?</p></div><ul class="start-tasks"><li><a class="start-task" href="https://app.trops.kr/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fdocuments%252Fproforma" data-track="hero-task-quote" data-start-task="quote"><span class="start-task-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 2H5v20h14V7ZM14 2v6h5M8 12h8M8 16h6"/></svg></span><b>견적서 만들기</b><span class="start-task-desc">회사 정보로 채운 견적서(PI) 초안</span><span class="start-task-go" aria-hidden="true">→</span></a></li><li><a class="start-task" href="https://app.trops.kr/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fsupport" data-track="hero-task-support" data-start-task="support"><span class="start-task-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V10m4.7 11V10m4.6 11V10M19 21V10M2.5 10 12 4l9.5 6"/></svg></span><b>지원사업 보기</b><span class="start-task-desc">지역·업종에 맞는 공고와 공고 원문 링크</span><span class="start-task-go" aria-hidden="true">→</span></a></li><li><a class="start-task" href="https://app.trops.kr/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fhome" data-track="hero-task-upload" data-start-task="upload"><span class="start-task-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4M4 14v5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/></svg></span><b>자료 올리기</b><span class="start-task-desc">가진 서류·바이어 요청을 읽어 채운 거래·서류 칸</span><span class="start-task-go" aria-hidden="true">→</span></a></li></ul></div>
+  <div class="start-picker" role="group" aria-labelledby="start-picker-title"><div class="start-picker-head"><p class="start-picker-q" id="start-picker-title">어떤 업무부터 시작할까요?</p></div><ul class="start-tasks"><li><a class="start-task" href="https://app.trops.kr/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fhome" data-track="hero-task-upload" data-start-task="upload"><span class="start-task-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4M4 14v5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/></svg></span><b>수출 1건 올리기</b><span class="start-task-desc">쓰던 엑셀·워드, 받은 서류 그대로</span><span class="start-task-go" aria-hidden="true">→</span></a></li><li><a class="start-task" href="https://app.trops.kr/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Freceivables" data-track="hero-task-receivables" data-start-task="receivables"><span class="start-task-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M5 9h1M18 15h1"/></svg></span><b>받을 돈 보기</b><span class="start-task-desc">거래별 만기·입금</span><span class="start-task-go" aria-hidden="true">→</span></a></li><li><a class="start-task" href="https://app.trops.kr/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fdocuments%252Fproforma" data-track="hero-task-quote" data-start-task="quote"><span class="start-task-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 2H5v20h14V7ZM14 2v6h5M8 12h8M8 16h6"/></svg></span><b>서류 만들기</b><span class="start-task-desc">견적서(PI)부터 선적 서류까지</span><span class="start-task-go" aria-hidden="true">→</span></a></li></ul><p class="start-picker-more">수출 지원사업을 찾고 있다면 <a href="https://app.trops.kr/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fsupport" data-track="hero-task-support">지원사업 보기 →</a></p></div>
   <div class="cta">
     <a class="btn" href="https://app.trops.kr/" data-track="hero-start">TROPS 시작하기</a>
 
@@ -717,7 +734,7 @@ html{scroll-padding-top:112px}
 
 
   <figure class="appfig static-workspace" id="demo"><div class="workspace-preview"><img src="/assets/img/workspace-overview.png" decoding="async" fetchpriority="high" width="1440" height="900" alt="TROPS 실제 비로그인 홈: 시작할 업무를 고르는 세 가지 카드와 TROPS AI 입력창"><div class="workspace-demo" data-request="바이어에게 보낼 견적서를 만들어 주세요" data-state="ready"><span class="workspace-demo-label">TROPS AI · 요청 예시</span><span class="sr">바이어에게 보낼 견적서를 만들어 주세요</span><span class="workspace-demo-text" aria-hidden="true">바이어에게 보낼 견적서를 만들어 주세요</span></div></div><figcaption>TROPS 비로그인 홈 · 로그인하면 선택한 업무를 이어가요</figcaption></figure>
-  <div class="workspace-flow" id="workspace-flow" role="region" aria-labelledby="workspace-flow-title"><h2 id="workspace-flow-title">수출 서류부터 대금 회수까지,<br>한 화면에서 관리하세요.</h2><ol><li><span class="flow-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H5v20h14V7ZM14 2v6h5M8 12h8M8 16h6"/></svg></span><h3>자료 넣기</h3><p>견적서·주문서·바이어 요청</p></li><li><span class="flow-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V3h8v4M3 12h18M10 12v3h4v-3"/></svg></span><h3>거래·서류 정리</h3><p>읽은 값 확인·필요한 서류 작성</p></li><li><span class="flow-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M5 9h1M18 15h1"/></svg></span><h3>받을 돈 확인</h3><p>거래별 대금·입금 기록</p></li></ol></div>
+  <div class="workspace-flow" id="workspace-flow" role="region" aria-labelledby="workspace-flow-title"><h2 id="workspace-flow-title">수출 서류부터 대금 회수까지,<br>한 화면에서 관리하세요.</h2><ol><li><span class="flow-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H5v20h14V7ZM14 2v6h5M8 12h8M8 16h6"/></svg></span><h3>자료 넣기</h3><p>견적서·주문서·바이어 요청</p></li><li><span class="flow-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V3h8v4M3 12h18M10 12v3h4v-3"/></svg></span><h3>거래·서류 정리</h3><p>읽은 값 확인·필요한 서류 작성</p></li><li><span class="flow-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M5 9h1M18 15h1"/></svg></span><h3>받을 돈 확인</h3><p>거래별 대금·입금 기록</p></li></ol><div class="flow-proof"><p>다른 곳에서 만든 서류도 올리면 서류끼리 대조해요. 고객사 실거래 서류에서 발송 전에 <strong>불일치 7건</strong>을 찾았어요.</p><small>2026년 10월 · 고객사 1곳의 실제 거래 서류 검토 결과</small></div></div>
 </div></header>
 
 
@@ -781,7 +798,9 @@ html{scroll-padding-top:112px}
 <a data-track="resource-glossary" href="https://app.trops.kr/guide/glossary"><span>용어</span><b>헷갈리는 용어</b><em>수출 서류에 자주 나오는 용어 풀이 →</em></a>
 </div></div></section>
 
-<section id="faq" class="tint" data-section="faq"><div class="w"><div class="label">FAQ</div><h2 class="faq-h">자주 묻는 질문</h2><div class="faq"><details><summary>TROPS는 어떤 서비스인가요?</summary><div class="a"><p>TROPS는 중소기업을 위한 수출 실무 서비스예요. 수출 서류 초안과 거래별 기한·다음 할 일을 관리하고, 우리 회사에 맞는 지원사업을 찾을 수 있어요.</p></div></details><details><summary>TROPS는 어떻게 시작하나요?</summary><div class="a"><p>app.trops.kr에서 가입한 뒤 회사를 만들고 필요한 업무를 선택해요. 계약서가 없어도 서류 작성이나 지원사업 찾기부터 시작할 수 있어요. <a href="https://app.trops.kr/">TROPS 시작하기 →</a></p></div></details><details><summary>어떤 수출 서류를 만들 수 있나요?</summary><div class="a"><p>견적서(PI), 상업송장(CI), 포장명세서(PL) 등의 초안을 준비할 수 있어요. 회사·거래 정보를 반영한 뒤 담당자가 항목과 값을 확인하고 발행하거나 내려받아요. 제출 전에는 제출처의 요구사항도 확인하세요.</p></div></details><details><summary>수출 거래의 기한과 다음 할 일은 어떻게 확인하나요?</summary><div class="a"><p>거래별로 서류와 진행 상황, 관련 기한을 함께 확인해요. 선적이나 입금처럼 외부에서 일어난 일은 담당자가 확인해 기록해요.</p></div></details><details><summary>TROPS AI는 수출 지원사업을 어떻게 찾아주나요?</summary><div class="a"><p>회사 지역·업종 등을 바탕으로 관련 공고를 근거와 함께 제안하고, 확인된 조건과 더 확인할 조건을 구분해요. 신청 자격과 선정 여부는 공고 기관이 결정해요.</p></div></details><details><summary>지원사업 신청 서류 작성도 도와주나요?</summary><div class="a"><p>관련 공고와 원문을 확인한 뒤 신청 서류 작성을 문의할 수 있어요. 모든 공고의 신청서를 자동으로 작성하거나 대신 제출하는 방식은 아니에요.</p></div></details><details><summary>이용 요금과 무료 이용 조건은 어디서 확인하나요?</summary><div class="a"><p>현재 적용되는 요금, 무료 이용 기간과 유료 전환 조건은 앱에서 확인할 수 있어요. <a href="https://app.trops.kr/">로그인 후 계정 메뉴 «요금제»에서 확인하기 →</a></p></div></details><details><summary>회사 정보와 수출 자료는 어떻게 처리하나요?</summary><div class="a"><p>개인정보의 수집·이용, 외부 AI 처리, 보관과 삭제 기준은 앱의 공식 개인정보처리방침에서 확인할 수 있어요. <a href="https://app.trops.kr/privacy">개인정보처리방침 →</a></p></div></details></div></div></section>
+<section id="partners" class="partners" data-section="partners"><div class="w"><div class="partners-in"><div class="pt-row pt-partners"><h2>함께하는 파트너</h2><div class="pt-body"><ul class="partner-logos" aria-label="파트너 목록"><li>신성회계법인</li><li>유민세무회계</li><li>한경재 법률사무소</li></ul><p class="partner-note">세무·회계·법률 업무는 각 파트너가 고객과 별도 계약으로 맡아요.</p></div></div><div class="pt-row pt-programs"><h2>프로그램 · 데이터 · 정책</h2><dl class="pt-list"><div><dt>프로그램</dt><dd><b>KAIST OverEdge 2026 선정 기업</b></dd></div><div><dt>데이터</dt><dd><b>한국무역보험공사 공개 데이터 활용</b></dd></div><div><dt>정책</dt><dd><b>지식재산처 「제1회 모두의 아이디어」 우수 참여작 선정</b><span>「3중 금융 안전망」, BEC(이메일 해킹 무역사기) 사전 차단 정책 제안 (2026)</span><small>TROPS의 대금 확인 절차는 이 정책 제안에서 출발했어요.</small></dd></div></dl></div></div></div></section>
+
+<section id="faq" class="tint" data-section="faq"><div class="w"><div class="label">FAQ</div><h2 class="faq-h">자주 묻는 질문</h2><div class="faq"><details><summary>TROPS는 어떤 서비스인가요?</summary><div class="a"><p>TROPS는 수출팀이 없는 중소기업을 위한 AI 수출팀이에요. 쓰던 서류를 올리면 수출 한 건을 계약부터 대금까지 순서대로 챙기고, 서류끼리 대조해 다른 곳을 표시해요. 서류는 담당자가 확인한 뒤 발행해요. 우리 회사에 맞는 지원사업도 찾을 수 있어요.</p></div></details><details><summary>TROPS는 어떻게 시작하나요?</summary><div class="a"><p>app.trops.kr에서 가입한 뒤 회사를 만들고 필요한 업무를 선택해요. 계약서가 없어도 서류 작성이나 지원사업 찾기부터 시작할 수 있어요. <a href="https://app.trops.kr/">TROPS 시작하기 →</a></p></div></details><details><summary>어떤 수출 서류를 만들 수 있나요?</summary><div class="a"><p>견적서(PI), 상업송장(CI), 포장명세서(PL) 등의 초안을 준비할 수 있어요. 회사·거래 정보를 반영한 뒤 담당자가 항목과 값을 확인하고 발행하거나 내려받아요. 제출 전에는 제출처의 요구사항도 확인하세요.</p></div></details><details><summary>다른 곳에서 만든 서류도 대조할 수 있나요?</summary><div class="a"><p>네. 쓰던 엑셀·워드나 받은 서류를 올리면 회사명·계좌·인도 조건처럼 서류마다 겹치는 항목을 서로 맞춰 보고, 다른 곳을 발송 전에 표시해요. 최종 확인과 발송은 담당자가 해요.</p></div></details><details><summary>세무·회계·법률 업무도 TROPS가 하나요?</summary><div class="a"><p>아니요. 세무·회계·법률 업무는 신성회계법인·유민세무회계·한경재 법률사무소 같은 파트너가 고객과 별도 계약으로 맡아요. TROPS는 법률 자문이나 세무 대리를 하지 않고, 서류 준비와 기록 관리를 도와요.</p></div></details><details><summary>수출 거래의 기한과 다음 할 일은 어떻게 확인하나요?</summary><div class="a"><p>거래별로 서류와 진행 상황, 관련 기한을 함께 확인해요. 선적이나 입금처럼 외부에서 일어난 일은 담당자가 확인해 기록해요.</p></div></details><details><summary>TROPS AI는 수출 지원사업을 어떻게 찾아주나요?</summary><div class="a"><p>회사 지역·업종 등을 바탕으로 관련 공고를 근거와 함께 제안하고, 확인된 조건과 더 확인할 조건을 구분해요. 신청 자격과 선정 여부는 공고 기관이 결정해요.</p></div></details><details><summary>지원사업 신청 서류 작성도 도와주나요?</summary><div class="a"><p>관련 공고와 원문을 확인한 뒤 신청 서류 작성을 문의할 수 있어요. 모든 공고의 신청서를 자동으로 작성하거나 대신 제출하는 방식은 아니에요.</p></div></details><details><summary>이용 요금과 무료 이용 조건은 어디서 확인하나요?</summary><div class="a"><p>현재 적용되는 요금, 무료 이용 기간과 유료 전환 조건은 앱에서 확인할 수 있어요. <a href="https://app.trops.kr/">로그인 후 계정 메뉴 «요금제»에서 확인하기 →</a></p></div></details><details><summary>회사 정보와 수출 자료는 어떻게 처리하나요?</summary><div class="a"><p>개인정보의 수집·이용, 외부 AI 처리, 보관과 삭제 기준은 앱의 공식 개인정보처리방침에서 확인할 수 있어요. <a href="https://app.trops.kr/privacy">개인정보처리방침 →</a></p></div></details></div></div></section>
 
 <section class="fin" data-section="final"><div class="w"><div class="compact-final"><h2>지금 필요한 수출 업무부터 시작하세요</h2><a class="btn" href="https://app.trops.kr/" data-track="final-start">TROPS 시작하기</a></div></div></section>
 

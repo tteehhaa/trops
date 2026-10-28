@@ -176,9 +176,10 @@ test('🔴 주요 영역 전부에 이름이 붙어 있다 — 하나라도 빠�
    *    시안의 섹션 순서 그대로입니다. 그 다섯의 시계열은 2026-09-29 배포일에서 끝납니다.
    * ⚠️ 진단 결과 예시는 이제 `check` 영역 안에 있습니다 — `#demo` 앵커는 아래 검사가 따로 지킵니다.
    * ⚠️ 숨긴 자리(로고 벽 · 후기 · 영상)에는 이름을 붙이지 않았습니다 — 공개하는 날 붙이십시오.
+   * 🔄 파트너 · 프로그램 칸(`partners`)을 2026-10-28 에 공개하며 이름을 붙였습니다 — 수출 자료와 FAQ 사이입니다.
    */
   const want = [
-    'nav', 'hero', 'product', 'resources', 'faq', 'final', 'footer',
+    'nav', 'hero', 'product', 'resources', 'partners', 'faq', 'final', 'footer',
   ];
   for (const w of want) assert.ok(found.includes(w), '영역이 빠졌습니다: ' + w);
   assert.strictEqual(new Set(found).size, found.length, '같은 이름이 두 번 붙었습니다');

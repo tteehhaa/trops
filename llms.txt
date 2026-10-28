@@ -1,8 +1,9 @@
 # TROPS
 
-> 수출 실무를 더 쉽게, TROPS AI
-> TROPS는 중소기업을 위한 수출 실무 서비스예요. 수출 전담 인력이 부족한 중소기업을 위해 만들어요.
-> 거래별 서류와 기한, 다음 할 일을 연결하고 우리 회사에 맞는 지원사업을 찾아요.
+> 수출팀 없는 회사의 AI 수출팀, TROPS
+> TROPS는 수출팀이 없는 중소기업을 위한 AI 수출팀이에요. 바이어를 찾은 다음부터 돈을 받을 때까지, 수출 한 건을 순서대로 챙겨요.
+> 쓰던 엑셀·워드나 받은 서류를 올리면 거래와 서류 칸을 채우고, 서류끼리 대조해 다른 곳을 발송 전에 표시하고, 거래별 만기·입금을 보여 줘요. 최종 확인과 발송은 담당자가 해요.
+> 세무·회계·법률 업무는 파트너(신성회계법인 · 유민세무회계 · 한경재 법률사무소)가 고객과 별도 계약으로 맡아요.
 > app.trops.kr에서 가입하고 회사와 필요한 업무를 선택해 시작해요.
 
 아래 문서는 전부 공개되어 있고 로그인이 필요하지 않아요. 인용해도 돼요.
@@ -43,8 +44,8 @@
 
 ## 서비스 안내
 
-- [TROPS 소개](https://trops.kr/): 수출 서류 초안, 거래별 기한·다음 할 일, 맞춤 지원사업
-- [TROPS overview (English)](https://trops.kr/en): The required export steps in order, and what to check now
+- [TROPS 소개](https://trops.kr/): 수출팀 없는 회사의 AI 수출팀. 수출 서류 작성·대조, 거래별 만기·입금, 맞춤 지원사업
+- [TROPS overview (English)](https://trops.kr/en): The AI export team for companies without one. Export documents, cross-checks and payments
 - [회사 소개](https://trops.kr/about): TROPS를 만드는 회사가 무엇을 하고 무엇을 하지 않는지, 수출 실무 서비스를 왜 만들고 있는지
 
 ## 정책
