@@ -46,7 +46,6 @@
 - [TROPS 소개](https://trops.kr/): 수출 서류 초안, 거래별 기한·다음 할 일, 맞춤 지원사업
 - [TROPS overview (English)](https://trops.kr/en): The required export steps in order, and what to check now
 - [회사 소개](https://trops.kr/about): TROPS를 만드는 회사가 무엇을 하고 무엇을 하지 않는지, 수출 실무 서비스를 왜 만들고 있는지
-- [1분 수출 준비 진단](https://app.trops.kr/quick-check): 권역·거래 횟수·결제 방식을 고르면 지금 챙길 서류와 기한을 1분 안에 짚어 드려요. 회원가입 없이 무료예요
 
 ## 정책
 

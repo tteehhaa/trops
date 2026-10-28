@@ -191,10 +191,12 @@ test('[대조] 검출기가 실제로 문다 — 0건 통과 금지', () => {
  *    페이지」를 실측으로 고릅니다. 페이지가 늘거나 줄어도 이 파일을 고칠 일이 없습니다.
  * ⚠️ 이 셋은 랜딩 3단계 «상품명»과 **다른 목록입니다**(사업 범위 표기). 상품명은
  *    2026-09-03 에 따로 움직였습니다 — ⛔ 두 목록을 같은 것으로 보고 맞추지 마십시오.
+ * 🔄 **셋 → 둘** 〔2026-10-28 · 대표 결정〕 — 1분 수출 준비 진단이 제품에서 없어져 맨 앞 항목을
+ *    걷었습니다(앱 `/quick-check` 도 함께 내림). 정책 페이지 넷이 같은 날 함께 고쳤습니다.
  */
 const FOOTER_SERVICES = {
-  ko: '1분 수출 준비 진단 · 수출 거래관리 · 수출 채권관리',
-  en: '1-minute export readiness check · Export transaction management · Export receivables management',
+  ko: '수출 거래관리 · 수출 채권관리',
+  en: 'Export transaction management · Export receivables management',
 };
 
 const FOOTER_PAGES = STATIC_PAGES.filter((p) => read(p.file).includes('class="footer-meta"'));
