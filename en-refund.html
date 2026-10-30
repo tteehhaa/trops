@@ -292,7 +292,8 @@
           <strong>Whether you obtain coverage or receive a claim payment is therefore not grounds for a refund under this policy.</strong>
         </p>
         <p>
-          The 1-minute export readiness check is free, so no payment is involved and refunds don’t apply.
+          <!-- 🔄 Removed by the amendment effective 2026-11-07 (paired with refund.html). `data-rev-until` = shown only until then. -->
+          <span data-rev-until>The 1-minute export readiness check is free, so no payment is involved and refunds don’t apply.</span>
           Sections 07 through 12 below apply to Document pre-check submissions received on or before August 20, 2026.
         </p>
       </section>
@@ -574,6 +575,11 @@
           Anything not covered here is governed by applicable law, including Korea’s Act on Consumer Protection in Electronic Commerce.
           If we change this policy, we’ll post the changes and the effective date on this page in advance.
         </p>
+        <!-- 🔴 국문 refund.html 의 개정 고지와 1:1 · 같은 날짜 〔2026-10-30〕. -->
+        <p data-rev-notice>
+          <strong>Amendment effective November 7, 2026</strong> · we remove the sentence in 01 saying that the free 1-minute export readiness check involves no payment and is not refundable.
+          That check was discontinued on October 28, 2026. Cancellation and refund conditions are unchanged, and the current text applies until then.
+        </p>
         <p>
           The Company has applied for e-commerce business registration and is awaiting approval.
           Once the registration number is issued, we’ll add it to the business information at the bottom of this page.
@@ -652,6 +658,7 @@
       </div>
     </div>
   </footer>
+  <script defer src="/assets/legal-revision.js" data-effective="{{legal.revisionEffective}}"></script>
   <script defer src="/assets/track.js"></script>
   <script defer src="/assets/lang-switch.js"></script>
 </body>

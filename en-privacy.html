@@ -283,7 +283,7 @@
       <h1>Privacy Notice</h1>
       <p class="head-meta">
         Draft &middot; pending legal review &middot; written August 11, 2026 &middot; effective August 20, 2026<br>
-        <strong>Amended and effective September 30, 2026.</strong> See §07 for the changes.<br>
+        <strong>Amended and effective November 7, 2026.</strong><span data-rev-until> (announced; the current text applies until then)</span> See §07 for the changes.<br>
         Applies to the services {{biz.companyName}} provides at trops.kr.
       </p>
     </div>
@@ -306,7 +306,8 @@
         <p>Export pre-check submissions have moved to app.trops.kr. Processing there is covered by that site's own privacy notice.</p>
         <!-- 🔴 September 21, 2026 — the one-minute check moved to the app; paired with the
              Korean page's new paragraph in the same place. ⛔ Do not revert only one side. -->
-        <p>The <strong>&ldquo;1-minute free check&rdquo; buttons</strong> on this site now lead to
+        <!-- 🔄 Removed by the amendment effective 2026-11-07 (paired with privacy.html). `data-rev-until` = shown only until then (assets/legal-revision.js). -->
+        <p data-rev-until>The <strong>&ldquo;1-minute free check&rdquo; buttons</strong> on this site now lead to
         app.trops.kr as well (September 21, 2026). What you enter on that screen · including your
         <strong>company name and the product you export</strong> · <strong>is received by that site and
         covered by its own privacy notice.</strong> trops.kr neither receives nor stores those values.</p>
@@ -329,7 +330,7 @@
              **is sent**. Do not fold it into the "never sent" sentence. -->
         <p>The same container holds one more slot: a <strong>channel code</strong>
         (<code>trops_vs_f</code>, September 20, 2026). If the address carries <code>?from=</code>, we keep
-        that value and <strong>send it along</strong> when you start the 1-minute export readiness check or send an early access application. It tells us which
+        that value and <strong>send it along</strong> <span data-rev-until>when you start the 1-minute export readiness check or send an early access application</span><span data-rev-from hidden>in the link when you click a link to app.trops.kr</span>. It tells us which
         page or partner you came through, and it is <strong>not a name, a contact detail or device
         information</strong>. This slot also <strong>disappears when you close the tab</strong>.</p>
         <p>We count how many times each page is opened and how many times the main buttons are clicked
@@ -345,7 +346,8 @@
              🔴 The sending was turned off on September 21, 2026 (batch 6 / L2). This paragraph now
                 records a past fact. Do not delete it, and do not restore it without restoring the
                 sending in precheck.html at the same time. -->
-        <p>The answers you choose and the score you see in the <strong>1-minute export readiness check</strong> are <strong>calculated in your browser only and are not sent to us</strong>
+        <!-- 🔄 Removed by the amendment effective 2026-11-07, like the button paragraph above. -->
+        <p data-rev-until>The answers you choose and the score you see in the <strong>1-minute export readiness check</strong> are <strong>calculated in your browser only and are not sent to us</strong>
         (September 21, 2026). Between <strong>September 20 and 21, 2026</strong> we did send those answers and
         the score in order to count how many people finished the check; those records contain
         <strong>no name, contact details or company name</strong> (the receiving end has no field for them),
@@ -574,6 +576,9 @@
         <p>When we change this notice, we post the changes and their effective date on this page. If a change is to your disadvantage, we will tell you before it takes effect.</p>
         <!-- 🔴 국문 §07 첫 고지 「시행(2차)」 와 1:1 · 같은 날짜 〔2026-09-30〕 — 같은 날 두 번째 개정이라 따로 적습니다(사유는 국문 주석).
              scripts/set-release-date.js 가 날짜를 함께 바꾸고 「(second amendment)」 표지는 그대로 둡니다. -->
+        <!-- 🔴 국문 §07 첫 고지(2026-11-07 시행)와 1:1 · 같은 날짜 〔2026-10-30〕. 시행일의 원본은 site.config.json `legal.revisionEffective`. -->
+        <h3>Effective November 7, 2026: we remove the description of the discontinued 1-minute export readiness check</h3>
+        <p>The <strong>1-minute export readiness check</strong> was discontinued on October 28, 2026. We remove the two paragraphs in §01 that described it (the &ldquo;1-minute free check&rdquo; buttons, and the answers and score sent between September 20 and 21, 2026), and we update where the channel code is sent to match what we do today (when you click a link to app.trops.kr). <strong>What this site collects and how long it keeps it are unchanged.</strong> The privacy notice of app.trops.kr changes on the same day (receiving emails at the company's mail forwarding address, external AI services connected by the user, schedule sharing, and support program notifications); the changes are listed in the notice of change at the top of <a href="https://app.trops.kr/privacy?lang=en">that notice</a>. This amendment <strong>takes effect on November 7, 2026</strong>, and the current text applies until then.</p>
         <h3>Effective September 30, 2026 (second amendment): early access applications now include how you reached us</h3>
         <p>This is the <strong>second amendment</strong> posted that day, following the one just below (&ldquo;we now accept early access applications on the home page&rdquo;), which stays as it was. When you send an early access application, we now also receive <strong>how you reached us</strong>: the channel code (<code>?from=</code>), campaign tags (<code>utm_*</code>), and the page path you opened. It tells us which channels applications come from, and it is not a name, a contact detail or device information. §02 lists the item and its purpose, and §01 notes where the channel code is sent. We also count <strong>how many applications are received</strong>, as part of the same anonymous counts as page views and button clicks (§01). <strong>Retention periods and all other items are unchanged.</strong> This amendment <strong>takes effect on the day it is posted</strong>.</p>
         <!-- 🔴 국문 §07 첫 고지와 1:1 · 같은 날짜입니다 〔2026-09-30 준비〕 — scripts/set-release-date.js 가 함께 바꿉니다. -->
@@ -650,6 +655,7 @@
       </div>
     </div>
   </footer>
+  <script defer src="/assets/legal-revision.js" data-effective="{{legal.revisionEffective}}"></script>
   <script defer src="/assets/track.js"></script>
   <script defer src="/assets/lang-switch.js"></script>
 </body>

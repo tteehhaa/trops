@@ -103,6 +103,16 @@
     "previewEnabled": false,
     "previewEndpoint": "https://trops-a-git-prd-v2-pdca-teheranroai-9246s-projects.vercel.app/api/pilot-apply"
   },
+  "_comment_legal": [
+    "방침 · 환불규정 개정의 시행일(한국 날짜 · YYYY-MM-DD) 〔2026-10-30 신설 · 대표 결정 «방침 개정은 한 번에»〕.",
+    "빌드가 {{legal.revisionEffective}} 토큰으로 네 장(privacy · en-privacy · refund · en-refund)의",
+    "assets/legal-revision.js 태그에 채우고, 그 스크립트가 그날 0시(한국)부터 «지금 글»을 걷고 «새 글»을 보입니다.",
+    "⚠️ 화면 글의 날짜(§07 첫 소제목 · 머리 줄 · 환불규정 고지)는 글자로 적혀 있고, test/quick-check-report.test.js 가 이 값과 같은지 잽니다.",
+    "⚠️ 앱 방침(app.trops.kr/privacy)의 같은 개정은 trops_a lib/legal/privacy-rev5.ts PRIVACY_REV5_EFFECTIVE 가 갖습니다 — 두 값을 함께 고치십시오."
+  ],
+  "legal": {
+    "revisionEffective": "2026-11-07"
+  },
   "publicCopy": {
     "ko": {
       "headline": "수출팀 없는 회사의 AI 수출팀, TROPS",
