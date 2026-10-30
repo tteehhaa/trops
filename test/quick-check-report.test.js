@@ -18,8 +18,8 @@
  *    ⓓ 2026-10-28 — **1분 수출 준비 진단 자체가 제품에서 없어졌습니다**(대표 결정). 앱
  *       `/quick-check` 도 같은 날 내려가고 그 옛 주소는 앱 홈으로 넘어갑니다. 그래서 ⑥ 의
  *       목적지를 앱 홈으로 바꿨고, «보이는 자리»(소개 · 바닥글 · `llms.txt`)에 그 이름과
- *       주소가 0 인지를 ⑦ 이 잽니다. ④ 는 그대로입니다 — 방침 본문은 시행일이 붙은 문안이라
- *       대표가 따로 고치며, 그때 ④ 를 함께 고치십시오.
+ *       주소가 0 인지를 ⑦ 이 잽니다. 🔄 2026-10-30 — 방침 본문(privacy · en-privacy · refund ·
+ *       en-refund)의 설명은 2026-11-07 시행 개정으로 걷습니다(대표 «방침 개정은 한 번에») · ④ 가 그 판을 잽니다.
  *
  * ⛔ **되살리려면 순서가 있습니다** — 페이지를 다시 세우기 전에 앱 `/quick-check` 를 먼저
  *    끄십시오(두 지면이 같은 표에 쓰면 「앱 1분 진단 응답 수」를 셀 수 없습니다). 전송을
@@ -43,39 +43,81 @@ const read = (f) => fs.readFileSync(path.join(ROOT, f), 'utf8');
 /** 읽는 사람에게 «보이는» 글만 — 이 저장소는 주석에 옛 문장을 그대로 인용합니다. */
 const strip = (h) => h.replace(/<!--[\s\S]*?-->/g, '');
 
-/* ══ ④ 방침이 «과거의 사실»을 적는다 ═════════════════════════════════════ */
+/* ══ ④ 방침 · 환불규정에서 1분 진단 설명을 걷는다 — 2026-11-07 시행 개정 〔2026-10-30〕 ══════════ */
 
-test('🔴 방침이 「지금은 보내지 않는다」와 「그때는 보냈다」를 함께 적는다', () => {
-  const ko = strip(read('privacy.html'));
-  for (const must of [
-    '1분 수출 준비 진단',
-    '이 브라우저에서만 계산하며 회사로 보내지 않습니다',
-    '2026년 9월 20일부터 21일까지',
-    'app.trops.kr 의 개인정보처리방침',
-  ]) {
-    assert.ok(ko.includes(must), 'privacy.html 이 안 적었습니다: ' + must);
+/*
+ * 🔄 **2026-10-30 — 종전 ④(「방침이 과거의 사실을 적는다」)를 뒤집었습니다.** 1분 진단이 제품에서 없어졌고
+ *    (2026-10-28), 대표 결정 «방침 개정은 한 번에»로 앱 방침 5차 개정과 같은 날(2026-11-07) 그 설명을 걷습니다.
+ * 🔴 **예고 동안에는 지금 글이 섭니다** — 걷을 글은 `data-rev-until` 조각 안에만 있고, 그날(한국 날짜)
+ *    `assets/legal-revision.js` 가 걷습니다(정적 HTML 이라 다시 배포하지 않아도 그날 바뀌게).
+ * 🔴 **시행일은 한 곳** — `site.config.json` 의 `legal.revisionEffective`. 화면 글의 날짜는 그 값과 같아야 합니다.
+ */
+const CONFIG = JSON.parse(read('site.config.json'));
+const EFFECTIVE = CONFIG.legal && CONFIG.legal.revisionEffective;
+const POLICY_PAGES = ['privacy.html', 'en-privacy.html', 'refund.html', 'en-refund.html'];
+const QUICK_NAMES = ['1분 수출 준비 진단', '1분 무료 진단', '1-minute export readiness check', '1-minute free check'];
+/** 시행일까지만 서는 조각(`data-rev-until`)과 개정 기록(§07 · 환불규정 고지)을 걷은 «시행 뒤의 본문». */
+const afterRevision = (h) => strip(h)
+  .replace(/<(p|span)\b[^>]*\bdata-rev-until\b[^>]*>[\s\S]*?<\/\1>/g, '')
+  .replace(/<p\b[^>]*\bdata-rev-notice\b[^>]*>[\s\S]*?<\/p>/g, '')
+  .replace(/<h2><span class="doc-num" aria-hidden="true">07<\/span>[\s\S]*?<\/section>/, '');
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const koLabel = (iso) => { const [y, m, d] = iso.split('-').map(Number); return `${y}년 ${m}월 ${d}일`; };
+const enLabel = (iso) => { const [y, m, d] = iso.split('-').map(Number); return `${MONTHS[m - 1]} ${d}, ${y}`; };
+
+test('🔴 시행 뒤의 본문에는 1분 진단이 없다 — 걷을 글은 «시행일까지만» 조각 안에만 있다', () => {
+  for (const f of POLICY_PAGES) {
+    const after = afterRevision(read(f));
+    for (const name of QUICK_NAMES) assert.ok(!after.includes(name), f + ' 의 시행 뒤 본문에 «' + name + '» 이 남습니다');
+    /* 예고 동안에는 지금 글이 그대로 섭니다(조각을 걷지 않은 본문에는 있다). */
+    const now = strip(read(f));
+    assert.ok(QUICK_NAMES.some((n) => now.includes(n)), f + ' 이 예고 동안의 지금 글을 잃었습니다 — 시행일 전에 글이 바뀝니다');
   }
-  /* ⛔ 현재형 수집 주장이 남아 있으면 방침이 거짓말을 합니다. */
-  assert.ok(
-    !ko.includes('도중에 그만두신 경우에도 그때까지 고르신 답이 함께 갑니다'),
-    'privacy.html 에 현재형 수집 문장이 남아 있습니다'
-  );
 });
 
-test('🔴 영어 방침도 같은 말을 한다', () => {
-  const en = strip(read('en-privacy.html'));
-  for (const must of [
-    '1-minute export readiness check',
-    'calculated in your browser only and are not sent to us',
-    'Between <strong>September 20 and 21, 2026</strong>',
-    'privacy notice of app.trops.kr',
-  ]) {
-    assert.ok(en.includes(must), 'en-privacy.html 이 안 적었습니다: ' + must);
+test('🔴 채널 코드 문장은 지금 하는 그대로 — 앱으로 가는 링크에 실어 보낸다(시행 뒤)', () => {
+  const ko = afterRevision(read('privacy.html'));
+  assert.ok(ko.includes('app.trops.kr 로 가는 링크를 누르실 때 그 링크에 실어'), 'privacy.html 에 새 채널 코드 문장이 없습니다');
+  const en = afterRevision(read('en-privacy.html'));
+  assert.ok(en.includes('in the link when you click a link to app.trops.kr'), 'en-privacy.html 에 새 채널 코드 문장이 없습니다');
+  /* 새 글은 시행일 전에는 숨어 있다. */
+  for (const f of ['privacy.html', 'en-privacy.html']) {
+    assert.ok(/<span data-rev-from hidden>/.test(read(f)), f + ' 의 새 글이 처음부터 보입니다');
   }
-  assert.ok(
-    !en.includes('the answers chosen so far are sent even if you leave part way through'),
-    'en-privacy.html 에 현재형 수집 문장이 남아 있습니다'
-  );
+});
+
+test('🔴 개정 시행일은 site.config.json 한 곳 — 네 장의 고지 날짜와 스크립트 태그가 그 값을 쓴다', () => {
+  assert.ok(/^\d{4}-\d{2}-\d{2}$/.test(String(EFFECTIVE)), 'legal.revisionEffective 가 YYYY-MM-DD 가 아닙니다');
+  const tag = '<script defer src="/assets/legal-revision.js" data-effective="{{legal.revisionEffective}}"></script>';
+  for (const f of POLICY_PAGES) assert.ok(read(f).includes(tag), f + ' 가 시행일 스크립트를 싣지 않습니다');
+  const ko = strip(read('privacy.html'));
+  assert.ok(ko.includes(`<strong>개정 &middot; 시행 ${koLabel(EFFECTIVE)}</strong>`), 'privacy.html 머리 줄의 날짜가 시행일과 다릅니다');
+  assert.ok(ko.includes(`<h3>${koLabel(EFFECTIVE)} 시행 · `), 'privacy.html §07 첫 고지의 날짜가 시행일과 다릅니다');
+  const en = strip(read('en-privacy.html'));
+  assert.ok(en.includes(`<strong>Amended and effective ${enLabel(EFFECTIVE)}.</strong>`), 'en-privacy.html 머리 줄의 날짜가 시행일과 다릅니다');
+  assert.ok(en.includes(`<h3>Effective ${enLabel(EFFECTIVE)}: `), 'en-privacy.html §07 첫 고지의 날짜가 시행일과 다릅니다');
+  assert.ok(strip(read('refund.html')).includes(`<strong>${koLabel(EFFECTIVE)} 시행 개정</strong>`), 'refund.html 고지의 날짜가 시행일과 다릅니다');
+  assert.ok(strip(read('en-refund.html')).includes(`<strong>Amendment effective ${enLabel(EFFECTIVE)}</strong>`), 'en-refund.html 고지의 날짜가 시행일과 다릅니다');
+});
+
+test('🔴 legal-revision.js 는 한국 날짜로 센다 — 시행일 전에는 그대로, 그날 0시(한국)부터 바꾼다', () => {
+  const vm = require('node:vm');
+  const src = read('assets/legal-revision.js');
+  const run = (iso, effective) => {
+    const removed = []; const shown = [];
+    const el = (bag, tag) => ({ tag, parentNode: { removeChild: () => bag.push(tag) }, set hidden(v) { if (v === false) shown.push(tag); } });
+    const document = {
+      currentScript: { getAttribute: () => effective },
+      querySelectorAll: (sel) => (sel === '[data-rev-until]' ? [el(removed, 'old')] : [el(shown, 'new')]),
+    };
+    const RealDate = Date;
+    const FakeDate = class extends RealDate { static now() { return RealDate.parse(iso); } };
+    vm.runInNewContext(src, { document, Date: FakeDate });
+    return { removed: removed.length, shown: shown.length };
+  };
+  assert.deepStrictEqual(run('2026-11-06T14:59:59Z', '2026-11-07'), { removed: 0, shown: 0 }, '한국 11월 6일 23:59:59 에 벌써 바꿉니다');
+  assert.deepStrictEqual(run('2026-11-06T15:00:00Z', '2026-11-07'), { removed: 1, shown: 1 }, '한국 11월 7일 0시에 바꾸지 않습니다');
+  assert.deepStrictEqual(run('2026-12-01T00:00:00Z', '{{legal.revisionEffective}}'), { removed: 0, shown: 0 }, '빌드하지 않은 소스(토큰 그대로)에서 글을 바꿉니다');
 });
 
 /* ══ ⑤ 랜딩 계측은 함께 끄지 않았다 ══════════════════════════════════════ */
@@ -162,9 +204,8 @@ test('🔴 배포되는 어느 페이지도 없어진 앱 1분 진단으로 링�
   /*
    * 🔴 페이지 목록은 빌드 분류표에서 읽습니다(사본 0). 주석은 걷습니다 — 이 저장소는
    *    주석에 옛 주소를 기록으로 인용합니다.
-   * ⚠️ 방침 본문(privacy · en-privacy · refund · en-refund)의 «이름»은 이 검사가 보지
-   *    않습니다 — 시행일이 붙은 문안이라 대표가 따로 고칩니다(머리주석 ⓓ). 주소는 그
-   *    본문에도 0 이라 함께 잽니다.
+   * ⚠️ 방침 본문(privacy · en-privacy · refund · en-refund)의 «이름»은 ④ 가 잽니다(2026-11-07 시행
+   *    개정 · 그날까지는 지금 글이 섭니다). 주소는 그 본문에도 0 이라 함께 잽니다.
    */
   const { STATIC } = require('../scripts/build-static.js');
   const offenders = STATIC.html.map((e) => e.file).filter((f) => strip(read(f)).includes('quick-check'));

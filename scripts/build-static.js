@@ -334,6 +334,8 @@ const NOT_DEPLOYED = new Set([
  *             ⚠️ 스니펫은 8장에 그대로 있고 **ID 만** 토큰입니다. 공용 .js 로
  *                빼면 구글 태그 감지기가 HTML 에서 gtag.js 를 못 찾습니다
  *                (site.config.json 의 _comment_analytics 에 실측이 있습니다).
+ *   legal     언어와 무관한 한 벌입니다 — 방침 · 환불규정 개정의 시행일 〔2026-10-30〕.
+ *             네 장의 `assets/legal-revision.js` 태그(`data-effective`)가 씁니다.
  *   pilotApply 언어와 무관한 한 벌입니다 — 홈 시범 참여 신청 폼의 스위치·보낼 곳 〔2026-09-29〕.
  *             ⚠️ 값은 «문자열로» 치환됩니다 — 스크립트는 `'{{…Enabled}}' === 'true'` 꼴로
  *                씁니다. 소스를 빌드 없이 열어도 문법이 깨지지 않고, 그때는 «꺼짐»입니다.
@@ -347,7 +349,7 @@ const NOT_DEPLOYED = new Set([
  * ────────────────────────────────────────────────────────────── */
 
 /** 아는 묶음 이름. 여기 없는 이름은 애초에 토큰으로 잡히지 않습니다(오타 = 빌드 실패). */
-const TOKEN_NAMESPACES = ['biz', 'precheck', 'analytics', 'pilotApply', 'publicCopy'];
+const TOKEN_NAMESPACES = ['biz', 'precheck', 'analytics', 'legal', 'pilotApply', 'publicCopy'];
 
 const TOKEN_RE = new RegExp(
   '\\{\\{\\s*(' + TOKEN_NAMESPACES.join('|') + ')\\.([A-Za-z0-9_]+)\\s*\\}\\}',
@@ -419,6 +421,15 @@ function loadSiteConfig() {
     process.exit(1);
   }
 
+  /*
+   * 방침 · 환불규정 개정 시행일 〔2026-10-30〕. 모양이 틀리면 legal-revision.js 가 아무것도 바꾸지 않아
+   * 시행일이 지나도 «지금 글»이 그대로 섭니다(조용한 실패) — 여기서 막습니다.
+   */
+  if (!config.legal || !/^\d{4}-\d{2}-\d{2}$/.test(String(config.legal.revisionEffective))) {
+    console.error('✋ site.config.json 의 legal.revisionEffective 가 YYYY-MM-DD 가 아닙니다: ' + JSON.stringify(config.legal));
+    process.exit(1);
+  }
+
   for (const locale of ['ko', 'en']) {
     for (const key of ['headline', 'definition', 'audience', 'detail', 'coreStatus', 'coreSummary', 'integrationSummary', 'securitySummary', 'retention']) {
       if (typeof config.publicCopy?.[locale]?.[key] !== 'string' || !config.publicCopy[locale][key].trim()) {
@@ -436,6 +447,7 @@ function tokenValues(config, locale) {
     publicCopy: config.publicCopy[locale],
     precheck: config.precheck,
     analytics: config.analytics,
+    legal: config.legal,
     pilotApply: config.pilotApply,
   };
 }

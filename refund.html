@@ -309,7 +309,9 @@
           따라서 <strong>가입이나 보험금 지급이라는 결과는 이 규정의 환불 사유가 아닙니다.</strong>
         </p>
         <p>
-          무상으로 이용하시는 1분 수출 준비 진단은 결제가 발생하지 않으므로 환불 대상이 아닙니다.
+          <!-- 🔄 **2026-11-07 시행 개정으로 걷습니다** 〔2026-10-30 · 대표 결정 «방침 개정은 한 번에»〕 — 1분 진단은 2026-10-28 에 제품에서
+               없어졌습니다. `data-rev-until` = 시행일까지만 섭니다(assets/legal-revision.js). 시행 뒤 이 줄을 소스에서 지우십시오. -->
+          <span data-rev-until>무상으로 이용하시는 1분 수출 준비 진단은 결제가 발생하지 않으므로 환불 대상이 아닙니다.</span>
           2026년 8월 20일까지 접수된 서류 사전 확인 건에는 아래 07부터 12까지가 적용됩니다.
         </p>
       </section>
@@ -656,6 +658,12 @@
           이 규정에 적지 않은 사항은 전자상거래 등에서의 소비자보호에 관한 법률 등 관계 법령을 따릅니다.
           규정을 바꿀 때에는 바뀐 내용과 시행일을 이 페이지에 미리 알려드립니다.
         </p>
+        <!-- 🔴 **개정 고지** 〔2026-10-30〕 — 시행일의 원본은 site.config.json `legal.revisionEffective` · 날짜는 test/quick-check-report.test.js 가 맞댑니다.
+             시행 뒤에도 기록으로 둡니다. en-refund.html 의 같은 자리와 1:1 입니다. -->
+        <p data-rev-notice>
+          <strong>2026년 11월 7일 시행 개정</strong> · 01 의 「무상으로 이용하시는 1분 수출 준비 진단은 결제가 발생하지 않으므로 환불 대상이 아닙니다」 문장을 걷습니다.
+          그 진단은 2026년 10월 28일에 서비스에서 없어졌습니다. 취소&middot;환불 조건은 달라지지 않으며, 그날까지는 지금 글이 적용됩니다.
+        </p>
         <p>
           회사는 통신판매업 신고를 신청하여 처리를 기다리고 있습니다. 신고번호가 확정되면 이 페이지 하단
           사업자정보에 함께 표시합니다.
@@ -736,6 +744,7 @@
       </div>
     </div>
   </footer>
+  <script defer src="/assets/legal-revision.js" data-effective="{{legal.revisionEffective}}"></script>
   <script defer src="/assets/track.js"></script>
   <script defer src="/assets/lang-switch.js"></script>
 </body>
