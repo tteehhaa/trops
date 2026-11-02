@@ -38,6 +38,12 @@
  *    · 링크 모양은 여전히 앱 `guestLoginHrefFor` 와 같습니다(아래 ①). 다만 **카드 구성은 이제 앱 홈과 다릅니다** —
  *      앱 `START_TASKS` 를 이 순서로 맞추고 히어로 아래 화면 사진을 다시 찍는 일은 앱 저장소 몫으로 남았습니다.
  *      그날 아래 ③에 «앱 START_TASKS 순서 = 랜딩 순서» 검사를 되살리십시오.
+ *
+ * 🔄 **2026-11-03 대표 결정 — 앱 비로그인 홈이 수출 리포트 처음 화면으로 바뀌어 랜딩 첫 화면도 같은 입구로**
+ *    국문(index.html) 첫 화면의 세 갈래를 걷고 «홈페이지 주소 한 칸 + [리포트 받기]»를 세웠습니다
+ *    (그 입구의 검사는 `report-start.test.js`). 이 파일의 세 갈래 검사는 **en.html 만** 잽니다 — 영문은 이번에
+ *    바꾸지 않았습니다. 국문은 아래 ②-ko 가 «세 갈래가 없다»와 «홈페이지가 없어요» 링크를 잽니다.
+ *    ⚠️ «홈페이지가 없어요» 링크는 세 갈래의 upload 링크와 글자 하나 다르지 않습니다(회사 홈 · 리포트 없이 시작).
  */
 
 'use strict';
@@ -53,6 +59,8 @@ const read = (f) => fs.readFileSync(path.join(ROOT, f), 'utf8');
 const body = (f) => read(f).replace(/<!--[\s\S]*?-->/g, '').replace(/<(style|script)\b[^>]*>[\s\S]*?<\/\1>/g, '');
 
 const LANDINGS = ['index.html', 'en.html'];
+/** 세 갈래를 싣는 쪽 — 2026-11-03 부터 영문만입니다(국문 첫 화면은 리포트 입구 · 머리주석 🔄). */
+const PICKER_LANDINGS = ['en.html'];
 const APP = 'https://app.trops.kr';
 
 /**
@@ -108,7 +116,7 @@ test('[대조] 세 갈래의 링크와 «고른 일»이 서로 맞는다 — �
 
 /* ══ ② 국·영문 히어로가 세 갈래를 싣는다 ═════════════════════════════════════ */
 
-for (const file of LANDINGS) {
+for (const file of PICKER_LANDINGS) {
   test(`🔴 ${file} 히어로에 세 갈래가 정본 링크 · 순서 그대로 있다`, () => {
     const hero = heroOf(file);
     assert.ok(hero, file + ': 히어로를 찾지 못했습니다');
@@ -157,13 +165,38 @@ for (const file of LANDINGS) {
     assert.equal(links[0]['data-track'], 'hero-task-support', file + ': 지원사업 집계 이름이 바뀌었습니다 — 시계열이 끊깁니다');
     assert.equal(count(body(file), 'data-track="hero-task-support"'), 1, file + ': 지원사업 링크가 두 자리에 있습니다');
   });
+}
 
+for (const file of LANDINGS) {
   test(`${file} 시작 버튼(hero-start)은 앱 루트 그대로다`, () => {
     const hero = heroOf(file) || '';
     assert.ok(/<a\b[^>]*href="https:\/\/app\.trops\.kr\/"[^>]*data-track="hero-start"/.test(hero),
       file + ': hero-start 가 앱 루트로 가지 않습니다');
   });
 }
+
+/* ══ ②-ko 국문 첫 화면은 세 갈래 대신 리포트 입구다 (2026-11-03) ═══════════════════ */
+
+test('🔴 index.html 첫 화면에 세 갈래 · 지원사업 작은 링크 · «어떤 업무부터» 질문이 없다', () => {
+  const page = body('index.html');
+  assert.ok(heroOf('index.html'), 'index.html: 히어로를 찾지 못했습니다 — 검사가 헛돕니다');
+  assert.equal(startTaskTags(page).length, 0, 'index.html: 세 갈래 링크가 남아 있습니다');
+  for (const gone of ['class="start-picker', 'start-picker-more', 'data-track="hero-task-', '어떤 업무부터 시작할까요?']) {
+    assert.ok(!page.includes(gone), 'index.html: 걷은 세 갈래가 남아 있습니다 — ' + gone);
+  }
+  assert.ok(!read('index.html').includes('/assets/start-picker.css'), 'index.html: 쓰지 않는 세 갈래 스타일을 싣습니다');
+});
+
+test('🔴 index.html «홈페이지가 없어요» 링크가 회사 홈(upload 갈래와 같은 링크)으로 간다', () => {
+  const hero = heroOf('index.html') || '';
+  const tags = [...hero.matchAll(/<a\b[^>]*data-track="hero-report-nosite"[^>]*>([^<]*)<\/a>/g)];
+  assert.equal(tags.length, 1, 'index.html: «홈페이지가 없어요» 링크가 ' + tags.length + '개입니다');
+  assert.equal(tags[0][1].trim(), '홈페이지가 없어요');
+  const a = attrs(tags[0][0]);
+  assert.equal(a.href, TASKS.find((t) => t.key === 'upload').href, 'index.html: «홈페이지가 없어요» 링크가 앱 회사 홈 링크와 다릅니다');
+  assert.equal(a.href, hrefFor('/organizations/{org}/home'));
+  assert.equal(count(body('index.html'), 'data-track="hero-report-nosite"'), 1, 'index.html: 같은 집계 이름이 두 자리에 있습니다');
+});
 
 /* ══ ③ 앱 저장소와 맞댄다 (이웃 저장소가 있을 때만) ══════════════════════════ */
 

@@ -1,0 +1,32 @@
+/* 첫 화면 «우리 회사 수출 리포트» 입구 — 앱 비로그인 홈의 주소 한 칸과 같은 모양(2026-11-03). */
+.report-start{margin-top:56px;max-width:640px}
+.report-start-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-size:13px;font-weight:700;line-height:20px;letter-spacing:-.01em}
+.report-start-badge svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.report-start-q{margin-top:16px;font-size:20px;font-weight:600;line-height:1.5;letter-spacing:-.025em;color:var(--ink)}
+.report-start-q b{font-weight:700;color:var(--accent);white-space:nowrap}
+.report-start-form{margin-top:18px}
+.report-start-box{display:flex;align-items:center;gap:6px;padding:6px 6px 6px 20px;border:2px solid var(--accent);border-radius:18px;background:var(--white);box-shadow:0 8px 28px #1d4ed81f}
+.report-start-box:focus-within{box-shadow:0 0 0 4px #1d4ed824,0 8px 28px #1d4ed81f}
+.report-start-box input{flex:1 1 auto;min-width:0;height:48px;border:0;background:transparent;font:inherit;font-size:18px;font-weight:500;color:var(--ink);letter-spacing:-.01em}
+.report-start-box input::placeholder{color:var(--mute);opacity:1}
+.report-start-box input:focus{outline:none}
+.report-start-box input[aria-invalid="true"]{color:var(--bad-ink)}
+.report-start-box .btn{flex:none;min-height:48px;padding:13px 22px;border-radius:12px;font-size:16px;font-weight:700;white-space:nowrap}
+.report-start-msg span{display:block;margin-top:10px;font-size:14px;line-height:1.6;color:var(--bad-ink)}
+.report-start-nosite{margin-top:12px;font-size:14px;line-height:1.6}
+.report-start-nosite a{display:inline-flex;align-items:center;min-height:32px;color:var(--sub);font-weight:600;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:4px}
+.report-start-nosite a:hover{color:var(--accent);text-decoration-color:currentColor}
+.hero .report-start+.cta{margin-top:28px}
+@media(max-width:860px){
+ .report-start{margin-top:40px}
+ .report-start-q{font-size:18px}
+ .report-start-box{padding:5px 5px 5px 14px;border-radius:16px}
+ .report-start-box input{height:46px;font-size:16px}
+ .report-start-box .btn{min-height:46px;padding:12px 16px;font-size:15px}
+ .hero .report-start+.cta{margin-top:24px}
+}
+@media(max-width:359px){
+ .report-start-box{flex-wrap:wrap;padding:6px}
+ .report-start-box input{flex-basis:100%;padding:0 8px}
+ .report-start-box .btn{flex:1 1 100%}
+}
