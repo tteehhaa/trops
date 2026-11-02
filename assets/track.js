@@ -404,13 +404,17 @@
    *    누르는 순간(`click` · 캡처 단계)에 붙이므로 data-track 이 없는 링크도 이어집니다.
    */
   var APP_ORIGIN = 'https://app.trops.kr';
-  document.addEventListener('click', function (e) {
-    var a = e.target.closest && e.target.closest('a[href]');
-    if (!a) return;
-    var url;
-    try { url = new URL(a.getAttribute('href'), location.href); } catch (err) { return; }
-    if (url.origin !== APP_ORIGIN) return;
 
+  /*
+   * 🔴 **앱 주소 하나에 유입원 · 열쇠를 붙이는 자리는 이 함수 하나입니다** 〔2026-11-03〕.
+   *    링크(아래 캡처 리스너)와 링크가 아닌 이동(첫 화면 리포트 입구 `assets/report-start.js`)이
+   *    같은 규칙을 씁니다. ⛔ 다른 파일에 `from` · `vs` 를 붙이는 두 번째 장치를 두지 마십시오.
+   *    앱 오리진이 아니면 아무것도 돌려주지 않습니다(undefined).
+   */
+  function decorateAppHref(href) {
+    var url;
+    try { url = new URL(href, location.href); } catch (err) { return; }
+    if (url.origin !== APP_ORIGIN) return;
     /*
      * 🔴 **이미 `from` 이 있으면 손대지 않습니다** 〔2026-09-20〕 — `/insurance/quick` 의
      *    `from=landing` · `from=precheck` 두 링크가 그렇습니다. 그 칸(0053)은 **닫힌 5값**
@@ -427,6 +431,18 @@
     var key = ID.sessionKey;
     if (key) url.searchParams.set('vs', key);
 
-    a.setAttribute('href', url.toString());
+    return url.toString();
+  }
+
+  /* 링크가 아닌 이동(폼 제출)에 쓰는 손잡이 — 앱 주소가 아니면 받은 그대로 돌려줍니다. */
+  window.tropsAppHref = function (href) {
+    return decorateAppHref(href) || href;
+  };
+
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href]');
+    if (!a) return;
+    var next = decorateAppHref(a.getAttribute('href'));
+    if (next) a.setAttribute('href', next);
   }, true);
 })();

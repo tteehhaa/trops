@@ -162,12 +162,19 @@ test('② 구획 표시 스크립트가 있고 aria-current 를 보이는 구획
   assert.ok(s.includes('IntersectionObserver'), 'nav-current.js 가 IntersectionObserver 로 구획을 보지 않습니다');
 });
 
+/*
+ * 🔄 2026-11-03 대표 결정 — 앱 비로그인 홈이 수출 리포트 처음 화면으로 바뀌어 랜딩 첫 화면도 같은 입구로.
+ *    국문 첫 화면에서 업무 카드(start-picker)가 통째로 빠졌습니다(리포트 입구 · `report-start.test.js`).
+ *    영문 쪽 단정은 그대로이고, 국문은 «업무 카드도 그 안내 줄도 없다»로 잽니다.
+ */
 test('⑥ 영문 업무 카드만 한국어 화면 예고를 싣는다', () => {
   const picker = (file) => block(block(body(file), /<header class="hero"[\s\S]*?<\/header>/, file + ' 의 hero'),
     /<div class="start-picker"[\s\S]*?<\/ul>(?:<p class="start-picker-more">[\s\S]*?<\/p>)?<\/div>/, file + ' 의 업무 카드');
   assert.ok(picker('en.html').includes('<p class="start-picker-note">The app interface is in Korean.</p>'),
     'en.html: 업무 카드에 한국어 화면 예고가 없습니다');
-  assert.ok(!picker('index.html').includes('start-picker-note'), 'index.html: 업무 카드에 안내 줄이 되살아났습니다(PR #32 대표 지시로 걷음)');
+  const koHero = block(body('index.html'), /<header class="hero"[\s\S]*?<\/header>/, 'index.html 의 hero');
+  assert.ok(!koHero.includes('start-picker'), 'index.html: 걷은 업무 카드가 첫 화면에 남아 있습니다(2026-11-03 리포트 입구로 바뀜)');
+  assert.ok(!body('index.html').includes('start-picker-note'), 'index.html: 업무 카드 안내 줄이 되살아났습니다(PR #32 대표 지시로 걷음)');
 });
 
 test('⑦ 영문 맨 아래 문의 링크 이름이 «메일»을 말한다', () => {
