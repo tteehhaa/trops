@@ -8,8 +8,13 @@
  *    점검을 곧바로 시작합니다. 국문 랜딩(index.html) 첫 화면의 세 갈래를 같은 입구로 바꿨습니다.
  *    ⚠️ 영문(en.html)은 이번에 바꾸지 않았습니다 — 그쪽 세 갈래는 `hero-start-tasks.test.js` 가 그대로 잽니다.
  *
+ * 🔄 **2026-11-05 대표 «고쳐» — 앱 로그인이 아니라 앱 비로그인 첫 화면 `/?site=<도메인>&from=landing` 으로.**
+ *    앱 첫 화면이 그 주소를 칸에 채우고 맛보기(읽는 중 → 맛보기 → 카카오 · Google로 계속하기)를 저절로 시작합니다.
+ *    로그인 링크로 바로 가면 그 맛보기를 건너뛰었습니다. ⚠️ 앱 쪽 고침이 운영에 나간 뒤에 이 고침이 나갑니다.
+ *
  * 🔴 무엇을 지키나
- *   ① 링크 만들기 — 앱 `guestLoginHrefFor` 와 같은 모양 · foreon1.com 의 결과를 글자 그대로
+ *   ① 링크 만들기 — 앱 첫 화면 `/?site=<도메인>` · foreon1.com 의 결과를 글자 그대로 · 유입원은 track.js 가 `landing`(이 방문의 값이 있으면 그 값)
+ *      자바스크립트가 없거나 track.js 가 막혀도 폼의 숨은 칸이 `from=landing` 을 싣는다
  *   ② 주소 다듬기 · 기관 · 포털 거르기 — `assets/report-start.js` 를 그대로 불러 잽니다
  *   ③ 첫 화면 마크업 — 폼 하나 · 입력칸 · 단추 · 안내 줄 · 채움 단추 하나
  *   ④ 화면 예시 — 리포트 예시 이미지 · 입력 흉내 없음
@@ -36,26 +41,83 @@ const code = (f) => read(f).replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*
 
 const RS = require('../assets/report-start.js');
 const APP = 'https://app.trops.kr';
-const FOREON_HREF = 'https://app.trops.kr/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fhome%253Fsite%253Dforeon1.com';
+const FOREON_HREF = 'https://app.trops.kr/?site=foreon1.com';
 const NOSITE_HREF = 'https://app.trops.kr/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fhome';
+
+/** report-start.js 를 가짜 화면에서 돌려 [리포트 받기]를 한 번 누릅니다 — 간 주소 · 폼 그대로 보내기 · 칸의 값. */
+function submitOnce(typed, tropsAppHref) {
+  const handlers = {};
+  const input = { value: typed, focus() {}, setAttribute() {}, removeAttribute() {}, addEventListener() {} };
+  const status = { querySelectorAll: () => [] };
+  let submitted = 0;
+  const form = {
+    querySelector: (sel) => (sel === '#report-start-url' ? input : sel === '[data-report-start-msg]' ? status : null),
+    addEventListener: (type, fn) => { handlers[type] = fn; },
+    submit() { submitted++; },
+  };
+  const assigned = [];
+  const win = { location: { assign: (h) => assigned.push(h) } };
+  if (tropsAppHref) win.tropsAppHref = tropsAppHref;
+  vm.runInNewContext(read('assets/report-start.js'), { window: win, document: { querySelector: (sel) => (sel === 'form[data-report-start]' ? form : null) } });
+  handlers.submit({ preventDefault() {} });
+  return { assigned, submitted, value: input.value };
+}
+
+/** track.js 를 가짜 랜딩 쪽에서 돌려 앱 주소 꾸미기 손잡이(`tropsAppHref`)를 꺼냅니다. */
+function trackHandle(search) {
+  const store = () => { const m = new Map(); return { getItem: (k) => (m.has(k) ? m.get(k) : null), setItem: (k, v) => { m.set(k, String(v)); } }; };
+  const ctx = {
+    sessionStorage: store(), localStorage: store(),
+    location: { search: search || '', pathname: '/', hostname: 'www.trops.kr', href: 'https://www.trops.kr/' + (search || '') },
+    document: { referrer: '', querySelectorAll: () => [], addEventListener() {}, documentElement: { scrollHeight: 0, clientHeight: 0 }, visibilityState: 'visible' },
+    navigator: {}, URL, URLSearchParams, Blob, crypto: require('node:crypto').webcrypto,
+    fetch: () => ({ catch() {} }), addEventListener() {}, scrollY: 0,
+  };
+  ctx.window = ctx;
+  vm.runInNewContext(read('assets/track.js'), ctx);
+  return ctx.tropsAppHref;
+}
 
 /* ══ ① 링크 만들기 ═══════════════════════════════════════════════════════════ */
 
-test('🔴 foreon1.com 의 로그인 링크가 글자 그대로 같다', () => {
-  assert.equal(RS.reportLoginHref('foreon1.com'), FOREON_HREF);
+test('🔴 foreon1.com 의 링크가 글자 그대로 같다 — 앱 비로그인 첫 화면 ?site=', () => {
+  assert.equal(RS.reportHref('foreon1.com'), FOREON_HREF);
   assert.equal(RS.check('foreon1.com').href, FOREON_HREF);
+  assert.equal(RS.reportLoginHref, undefined, '옛 로그인 링크 함수가 남아 있습니다');
 });
 
-test('🔴 링크 모양이 앱 guestLoginHrefFor 와 같다 — 풀면 /?go=/organizations/{org}/home?site=<도메인>', () => {
-  const target = '/organizations/{org}/home?site=' + encodeURIComponent('foreon1.com');
-  assert.equal(RS.reportLoginHref('foreon1.com'), APP + '/login?next=' + encodeURIComponent('/?go=' + encodeURIComponent(target)));
-  const url = new URL(RS.reportLoginHref('hanbit.co.kr'));
-  assert.equal(url.origin + url.pathname, APP + '/login');
-  const next = url.searchParams.get('next');
-  assert.ok(next.startsWith('/?go='), 'next 가 «/?go=» 가 아닙니다: ' + next);
-  const go = new URL(next, APP).searchParams.get('go');
-  assert.equal(go, '/organizations/{org}/home?site=hanbit.co.kr');
-  assert.ok(go.length <= 300, '앱이 받는 길이(300자)를 넘습니다');
+test('🔴 링크 모양 — 앱 루트 · site 하나 · 로그인 · next · go 없음', () => {
+  const url = new URL(RS.reportHref('hanbit.co.kr'));
+  assert.equal(url.origin + url.pathname, APP + '/');
+  assert.deepEqual([...url.searchParams.keys()], ['site']);
+  assert.equal(url.searchParams.get('site'), 'hanbit.co.kr');
+  assert.ok(!/\/login|next=|go=/.test(url.href), '로그인으로 바로 갑니다: ' + url.href);
+});
+
+test('🔴 track.js 가 유입원 landing 과 방문 열쇠를 붙인다 — 이 방문의 값이 있으면 그 값 · 이미 있으면 그대로', () => {
+  const href = trackHandle('')(FOREON_HREF);
+  const url = new URL(href);
+  assert.equal(url.origin + url.pathname, APP + '/');
+  assert.equal(url.searchParams.get('site'), 'foreon1.com');
+  assert.equal(url.searchParams.get('from'), 'landing');
+  assert.match(url.searchParams.get('vs'), /^[a-z0-9]{8,24}$/);
+  assert.equal(new URL(trackHandle('?from=ad-insta')(FOREON_HREF)).searchParams.get('from'), 'ad-insta');
+  /* «홈페이지가 없어요»(로그인 링크)도 누를 때 같은 규칙으로 landing 이 실린다. */
+  const nosite = new URL(trackHandle('')(NOSITE_HREF));
+  assert.equal(nosite.pathname, '/login');
+  assert.equal(nosite.searchParams.get('from'), 'landing');
+});
+
+test('🔴 누르면 — track.js 가 있으면 꾸민 주소로 · 막혔으면 다듬은 주소로 폼을 그대로 보낸다 · 틀린 주소는 어디로도 가지 않는다', () => {
+  const ok = submitOnce('  https://www.Foreon1.com/about?x=1 ', (h) => h + '&from=landing&vs=abc');
+  assert.deepEqual(ok, { assigned: [FOREON_HREF + '&from=landing&vs=abc'], submitted: 0, value: '  https://www.Foreon1.com/about?x=1 ' });
+  const blocked = submitOnce('  https://www.Foreon1.com/about?x=1 ', null);
+  assert.deepEqual(blocked, { assigned: [], submitted: 1, value: 'foreon1.com' });
+  const thrown = submitOnce('foreon1.com', () => { throw new Error('x'); });
+  assert.deepEqual(thrown, { assigned: [], submitted: 1, value: 'foreon1.com' });
+  for (const bad of ['hanbit', 'naver.com', '한빛.com']) {
+    assert.deepEqual(submitOnce(bad, (h) => h), { assigned: [], submitted: 0, value: bad }, bad);
+  }
 });
 
 /* ══ ② 주소 다듬기 · 거르기 ═══════════════════════════════════════════════════ */
@@ -92,13 +154,13 @@ test('회사 주소는 거르지 않는다 — 홈페이지 짓기 서비스의 
   for (const raw of ['hanbit.co.kr', 'foreon1.com', 'hanbit.modoo.at', 'hanbit.wixsite.com', 'navercorp.com', 'mygov.com']) {
     const r = RS.check(raw);
     assert.ok(!r.error, raw + ' 를 걸렀습니다: ' + r.error);
-    assert.equal(r.href, RS.reportLoginHref(RS.normalizeSite(raw)));
+    assert.equal(r.href, RS.reportHref(RS.normalizeSite(raw)));
   }
 });
 
 /* ══ ③ 첫 화면 마크업 ═════════════════════════════════════════════════════════ */
 
-test('🔴 index.html 의 폼은 리포트 입구 하나다 — 앱 로그인 · GET · 입력칸 · 단추', () => {
+test('🔴 index.html 의 폼은 리포트 입구 하나다 — 앱 비로그인 첫 화면 · GET · 입력칸 · 숨은 유입원 · 단추', () => {
   const page = body('index.html');
   const hero = heroOf('index.html');
   assert.ok(hero, 'index.html 히어로를 찾지 못했습니다');
@@ -106,14 +168,21 @@ test('🔴 index.html 의 폼은 리포트 입구 하나다 — 앱 로그인 ·
   assert.equal(forms.length, 1, 'index.html 의 폼이 ' + forms.length + '개입니다');
   assert.ok(hero.includes(forms[0]), '리포트 입구가 첫 화면 밖에 있습니다');
   const f = attrs(forms[0]);
-  assert.equal(f.action, APP + '/login');
+  assert.equal(f.action, APP + '/');
   assert.equal(f.method, 'get');
   assert.ok('data-report-start' in f && 'novalidate' in f, '폼 표지(data-report-start · novalidate)가 없습니다');
 
   const form = hero.match(/<form\b[\s\S]*?<\/form>/)[0];
   assert.ok(form.includes('<label class="sr" for="report-start-url">홈페이지 주소</label>'), '숨은 라벨 «홈페이지 주소» 가 없습니다');
-  const inputs = [...form.matchAll(/<input\b[^>]*>/g)].map((m) => attrs(m[0]));
+  const all = [...form.matchAll(/<input\b[^>]*>/g)].map((m) => attrs(m[0]));
+  const inputs = all.filter((a) => a.type !== 'hidden');
   assert.equal(inputs.length, 1, '입력칸이 하나가 아닙니다');
+  /* 자바스크립트가 없을 때도 앱이 유입원을 센다 — 숨은 칸 하나(from=landing) · 넣은 주소 다음. */
+  assert.deepEqual(all.filter((a) => a.type === 'hidden'), [{ type: 'hidden', name: 'from', value: 'landing' }]);
+  assert.ok(all.findIndex((a) => a.name === 'site') < all.findIndex((a) => a.name === 'from'), '숨은 칸이 주소 칸보다 앞에 있습니다');
+  /* 그대로 제출하면 이 주소다(GET · 칸 순서대로). */
+  const noJs = f.action + '?' + new URLSearchParams(all.map((a) => [a.name, a.name === 'site' ? 'foreon1.com' : a.value])).toString();
+  assert.equal(noJs, FOREON_HREF + '&from=landing');
   assert.deepEqual(
     Object.fromEntries(['id', 'name', 'type', 'inputmode', 'autocomplete', 'autocapitalize', 'spellcheck', 'placeholder'].map((k) => [k, inputs[0][k]])),
     { id: 'report-start-url', name: 'site', type: 'text', inputmode: 'url', autocomplete: 'url', autocapitalize: 'none', spellcheck: 'false', placeholder: '예: hanbit.co.kr' });

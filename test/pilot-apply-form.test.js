@@ -3,8 +3,8 @@
 // The retired pilot intake is replaced by direct app signup.
 /*
  * 🔄 2026-11-03 대표 결정 — 앱 비로그인 홈이 수출 리포트 처음 화면으로 바뀌어 랜딩 첫 화면도 같은 입구로.
- *    국문(index.html) 첫 화면에 폼이 «하나» 섭니다 — 홈페이지 주소를 받아 앱 로그인으로 보내는 리포트 입구
- *    (`data-report-start` · action https://app.trops.kr/login)입니다. 신청서 · 접수 폼이 아닙니다.
+ *    국문(index.html) 첫 화면에 폼이 «하나» 섭니다 — 홈페이지 주소를 받아 앱 비로그인 첫 화면으로 보내는 리포트 입구
+ *    (`data-report-start` · action https://app.trops.kr/ · 🔄 2026-11-05 종전 /login)입니다. 신청서 · 접수 폼이 아닙니다.
  *    그래서 «폼 0» · «히어로 입력 0» 단정은 en.html 에만 그대로 두고, index.html 은 «폼은 그 입구 하나뿐 ·
  *    화면 예시(figure)는 여전히 입력 없는 이미지»로 바꿔 잽니다. 입구 자체의 검사는 `report-start.test.js`.
  */
@@ -16,8 +16,8 @@ const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 const body = file => read(file).replace(/<!--[\s\S]*?-->/g, '').replace(/<(style|script)\b[^>]*>[\s\S]*?<\/\1>/g, '');
 
-/** 국문 첫 화면의 유일한 폼 — 리포트 입구(앱 로그인으로 가는 GET). */
-const REPORT_FORM = /^<form\b[^>]*\baction="https:\/\/app\.trops\.kr\/login"[^>]*\bmethod="get"[^>]*\bdata-report-start\b[^>]*>$/;
+/** 국문 첫 화면의 유일한 폼 — 리포트 입구(앱 비로그인 첫 화면으로 가는 GET · 🔄 2026-11-05 종전 /login). */
+const REPORT_FORM = /^<form\b[^>]*\baction="https:\/\/app\.trops\.kr\/"[^>]*\bmethod="get"[^>]*\bdata-report-start\b[^>]*>$/;
 
 test('랜딩이 신청서나 승인 대기 없이 앱에서 시작하도록 안내한다', () => {
   for (const file of ['index.html', 'en.html']) {
@@ -26,7 +26,7 @@ test('랜딩이 신청서나 승인 대기 없이 앱에서 시작하도록 안�
     if (file === 'en.html') assert.ok(!/<form\b/.test(h));
     else {
       assert.equal(forms.length, 1, file + ': 폼이 ' + forms.length + '개입니다 — 리포트 입구 하나여야 합니다');
-      assert.match(forms[0], REPORT_FORM, file + ': 하나뿐인 폼이 리포트 입구(앱 로그인 · GET)가 아닙니다');
+      assert.match(forms[0], REPORT_FORM, file + ': 하나뿐인 폼이 리포트 입구(앱 첫 화면 · GET)가 아닙니다');
       assert.ok(!/<textarea\b|type="(email|tel|password)"/.test(h), file + ': 신청서 꼴의 입력칸이 있습니다');
     }
     assert.ok(!/href="\/?#(?:join|apply)"/.test(h));
@@ -89,7 +89,9 @@ test('화면 예시는 입력 없는 이미지이며 실제 작업으로 오인�
     const form = hero.match(/<form\b[\s\S]*?<\/form>/)?.[0] || '';
     const outside = hero.replace(form, '');
     assert.ok(!/<(?:input|textarea|button)\b/.test(outside), file + ': 리포트 입구 밖에 입력 · 단추가 있습니다');
-    assert.equal((form.match(/<input\b/g) || []).length, 1, file + ': 리포트 입구의 입력칸이 하나가 아닙니다');
+    /* 숨은 칸(유입원 from=landing)은 입력칸이 아니다 — 보이는 입력칸은 하나 · 숨은 칸도 하나. */
+    assert.equal((form.match(/<input\b(?![^>]*type="hidden")/g) || []).length, 1, file + ': 리포트 입구의 입력칸이 하나가 아닙니다');
+    assert.equal((form.match(/<input\b[^>]*type="hidden"/g) || []).length, 1, file + ': 리포트 입구의 숨은 칸이 하나가 아닙니다');
     assert.equal((form.match(/<button\b/g) || []).length, 1, file + ': 리포트 입구의 단추가 하나가 아닙니다');
     assert.ok(!/<textarea\b/.test(hero));
   }

@@ -727,10 +727,11 @@ html{scroll-padding-top:112px}
   <div class="report-start">
     <p class="report-start-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15v4M17 17h4"/></svg>한국무역보험공사 공개 자료로 1분 점검</p>
     <p class="report-start-q" id="report-start-title">홈페이지 주소만 넣으면 <b>우리 회사 수출 리포트</b>가 나와요</p>
-    <form class="report-start-form" action="https://app.trops.kr/login" method="get" data-report-start novalidate aria-labelledby="report-start-title">
+    <form class="report-start-form" action="https://app.trops.kr/" method="get" data-report-start novalidate aria-labelledby="report-start-title">
       <label class="sr" for="report-start-url">홈페이지 주소</label>
       <div class="report-start-box"><input id="report-start-url" name="site" type="text" inputmode="url" autocomplete="url" autocapitalize="none" spellcheck="false" placeholder="예: hanbit.co.kr" aria-describedby="report-start-msg"><button type="submit" class="btn" data-track="hero-report-start">리포트 받기</button></div>
       <p class="report-start-msg" id="report-start-msg" role="status" data-report-start-msg><span data-reason="format" hidden>주소를 다시 확인해 주세요. 예: hanbit.co.kr</span><span data-reason="portal" hidden>기관 · 포털 말고 우리 회사 홈페이지 주소를 넣어 주세요.</span></p>
+      <input type="hidden" name="from" value="landing">
     </form>
     <p class="report-start-nosite"><a href="https://app.trops.kr/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fhome" data-track="hero-report-nosite">홈페이지가 없어요</a></p>
   </div>

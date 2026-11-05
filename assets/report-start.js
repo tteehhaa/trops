@@ -2,23 +2,26 @@
  * report-start.js — 첫 화면 «우리 회사 수출 리포트» 입구 〔신설 2026-11-03 · 대표 결정〕
  *
  * 앱(app.trops.kr) 비로그인 홈이 «홈페이지 주소 한 칸 + [리포트 받기]»로 바뀌어, 랜딩 첫 화면도
- * 같은 입구를 둡니다. 넣은 주소를 회사 도메인으로 다듬어 앱 로그인으로 보내고, 로그인 뒤 앱이 그
- * 주소로 리포트를 곧바로 만듭니다(`/organizations/{org}/home?site=<도메인>`).
+ * 같은 입구를 둡니다. 넣은 주소를 회사 도메인으로 다듬어 앱 비로그인 첫 화면으로 보냅니다.
  *
- * 🔴 링크 모양은 앱 `guestLoginHrefFor` 와 같습니다 —
- *    `/login?next=` + encodeURIComponent('/?go=' + encodeURIComponent(고른 일)).
- *    `test/report-start.test.js` 가 foreon1.com 의 결과를 글자 그대로 잽니다.
+ * 🔄 2026-11-05 대표 «고쳐» — 앱 로그인(`/login`)으로 바로 보내던 것을 앱 비로그인 첫 화면
+ *    `https://app.trops.kr/?site=<도메인>&from=landing` 으로 바꿨습니다. 앱이 그 주소를 칸에 채우고
+ *    맛보기(읽는 중 → 맛보기 → 카카오 · Google로 계속하기)를 저절로 시작합니다. 로그인 뒤 리포트는 앱이 이어 만듭니다.
+ *    ⚠️ 앱 쪽 고침(`?site=` 저절로 시작 · 꼬리표 `landing`)이 운영에 나간 뒤에 이 고침이 나갑니다.
+ *
+ * 🔴 링크 모양은 `/?site=` + encodeURIComponent(도메인)입니다 — `test/report-start.test.js` 가 foreon1.com 의 결과를 글자 그대로 잽니다.
+ *    앱은 받는 쪽에서 주소를 다시 거릅니다(모양이 아니면 종전 첫 화면 그대로).
  * 🔴 유입원(`from`) · 방문 열쇠(`vs`)는 여기서 만들지 않습니다 — `assets/track.js` 의
- *    `window.tropsAppHref` 가 앱 링크와 같은 규칙으로 붙입니다(두 번째 장치를 두지 않습니다).
- *    track.js 가 막힌 브라우저에서는 맨 주소로 갑니다.
- * ⚠️ 자바스크립트가 없으면 폼이 앱 로그인으로 그대로 제출됩니다(`?site=` 가 붙을 뿐 앱이 받지 않습니다).
+ *    `window.tropsAppHref` 가 앱 링크와 같은 규칙으로 붙입니다(두 번째 장치를 두지 않습니다 · 이 방문의 값이 없으면 `landing`).
+ *    track.js 가 막힌 브라우저에서는 다듬은 주소를 칸에 넣고 폼을 그대로 보냅니다 — 폼의 숨은 칸(`from=landing`)이 실려
+ *    자바스크립트가 없을 때와 같은 주소가 됩니다.
+ * ⚠️ 자바스크립트가 없으면 폼이 앱 첫 화면으로 그대로 제출됩니다(`?site=<넣은 글>&from=landing` · 앱이 다듬어 받습니다).
  * ⛔ 넣은 주소를 저장하거나 집계로 보내지 않습니다 — 클릭 집계는 `data-track` 이름만 갑니다.
  */
 (function () {
   'use strict';
 
   var APP = 'https://app.trops.kr';
-  var REPORT_TARGET = '/organizations/{org}/home';
 
   /* 기관 · 공공 주소의 끝자리 — 이 주소로는 «그 기관»을 회사로 읽게 됩니다. */
   var PUBLIC_SUFFIXES = ['.go.kr', '.or.kr', '.ac.kr', '.re.kr', '.mil.kr', '.gov'];
@@ -64,10 +67,9 @@
     return false;
   }
 
-  /** 앱 로그인 → 로그인 뒤 그 회사 홈에서 이 도메인으로 리포트를 만든다. */
-  function reportLoginHref(domain) {
-    var go = REPORT_TARGET + '?site=' + encodeURIComponent(domain);
-    return APP + '/login?next=' + encodeURIComponent('/?go=' + encodeURIComponent(go));
+  /** 앱 비로그인 첫 화면 → 이 도메인으로 맛보기를 저절로 시작한다(로그인 뒤 리포트는 앱이 이어 만든다). */
+  function reportHref(domain) {
+    return APP + '/?site=' + encodeURIComponent(domain);
   }
 
   /** 'format' · 'portal' · 도메인(문자열) 가운데 하나. */
@@ -75,10 +77,10 @@
     var domain = normalizeSite(raw);
     if (!domain) return { error: 'format' };
     if (isPortal(domain)) return { error: 'portal' };
-    return { domain: domain, href: reportLoginHref(domain) };
+    return { domain: domain, href: reportHref(domain) };
   }
 
-  var api = { normalizeSite: normalizeSite, isPortal: isPortal, reportLoginHref: reportLoginHref, check: check };
+  var api = { normalizeSite: normalizeSite, isPortal: isPortal, reportHref: reportHref, check: check };
   if (typeof module === 'object' && module && module.exports) module.exports = api;
   if (typeof document === 'undefined') return;
 
@@ -109,8 +111,11 @@
       return;
     }
     show(null);
-    var href = result.href;
-    try { if (typeof window.tropsAppHref === 'function') href = window.tropsAppHref(href) || href; } catch (err) { /* 맨 주소로 갑니다 */ }
-    window.location.assign(href);
+    var href = null;
+    try { if (typeof window.tropsAppHref === 'function') href = window.tropsAppHref(result.href) || null; } catch (err) { href = null; }
+    if (href) { window.location.assign(href); return; }
+    /* track.js 가 막혔으면 다듬은 주소로 폼을 그대로 보냅니다(숨은 칸이 함께 실립니다 · submit 사건은 다시 일지 않습니다). */
+    if (input) input.value = result.domain;
+    form.submit();
   });
 })();
