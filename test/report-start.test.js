@@ -42,7 +42,8 @@ const code = (f) => read(f).replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*
 const RS = require('../assets/report-start.js');
 const APP = 'https://app.trops.kr';
 const FOREON_HREF = 'https://app.trops.kr/?site=foreon1.com';
-const NOSITE_HREF = 'https://app.trops.kr/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fhome';
+/* 🔄 2026-11-05 — «홈페이지가 없어요»도 앱 안 같은 단추와 같은 주소(로그인 뒤 홈 `?site=none` → 홈페이지 없이 리포트 시작 · 앱 `guestReportLoginHref(null, …, true)`). */
+const NOSITE_HREF = 'https://app.trops.kr/login?next=%2F%3Fgo%3D%252Forganizations%252F%257Borg%257D%252Fhome%253Fsite%253Dnone';
 
 /** report-start.js 를 가짜 화면에서 돌려 [리포트 받기]를 한 번 누릅니다 — 간 주소 · 폼 그대로 보내기 · 칸의 값. */
 function submitOnce(typed, tropsAppHref) {
@@ -106,6 +107,10 @@ test('🔴 track.js 가 유입원 landing 과 방문 열쇠를 붙인다 — 이
   const nosite = new URL(trackHandle('')(NOSITE_HREF));
   assert.equal(nosite.pathname, '/login');
   assert.equal(nosite.searchParams.get('from'), 'landing');
+  /* 로그인 뒤 갈 곳 — 회사 홈 `?site=none`(홈페이지 없이 한 번 시작). */
+  const next = new URL(nosite.searchParams.get('next'), APP);
+  assert.equal(next.pathname, '/');
+  assert.equal(next.searchParams.get('go'), '/organizations/{org}/home?site=none');
 });
 
 test('🔴 누르면 — track.js 가 있으면 꾸민 주소로 · 막혔으면 다듬은 주소로 폼을 그대로 보낸다 · 틀린 주소는 어디로도 가지 않는다', () => {
