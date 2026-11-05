@@ -187,14 +187,15 @@ test('🔴 index.html 첫 화면에 세 갈래 · 지원사업 작은 링크 · 
   assert.ok(!read('index.html').includes('/assets/start-picker.css'), 'index.html: 쓰지 않는 세 갈래 스타일을 싣습니다');
 });
 
-test('🔴 index.html «홈페이지가 없어요» 링크가 회사 홈(upload 갈래와 같은 링크)으로 간다', () => {
+// 🔄 2026-11-05 — 회사 홈 `?site=none`(로그인 뒤 홈페이지 없이 리포트 시작 · 앱 안 같은 단추와 같은 주소) · 종전 upload 갈래와 같은 링크는 홈이 주소를 다시 물었다.
+test('🔴 index.html «홈페이지가 없어요» 링크가 회사 홈 ?site=none(홈페이지 없이 리포트 시작)으로 간다', () => {
   const hero = heroOf('index.html') || '';
   const tags = [...hero.matchAll(/<a\b[^>]*data-track="hero-report-nosite"[^>]*>([^<]*)<\/a>/g)];
   assert.equal(tags.length, 1, 'index.html: «홈페이지가 없어요» 링크가 ' + tags.length + '개입니다');
   assert.equal(tags[0][1].trim(), '홈페이지가 없어요');
   const a = attrs(tags[0][0]);
-  assert.equal(a.href, TASKS.find((t) => t.key === 'upload').href, 'index.html: «홈페이지가 없어요» 링크가 앱 회사 홈 링크와 다릅니다');
-  assert.equal(a.href, hrefFor('/organizations/{org}/home'));
+  assert.equal(a.href, hrefFor('/organizations/{org}/home?site=none'), 'index.html: «홈페이지가 없어요» 링크가 회사 홈 ?site=none 이 아닙니다');
+  assert.notEqual(a.href, TASKS.find((t) => t.key === 'upload').href);
   assert.equal(count(body('index.html'), 'data-track="hero-report-nosite"'), 1, 'index.html: 같은 집계 이름이 두 자리에 있습니다');
 });
 
